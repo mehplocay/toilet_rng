@@ -1,0 +1,1 @@
+Aufgabe 3 (Branch feature/events, nach Merge von 02). Server-Events ab 1/100.000: globale Meldung, Himmel/Lighting-Wechsel, Server-Luck-Boost (2x, 5 Min, stapelt nicht), Top-Toilets-Leaderboard (Sammlungswert), Gamepass/Dev-Product-Stubs, Settings (Sound an/aus). Kurzer Selbsttest, Abschlussbericht.
