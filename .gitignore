@@ -1,4 +1,5 @@
-build.rbxl
+/build.rbxl
+/build.rbxlx
 *.rbxlx.lock
 Packages/
 sourcemap.json

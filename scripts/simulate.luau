@@ -1,0 +1,6 @@
+local RollService = require("../src/server/Services/RollService")
+local Simulation = require("../src/server/Simulation")
+local Items = require("../src/shared/Config/Items")
+local Toilets = require("../src/shared/Config/Toilets")
+math.randomseed(20261004)
+Simulation.Run(RollService, Items, Toilets, math.random)
