@@ -7,7 +7,7 @@ function Simulation.Run(rollService, items, toilets, nextNumber, iterations, tie
 	local entries, emptyProbability = rollService.Distribution(items, toilets, tier, luck)
 	local counts = {}
 	for _ = 1, iterations do
-		local item = rollService.Sample(entries, nextNumber())
+		local item = rollService.Sample(entries, nextNumber)
 		local id = if item then item.Id else "NoDrop"
 		counts[id] = (counts[id] or 0) + 1
 	end

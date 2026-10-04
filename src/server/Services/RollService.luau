@@ -1,47 +1,55 @@
--- Pure, portable functions: caller supplies config and a uniform sample in [0, 1).
 local RollService = {}
-
 function RollService.Distribution(items, toilets, tier, luckOverride)
 	assert(toilets[tier], "Invalid toilet tier")
 	local luck = luckOverride or toilets[tier].Luck
 	assert(luck >= 1 and luck < math.huge, "Invalid luck")
-	local pool = {}
+	local pool, sorted = {}, {}
 	for index = 1, tier do
 		for _, id in ipairs(toilets[index].Pool) do
 			pool[id] = true
 		end
 	end
-	local entries, total = {}, 0
 	for _, item in ipairs(items) do
 		if pool[item.Id] then
-			local weight = (if item.Rarity == "Common" then 1 else luck) / item.Chance
-			total += weight
-			table.insert(entries, { Item = item, Probability = weight })
+			table.insert(sorted, item)
 		end
 	end
-	-- Preserve exact 1/X at luck 1; normalize only if boosts exceed total mass 1.
-	local divisor = math.max(1, total)
-	for _, entry in ipairs(entries) do
-		entry.Probability /= divisor
+	table.sort(sorted, function(a, b)
+		return a.Chance > b.Chance
+	end)
+	local entries, remaining = {}, 1
+	for _, item in ipairs(sorted) do
+		local chance = if item.Id == "Poop" then 1 else math.min(1, luck / item.Chance)
+		table.insert(entries, { Item = item, Check = chance, Probability = remaining * chance })
+		remaining *= 1 - chance
 	end
-	return entries, math.max(0, 1 - total)
+	assert(#entries > 0 and entries[#entries].Item.Id == "Poop", "Pool requires Poop")
+	return entries, 0
 end
-
 function RollService.Sample(entries, sample)
-	assert(sample >= 0 and sample < 1, "Invalid random sample")
-	local cumulative = 0
-	for _, entry in ipairs(entries) do
-		cumulative += entry.Probability
-		if sample < cumulative then
-			return entry.Item
+	-- Callbacks make independent checks; numeric samples use the equivalent distribution.
+	if type(sample) == "function" then
+		for _, entry in ipairs(entries) do
+			local value = sample()
+			assert(value >= 0 and value < 1, "Invalid random sample")
+			if value < entry.Check then
+				return entry.Item
+			end
+		end
+	else
+		assert(sample >= 0 and sample < 1, "Invalid random sample")
+		local cumulative = 0
+		for _, entry in ipairs(entries) do
+			cumulative += entry.Probability
+			if sample < cumulative then
+				return entry.Item
+			end
 		end
 	end
-	return nil
+	return entries[#entries].Item
 end
-
 function RollService.Roll(items, toilets, tier, sample, luckOverride)
 	local entries = RollService.Distribution(items, toilets, tier, luckOverride)
 	return RollService.Sample(entries, sample)
 end
-
 return RollService

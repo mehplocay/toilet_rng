@@ -49,6 +49,7 @@ local function sanitize(raw)
 		profile.Stats.Earned = integer(raw.Stats.Earned, 0)
 	end
 	-- Preserve display assignments only for known, owned items.
+	local reserved = {}
 	if type(raw.Displays) == "table" then
 		for slot, id in pairs(raw.Displays) do
 			local index = tonumber(slot)
@@ -58,9 +59,11 @@ local function sanitize(raw)
 				and index >= 1
 				and index <= profile.DisplaySlots
 				and type(id) == "string"
-				and (profile.Inventory[id] or 0) > 0
+				and (profile.Inventory[id] or 0) > (reserved[id] or 0)
+				and not profile.Displays[tostring(index)]
 			then
 				profile.Displays[tostring(index)] = id
+				reserved[id] = (reserved[id] or 0) + 1
 			end
 		end
 	end
@@ -111,6 +114,9 @@ function DataService:Load(player)
 		return
 	end
 	self.Profiles[player] = sanitize(record.Data)
+	if self.Loaded and player.Parent == Players and not self.Stopping then
+		self.Loaded(player)
+	end
 	if self.Stopping or player.Parent ~= Players then
 		self:Close(player)
 	end

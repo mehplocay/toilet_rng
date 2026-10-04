@@ -1,0 +1,26 @@
+return {
+	PlotCount = 10,
+	Radius = 85,
+	ToiletColors = {
+		Color3.fromRGB(245, 245, 255),
+		Color3.fromRGB(130, 95, 65),
+		Color3.fromRGB(255, 195, 35),
+		Color3.fromRGB(100, 215, 255),
+		Color3.fromRGB(80, 255, 60),
+		Color3.fromRGB(35, 25, 35),
+		Color3.fromRGB(165, 65, 255),
+	},
+	ItemColors = {
+		Poop = Color3.fromRGB(120, 65, 30),
+		ToiletPaper = Color3.new(1, 1, 1),
+		Rat = Color3.fromRGB(110, 110, 125),
+		Fish = Color3.fromRGB(30, 175, 255),
+		Duck = Color3.fromRGB(255, 220, 30),
+		GoldenPoop = Color3.fromRGB(255, 195, 35),
+		ToiletBaby = Color3.fromRGB(255, 195, 155),
+		SewerShark = Color3.fromRGB(70, 105, 160),
+		KingPoop = Color3.fromRGB(255, 175, 20),
+		AlienToilet = Color3.fromRGB(100, 255, 85),
+		Mystery = Color3.fromRGB(160, 55, 255),
+	},
+}

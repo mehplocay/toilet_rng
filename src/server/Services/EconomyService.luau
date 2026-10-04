@@ -52,7 +52,7 @@ function EconomyService.BuyToilet(profile, id)
 	return true
 end
 
-function EconomyService.Start(data, limiter, remotes)
+function EconomyService.Start(data, limiter, remotes, sync)
 	remotes.Sell.OnServerEvent:Connect(function(player, id, count, ...)
 		if not limiter:Allow(player, "Sell") or select("#", ...) ~= 0 then
 			return
@@ -62,6 +62,9 @@ function EconomyService.Start(data, limiter, remotes)
 			return
 		end
 		local success = EconomyService.Sell(profile, id, count)
+		if success then
+			sync(player)
+		end
 		remotes.Result:FireClient(player, "Sell", { Success = success, Coins = profile.Coins })
 	end)
 	remotes.BuyToilet.OnServerEvent:Connect(function(player, id, ...)
@@ -73,6 +76,9 @@ function EconomyService.Start(data, limiter, remotes)
 			return
 		end
 		local success = EconomyService.BuyToilet(profile, id)
+		if success then
+			sync(player)
+		end
 		remotes.Result:FireClient(
 			player,
 			"BuyToilet",

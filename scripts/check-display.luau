@@ -1,0 +1,13 @@
+local Display = require("../src/server/Services/DisplayService")
+local profile = { Inventory = { Poop = 2 }, Displays = {}, DisplaySlots = 3 }
+assert(Display.Set(profile, "Poop", 1))
+assert(not Display.Set(profile, "Poop", 1))
+assert(Display.Set(profile, "Poop", 2))
+assert(not Display.Set(profile, "Poop", 3))
+assert(not Display.Set(profile, "Unknown", 3))
+assert(not Display.Set(profile, "Poop", 0))
+assert(not Display.Set(profile, "Poop", 0 / 0))
+assert(not Display.Set(profile, "Poop", 1.5))
+assert(Display.Set(profile, nil, 1))
+assert(Display.Set(profile, "Poop", 3))
+print("Display checks passed: ownership, reservation, removal, slot validation")
