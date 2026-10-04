@@ -36,3 +36,40 @@ assert(not limiter:Allow(player, "Unknown"))
 limiter:Remove(player)
 assert(limiter.Players[player] == nil)
 print("Foundation checks passed: guaranteed drops, rare-first pools, luck, rate limits")
+local Events = require("../src/server/Services/EventService")
+local Config = require("../src/shared/Config/Events")
+local now, broadcasts, updates = 100, 0, 0
+local event = Events.new(Config, function()
+	return now
+end, function()
+	broadcasts += 1
+end, function()
+	updates += 1
+end)
+local owner = { DisplayName = "Tester" }
+assert(event:Multiplier() == 1)
+assert(not event:Trigger(owner, Items[1], 1))
+assert(event:Trigger(owner, Items[9], 2))
+assert(event.Expires == 400 and event:Multiplier() == 2 and broadcasts == 1)
+assert(not event:Trigger(owner, Items[9], 2))
+now = 101
+assert(event:Trigger(owner, Items[10], 3))
+assert(event.Expires == 401 and broadcasts == 1 and updates == 2)
+now = 109
+assert(event:Trigger(owner, Items[11], 4))
+assert(broadcasts == 2 and event:Multiplier() == 2)
+now = 117
+event:Drain()
+assert(broadcasts == 3 and #event.Pending == 0)
+assert(not event:Trigger(owner, Items[9], 2))
+local base = Roll.Distribution(Items, Toilets, 7, Toilets[7].Luck)
+local boosted = Roll.Distribution(Items, Toilets, 7, Toilets[7].Luck * event:Multiplier() * 2)
+assert(math.abs(boosted[1].Check - base[1].Check * 4) < 1e-12)
+assert(Roll.Sample(boosted, function()
+	return 0.999999
+end).Id == "Poop")
+now = event.Expires
+assert(event:Multiplier() == 1)
+event:Remove(owner)
+assert(event.Seen[owner] == nil)
+print("Event checks passed: dedupe, cooldown, refresh, expiry, multiplicative luck and fallback")

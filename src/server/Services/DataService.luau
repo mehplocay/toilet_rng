@@ -21,6 +21,7 @@ end
 function DataService.DefaultProfile()
 	return {
 		Version = 1,
+		Settings = { Sound = true },
 		Coins = 0,
 		Inventory = {},
 		Collection = {},
@@ -35,6 +36,9 @@ local function sanitize(raw)
 	local profile = DataService.DefaultProfile()
 	if type(raw) ~= "table" then
 		return profile
+	end
+	if type(raw.Settings) == "table" and type(raw.Settings.Sound) == "boolean" then
+		profile.Settings.Sound = raw.Settings.Sound
 	end
 	profile.Coins = integer(raw.Coins, 0)
 	profile.ToiletTier = math.clamp(integer(raw.ToiletTier, 1), 1, #Toilets)

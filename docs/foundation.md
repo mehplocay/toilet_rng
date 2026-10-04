@@ -17,7 +17,7 @@ Flush additionally checks proximity to the assigned plot and the tier cooldown.
 
 `Result(action, payload)` supplies flush drops and operation outcomes.
 Teleport uses the replicated own-plot position locally; it has no custom remote.
-Shop opens Toilet Upgrades. Sound settings apply only to the current session.
+Shop opens Toilet Upgrades. Sound settings are sanitized and persisted.
 
 ## Probability
 
@@ -34,12 +34,11 @@ The hub leaderboard ranks current inventory value, including displayed copies.
 
 DataStore `ToiletRNG_v1` retains coins, inventory, lifetime discoveries, tier,
 displays and stats. A 180-second session lease is renewed by 60-second autosaves;
-four retry attempts use exponential backoff. Failure stops gameplay. Settings
-are not saved. Enable published-place Studio API access to test persistence.
+four retry attempts use exponential backoff. Failure stops gameplay. Sound settings are saved. Enable published-place Studio API access to test persistence.
 
 Run `rojo build -o build.rbxl`, `stylua --check src scripts`,
 `luau scripts/check-foundation.luau`, `luau scripts/check-display.luau`, and
 `luau scripts/simulate.luau`. Selene needs its missing Roblox standard library.
 Studio checks remain necessary for multiplayer prompts, layout on mobile,
 particles/tweens, teleport replication, sound hooks and DataStore lease behavior.
-Server-wide special-drop events remain outside this task.
+Server-wide events and monetization stubs are described in README-setup.md.

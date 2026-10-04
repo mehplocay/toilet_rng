@@ -22,7 +22,17 @@ local Config = game.ReplicatedStorage.Shared.Config
 local definitions, Items, Rarities = require(Config.Remotes), require(Config.Items), require(Config.Rarities)
 local folder = game.ReplicatedStorage:WaitForChild(definitions.Folder)
 local remotes = {}
-for _, name in ipairs({ "State", "Result", "Sell", "BuyToilet", "Display" }) do
+for _, name in ipairs({
+	"State",
+	"Result",
+	"Sell",
+	"BuyToilet",
+	"Display",
+	"Event",
+	"ServerLuck",
+	"Settings",
+	"AutoFlush",
+}) do
 	remotes[name] = folder:WaitForChild(definitions[name])
 end
 local C = require(script.UI.Components)
@@ -72,8 +82,9 @@ toggle = C.Button(settings, "Sound: ON", UDim2.fromScale(0.6, 0.16), UDim2.fromS
 	soundOn = not soundOn
 	toggle.Text = if soundOn then "Sound: ON" else "Sound: OFF"
 	updateSounds()
+	remotes.Settings:FireServer(soundOn)
 end)
-C.Text(settings, "Settings apply during this session.", UDim2.fromScale(0.9, 0.12), UDim2.fromScale(0.05, 0.6))
+C.Text(settings, "Sound settings are saved.", UDim2.fromScale(0.9, 0.12), UDim2.fromScale(0.05, 0.6))
 local function open(panel)
 	for _, other in ipairs({ collection.Panel, upgrades.Panel, settings }) do
 		other.Visible = other == panel and not other.Visible
@@ -110,6 +121,22 @@ local popup = C.New("Frame", gui, {
 })
 C.Round(popup)
 local resultText = C.Text(popup, "", UDim2.fromScale(0.94, 0.9), UDim2.fromScale(0.03, 0.05))
+local effects = require(script.Effects).Create(gui, soundGroup)
+local autoOwned, autoEnabled = false, false
+local autoButton
+autoButton = C.Button(
+	gui,
+	"Auto Flush: Coming soon",
+	UDim2.fromScale(0.23, 0.06),
+	UDim2.fromScale(0.75, 0.1),
+	function()
+		if autoOwned then
+			remotes.AutoFlush:FireServer(not autoEnabled)
+		end
+	end
+)
+remotes.Event.OnClientEvent:Connect(effects.Event)
+remotes.ServerLuck.OnClientEvent:Connect(effects.Luck)
 local generation = 0
 remotes.Result.OnClientEvent:Connect(function(action, payload)
 	generation += 1
@@ -118,6 +145,7 @@ remotes.Result.OnClientEvent:Connect(function(action, payload)
 		for _, item in ipairs(Items) do
 			if item.Id == payload.ItemId then
 				local rarity = Rarities[item.Rarity]
+				effects.Drop(item)
 				resultText.Text = item.Name .. "\n" .. item.Rarity .. " - 1 in " .. item.Chance
 				resultText.TextColor3 = rarity.Color
 				popup.Size = if rarity.Order >= 4 then UDim2.fromScale(0.52, 0.26) else UDim2.fromScale(0.43, 0.2)
@@ -142,6 +170,14 @@ remotes.Result.OnClientEvent:Connect(function(action, payload)
 	end)
 end)
 remotes.State.OnClientEvent:Connect(function(state)
+	soundOn = state.Settings.Sound
+	toggle.Text = if soundOn then "Sound: ON" else "Sound: OFF"
+	updateSounds()
+	autoOwned, autoEnabled = state.OwnedPasses.AutoFlush == true, state.AutoFlush
+	autoButton.Text = if autoOwned
+		then (if autoEnabled then "Auto Flush: ON" else "Auto Flush: OFF")
+		else "Auto Flush: Coming soon"
+	effects.Luck(state.ServerLuckExpires)
 	coins.Text = tostring(state.Coins) .. " Coins"
 	collection.Update(state)
 	upgrades.Update(state)

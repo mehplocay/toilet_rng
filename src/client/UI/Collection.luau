@@ -4,6 +4,7 @@ local Rarities = require(game.ReplicatedStorage.Shared.Config.Rarities)
 local Collection = {}
 function Collection.Create(gui, remotes)
 	local panel = C.Panel(gui, "My Collection")
+	local counter = C.Text(panel, "Discovered 0/" .. #Items, UDim2.fromScale(0.42, 0.07), UDim2.fromScale(0.03, 0.12))
 	local search = C.New("TextBox", panel, {
 		PlaceholderText = "Search...",
 		Text = "",
@@ -132,6 +133,13 @@ function Collection.Create(gui, remotes)
 	return {
 		Panel = panel,
 		Update = function(newState)
+			local discovered = 0
+			for _, item in ipairs(Items) do
+				if (newState.Collection[item.Id] or 0) > 0 then
+					discovered += 1
+				end
+			end
+			counter.Text = "Discovered " .. discovered .. "/" .. #Items
 			state = newState
 			render()
 		end,

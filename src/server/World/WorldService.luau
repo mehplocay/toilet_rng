@@ -15,6 +15,7 @@ function World:Refresh(player, profile)
 	if not plot then
 		return
 	end
+	plot.Sign.Text = player.DisplayName .. "'s Plot\n" .. require(Config.Toilets)[profile.ToiletTier].Name
 	if plot.Tier ~= profile.ToiletTier then
 		if plot.Toilet then
 			plot.Toilet:Destroy()

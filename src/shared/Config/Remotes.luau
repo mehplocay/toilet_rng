@@ -6,7 +6,13 @@ return {
 	Result = "Result",
 	Display = "Display",
 	State = "State",
+	Event = "Event",
+	ServerLuck = "ServerLuck",
+	Settings = "Settings",
+	AutoFlush = "AutoFlush",
 	Limits = {
+		Settings = { Capacity = 3, Refill = 1 },
+		AutoFlush = { Capacity = 3, Refill = 1 },
 		Display = { Capacity = 4, Refill = 2 },
 		State = { Capacity = 2, Refill = 0.5 },
 		Flush = { Capacity = 2, Refill = 1 },
