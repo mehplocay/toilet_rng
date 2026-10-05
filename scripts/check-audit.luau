@@ -453,13 +453,14 @@ test("all actual inbound handlers reject extra arguments and outbound remotes do
 		State = {},
 		TutorialDone = {},
 		Settings = { false },
+		PresentationSettings = { { RevealIntensity = "Off" } },
 	}
 	local results = #e.Results
 	for name, args in pairs(inputs) do
 		table.insert(args, "unexpected")
 		e:Fire(name, player, table.unpack(args))
 	end
-	for _, name in ipairs({ "Result", "Event", "ServerLuck", "IncomePending" }) do
+	for _, name in ipairs({ "Result", "Event", "ServerLuck", "IncomePending", "DropAnnouncement" }) do
 		e:Fire(name, player, { Coins = 9e15, Luck = 1e9 })
 	end
 	assert(#e.Results == results and profile.Coins == 0 and profile.Stats.Flushes == 0 and not profile.TutorialDone)
@@ -947,5 +948,6 @@ test("income departure timestamp freezes before a queued final save yields", fun
 	assert(data:Get(joined).Income.Pending["1"] == 3000 + 240 * 6000)
 end)
 
+runPresentationAudit(test, environment, server)
 print(string.format("Audit regressions: %d passed, %d failed", passed, #failures))
 assert(#failures == 0, table.concat(failures, "\n"))

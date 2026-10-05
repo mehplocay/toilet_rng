@@ -499,6 +499,7 @@ do
 	anchor.Position, anchor.Parent = 0, H.Workspace
 	local billboard = H.Instance.new("BillboardGui")
 	billboard.Size, billboard.Parent = H.UDim2.fromScale(10, 2), anchor
+	local previousCamera = H.Workspace.CurrentCamera
 	local centerY = 30
 	H.Workspace.CurrentCamera = {
 		CFrame = { UpVector = 1 },
@@ -523,7 +524,7 @@ do
 	assert(billboard.Enabled, "Label suppression leaked after HUD destruction")
 	H.Workspace.DescendantRemoving:Fire(billboard)
 	anchor:Destroy()
-	H.Workspace.CurrentCamera = nil
+	H.Workspace.CurrentCamera = previousCamera
 end
 
 -- Run the production audio lifecycle with mock-only IDs and controllable fetches.

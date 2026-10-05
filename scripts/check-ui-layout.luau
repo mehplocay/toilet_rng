@@ -1,4 +1,5 @@
 local Layout = require("../src/client/UI/Layout")
+local PresentationLayout = require("../src/client/Presentation/Layout")
 local function overlap(a, b)
 	return a.X < b.X + b.W and b.X < a.X + a.W and a.Y < b.Y + b.H and b.Y < a.Y + a.H
 end
@@ -28,6 +29,24 @@ for caseIndex, case in ipairs(cases) do
 	local width, height, touch, left, top, right, bottom = table.unpack(case)
 	local w, h = width - left - right, height - top - bottom
 	local layout = Layout.Compute(w, h, touch)
+	local revealLayout = PresentationLayout.Compute(w, h)
+	for name, bounds in pairs(revealLayout) do
+		assert(
+			bounds.X >= 0 and bounds.Y >= 0 and bounds.X + bounds.W <= w and bounds.Y + bounds.H <= h,
+			"Presentation bounds: " .. name
+		)
+	end
+	for i, name in ipairs({ "Model", "Name", "Odds", "Skip" }) do
+		for j, other in ipairs({ "Model", "Name", "Odds", "Skip" }) do
+			if i < j then
+				assert(
+					not overlap(revealLayout[name], revealLayout[other]),
+					"Cinematic overlap: " .. name .. "/" .. other
+				)
+			end
+		end
+	end
+	assert(revealLayout.Skip.H >= 44 and revealLayout.Skip.W >= 44)
 	local elements = {
 		Travel = layout.Travel,
 		Settings = layout.Settings,
@@ -58,6 +77,10 @@ for caseIndex, case in ipairs(cases) do
 	-- Reveals replace the center hint/board; event banners replace travel/board.
 	for name, r in pairs(elements) do
 		if name ~= "Hint" and name ~= "Board" then
+			assert(
+				not overlap(r, revealLayout.Toast),
+				string.format("%dx%d compact drop overlaps %s", width, height, name)
+			)
 			assert(not overlap(r, layout.Reveal), string.format("%dx%d reveal overlaps %s", width, height, name))
 			local coin = layout.CoinPopup
 			local flight = { X = coin.X, Y = coin.Y - layout.CoinRise, W = coin.W, H = coin.H + layout.CoinRise }

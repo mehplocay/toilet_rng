@@ -1,5 +1,7 @@
 return {
 	Folder = "Remotes",
+	PresentationSettings = "PresentationSettings",
+	DropAnnouncement = "DropAnnouncement",
 	Flush = "Flush",
 	Sell = "Sell",
 	BuyToilet = "BuyToilet",
@@ -21,6 +23,7 @@ return {
 	ClaimReward = "ClaimReward",
 	ClaimIndexReward = "ClaimIndexReward",
 	Limits = {
+		PresentationSettings = { Capacity = 3, Refill = 1 },
 		CollectIncome = { Capacity = 1, Refill = 0.2 },
 		ClaimIndexReward = { Capacity = 3, Refill = 0.5 },
 		AnimationSkip = { Capacity = 3, Refill = 1 },

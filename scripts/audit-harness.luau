@@ -26,7 +26,7 @@ end
 
 local function environment(options)
 	options = options or {}
-	local env = { Now = 20000 * 86400, Threads = {}, Warnings = {}, Results = {}, Syncs = 0 }
+	local env = { Now = 20000 * 86400, Threads = {}, Warnings = {}, Results = {}, Syncs = 0, Objects = {} }
 	function env:Resume(thread, ...)
 		local ok, value = coroutine.resume(thread, ...)
 		assert(ok, value)
@@ -198,6 +198,12 @@ local function environment(options)
 	globals.Instance = {
 		new = function(class)
 			local object = if class == "RemoteEvent" then env:Remote() else {}
+			object.ClassName = class
+			function object:Destroy()
+				self.Parent = nil
+				self.Destroyed = true
+			end
+			table.insert(env.Objects, object)
 			if class == "RemoteEvent" then
 				env.CreatedRemotes = env.CreatedRemotes or {}
 				table.insert(env.CreatedRemotes, object)
