@@ -1,6 +1,7 @@
 local C = require(script.Parent.Components)
 local Toilets = require(game.ReplicatedStorage.Shared.Config.Toilets)
 local Style = require(game.ReplicatedStorage.Shared.Config.World)
+local Preview = require(script.Parent.Preview)
 local Upgrades = {}
 function Upgrades.Create(gui, remotes)
 	local panel = C.Panel(gui, "Toilet Upgrades")
@@ -19,26 +20,9 @@ function Upgrades.Create(gui, remotes)
 	local buttons = {}
 	for tier, toilet in ipairs(Toilets) do
 		local card = C.New("Frame", row, { Size = UDim2.new(0, 155, 0.93, 0), BackgroundColor3 = C.Navy })
+		C.Chrome(card, C.Navy)
 		C.Round(card, Style.ToiletColors[tier])
-		local viewport = C.New(
-			"ViewportFrame",
-			card,
-			{ Size = UDim2.fromScale(0.9, 0.48), Position = UDim2.fromScale(0.05, 0.04), BackgroundTransparency = 1 }
-		)
-		local camera =
-			C.New("Camera", viewport, { CFrame = CFrame.lookAt(Vector3.new(7, 5, -9), Vector3.new(0, 2, 0)) })
-		viewport.CurrentCamera = camera
-		for _, spec in ipairs({
-			{ Vector3.new(3, 1, 3), Vector3.new(0, 0, 0) },
-			{ Vector3.new(4, 2, 4), Vector3.new(0, 1.5, 0) },
-			{ Vector3.new(3, 3, 1), Vector3.new(0, 3, 2) },
-		}) do
-			C.New(
-				"Part",
-				viewport,
-				{ Size = spec[1], Position = spec[2], Color = Style.ToiletColors[tier], Anchored = true }
-			)
-		end
+		Preview.Create(card, UDim2.fromScale(0.94, 0.5), UDim2.fromScale(0.03, 0.02), nil, tier)
 		C.Text(card, toilet.Id .. " Toilet", UDim2.fromScale(0.94, 0.14), UDim2.fromScale(0.03, 0.55))
 		C.Text(card, tostring(toilet.Price) .. " Coins", UDim2.fromScale(0.94, 0.1), UDim2.fromScale(0.03, 0.71))
 		buttons[tier] = C.Button(card, "Buy", UDim2.fromScale(0.9, 0.12), UDim2.fromScale(0.05, 0.84), function()

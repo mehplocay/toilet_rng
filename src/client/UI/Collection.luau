@@ -1,6 +1,7 @@
 local C = require(script.Parent.Components)
 local Items = require(game.ReplicatedStorage.Shared.Config.Items)
 local Rarities = require(game.ReplicatedStorage.Shared.Config.Rarities)
+local Preview = require(script.Parent.Preview)
 local Collection = {}
 function Collection.Create(gui, remotes)
 	local panel = C.Panel(gui, "My Collection")
@@ -14,6 +15,7 @@ function Collection.Create(gui, remotes)
 		BackgroundColor3 = C.Navy,
 		TextColor3 = Color3.new(1, 1, 1),
 		TextScaled = true,
+		Font = C.Font,
 	})
 	C.Round(search)
 	local tabs = C.New("ScrollingFrame", panel, {
@@ -57,16 +59,22 @@ function Collection.Create(gui, remotes)
 				and string.find(string.lower(name), string.lower(search.Text), 1, true)
 			then
 				local card = C.New("Frame", grid, { BackgroundColor3 = C.Navy, LayoutOrder = index })
+				C.Chrome(card, C.Navy)
 				C.Round(card, Rarities[item.Rarity].Color)
-				C.Text(card, if discovered then "?" else "?", UDim2.fromScale(0.8, 0.23), UDim2.fromScale(0.1, 0.02)).TextColor3 = if discovered
-					then Rarities[item.Rarity].Color
-					else Color3.fromRGB(8, 12, 20)
-				C.Text(card, name, UDim2.fromScale(0.92, 0.13), UDim2.fromScale(0.04, 0.26))
+				Preview.Create(
+					card,
+					UDim2.fromScale(0.9, 0.32),
+					UDim2.fromScale(0.05, 0.015),
+					item,
+					nil,
+					not discovered
+				)
+				C.Text(card, name, UDim2.fromScale(0.92, 0.12), UDim2.fromScale(0.04, 0.34))
 				C.Text(
 					card,
 					item.Rarity .. (if discovered then " | 1/" .. item.Chance else ""),
 					UDim2.fromScale(0.92, 0.1),
-					UDim2.fromScale(0.04, 0.4)
+					UDim2.fromScale(0.04, 0.47)
 				).TextColor3 =
 					Rarities[item.Rarity].Color
 				local count = state.Inventory[item.Id] or 0
@@ -77,7 +85,7 @@ function Collection.Create(gui, remotes)
 						displaySlot = tonumber(slot)
 					end
 				end
-				C.Text(card, "Owned: " .. count, UDim2.fromScale(0.9, 0.1), UDim2.fromScale(0.05, 0.51))
+				C.Text(card, "Owned: " .. count, UDim2.fromScale(0.9, 0.08), UDim2.fromScale(0.05, 0.58))
 				if count > 0 then
 					local available = count - reserved
 					C.Button(card, "Sell 1", UDim2.fromScale(0.43, 0.14), UDim2.fromScale(0.04, 0.65), function()

@@ -3,7 +3,7 @@ return {
 	Radius = 85,
 	ToiletColors = {
 		Color3.fromRGB(245, 245, 255),
-		Color3.fromRGB(130, 95, 65),
+		Color3.fromRGB(236, 222, 195),
 		Color3.fromRGB(255, 195, 35),
 		Color3.fromRGB(100, 215, 255),
 		Color3.fromRGB(80, 255, 60),

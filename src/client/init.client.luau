@@ -36,6 +36,8 @@ for _, name in ipairs({
 	remotes[name] = folder:WaitForChild(definitions[name])
 end
 local C = require(script.UI.Components)
+require(script.UI.FlushPrompt).Start()
+require(script.VisualIdle).Start()
 local gui = C.New(
 	"ScreenGui",
 	player:WaitForChild("PlayerGui"),
@@ -55,10 +57,14 @@ if workspace.CurrentCamera then
 	workspace.CurrentCamera:GetPropertyChangedSignal("ViewportSize"):Connect(resize)
 end
 resize()
-local coins = C.Text(gui, "Loading coins...", UDim2.fromScale(0.23, 0.065), UDim2.fromScale(0.75, 0.025))
-coins.BackgroundTransparency = 0
-coins.BackgroundColor3 = C.Navy
-C.Round(coins)
+local coinBox = C.New(
+	"Frame",
+	gui,
+	{ Size = UDim2.fromScale(0.23, 0.065), Position = UDim2.fromScale(0.75, 0.025), BackgroundTransparency = 1 }
+)
+C.Chrome(coinBox, C.Navy)
+C.Icon(coinBox, "Coins", UDim2.fromScale(0.2, 0.86), UDim2.fromScale(0.025, 0.07))
+local coins = C.Text(coinBox, "Loading...", UDim2.fromScale(0.72, 0.85), UDim2.fromScale(0.25, 0.075))
 local collection = require(script.UI.Collection).Create(gui, remotes)
 local upgrades = require(script.UI.Upgrades).Create(gui, remotes)
 local settings = C.Panel(gui, "Settings")
@@ -98,20 +104,30 @@ local colors = {
 	Color3.fromRGB(65, 85, 105),
 }
 for index, name in ipairs({ "Shop", "Collection", "Upgrades", "Teleport", "Settings" }) do
-	C.Button(gui, name, UDim2.fromScale(0.16, 0.075), UDim2.fromScale(0.025, 0.24 + (index - 1) * 0.09), function()
-		if name == "Collection" then
-			open(collection.Panel)
-		elseif name == "Settings" then
-			open(settings)
-		elseif name == "Teleport" then
-			local position = player:GetAttribute("PlotPosition")
-			if typeof(position) == "Vector3" and player.Character then
-				player.Character:PivotTo(CFrame.new(position))
+	local button = C.Button(
+		gui,
+		name,
+		UDim2.fromScale(0.16, 0.075),
+		UDim2.fromScale(0.025, 0.24 + (index - 1) * 0.09),
+		function()
+			if name == "Collection" then
+				open(collection.Panel)
+			elseif name == "Settings" then
+				open(settings)
+			elseif name == "Teleport" then
+				local position = player:GetAttribute("PlotPosition")
+				if typeof(position) == "Vector3" and player.Character then
+					player.Character:PivotTo(CFrame.new(position))
+				end
+			else
+				open(upgrades.Panel)
 			end
-		else
-			open(upgrades.Panel)
-		end
-	end, colors[index])
+		end,
+		colors[index]
+	)
+	local label = button:FindFirstChildWhichIsA("TextLabel")
+	label.Size, label.Position = UDim2.fromScale(0.73, 0.78), UDim2.fromScale(0.25, 0.11)
+	C.Icon(button, name, UDim2.fromScale(0.19, 0.7), UDim2.fromScale(0.04, 0.15))
 end
 local popup = C.New("Frame", gui, {
 	Visible = false,
@@ -119,7 +135,7 @@ local popup = C.New("Frame", gui, {
 	Position = UDim2.fromScale(0.34, 0.72),
 	BackgroundColor3 = C.Navy,
 })
-C.Round(popup)
+C.Chrome(popup, C.Navy)
 local resultText = C.Text(popup, "", UDim2.fromScale(0.94, 0.9), UDim2.fromScale(0.03, 0.05))
 local effects = require(script.Effects).Create(gui, soundGroup)
 local autoOwned, autoEnabled = false, false
@@ -178,7 +194,7 @@ remotes.State.OnClientEvent:Connect(function(state)
 		then (if autoEnabled then "Auto Flush: ON" else "Auto Flush: OFF")
 		else "Auto Flush: Coming soon"
 	effects.Luck(state.ServerLuckExpires)
-	coins.Text = tostring(state.Coins) .. " Coins"
+	coins.Text = C.Commas(state.Coins)
 	collection.Update(state)
 	upgrades.Update(state)
 end)

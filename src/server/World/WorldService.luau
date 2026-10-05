@@ -2,6 +2,10 @@ local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local Debris = game:GetService("Debris")
 local Models = require(script.Parent.Models)
+local P = require(game.ReplicatedStorage.Shared.Visuals.Primitives)
+local Visuals = require(game.ReplicatedStorage.Shared.Config.Visuals)
+local Hub = require(script.Parent.Builders.Hub)
+local Plot = require(script.Parent.Builders.Plot)
 local Config = game.ReplicatedStorage.Shared.Config
 local Style, Items, Rarities, Assets =
 	require(Config.World), require(Config.Items), require(Config.Rarities), require(Config.Assets)
@@ -27,6 +31,7 @@ function World:Refresh(player, profile)
 			"FLUSH", player.DisplayName .. "'s Toilet", 10
 		prompt:SetAttribute("OwnerUserId", player.UserId)
 		prompt.RequiresLineOfSight = false
+		prompt.Style = Enum.ProximityPromptStyle.Custom
 		prompt.Parent = plot.Toilet.PrimaryPart
 		prompt.Triggered:Connect(function(visitor)
 			if visitor == player then
@@ -34,27 +39,68 @@ function World:Refresh(player, profile)
 			end
 		end)
 	end
-	plot.Displays:ClearAllChildren()
+	local entries = { tostring(profile.DisplaySlots) }
 	for slot = 1, profile.DisplaySlots do
-		local cf = plot.CFrame * CFrame.new((slot - 1) % 5 * 4 - 8, 0, -8 - math.floor((slot - 1) / 5) * 5)
-		local pedestal = Models.Part(
+		table.insert(entries, profile.Displays[tostring(slot)] or "-")
+	end
+	local signature = table.concat(entries, ":")
+	plot.Profile = profile
+	if plot.DisplaySignature ~= signature then
+		plot.DisplaySignature, plot.Page = signature, 1
+		self:RenderDisplays(plot)
+	end
+	plot.Model:SetAttribute("PartCount", P.Count(plot.Model))
+end
+-- Larger saved capacities rotate through five physical stands to retain the part budget.
+function World:RenderDisplays(plot)
+	local profile = plot.Profile
+	if not profile then
+		return
+	end
+	plot.Displays:ClearAllChildren()
+	local pageSize = Visuals.Budget.DisplayPageSize
+	local first = ((plot.Page or 1) - 1) * pageSize + 1
+	local last = math.min(profile.DisplaySlots, first + pageSize - 1)
+	local count = last - first + 1
+	for slot = first, last do
+		local cf = plot.CFrame * CFrame.new((slot - first - (count - 1) / 2) * 5.2, 0, -8)
+		local pedestal = P.Part(
 			plot.Displays,
 			"Slot" .. slot,
-			Vector3.new(3, 2, 3),
-			cf * CFrame.new(0, 1, 0),
-			Color3.fromRGB(35, 50, 80)
+			Vector3.new(3.9, 1.8, 3.9),
+			cf * CFrame.new(0, 0.9, 0),
+			Visuals.Palette.Navy
 		)
+		pedestal:SetAttribute("DisplaySlot", slot)
 		local item = byId[profile.Displays[tostring(slot)]]
-		Models.Label(
-			pedestal,
-			if item then item.Name .. " 1/" .. item.Chance else "Display " .. slot,
-			if item then Rarities[item.Rarity].Color else Color3.new(1, 1, 1),
-			true
-		)
+		local color = if item then Rarities[item.Rarity].Color else Visuals.Palette.Cyan
+		if item and item.Rarity == "Secret" then
+			color = Visuals.Palette.Cyan
+		end
+		P.Ring(plot.Displays, "PedestalGlow", cf * CFrame.new(0, 1.86, 0), 1.9, 1.9, 0.13, color, Enum.Material.Neon, 8)
+		Models.Label(pedestal, if item then item.Name .. "\n1/" .. item.Chance else "Display " .. slot, color, true)
 		if item then
-			Models.Item(plot.Displays, cf * CFrame.new(0, 3, 0), item)
+			Models.Item(plot.Displays, cf * CFrame.new(0, 2.8, 0), item)
 		end
 	end
+	if profile.DisplaySlots > pageSize then
+		local page = P.Part(
+			plot.Displays,
+			"DisplayPage",
+			Vector3.new(6, 0.8, 0.1),
+			plot.CFrame * CFrame.new(0, 5, -8),
+			Visuals.Palette.Navy
+		)
+		Models.Label(
+			page,
+			"Display page " .. plot.Page .. "/" .. math.ceil(profile.DisplaySlots / pageSize),
+			Color3.new(1, 1, 1),
+			true
+		)
+	end
+	local countParts = P.Count(plot.Model)
+	plot.Model:SetAttribute("PartCount", countParts)
+	assert(countParts <= Visuals.Budget.Plot, "Plot exceeds its visual part budget")
 end
 function World:Assign(player)
 	for _, plot in ipairs(self.Plots) do
@@ -74,6 +120,7 @@ function World:Animate(player, item)
 		return
 	end
 	local toilet = plot.Toilet
+	toilet:SetAttribute("Flushing", true)
 	local pivot = toilet:GetPivot()
 	local value = Instance.new("CFrameValue")
 	value.Value = pivot
@@ -92,14 +139,18 @@ function World:Animate(player, item)
 		connection:Disconnect()
 		if toilet.Parent then
 			toilet:PivotTo(pivot)
+			toilet:SetAttribute("Flushing", false)
 		end
 		value:Destroy()
 	end)
-	local particles = Instance.new("ParticleEmitter")
-	particles.Color = ColorSequence.new(Rarities[item.Rarity].Color)
-	particles.Rate, particles.Lifetime, particles.Speed = 0, NumberRange.new(0.4, 1), NumberRange.new(4, 9)
-	particles.Parent = toilet.PrimaryPart
-	particles:Emit(if Rarities[item.Rarity].Order >= 4 then 90 else 25)
+	local particles = P.Particles(
+		toilet.PrimaryPart,
+		"FlushBurst",
+		Rarities[item.Rarity].Color,
+		0,
+		{ Speed = NumberRange.new(4, 7), SpreadAngle = Vector2.new(160, 160) }
+	)
+	particles:Emit(Visuals.Budget.Burst)
 	Debris:AddItem(particles, 2)
 	local soundId = Assets.Sounds.Flush
 	if type(soundId) == "string" and soundId ~= "" then
@@ -133,52 +184,13 @@ function World:Start(data)
 	local root = Instance.new("Folder")
 	root.Name = "ToiletWorld"
 	root.Parent = workspace
-	Models.Part(root, "Plaza", Vector3.new(240, 1, 240), CFrame.new(0, -0.5, 0), Color3.fromRGB(195, 230, 245))
-	Models.Part(root, "Hub", Vector3.new(70, 0.3, 70), CFrame.new(0, 0.15, 0), Color3.fromRGB(255, 220, 135))
-	local spawn = Instance.new("SpawnLocation")
-	spawn.Anchored = true
-	spawn.Size = Vector3.new(8, 1, 8)
-	spawn.Position = Vector3.new(0, 0.6, 0)
-	spawn.Neutral = true
-	spawn.Parent = root
-	local banner =
-		Models.Part(root, "Banner", Vector3.new(42, 7, 1), CFrame.new(0, 13, 28), Color3.fromRGB(30, 65, 100))
-	Models.Label(banner, "TOILETS MAKE DREAMS COME TRUE!", Color3.fromRGB(255, 235, 80), true)
-	local shop = Models.Part(root, "Shop", Vector3.new(20, 8, 2), CFrame.new(-25, 5, 18), Color3.fromRGB(30, 65, 100))
-	Models.Label(shop, "SHOP\nToilet Upgrades", Color3.fromRGB(100, 255, 150), true)
-	Models.Toilet(root, CFrame.new(-24, 0, 10), 3)
-	Models.Toilet(root, CFrame.new(24, 0, 10), 7)
-	local board =
-		Models.Part(root, "Leaderboard", Vector3.new(22, 16, 1), CFrame.new(25, 9, 22), Color3.fromRGB(20, 30, 55))
-	self.Board = Models.Label(board, "Top Toilets", Color3.fromRGB(255, 220, 70), true)
+	require(script.Parent.Builders.Lighting).Build()
+	self.Board = Hub.Build(root)
 	for index = 1, Style.PlotCount do
 		local angle = index * math.pi * 2 / Style.PlotCount
 		local position = Vector3.new(math.sin(angle) * Style.Radius, 0, math.cos(angle) * Style.Radius)
 		local cf = CFrame.lookAt(position, Vector3.new(0, 0, 0))
-		local model = Instance.new("Model")
-		model.Name = "Plot" .. index
-		model.Parent = root
-		Models.Part(model, "Floor", Vector3.new(30, 0.4, 28), cf, Color3.fromRGB(170, 245, 150))
-		local sign =
-			Models.Part(model, "Sign", Vector3.new(18, 4, 1), cf * CFrame.new(0, 8, 9), Color3.fromRGB(30, 50, 80))
-		local displays = Instance.new("Folder")
-		displays.Name = "Displays"
-		displays.Parent = model
-		table.insert(
-			self.Plots,
-			{ Model = model, CFrame = cf, Sign = Models.Label(sign, "Available Plot", nil, true), Displays = displays }
-		)
-		for _, x in ipairs({ -13, 13 }) do
-			Models.Part(model, "Pot", Vector3.new(2, 2, 2), cf * CFrame.new(x, 1, 7), Color3.fromRGB(190, 115, 65))
-			Models.Part(
-				model,
-				"Plant",
-				Vector3.new(3, 6, 3),
-				cf * CFrame.new(x, 4, 7),
-				Color3.fromRGB(40, 195, 75),
-				Enum.PartType.Ball
-			)
-		end
+		table.insert(self.Plots, Plot.Build(root, cf, index))
 	end
 	Players.PlayerAdded:Connect(function(player)
 		self:Assign(player)
@@ -188,6 +200,7 @@ function World:Start(data)
 		if plot then
 			plot.Owner = nil
 			plot.Tier = nil
+			plot.Profile, plot.DisplaySignature, plot.Page = nil, nil, nil
 			plot.Sign.Text = "Available Plot"
 			plot.Displays:ClearAllChildren()
 			if plot.Toilet then
@@ -202,6 +215,13 @@ function World:Start(data)
 	end
 	task.spawn(function()
 		while root.Parent do
+			for _, plot in ipairs(self.Plots) do
+				if plot.Profile and plot.Profile.DisplaySlots > Visuals.Budget.DisplayPageSize then
+					local pages = math.ceil(plot.Profile.DisplaySlots / Visuals.Budget.DisplayPageSize)
+					plot.Page = (plot.Page or 1) % pages + 1
+					self:RenderDisplays(plot)
+				end
+			end
 			local ranking = {}
 			for _, player in ipairs(Players:GetPlayers()) do
 				local profile = data:Get(player)

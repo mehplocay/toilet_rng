@@ -1,12 +1,13 @@
 local Lighting = game:GetService("Lighting")
 local TweenService = game:GetService("TweenService")
-local RunService = game:GetService("RunService")
 local Debris = game:GetService("Debris")
 local SoundService = game:GetService("SoundService")
 local Config = game.ReplicatedStorage.Shared.Config
 local Items, Rarities, Events, Assets =
 	require(Config.Items), require(Config.Rarities), require(Config.Events), require(Config.Assets)
 local C = require(script.Parent.UI.Components)
+local P = require(game.ReplicatedStorage.Shared.Visuals.Primitives)
+local Visuals = require(Config.Visuals)
 local Effects = {}
 local function commas(value)
 	local text = tostring(value)
@@ -20,8 +21,7 @@ function Effects.Create(gui, soundGroup)
 	banner.Visible = false
 	banner.BackgroundColor3 = C.Navy
 	banner.BackgroundTransparency = 0.15
-	banner.TextStrokeTransparency = 0.3
-	banner.TextStrokeColor3 = Color3.new(1, 1, 1)
+	C.Round(banner, Visuals.Palette.Gold)
 	local popup = C.New("Frame", gui, {
 		Visible = false,
 		Size = UDim2.fromScale(1, 1),
@@ -31,8 +31,6 @@ function Effects.Create(gui, soundGroup)
 	})
 	local title = C.Text(popup, "", UDim2.fromScale(0.65, 0.5), UDim2.fromScale(0.2, 0.22))
 	title.ZIndex = 21
-	title.TextStrokeTransparency = 0
-	title.TextStrokeColor3 = Color3.fromRGB(35, 20, 5)
 	title.TextColor3 = Color3.fromRGB(255, 235, 90)
 	local tint = Instance.new("ColorCorrectionEffect")
 	tint.Name = "RareDropTint"
@@ -47,22 +45,7 @@ function Effects.Create(gui, soundGroup)
 		cue:Play()
 		Debris:AddItem(cue, 15)
 	end
-	local shakeUntil = 0
-	local offset = CFrame.new()
-	RunService:BindToRenderStep("ToiletRareShake", Enum.RenderPriority.Camera.Value + 1, function()
-		local camera = workspace.CurrentCamera
-		if not camera then
-			return
-		end
-		if camera.CameraType == Enum.CameraType.Scriptable then
-			camera.CFrame *= offset:Inverse()
-		end
-		offset = CFrame.new()
-		if os.clock() < shakeUntil then
-			offset = CFrame.new((math.random() - 0.5) * 0.25, (math.random() - 0.5) * 0.25, 0)
-			camera.CFrame *= offset
-		end
-	end)
+	local pulseTween
 	local function drop(item)
 		local rarity = Rarities[item.Rarity]
 		if rarity.Order >= 4 then
@@ -71,22 +54,28 @@ function Effects.Create(gui, soundGroup)
 		if rarity.Order < 5 then
 			return
 		end
-		shakeUntil = os.clock() + 0.65
+		if pulseTween then
+			pulseTween:Cancel()
+		end
+		local titleScale = title:FindFirstChildWhichIsA("UIScale") or C.New("UIScale", title, { Scale = 1 })
+		titleScale.Scale = 1
+		pulseTween = TweenService:Create(
+			titleScale,
+			TweenInfo.new(0.13, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, 2, true),
+			{ Scale = 1.05 }
+		)
+		pulseTween:Play()
 		local character = game.Players.LocalPlayer.Character
 		local root = character and character:FindFirstChild("HumanoidRootPart")
 		if root then
 			local attachment = Instance.new("Attachment")
 			attachment.Parent = root
-			local particles = Instance.new("ParticleEmitter")
-			particles.Color = ColorSequence.new(rarity.Color, Color3.fromRGB(255, 225, 80))
-			particles.Rate = 0
-			particles.Lifetime = NumberRange.new(1, 2)
-			particles.Speed = NumberRange.new(10, 18)
-			particles.SpreadAngle = Vector2.new(180, 180)
-			particles.Acceleration = Vector3.new(0, -18, 0)
-			particles.Size = NumberSequence.new(0.25)
-			particles.Parent = attachment
-			particles:Emit(100)
+			local particles = P.Particles(attachment, "RareDropBurst", rarity.Color, 0, {
+				Speed = NumberRange.new(6, 10),
+				SpreadAngle = Vector2.new(180, 180),
+				Acceleration = Vector3.new(0, -10, 0),
+			})
+			particles:Emit(Visuals.Budget.Burst)
 			Debris:AddItem(attachment, 3)
 		end
 	end
