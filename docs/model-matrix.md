@@ -1,13 +1,18 @@
-# Codex model assignment (manager decision, by difficulty)
+# Codex model assignment (manager decision): QUALITY FIRST
 
-Source: `codex debug models`. Run with `codex exec -m <model> -c model_reasoning_effort=<effort>`.
-I judge every task on difficulty and risk, not on its type:
+Owner decision: always go for quality. Token cost is not a constraint. Source: `codex debug models`. Run with `codex exec -m <model> -c model_reasoning_effort=<effort>`.
 
-| Difficulty | Examples | Model | Effort |
-|---|---|---|---|
-| Easy | web research / doc lookup, summaries, text and config edits, formatting, small fixes, README | gpt-6-luna | low-medium |
-| Medium | normal features, UI screens, world building, refactors, tests | gpt-6.1-sol | medium |
-| Hard | server logic where bugs cost money/data (saving, purchases, events, anti-exploit), multi-system changes, debugging after Studio tests | gpt-6.1-sol | high |
-| Very hard | tricky architecture, hard-to-find bugs, security review, anything Sol failed once | gpt-6-astra | high |
+| Task | Model | Effort |
+|---|---|---|
+| Anything players see: UI, world, 3D assets, effects, game feel | gpt-6-astra | high |
+| Server logic touching coins/items/data/purchases, event systems | gpt-6.1-sol or gpt-6-astra | high |
+| Security / exploit audits, architecture, hard bugs | gpt-6-astra | high (xhigh if still failing) |
+| Game design, research, roadmaps | gpt-6-astra | medium-high |
+| Merge-conflict resolution, formatting, trivial config/text edits | gpt-6-luna | medium |
 
-Rules: start with the cheapest model that can do the task well; escalate one step only if the result fails my review. Any task mixing easy research with hard coding is split in two sessions. Update this table when results show a model over- or underperforming.
+Rules:
+1. Quality over savings. Do not shrink or skip work to save tokens; iterate until the result passes the manager's review (inspect screenshots/previews, run checks).
+2. Every visual deliverable goes through a render/preview-and-critique loop; send it back for another round if it is not clearly good.
+3. Risky systems get an independent second review by a different session before merge.
+4. Parallel sessions run in separate git worktrees/branches; the manager merges one by one and keeps main always building.
+5. Update this table when results show a model over- or underperforming.
