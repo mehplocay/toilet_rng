@@ -1,41 +1,10 @@
 local Items = require(game.ReplicatedStorage.Shared.Config.Items)
 local Toilets = require(game.ReplicatedStorage.Shared.Config.Toilets)
+local SafeInventory = require(game.ReplicatedStorage.Shared.SafeInventory)
 local EconomyService = {}
-local byId = {}
-for _, item in ipairs(Items) do
-	byId[item.Id] = item
-end
 
 function EconomyService.Sell(profile, id, count)
-	if
-		type(id) ~= "string"
-		or not byId[id]
-		or type(count) ~= "number"
-		or count ~= count
-		or count < 1
-		or count > 1000000
-		or count % 1 ~= 0
-	then
-		return false
-	end
-	local owned = profile.Inventory[id] or 0
-	local displayed = 0
-	for _, displayId in pairs(profile.Displays) do
-		if displayId == id then
-			displayed += 1
-		end
-	end
-	if owned - displayed < count then
-		return false
-	end
-	local value = byId[id].Value * count
-	if profile.Coins + value > 9e15 then
-		return false
-	end
-	profile.Inventory[id] = owned - count
-	profile.Coins += value
-	profile.Stats.Earned += value
-	return true
+	return SafeInventory.Sell(profile, Items, id, count)
 end
 
 function EconomyService.BuyToilet(profile, id)

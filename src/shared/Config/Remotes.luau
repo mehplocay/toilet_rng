@@ -13,7 +13,9 @@ return {
 	DevGrant = "DevGrant",
 	TutorialDone = "TutorialDone",
 	ClaimReward = "ClaimReward",
+	ClaimIndexReward = "ClaimIndexReward",
 	Limits = {
+		ClaimIndexReward = { Capacity = 3, Refill = 0.5 },
 		TutorialDone = { Capacity = 2, Refill = 0.5 },
 		ClaimReward = { Capacity = 2, Refill = 0.2 },
 		Settings = { Capacity = 3, Refill = 1 },

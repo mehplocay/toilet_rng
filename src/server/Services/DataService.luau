@@ -5,6 +5,10 @@ local RunService = game:GetService("RunService")
 local Items = require(game.ReplicatedStorage.Shared.Config.Items)
 local Toilets = require(game.ReplicatedStorage.Shared.Config.Toilets)
 local Rewards = require(game.ReplicatedStorage.Shared.Config.Rewards)
+local index = require(game.ReplicatedStorage.Shared.IndexProgress).new(
+	Items,
+	require(game.ReplicatedStorage.Shared.Config.IndexRewards)
+)
 
 local DataService = { Profiles = {}, Saving = {}, Closing = {}, NoPersistence = {}, Stopping = false }
 local storeOk, store = pcall(DataStoreService.GetDataStore, DataStoreService, "ToiletRNG_v1")
@@ -35,6 +39,9 @@ function DataService.DefaultProfile()
 		RewardLuckExpires = 0,
 		Inventory = {},
 		Collection = {},
+		Stamps = 0,
+		IndexClaims = {},
+		IndexCosmetics = {},
 		ToiletTier = 1,
 		DisplaySlots = 3,
 		Displays = {},
@@ -60,6 +67,7 @@ local function sanitize(raw)
 	profile.RewardLuckExpires = integer(raw.RewardLuckExpires, 0)
 	profile.ToiletTier = math.clamp(integer(raw.ToiletTier, 1), 1, #Toilets)
 	profile.DisplaySlots = math.clamp(integer(raw.DisplaySlots, 3), 1, 100)
+	index:Sanitize(profile, raw)
 	for _, item in ipairs(Items) do
 		profile.Inventory[item.Id] = integer(if type(raw.Inventory) == "table" then raw.Inventory[item.Id] else nil, 0)
 		profile.Collection[item.Id] =
