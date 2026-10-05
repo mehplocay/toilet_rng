@@ -1,0 +1,38 @@
+return {
+	-- Provisional rarity-completion awards; index rewards never grant Coins or luck.
+	RarityStamps = {
+		Common = 2,
+		Uncommon = 3,
+		Rare = 5,
+		Epic = 8,
+		Legendary = 10,
+		Mythic = 15,
+		Godly = 20,
+		Secret = 25,
+	},
+	RarityOrder = { "Common", "Uncommon", "Rare", "Epic", "Legendary", "Mythic", "Godly", "Secret" },
+	Milestones = {
+		{ Count = 3, Stamps = 10, Label = "10 Stamps" },
+		{ Count = 5, DisplaySlots = 4, Label = "Fourth display slot" },
+		{ Count = 8, Stamps = 20, Cosmetic = "PipeApprentice", Label = "20 Stamps + Pipe Apprentice title" },
+		{ Count = 12, DisplaySlots = 5, Label = "Fifth display slot" },
+		{ Count = 18, DisplaySlots = 6, Stamps = 40, Label = "Sixth display slot + 40 Stamps" },
+		{ Count = 24, Cosmetic = "HologramPedestal", Label = "Hologram pedestal skin" },
+		{ Count = 30, Cosmetic = "RoyalFlush", Label = "Royal Flush title" },
+		{ Count = 35, Cosmetic = "FullIndexPlaque", Label = "Full-index animated plaque" },
+	},
+	FoundingItems = {
+		"Poop",
+		"ToiletPaper",
+		"Rat",
+		"Fish",
+		"Duck",
+		"GoldenPoop",
+		"ToiletBaby",
+		"SewerShark",
+		"KingPoop",
+		"AlienToilet",
+		"Mystery",
+	},
+	FoundingReward = { Cosmetic = "FoundingFlush", Label = "Founding Flush trophy" },
+}

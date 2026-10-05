@@ -18,6 +18,7 @@ for _, key in ipairs({
 	"DevGrant",
 	"TutorialDone",
 	"ClaimReward",
+	"ClaimIndexReward",
 }) do
 	local remote = Instance.new("RemoteEvent")
 	remote.Name = definitions[key]
@@ -25,6 +26,10 @@ for _, key in ipairs({
 	remotes[key] = remote
 end
 local data = require(script.Services.DataService)
+local index = require(ReplicatedStorage.Shared.IndexProgress).new(
+	require(ReplicatedStorage.Shared.Config.Items),
+	require(ReplicatedStorage.Shared.Config.IndexRewards)
+)
 local limiter = require(script.Services.RateLimiter).new(definitions.Limits)
 local world = require(script.World.WorldService)
 local monetization = require(script.Services.MonetizationService)
@@ -56,6 +61,9 @@ local function sync(player)
 			ServerLuckExpires = events.Expires,
 			Inventory = profile.Inventory,
 			Collection = profile.Collection,
+			Stamps = profile.Stamps,
+			IndexClaims = profile.IndexClaims,
+			IndexCosmetics = profile.IndexCosmetics,
 			ToiletTier = profile.ToiletTier,
 			Displays = profile.Displays,
 			DisplaySlots = profile.DisplaySlots,
@@ -65,6 +73,7 @@ end
 world:Start(data)
 require(script.Services.FlushService).Start(data, limiter, remotes, sync, world, events, monetization, rewards)
 rewards:Start(data, limiter, remotes, sync)
+require(script.Services.IndexService).Start(index, data, limiter, remotes, sync)
 require(script.Services.EconomyService).Start(data, limiter, remotes, sync)
 require(script.Services.DisplayService).Start(data, limiter, remotes, sync)
 require(script.Services.DevGrantService).Start(data, limiter, remotes, sync)

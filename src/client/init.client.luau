@@ -36,6 +36,7 @@ for _, name in ipairs({
 	"DevGrant",
 	"TutorialDone",
 	"ClaimReward",
+	"ClaimIndexReward",
 }) do
 	remotes[name] = folder:WaitForChild(definitions[name])
 end
@@ -188,7 +189,7 @@ remotes.Event.OnClientEvent:Connect(effects.Event)
 remotes.ServerLuck.OnClientEvent:Connect(effects.Luck)
 local generation = 0
 remotes.Result.OnClientEvent:Connect(function(action, payload)
-	if action == "ClaimReward" then
+	if action == "ClaimReward" or action == "ClaimIndexReward" then
 		return
 	end
 	generation += 1
