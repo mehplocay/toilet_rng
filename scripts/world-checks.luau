@@ -175,6 +175,21 @@ local function countClass(container, class)
 	end
 	return count
 end
+local function effectCost(container)
+	local emitters, rate, particles = 0, 0, 0
+	for _, object in ipairs(container:GetDescendants()) do
+		if object:IsA("ParticleEmitter") then
+			emitters += 1
+			rate += object.Rate
+			particles += object.Rate * (object.Lifetime[2] or object.Lifetime[1])
+		end
+	end
+	return emitters, rate, particles
+end
+local hubEmitters, hubRate, hubParticles = effectCost(root)
+local hubLabels = countClass(root, "BillboardGui")
+local maxPlotEmitters, maxPlotRate, maxPlotParticles, maxPlotLabels = 0, 0, 0, 0
+local maxItemEmitters, maxItemRate, maxItemParticles = 0, 0, 0
 for _, item in ipairs(Items) do
 	local preview = ItemBuilder.Build(root, CFrame.new(), item, true)
 	assert(preview.PrimaryPart and P.Count(preview) >= 1, item.Id .. " missing preview geometry")
@@ -193,6 +208,9 @@ for _, item in ipairs(Items) do
 	maxItemMeshes = math.max(maxItemMeshes, itemMeshes)
 	maxItemInstances = math.max(maxItemInstances, #model:GetDescendants())
 	maxItemHighlights = math.max(maxItemHighlights, countClass(model, "Highlight"))
+	local emitters, rate, particles = effectCost(model)
+	maxItemEmitters, maxItemRate, maxItemParticles =
+		math.max(maxItemEmitters, emitters), math.max(maxItemRate, rate), math.max(maxItemParticles, particles)
 	if P.Count(model) > maxItem or (P.Count(model) == maxItem and itemTriangles > maxItemTriangles) then
 		maxItem, maxItemId = P.Count(model), item.Id
 		maxItemTriangles = itemTriangles
@@ -236,6 +254,14 @@ do
 	World:Refresh(owner, profile)
 	assert(#tweens == count, "Initial toilet load is not an upgrade")
 	local anchor = plot.PromptAnchor
+	local originalCount = P.Count
+	P.Count = function()
+		error("Unchanged State refresh traversed the plot")
+	end
+	for _ = 1, 100 do
+		World:Refresh(owner, profile)
+	end
+	P.Count = originalCount
 	for tier = 1, 7 do
 		local previous, oldTween = plot.Toilet, plot.GlowRing[1].Tween
 		profile.ToiletTier = tier
@@ -344,6 +370,10 @@ for tier = 1, 7 do
 		maxPlot = math.max(maxPlot, count)
 		maxPlotInstances = math.max(maxPlotInstances, #plot.Model:GetDescendants())
 		maxPlotHighlights = math.max(maxPlotHighlights, countClass(plot.Model, "Highlight"))
+		local emitters, rate, particles = effectCost(plot.Model)
+		maxPlotEmitters, maxPlotRate, maxPlotParticles =
+			math.max(maxPlotEmitters, emitters), math.max(maxPlotRate, rate), math.max(maxPlotParticles, particles)
+		maxPlotLabels = math.max(maxPlotLabels, countClass(plot.Model, "BillboardGui"))
 		local meshes, _, triangles = stats(plot.Model)
 		maxPlotMeshes = math.max(maxPlotMeshes, meshes)
 		maxPlotTriangles = math.max(maxPlotTriangles, triangles)
@@ -355,6 +385,15 @@ for tier = 1, 7 do
 	plot.Model:Destroy()
 end
 validate(root)
+print(
+	string.format(
+		"Audit2 full-scene effects envelope: %d emitters, %.0f idle particles/sec, <=%.1f particles at maximum lifetime; %d billboards (excludes avatars, transient bursts and UI)",
+		hubEmitters + 12 * (maxPlotEmitters + 2 * maxItemEmitters),
+		hubRate + 12 * (maxPlotRate + 2 * maxItemRate),
+		hubParticles + 12 * (maxPlotParticles + 2 * maxItemParticles),
+		hubLabels + 12 * maxPlotLabels
+	)
+)
 for name in pairs(Catalog) do
 	assert(used[name], "No world placement covers " .. name)
 end

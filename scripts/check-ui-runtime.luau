@@ -392,6 +392,34 @@ H.Workspace.DescendantAdded:Fire(flushPrompt)
 assert(actualPrompts.Own() == flushPrompt)
 H.Services.UserInputService.TouchEnabled = false
 local clientRoot = H.BootClient(bootRemotes)
+local function reportUI(label)
+	local objects, frames, visible = clientRoot:GetDescendants(), 0, 0
+	for _, object in ipairs(objects) do
+		if object:IsA("GuiObject") then
+			frames += 1
+			local shown, ancestor = true, object
+			while ancestor and ancestor ~= clientRoot do
+				if ancestor:IsA("GuiObject") and not ancestor.Visible then
+					shown = false
+				end
+				ancestor = ancestor.Parent
+			end
+			if shown then
+				visible += 1
+			end
+		end
+	end
+	print(
+		string.format(
+			"Audit2 UI %s: %d descendants, %d GuiObjects, %d ancestor-visible (headless fixture, not draw calls)",
+			label,
+			#objects,
+			frames,
+			visible
+		)
+	)
+end
+reportUI("boot")
 bootRemotes.State.OnClientEvent:Fire(state)
 H.StartTasks()
 H.Services.RunService.Heartbeat:Fire(0.3)
@@ -488,6 +516,7 @@ assert(
 local indexPanel = clientRoot["My Collection"]
 indexPanel.Visible = true
 indexPanel.ContentScroll.Body.Rewards.Activated:Fire()
+reportUI("collection/rewards visited")
 H.Snapshot(clientRoot, "index-rewards-desktop")
 print(
 	"UI runtime checks passed: all screen constructors, hidden/diffed collection, current sell callbacks, disabled input, image fallback lifecycle, flush remote and cooldown"
@@ -500,15 +529,16 @@ do
 		C.New("Frame", testHud, { Position = H.UDim2.fromOffset(100, 10), Size = H.UDim2.fromOffset(300, 44) })
 	H.Layout(testHud)
 	local anchor = H.Instance.new("BasePart")
-	anchor.Position, anchor.Parent = 0, H.Workspace
+	anchor.Position, anchor.Parent = Vector3.new(), H.Workspace
 	local billboard = H.Instance.new("BillboardGui")
 	billboard.Size, billboard.Parent = H.UDim2.fromScale(10, 2), anchor
+	billboard.MaxDistance = 100
 	local previousCamera = H.Workspace.CurrentCamera
 	local centerY = 30
 	H.Workspace.CurrentCamera = {
-		CFrame = { UpVector = 1 },
+		CFrame = { UpVector = Vector3.new(0, 1, 0), Position = Vector3.new() },
 		WorldToScreenPoint = function(_, position)
-			return { X = 250, Y = centerY - position * 10, Z = 20 }
+			return { X = 250, Y = centerY - position.Y * 10, Z = 20 }
 		end,
 	}
 	H.Load("src/client/WorldLabels").Start(testHud)

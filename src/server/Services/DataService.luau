@@ -37,7 +37,9 @@ local DataService = {
 	Replacing = {},
 	Stopping = false,
 }
-local storeOk, store = pcall(DataStoreService.GetDataStore, DataStoreService, "ToiletRNG_v1")
+-- Studio grants and API-enabled playtests must never write production accounts.
+local storeName = if RunService:IsStudio() then "ToiletRNG_Studio_v1" else "ToiletRNG_v1"
+local storeOk, store = pcall(DataStoreService.GetDataStore, DataStoreService, storeName)
 if not storeOk then
 	store = nil
 	warn("DataStore unavailable; Studio players will use in-memory profiles.")

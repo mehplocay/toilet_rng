@@ -95,7 +95,8 @@ local function environment(options)
 	local services = {
 		Players = players,
 		DataStoreService = {
-			GetDataStore = function()
+			GetDataStore = function(_, name)
+				env.StoreName = name
 				if options.NoStore then
 					error("Mock store unavailable")
 				end
@@ -141,6 +142,7 @@ local function environment(options)
 		env.Shutdown = callback
 	end
 	local globals = {
+		Enum = { ProductPurchaseDecision = { NotProcessedYet = "NotProcessedYet" } },
 		game = game,
 		Color3 = {
 			fromRGB = function(r, g, b)

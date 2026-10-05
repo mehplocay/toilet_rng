@@ -6,7 +6,7 @@ function Service.Start(index, data, limiter, remotes, sync)
 			return
 		end
 		local profile = data:Get(player)
-		if not profile then
+		if not profile or data.Saving[player] then
 			return
 		end
 		local result = index:Claim(profile, id)

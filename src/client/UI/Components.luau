@@ -43,6 +43,20 @@ function C.Tween(object, duration, props, style)
 		props
 	)
 	tweens[object] = tween
+	local destroyed
+	local function release()
+		if tweens[object] == tween then
+			tweens[object] = nil
+		end
+		if destroyed then
+			destroyed:Disconnect()
+		end
+	end
+	destroyed = object.Destroying:Connect(function()
+		release()
+		tween:Cancel()
+	end)
+	tween.Completed:Once(release)
 	tween:Play()
 	return tween
 end

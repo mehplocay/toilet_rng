@@ -36,6 +36,10 @@ function Labels.Start(hud)
 				local anchor = gui.Adornee or gui.Parent
 				if anchor and anchor:IsA("BasePart") then
 					local position = anchor.Position
+					if not hud.Visible or (position - camera.CFrame.Position).Magnitude > gui.MaxDistance then
+						gui.Enabled = false
+						continue
+					end
 					local center = camera:WorldToScreenPoint(position)
 					local edge = camera:WorldToScreenPoint(position + camera.CFrame.UpVector)
 					local pixels = math.abs(edge.Y - center.Y)

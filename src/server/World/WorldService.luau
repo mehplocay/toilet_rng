@@ -120,7 +120,8 @@ function World:Refresh(player, profile)
 		plot.DisplaySignature, plot.Page = signature, 1
 		self:RenderDisplays(plot)
 	end
-	plot.Model:SetAttribute("PartCount", P.Count(plot.Model))
+	-- RenderDisplays already counts structural changes. Ordinary flush/state
+	-- updates must not traverse the entire plot just for a diagnostic attribute.
 	PlotSpawn:Ready(player)
 end
 -- Preserve saved slot indexes/capacity; ten physical stands paginate legacy capacities.

@@ -103,11 +103,13 @@ test("upgrades: delayed save and duplicate purchase cannot double debit or level
 	local second = e:Spawn(function()
 		e:Fire("BuyUpgrade", player, "CashBoost", 1)
 	end)
-	assert(p.Coins == 880 and p.Upgrades.CashBoost == 2)
+	assert(coroutine.status(second) == "dead" and p.Coins == 970 and p.Upgrades.CashBoost == 1)
 	e.Store.Before = nil
 	e:Resume(buy)
 	assert(e.Store.Records.Player_71.Data.Coins == 970 and e.Store.Records.Player_71.Data.Upgrades.CashBoost == 1)
-	e:Resume(second)
+	-- Busy saves reject without mutating or queueing; retry the next level after acknowledgement.
+	e.Now += 1
+	e:Fire("BuyUpgrade", player, "CashBoost", 1)
 	assert(e.Store.Records.Player_71.Data.Coins == 880 and e.Store.Records.Player_71.Data.Upgrades.CashBoost == 2)
 	e.Data:Close(player)
 	local rejoined = e:Join(71)

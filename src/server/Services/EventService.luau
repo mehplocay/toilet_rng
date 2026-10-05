@@ -1,4 +1,6 @@
 local EventService = {}
+local Rules =
+	require(if script then game.ReplicatedStorage.Shared.PresentationRules else "../../shared/PresentationRules")
 
 function EventService.new(config, clock, broadcast, luckChanged)
 	local self = { Expires = 0, NextBroadcast = 0, Seen = {}, Pending = {} }
@@ -35,7 +37,7 @@ function EventService.new(config, clock, broadcast, luckChanged)
 		luckChanged(self.Expires)
 		-- Luck refreshes immediately; each announcement waits for the global cooldown.
 		if #self.Pending < config.QueueCap then
-			table.insert(self.Pending, { ItemId = item.Id, PlayerName = player.DisplayName })
+			table.insert(self.Pending, { ItemId = item.Id, PlayerName = Rules.Name(player.Name) })
 		end
 		self:Drain()
 		return true
