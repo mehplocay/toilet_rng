@@ -56,17 +56,19 @@ function HUD.Create(root, remotes, open, prompts)
 	local _, serverText = C.Chip(boost, "Luck x1", C.Navy, UDim2.new(0.5, -4, 1, 0))
 	local _, personalText = C.Chip(boost, "Daily luck", C.Navy, UDim2.new(0.5, -4, 1, 0), UDim2.fromScale(0.5, 0))
 	serverText.TextColor3, personalText.TextColor3 = Color3.fromRGB(151, 255, 128), Color3.fromRGB(221, 173, 255)
-	local board = C.Card(gui, C.Gold, false)
-	board.Name = "BestFlushBoard"
-	C.Text(board, "BEST FLUSH EVER", UDim2.new(1, -12, 0.36, 0), UDim2.fromOffset(6, 4), 21).TextColor3 = C.Gold
-	local bestText =
-		C.Text(board, "Your server's next legend awaits!", UDim2.new(1, -16, 0.51, 0), UDim2.new(0, 8, 0.42, 0), 18)
-	local bestChance = 0
-	local hint = C.New("Frame", gui, { Name = "CenterHint", BackgroundTransparency = 1 })
+	local hint = C.New("CanvasGroup", gui, { Name = "CenterHint", BackgroundTransparency = 1, Visible = false })
 	local hintTitle = C.Text(hint, "Make your next great flush!", UDim2.new(1, 0, 0.55, 0), nil, 38)
 	hintTitle.UIStroke.Thickness = 3
 	local hintDetail = C.Text(hint, "Head home to your toilet", UDim2.new(1, -56, 0.4, 0), UDim2.fromScale(0, 0.6), 17)
 	hintDetail.TextColor3 = C.Gold
+	local hintUntil, hintKey, lastAwayHint = 0, nil, -math.huge
+	local function showHint(title, detail)
+		local key = title .. (detail or "")
+		if key ~= hintKey then
+			hintUntil, hintKey = os.clock() + 5, key
+		end
+		hintTitle.Text, hintDetail.Text = title, detail or ""
+	end
 	local skipCallback
 	local skip = C.Button(hint, "Skip", UDim2.fromOffset(48, 44), UDim2.new(1, -48, 1, -44), function()
 		if skipCallback then
@@ -79,14 +81,18 @@ function HUD.Create(root, remotes, open, prompts)
 	local autoEnabled, autoUnlocked = false, false
 	local flush
 	flush = C.Button(action, "FLUSH", UDim2.new(1, -96, 1, 0), nil, function()
-		if not state or os.clock() - lastRequest < 0.3 or not prompts.Near() then
+		if state and not prompts.Near() then
+			open("Home")
+			return
+		end
+		if not state or os.clock() - lastRequest < 0.3 then
 			return
 		end
 		lastRequest = os.clock()
 		remotes.Flush:FireServer()
 	end, C.Green, { TextSize = 42 })
 	flush.Interactable = false
-	flush.Label.Size, flush.Label.Position = UDim2.fromScale(0.69, 0.62), UDim2.fromScale(0.28, 0.12)
+	flush.Label.Size, flush.Label.Position = UDim2.fromScale(0.69, 0.8), UDim2.fromScale(0.28, 0.1)
 	local flushIcon = C.Icon(flush, "Flush", UDim2.fromScale(0.25, 0.67), UDim2.fromScale(0.02, 0.12))
 	local ring = C.New("Frame", flushIcon, { Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1 })
 	ring.Visible = false
@@ -103,7 +109,6 @@ function HUD.Create(root, remotes, open, prompts)
 		C.New("UICorner", tick, { CornerRadius = UDim.new(0.5, 0) })
 		ticks[i] = tick
 	end
-	local actionDetail = C.Text(flush, "TAP TO FLUSH", UDim2.fromScale(0.84, 0.2), UDim2.fromScale(0.08, 0.75), 14)
 	local pointer = C.Icon(flush, "Pointer", UDim2.fromOffset(48, 48), UDim2.new(1, -52, 0, -24))
 	pointer.Visible = false
 	pointer.Rotation = -12
@@ -111,7 +116,7 @@ function HUD.Create(root, remotes, open, prompts)
 		if autoUnlocked then
 			remotes.AutoFlush:FireServer(not autoEnabled)
 		end
-	end, C.Blue, { TextSize = 18, Icon = "AutoFlush" })
+	end, C.Blue, { TextSize = 18 })
 	auto.Label.TextWrapped = false
 	auto.Label.UITextSizeConstraint.MaxTextSize = 14
 	auto.Interactable = false
@@ -141,14 +146,13 @@ function HUD.Create(root, remotes, open, prompts)
 			[settings] = layout.Settings,
 			[wallet] = layout.Coins,
 			[boost] = layout.Boosts,
-			[board] = layout.Board,
 			[hint] = layout.Hint,
 			[action] = layout.Action,
 			[offers] = layout.Offers,
 		}) do
 			C.Place(object, r)
 		end
-		offers.Visible, board.Visible = layout.OffersVisible, not layout.Short and not eventActive and not revealing
+		offers.Visible = layout.OffersVisible
 		travel.Visible = not eventActive
 		auto.Size = UDim2.new(0, 84, 1, 0)
 	end
@@ -164,18 +168,21 @@ function HUD.Create(root, remotes, open, prompts)
 		end
 		local remaining = math.max(0, untilAt - os.clock())
 		local near = prompts.Near()
-		flush.Interactable = state ~= nil and near and remaining <= 0
-		flush.Text = if remaining > 0 then string.format("%.1fs", remaining) else "FLUSH"
-		actionDetail.Text = if not state
+		flush.Interactable = state ~= nil and (not near or remaining <= 0)
+		flush.Text = if not state
 			then "LOADING..."
 			elseif not near then "GO TO YOUR TOILET"
-			elseif remaining > 0 then "GET READY..."
-			else (if UserInputService.TouchEnabled then "TAP TO FLUSH" else "CLICK OR PRESS E")
+			elseif remaining > 0 then string.format("%.1fs", remaining)
+			else "FLUSH"
+		flushIcon.Visible = near
+		flush.Label.Position = if near then UDim2.fromScale(0.28, 0.1) else UDim2.fromScale(0.05, 0.1)
+		flush.Label.Size = if near then UDim2.fromScale(0.69, 0.8) else UDim2.fromScale(0.9, 0.8)
 		ring.Visible = remaining > 0
 		for i, tick in ipairs(ticks) do
 			tick.Visible = i <= math.ceil(remaining / cooldown * 24)
 		end
-		pointer.Visible = near and remaining == 0 and not autoEnabled
+		local coinPopup = gui:FindFirstChild("ServiceCoinPopup")
+		pointer.Visible = near and remaining == 0 and not autoEnabled and not revealing and not coinPopup
 		if pointer.Visible then
 			pointer.Size = UDim2.fromOffset(layout.Pointer.W, layout.Pointer.H)
 			pointer.Position = UDim2.fromOffset(
@@ -184,10 +191,13 @@ function HUD.Create(root, remotes, open, prompts)
 			)
 		end
 		flush.Position = UDim2.fromOffset(0, if pointer.Visible then math.sin(os.clock() * 4) * 2 else 0)
-		if not tutorial then
-			hintTitle.Text = if near then "Flush something legendary!" else "Your next great find awaits!"
-			hintDetail.Text = if near then "Every flush brings an item" else "Tap Home to find your toilet"
+		if state and not tutorial and not near and os.clock() - lastAwayHint > 30 then
+			lastAwayHint = os.clock()
+			showHint("Find your toilet", "Tap Home to return")
 		end
+		local hintLeft = hintUntil - os.clock()
+		hint.Visible = hintLeft > 0 and not revealing and not eventActive and not coinPopup
+		hint.GroupTransparency = math.clamp(1 - hintLeft / 0.5, 0, 1)
 	end)
 	gui.Destroying:Connect(function()
 		heartbeat:Disconnect()
@@ -226,14 +236,15 @@ function HUD.Create(root, remotes, open, prompts)
 			tutorial = title ~= nil
 			hintTitle.Size = UDim2.new(1, if onSkip then -56 else 0, 0.55, 0)
 			if title then
-				hintTitle.Text, hintDetail.Text = title, detail or ""
+				showHint(title, detail)
+			else
+				hintUntil, hintKey = 0, nil
 			end
 			skipCallback, skip.Visible = onSkip, onSkip ~= nil
 		end,
 		SetHintVisible = function(visible)
-			hint.Visible = visible
+			hint.Visible = visible and hintUntil > os.clock()
 			revealing = not visible
-			board.Visible = visible and not eventActive and not layout.Short
 		end,
 		Update = function(snapshot)
 			state = snapshot
@@ -256,13 +267,8 @@ function HUD.Create(root, remotes, open, prompts)
 		Luck = function(expires)
 			serverExpiry = expires
 		end,
-		Best = function(playerName, item)
-			if item.Chance <= bestChance then
-				return
-			end
-			bestChance = item.Chance
-			bestText.Text = playerName .. " • " .. item.Name .. "\n1 in " .. C.Commas(item.Chance)
-			C.Pop(board)
+		Best = function()
+			-- The server owns the landmark record. Rare events already have a timed banner.
 		end,
 	}
 end

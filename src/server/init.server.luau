@@ -1,6 +1,7 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
 Players.CharacterAutoLoads = false
+require(script.Services.IconResolver).Start()
 local definitions = require(ReplicatedStorage.Shared.Config.Remotes)
 local AudioSettings = require(ReplicatedStorage.Shared.AudioSettings)
 local folder = Instance.new("Folder")

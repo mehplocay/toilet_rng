@@ -67,6 +67,7 @@ function Kit.Label(parent, name, cf, size, text, color, billboard, distance)
 	label.RichText = false
 	label.Parent.MaxDistance = distance or 160
 	if billboard then
+		label.Parent:SetAttribute("AvoidHUD", true)
 		label.Parent.Size = UDim2.fromScale(size.X, size.Y)
 		label.Parent.StudsOffset = Vector3.new()
 	end

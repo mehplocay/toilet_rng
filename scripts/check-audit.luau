@@ -387,6 +387,8 @@ local function server(options)
 		Animate = function() end,
 	}
 	e:Override("src/server/World/WorldService", world)
+	-- Network-only startup is covered by check-icons; keep auto-flush scheduler isolation.
+	e:Override("src/server/Services/IconResolver", { Start = function() end })
 	-- Geometry is outside this security harness; retain the actual cosmetic/ownership service.
 	e:Override("src/shared/Visuals/Primitives", {})
 	e:Load("src/server")

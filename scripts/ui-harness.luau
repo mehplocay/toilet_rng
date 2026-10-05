@@ -180,6 +180,7 @@ function methods:GetAttribute(key)
 end
 function methods:SetAttribute(key, value)
 	self._attributes[key] = value
+	self.AttributeChanged:Fire(key)
 end
 function methods:GetAttributeChangedSignal(key)
 	return self:GetPropertyChangedSignal("attr:" .. key)
@@ -250,6 +251,9 @@ local mt = {
 			end
 		end
 		self._props[key] = value
+		if key == "Parent" and value and value.ChildAdded then
+			value.ChildAdded:Fire(self)
+		end
 		if old ~= value then
 			H.Writes += 1
 			if self._signals[key] then
@@ -275,6 +279,8 @@ function Instance.new(class)
 		"Destroying",
 		"Changed",
 		"DescendantAdded",
+		"ChildAdded",
+		"AttributeChanged",
 		"DescendantRemoving",
 		"Ended",
 	}) do
@@ -285,7 +291,7 @@ function Instance.new(class)
 end
 local services = {
 	ProximityPromptService = { PromptTriggered = signal(), PromptShown = signal(), PromptHidden = signal() },
-	RunService = { Heartbeat = signal() },
+	RunService = { Heartbeat = signal(), RenderStepped = signal() },
 	UserInputService = { TouchEnabled = false, InputChanged = signal(), InputEnded = signal() },
 	TweenService = {},
 	ContentProvider = {},
@@ -345,6 +351,7 @@ for path in pairs(sources) do
 	node(path)
 end
 local game = { ReplicatedStorage = { Shared = node("src/shared") }, Players = services.Players }
+services.ReplicatedStorage = Instance.new("ReplicatedStorage")
 function game:IsLoaded()
 	return true
 end
@@ -577,7 +584,7 @@ function H.Snapshot(root, name)
 		for _, object in ipairs(root:GetDescendants()) do
 			if object.ClassName == "ImageLabel" then
 				for _, icon in ipairs(expectedIcons) do
-					if object.Image == icon.Id then
+					if object.Image == icon.Image then
 						object.IsLoaded = true
 						break
 					end
@@ -606,6 +613,13 @@ function H.Snapshot(root, name)
 		local corner = object:FindFirstChildWhichIsA("UICorner")
 		local gradient = object:FindFirstChildWhichIsA("UIGradient")
 		local constraint = object:FindFirstChildWhichIsA("UITextSizeConstraint")
+		local previewImage = object.Image
+		for _, icon in ipairs(expectedIcons) do
+			if previewImage and previewImage == icon.Image then
+				previewImage = icon.Id
+				break
+			end
+		end
 		return {
 			name = object.Name,
 			class = object.ClassName,
@@ -617,7 +631,7 @@ function H.Snapshot(root, name)
 			alpha = 1 - object.BackgroundTransparency,
 			rotation = object.Rotation,
 			text = object.Text,
-			image = object.Image,
+			image = previewImage,
 			textAlpha = 1 - object.TextTransparency,
 			textColor = object.TextColor3,
 			font = object.Font,

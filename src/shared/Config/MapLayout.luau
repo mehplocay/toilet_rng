@@ -5173,7 +5173,7 @@ return {
 		{ Asset = "ToiletCastle", Position = Vector3.new(0, 0.15, 0), Yaw = 0, Scale = 3, Group = "Landmark" },
 		{ Asset = "PlazaSteps", Position = Vector3.new(0, -1.8, -39), Yaw = 0, Scale = 2, Group = "Landmark" },
 		{ Asset = "FountainPedestal", Position = Vector3.new(-36, 0, -51), Yaw = 0, Scale = 1.5, Group = "Landmark" },
-		{ Asset = "GoldenTrophy", Position = Vector3.new(-36, 4.95, -51), Yaw = 0, Scale = 1, Group = "Landmark" },
+		{ Asset = "GoldenTrophy", Position = Vector3.new(-30, 4.95, -24), Yaw = 0, Scale = 1, Group = "Landmark" },
 		{ Asset = "ShopKiosk", Position = Vector3.new(-66, 0.15, -66), Yaw = -35, Scale = 1.65, Group = "Stations" },
 		{ Asset = "ShopKiosk", Position = Vector3.new(66, 0.15, -66), Yaw = 35, Scale = 1.65, Group = "Stations" },
 		{ Asset = "ShopKiosk", Position = Vector3.new(-76, 0.15, 58), Yaw = -140, Scale = 1.65, Group = "Stations" },

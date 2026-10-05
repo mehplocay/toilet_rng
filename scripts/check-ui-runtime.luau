@@ -8,6 +8,37 @@ for _, icon in ipairs(expectedIcons) do
 	assert(Assets[icon.Group][icon.Key] == icon.Id, "Wrong upload mapping: " .. icon.Group .. "." .. icon.Key)
 end
 assert(Assets.Icons.Coin == Assets.Icons.Coins, "Coin compatibility alias differs")
+-- Test-only resolved contents are distinct from Decal wrappers.
+local Content = H.Load("src/shared/IconContent")
+local waitingIcon = C.Icon(root, "Shop", H.UDim2.fromOffset(80, 80))
+assert(waitingIcon.Fallback.Visible and waitingIcon.Asset.Image == "", "Decal wrapper reached ImageLabel")
+H.StartTasks()
+H.Now += 2.1
+H.ResumeTasks()
+assert(
+	#H.Preloads == 0 and waitingIcon.Fallback.Visible,
+	"Resolution timeout should keep vectors without fetching wrappers"
+)
+local resolved = H.Instance.new("Folder")
+resolved.Name = "ResolvedIcons"
+for i, icon in ipairs(expectedIcons) do
+	local id = Content.Id(icon.Id)
+	if not resolved:GetAttribute("Image_" .. id) then
+		resolved:SetAttribute("Image_" .. id, "rbxassetid://" .. (900000 + i))
+	end
+	icon.Image = resolved:GetAttribute("Image_" .. id)
+end
+resolved:SetAttribute("Complete", true)
+resolved.Parent = H.Services.ReplicatedStorage
+local Images = H.Load("src/client/UI/ResolvedIcons")
+assert(waitingIcon.Asset.Image == Images.Get(Assets.Icons.Shop), "Late folder failed to update existing icon")
+local shopKey = "Image_" .. Content.Id(Assets.Icons.Shop)
+local originalImage = resolved:GetAttribute(shopKey)
+resolved:SetAttribute(shopKey, nil)
+assert(waitingIcon.Asset.Image == "" and waitingIcon.Fallback.Visible)
+resolved:SetAttribute(shopKey, originalImage)
+assert(waitingIcon.Asset.Image == originalImage, "Late attribute failed to update icon")
+waitingIcon:Destroy()
 -- A stalled fetch must not block UI construction; duplicate aliases preload once.
 C.PreloadIcons()
 assert(#H.Preloads == 0, "Preload blocked the calling thread")
@@ -107,6 +138,7 @@ end
 local imageRoot = H.Root(100, 100)
 local shopId = Assets.Icons.Shop
 Assets.Icons.Shop = 123 -- Test-only mock ID; never shipped in Assets.
+Assets.IconImages["123"] = 123
 local image = C.Icon(imageRoot, "Shop", H.UDim2.fromOffset(80, 80))
 assert(image.Fallback.Visible and image.Asset.Image == "rbxassetid://123")
 image.Asset.IsLoaded = true
@@ -121,14 +153,23 @@ Assets.Icons.Shop = shopId
 local previewModule = H.Load("src/client/UI/Preview")
 for _, item in ipairs(Items) do
 	local itemPreview = previewModule.Create(imageRoot, H.UDim2.fromOffset(80, 80), nil, item)
-	assert(itemPreview:FindFirstChild("Asset", true).Image == Assets.ItemIcons[item.Id], "Item icon mismatch")
+	assert(
+		itemPreview:FindFirstChild("Asset", true).Image == Images.Get(Assets.ItemIcons[item.Id]),
+		"Item icon mismatch"
+	)
 end
 for tier, toilet in ipairs(H.Load("src/shared/Config/Toilets")) do
 	local toiletPreview = previewModule.Create(imageRoot, H.UDim2.fromOffset(80, 80), nil, nil, tier)
-	assert(toiletPreview:FindFirstChild("Asset", true).Image == Assets.ToiletIcons[toilet.Id], "Toilet icon mismatch")
+	assert(
+		toiletPreview:FindFirstChild("Asset", true).Image == Images.Get(Assets.ToiletIcons[toilet.Id]),
+		"Toilet icon mismatch"
+	)
 end
 local hiddenPreview = previewModule.Create(imageRoot, H.UDim2.fromOffset(80, 80), nil, Items[11], nil, true)
-assert(hiddenPreview:FindFirstChild("Asset", true).Image == Assets.Icons.Lock, "Undiscovered icon leaks item art")
+assert(
+	hiddenPreview:FindFirstChild("Asset", true).Image == Images.Get(Assets.Icons.Lock),
+	"Undiscovered icon leaks item art"
+)
 local poopId, basicId = Assets.ItemIcons.Poop, Assets.ToiletIcons.Basic
 Assets.ItemIcons.Poop, Assets.ToiletIcons.Basic = "", 0
 for _, fallback in ipairs({
@@ -162,7 +203,7 @@ for _, viewport in ipairs({
 	for _, key in ipairs(passConfig.PassOrder) do
 		local slot, offer = offerGrid[key], offerGrid[key].OfferCard
 		local icon = offer[shopConfig.Offers[key].Icon .. "Icon"]
-		assert(icon.Asset.Image == Assets.Icons[shopConfig.Offers[key].Icon])
+		assert(icon.Asset.Image == Images.Get(Assets.Icons[shopConfig.Offers[key].Icon]))
 		assert(icon.AbsolutePosition.Y >= slot.AbsolutePosition.Y, "Offer sculpture clips above grid cell")
 		assert(icon.AbsolutePosition.Y < offer.AbsolutePosition.Y, "Offer sculpture does not overflow card")
 		assert(
@@ -237,30 +278,76 @@ assert(passBlur._dead, "Destroyed shop leaked its blur effect")
 print(
 	"Icon/shop checks passed: 37 upload mappings, async preload, fallbacks, 7 card layouts, prices, ownership and disabled gifting"
 )
-local hud = H.Load("src/client/UI/HUD").Create(root, remotes, function() end, {
+local nearToilet, openedHome = true, false
+local hud = H.Load("src/client/UI/HUD").Create(root, remotes, function(name)
+	openedHome = name == "Home"
+end, {
 	Near = function()
-		return true
+		return nearToilet
 	end,
 })
 hud.Update(state)
 for _, name in ipairs({ "Shop", "Collection", "Upgrades", "Passes", "Daily" }) do
-	assert(hud.Navigation[name][name .. "Icon"].Asset.Image == Assets.Icons[name], "HUD icon slot not wired")
+	assert(
+		hud.Navigation[name][name .. "Icon"].Asset.Image == Images.Get(Assets.Icons[name]),
+		"HUD icon slot not wired"
+	)
 end
 for _, name in ipairs({ "Hub", "Home", "Shop" }) do
-	assert(hud.Frame.Travel[name][name .. "Icon"].Asset.Image == Assets.Icons[name], "Travel icon slot not wired")
+	assert(
+		hud.Frame.Travel[name][name .. "Icon"].Asset.Image == Images.Get(Assets.Icons[name]),
+		"Travel icon slot not wired"
+	)
 end
-assert(hud.Frame.Wallet.CoinIcon.Asset.Image == Assets.Icons.Coin)
-assert(hud.Frame.FlushActions:FindFirstChild("AutoFlushIcon", true).Asset.Image == Assets.Icons.AutoFlush)
-assert(hud.Frame.Offers:FindFirstChild("OfferBurstIcon", true).Asset.Image == Assets.Icons.OfferBurst)
+assert(hud.Frame.Wallet.CoinIcon.Asset.Image == Images.Get(Assets.Icons.Coin))
+assert(hud.Frame.Offers:FindFirstChild("OfferBurstIcon", true).Asset.Image == Images.Get(Assets.Icons.OfferBurst))
 H.Load("src/client/UI/IncomeChip").Create(hud.Frame).Update(1234)
 H.Services.RunService.Heartbeat:Fire(0.2)
 local flush = hud.Frame.FlushActions:FindFirstChild("FLUSH")
 flush.Activated:Fire()
 assert(H.Calls[#H.Calls].Name == "Flush" and H.Calls[#H.Calls].Count == 0, "HUD flush uses wrong server path")
+assert(not hud.Frame:FindFirstChild("BestFlushBoard"), "Persistent landmark record leaked onto HUD")
+nearToilet = false
+H.Services.RunService.Heartbeat:Fire(0.1)
+assert(
+	flush.Text == "GO TO YOUR TOILET" and flush.Label.Text == flush.Text,
+	"Away action has multiple/conflicting labels"
+)
+local beforeHome = #H.Calls
+flush.Activated:Fire()
+assert(openedHome and #H.Calls == beforeHome, "Away action must route home without sending a flush")
+assert(hud.Hint.Visible)
+H.Advance(4.75)
+assert(hud.Hint.Visible and hud.Hint.GroupTransparency > 0, "Hint does not fade")
+H.Advance(0.5)
+assert(not hud.Hint.Visible, "Center hint is permanent")
+hud.SetTutorial("Find your toilet", "Tap Home", function() end)
+H.Advance(6)
+hud.SetTutorial("Find your toilet", "Tap Home", function() end)
+H.Services.RunService.Heartbeat:Fire(0.1)
+assert(not hud.Hint.Visible, "Repeated snapshots restart the tutorial hint")
+hud.SetTutorial(nil)
+nearToilet = true
 hud.Best("Avery", Items[6])
 H.Snapshot(root, "hud-desktop")
+for _, viewport in ipairs({ { 711, 751 }, { 360, 518 } }) do
+	root._fixed, root._abs = { X = viewport[1], Y = viewport[2] }, nil
+	H.Services.UserInputService.TouchEnabled = viewport[1] == 360
+	root:GetPropertyChangedSignal("AbsoluteSize"):Fire()
+	H.Services.RunService.Heartbeat:Fire(0.1)
+	H.Snapshot(root, "hud-fixed-" .. viewport[1])
+	nearToilet = false
+	H.Services.RunService.Heartbeat:Fire(0.1)
+	H.Snapshot(root, "hud-away-" .. viewport[1])
+	nearToilet = true
+end
+root._fixed, root._abs = { X = 1280, Y = 684 }, nil
+H.Services.UserInputService.TouchEnabled = false
+root:GetPropertyChangedSignal("AbsoluteSize"):Fire()
 local reveal = H.Load("src/client/UI/Reveal").Create(hud.Frame, hud)
 reveal(Items[6], false)
+H.Services.RunService.Heartbeat:Fire(0.1)
+assert(not flush.PointerIcon.Visible, "Idle pointer overlaps reveal/coin presentation")
 H.Snapshot(root, "rare-reveal")
 hud.Frame.FlushReveal.Visible = false
 hud.SetHintVisible(true)
@@ -401,6 +488,43 @@ H.Snapshot(clientRoot, "index-rewards-desktop")
 print(
 	"UI runtime checks passed: all screen constructors, hidden/diffed collection, current sell callbacks, disabled input, image fallback lifecycle, flush remote and cooldown"
 )
+
+-- Project a world station label onto/away from a HUD control; late tags and streaming work.
+do
+	local testHud = H.Root(711, 751)
+	local control =
+		C.New("Frame", testHud, { Position = H.UDim2.fromOffset(100, 10), Size = H.UDim2.fromOffset(300, 44) })
+	H.Layout(testHud)
+	local anchor = H.Instance.new("BasePart")
+	anchor.Position, anchor.Parent = 0, H.Workspace
+	local billboard = H.Instance.new("BillboardGui")
+	billboard.Size, billboard.Parent = H.UDim2.fromScale(10, 2), anchor
+	local centerY = 30
+	H.Workspace.CurrentCamera = {
+		CFrame = { UpVector = 1 },
+		WorldToScreenPoint = function(_, position)
+			return { X = 250, Y = centerY - position * 10, Z = 20 }
+		end,
+	}
+	H.Load("src/client/WorldLabels").Start(testHud)
+	billboard:SetAttribute("AvoidHUD", true)
+	H.Services.RunService.RenderStepped:Fire()
+	assert(not billboard.Enabled, "World PASSES label overlaps travel controls")
+	centerY = 300
+	H.Services.RunService.RenderStepped:Fire()
+	assert(billboard.Enabled, "World landmark label did not return in clear space")
+	control.Visible, centerY = false, 30
+	H.Services.RunService.RenderStepped:Fire()
+	assert(billboard.Enabled, "Hidden controls unnecessarily suppress world labels")
+	testHud.Visible = false
+	H.Services.RunService.RenderStepped:Fire()
+	assert(not billboard.Enabled, "Modal view leaves world text over its content")
+	testHud:Destroy()
+	assert(billboard.Enabled, "Label suppression leaked after HUD destruction")
+	H.Workspace.DescendantRemoving:Fire(billboard)
+	anchor:Destroy()
+	H.Workspace.CurrentCamera = nil
+end
 
 -- Run the production audio lifecycle with mock-only IDs and controllable fetches.
 local AudioService = H.Load("src/client/Audio/AudioService")

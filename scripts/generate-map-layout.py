@@ -80,7 +80,7 @@ for yaw in range(0,360,36):
 put('ToiletCastle',0,.15,0,0,3,Group='Landmark')
 put('PlazaSteps',0,-1.8,-39,0,2,Group='Landmark')
 put('FountainPedestal',-36,0,-51,0,1.5,Group='Landmark')
-put('GoldenTrophy',-36,4.95,-51,0,1,Group='Landmark')
+put('GoldenTrophy',-30,4.95,-24,0,1,Group='Landmark')
 
 stations=[
     dict(Name='Shop',Asset='ShopKiosk',X=-66,Z=-66,Yaw=-35,Panel='Shop'),

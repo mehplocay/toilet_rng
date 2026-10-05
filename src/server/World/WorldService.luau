@@ -9,7 +9,7 @@ local P = require(game.ReplicatedStorage.Shared.Visuals.Primitives)
 local Visuals = require(game.ReplicatedStorage.Shared.Config.Visuals)
 local Hub = require(script.Parent.Builders.Hub)
 local Plot = require(script.Parent.Builders.Plot)
-local PlotSpawn = require(script.Parent.PlotSpawn)
+local PlotSpawn = require(script.Parent.PlotSpawn).Runtime()
 local PlotChooser = require(game.ReplicatedStorage.Shared.PlotChooser)
 local Config = game.ReplicatedStorage.Shared.Config
 local Items, Rarities, Assets = require(Config.Items), require(Config.Rarities), require(Config.Assets)
@@ -288,7 +288,9 @@ function World:Start(data)
 		self.Assigned[player] = nil
 	end)
 	for _, player in ipairs(Players:GetPlayers()) do
-		self:Assign(player)
+		task.spawn(function()
+			self:Assign(player)
+		end)
 	end
 	task.spawn(function()
 		while root.Parent do

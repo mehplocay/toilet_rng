@@ -1,5 +1,7 @@
 # Uploaded icon wiring — 2026-10-05
 
+**Studio follow-up:** the uploads proved to be Decal wrappers, not Image IDs. The runtime recommendations below are superseded by [icons-spawn-ui.md](icons-spawn-ui.md) and the [manual resolution guide](../icons-resolve.md). Config retains original uploads; server resolution and optional `IconImages` supply actual Image content.
+
 ## Image IDs and rendering
 
 [ImageLabel API](https://create.roblox.com/docs/reference/engine/classes/ImageLabel) and its [official source](https://raw.githubusercontent.com/Roblox/creator-docs/main/content/en-us/reference/engine/classes/ImageLabel.yaml) describe Image/ImageContent as accepting decal or image URIs. However, [DevForum's conversion report](https://devforum.roblox.com/t/converting-decal-ids-to-image-ids/2640232) distinguishes Studio Properties conversion from scripted runtime assignment. Do not assume every legacy decal wrapper resolves in a live ImageLabel. Use the supplied IDs unchanged as requested (the handoff calls them image IDs); their actual type/loading still needs target-experience verification. If a supplied ID is a wrapper that fails, obtain its underlying Image ID through Studio's property conversion/inserted Decal content and update the handoff and Assets together. Never guess by subtracting from an ID; no runtime InsertService or third-party conversion service is needed.

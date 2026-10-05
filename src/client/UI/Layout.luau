@@ -4,8 +4,8 @@ local function rect(x, y, w, h)
 	return { X = math.floor(x), Y = math.floor(y), W = math.floor(w), H = math.floor(h) }
 end
 function Layout.Compute(w, h, touch)
-	local portrait = w < 600 and h > w
-	local short = h < 500
+	local portrait = w < 760 and h > w
+	local short = h < 500 or (w >= 600 and h < 600)
 	local compact = portrait or short or w < 1000
 	local margin = if compact then 10 else 20
 	local travelW = math.min(if compact then 330 else 580, w - 80)
@@ -16,33 +16,34 @@ function Layout.Compute(w, h, touch)
 		Short = short,
 		Travel = rect((w - travelW) / 2 - (if portrait then 24 else 0), 10, travelW, travelH),
 		Settings = rect(w - margin - 44, 10, 44, 44),
-		OffersVisible = not compact,
+		OffersVisible = not compact and h >= (if touch then 700 else 600),
 		Nav = {},
 	}
 	if short then
-		local side = 50
+		local side = 44
 		local start = (w - (side * 5 + 12 * 4)) / 2
 		for i = 1, 5 do
 			result.Nav[i] = rect(start + (i - 1) * (side + 12), 66, side, side)
 		end
 		result.Coins = rect(12, 66, math.max(100, start - 24), 46)
 		result.Boosts = rect(w - 152, 68, 140, 42)
-		result.Hint = rect((w - 350) / 2, 126, 350, 76)
+		local hintW = math.min(330, w - 280)
+		result.Hint = rect((w - hintW) / 2, 126, hintW, math.min(60, h - 242))
 		result.Action = rect((w - 304) / 2, h - 74, 304, 62)
 		result.Board = rect(0, 0, 0, 0)
 	elseif portrait then
 		for i = 1, 5 do
-			result.Nav[i] = rect(10, 82 + (i - 1) * 66, 56, 56)
+			result.Nav[i] = rect(10, 74 + (i - 1) * 52, 44, 44)
 		end
-		result.Coins = rect(14, h - 280, w - 28, 42)
-		result.Boosts = rect(14, h - 230, w - 28, 34)
+		result.Coins = rect(76, 74, w - 90, 38)
+		result.Boosts = rect(76, 120, w - 90, 34)
 		result.Action = rect((w - 290) / 2, h - 184, 290, 58)
-		result.Hint = rect(88, 114, w - 106, 106)
-		result.Board = rect(88, 234, w - 106, 86)
+		result.Hint = rect(76, 196, w - 90, 80)
+		result.Board = rect(0, 0, 0, 0)
 	else
 		local bottom = if touch then 130 else 20
-		local available = h - bottom - 192
-		local side = math.clamp(math.floor((available - 48) / 5), 56, 96)
+		local available = h - bottom - 200
+		local side = math.clamp(math.floor((available - 48) / 5), 44, 96)
 		local navH = side * 5 + 12 * 4
 		local navY = 100 + math.max(0, math.floor((available - navH) / 2))
 		for i = 1, 5 do
@@ -57,7 +58,7 @@ function Layout.Compute(w, h, touch)
 		result.Board = rect((w - 340) / 2, 90, 340, 72)
 	end
 	result.PendingIncome = if portrait
-		then rect(88, 76, math.min(200, w - 106), 26)
+		then rect(76, 162, math.min(200, w - 90), 26)
 		elseif short then rect(w - 132, 114, 120, 26)
 		else rect(result.Coins.X, result.Coins.Y - 20, math.min(200, result.Coins.W), 18)
 	result.Offers = rect(w - 190, math.max(190, h * 0.29), 168, 292)
@@ -67,19 +68,19 @@ function Layout.Compute(w, h, touch)
 		elseif short then rect(result.Action.X + flushW * 0.8 - 16, result.Action.Y - 36, 32, 32)
 		else rect(result.Action.X + flushW - 54, result.Action.Y - 54, 48, 48)
 	result.Reveal = if portrait
-		then rect(88, 150, w - 106, 150)
+		then rect(76, 196, w - 90, math.min(150, h - 438))
 		else rect(
-			(w - math.min(430, w - 100)) / 2,
+			(w - math.min(if short then 330 else 430, w - 100)) / 2,
 			math.max(122, h * 0.39),
-			math.min(430, w - 100),
-			math.min(150, h * 0.23)
+			math.min(if short then 330 else 430, w - 100),
+			math.min(150, h * 0.23, result.Action.Y - 54 - math.max(122, h * 0.39))
 		)
 	result.CoinPopup = if portrait
-		then rect(88 + (w - 106) / 2 - 90, h - 324, 180, 36)
+		then rect(76 + (w - 90) / 2 - 90, h - 230, 180, 36)
 		else rect(result.Action.X + result.Action.W / 2 - 90, result.Action.Y - 46, 180, 36)
 	result.CoinRise =
 		math.min(if short then 0 else 42, math.max(0, result.CoinPopup.Y - result.Reveal.Y - result.Reveal.H - 8))
-	local eventW = math.min(580, w - 90)
+	local eventW = math.min(580, w - 120)
 	result.Event = rect((w - eventW) / 2 - (if portrait then 24 else 0), 10, eventW, if short then 50 else 54)
 	return result
 end

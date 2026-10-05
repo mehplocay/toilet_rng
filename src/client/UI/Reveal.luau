@@ -2,6 +2,7 @@ local C = require(script.Parent.Components)
 local Layout = require(script.Parent.Layout)
 local Preview = require(script.Parent.Preview)
 local Rarities = require(game.ReplicatedStorage.Shared.Config.Rarities)
+local UserInputService = game:GetService("UserInputService")
 local Reveal = {}
 function Reveal.Create(parent, hud)
 	local frame = C.Card(parent, C.Gold, true)
@@ -12,7 +13,10 @@ function Reveal.Create(parent, hud)
 	local rarity = C.Text(frame, "", UDim2.fromScale(0.67, 0.21), UDim2.fromScale(0.3, 0.51), 22)
 	local odds = C.Text(frame, "", UDim2.fromScale(0.67, 0.17), UDim2.fromScale(0.3, 0.77), 18)
 	local function resize()
-		C.Place(frame, Layout.Compute(parent.AbsoluteSize.X, parent.AbsoluteSize.Y, false).Reveal)
+		C.Place(
+			frame,
+			Layout.Compute(parent.AbsoluteSize.X, parent.AbsoluteSize.Y, UserInputService.TouchEnabled).Reveal
+		)
 	end
 	parent:GetPropertyChangedSignal("AbsoluteSize"):Connect(resize)
 	resize()

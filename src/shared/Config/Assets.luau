@@ -1,5 +1,7 @@
 return {
-	-- Uploaded 512px images; zero/empty IDs retain vector fallbacks.
+	-- Creator Hub uploads are DECAL IDs, resolved by the server before UI use.
+	-- Optional ["decalId"] = "rbxassetid://imageId" overrides; see docs/icons-resolve.md.
+	IconImages = {},
 	Icons = {
 		Coins = "rbxassetid://110019653714338",
 		Shop = "rbxassetid://132255389849764",

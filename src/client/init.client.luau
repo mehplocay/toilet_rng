@@ -168,6 +168,7 @@ local function open(name)
 	end
 end
 hud = require(script.UI.HUD).Create(root, remotes, open, prompts)
+require(script.WorldLabels).Start(hud.Frame)
 require(script.WorldNavigation).Start(open)
 local function syncModal()
 	local any = false

@@ -249,39 +249,9 @@ function C.AssetId(value)
 	end
 	return nil
 end
-local preloadStarted = false
+local ResolvedIcons = require(script.Parent.ResolvedIcons)
 function C.PreloadIcons()
-	if preloadStarted then
-		return
-	end
-	preloadStarted = true
-	task.spawn(function()
-		local labels, seen = {}, {}
-		for _, group in ipairs({ Assets.Icons, Assets.ItemIcons, Assets.ToiletIcons }) do
-			for _, value in pairs(group) do
-				local id = C.AssetId(value)
-				if id and not seen[id] then
-					seen[id] = true
-					local label = Instance.new("ImageLabel")
-					label.Image = id
-					table.insert(labels, label)
-				end
-			end
-		end
-		local ok, message = pcall(function()
-			game:GetService("ContentProvider"):PreloadAsync(labels, function(id, status)
-				if status ~= Enum.AssetFetchStatus.Success then
-					warn("Icon preload failed: " .. id .. " (" .. tostring(status) .. "); keeping fallback")
-				end
-			end)
-		end)
-		for _, label in ipairs(labels) do
-			label:Destroy()
-		end
-		if not ok then
-			warn("Icon preload unavailable; keeping fallbacks: " .. tostring(message))
-		end
-	end)
+	ResolvedIcons.Start()
 end
 function C.Icon(parent, kind, size, position, assetId, tint)
 	local icon = C.New(
@@ -293,13 +263,14 @@ function C.Icon(parent, kind, size, position, assetId, tint)
 	local fallback =
 		C.New("Frame", icon, { Name = "Fallback", Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1 })
 	require(script.Parent.IconArt).Draw(C, fallback, kind, tint)
-	local id = C.AssetId(assetId or (Assets.Icons or {})[kind])
+	local source = assetId or (Assets.Icons or {})[kind]
+	local id = C.AssetId(source)
 	if id then
 		local image = C.New("ImageLabel", icon, {
 			Name = "Asset",
 			Size = UDim2.fromScale(1, 1),
 			BackgroundTransparency = 1,
-			Image = id,
+			Image = ResolvedIcons.Get(source) or "",
 			ScaleType = Enum.ScaleType.Fit,
 			ImageRectOffset = Vector2.new(0, 0),
 			ImageRectSize = Vector2.new(0, 0),
@@ -310,9 +281,16 @@ function C.Icon(parent, kind, size, position, assetId, tint)
 			ZIndex = fallback.ZIndex + 10,
 		})
 		local function loaded()
-			image.ImageTransparency = if image.IsLoaded then 0 else 0.999
-			fallback.Visible = not image.IsLoaded
+			image.ImageTransparency = if image.Image ~= "" and image.IsLoaded then 0 else 0.999
+			fallback.Visible = image.Image == "" or not image.IsLoaded
 		end
+		local disconnect = ResolvedIcons.Observe(source, function(resolved)
+			if image.Image ~= (resolved or "") then
+				image.Image = resolved or ""
+			end
+			loaded()
+		end)
+		icon.Destroying:Connect(disconnect)
 		image:GetPropertyChangedSignal("IsLoaded"):Connect(loaded)
 		loaded()
 	end

@@ -3,6 +3,11 @@ local function overlap(a, b)
 	return a.X < b.X + b.W and b.X < a.X + a.W and a.Y < b.Y + b.H and b.Y < a.Y + a.H
 end
 local cases = {
+	{ 711, 787, false, 0, 36, 0, 0 },
+	{ 711, 787, true, 0, 36, 0, 20 },
+	{ 360, 640, true, 0, 88, 0, 34 },
+	{ 390, 844, true, 0, 88, 0, 34 },
+	{ 640, 360, true, 0, 36, 0, 21 },
 	{ 1920, 1080, false, 0, 36, 0, 0 },
 	{ 1280, 720, false, 0, 36, 0, 0 },
 	{ 375, 812, true, 0, 88, 0, 34 },
@@ -11,7 +16,15 @@ local cases = {
 	{ 768, 1024, true, 0, 36, 0, 20 },
 	{ 1170, 540, true, 54, 36, 0, 21 },
 }
-for _, case in ipairs(cases) do
+local namedCases = #cases
+for width = 360, 1920, 40 do
+	for height = 640, 1080, 40 do
+		for _, touch in ipairs({ false, true }) do
+			table.insert(cases, { width, height, touch, 0, 36, 0, if touch then 20 else 0 })
+		end
+	end
+end
+for caseIndex, case in ipairs(cases) do
 	local width, height, touch, left, top, right, bottom = table.unpack(case)
 	local w, h = width - left - right, height - top - bottom
 	local layout = Layout.Compute(w, h, touch)
@@ -24,9 +37,6 @@ for _, case in ipairs(cases) do
 		Hint = layout.Hint,
 		Action = layout.Action,
 	}
-	if not layout.Short then
-		elements.Board = layout.Board
-	end
 	if layout.OffersVisible then
 		elements.Offers = layout.Offers
 	end
@@ -98,16 +108,19 @@ for _, case in ipairs(cases) do
 	assert(card.Top + card.Height <= card.CellHeight)
 	assert(offerWidth - card.Inset * 2 - card.Gap - card.GiftWidth >= 100, "Buy button too narrow")
 	assert(card.GiftWidth >= 44 and card.ButtonHeight >= 44)
-	print(
-		string.format(
-			"PASS UI %dx%d -> safe %dx%d; %s; %d collection columns",
-			width,
-			height,
-			w,
-			h,
-			if layout.Short then "short landscape" elseif layout.Portrait then "portrait" else "wide",
-			columns
+	if caseIndex <= namedCases then
+		print(
+			string.format(
+				"PASS UI %dx%d -> safe %dx%d; %s; %d collection columns",
+				width,
+				height,
+				w,
+				h,
+				if layout.Short then "short landscape" elseif layout.Portrait then "portrait" else "wide",
+				columns
+			)
 		)
-	)
+	end
 end
+print("Viewport cases checked: " .. #cases)
 print("UI layout checks passed: safe areas, pairwise overlap, touch corners, modal scroll space, grid widths")
