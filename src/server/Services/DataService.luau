@@ -11,6 +11,8 @@ local index = require(game.ReplicatedStorage.Shared.IndexProgress).new(
 )
 local Monetization = require(game.ReplicatedStorage.Shared.Config.Monetization)
 local MonetizationRules = require(game.ReplicatedStorage.Shared.MonetizationRules)
+local AudioSettings = require(game.ReplicatedStorage.Shared.AudioSettings)
+local Audio = require(game.ReplicatedStorage.Shared.Config.Audio)
 
 local DataService = {
 	Profiles = {},
@@ -39,10 +41,12 @@ local function integer(value, default)
 end
 
 function DataService.DefaultProfile()
+	local settings = AudioSettings.Sanitize(nil, Audio.Defaults)
+	settings.Sound, settings.SkipAnimation, settings.PlotColor = true, false, "Default"
 	return {
 		Version = 1,
 		TutorialDone = false,
-		Settings = { Sound = true, SkipAnimation = false, PlotColor = "Default" },
+		Settings = settings,
 		Coins = 0,
 		LastClaimDay = 0,
 		Streak = 0,
@@ -66,9 +70,7 @@ local function sanitize(raw)
 	end
 	profile.TutorialDone = raw.TutorialDone == true
 	MonetizationRules.RestoreSettings(profile.Settings, raw.Settings, Monetization)
-	if type(raw.Settings) == "table" and type(raw.Settings.Sound) == "boolean" then
-		profile.Settings.Sound = raw.Settings.Sound
-	end
+	AudioSettings.Apply(profile.Settings, AudioSettings.Sanitize(raw.Settings, Audio.Defaults))
 	profile.Coins = integer(raw.Coins, 0)
 	profile.LastClaimDay = integer(raw.LastClaimDay, 0)
 	profile.Streak = math.clamp(integer(raw.Streak, 0), 0, #Rewards.BaseCoins)

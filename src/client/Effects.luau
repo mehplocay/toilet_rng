@@ -1,15 +1,13 @@
 local Lighting = game:GetService("Lighting")
 local Debris = game:GetService("Debris")
-local SoundService = game:GetService("SoundService")
 local Config = game.ReplicatedStorage.Shared.Config
-local Items, Rarities, Events, Assets =
-	require(Config.Items), require(Config.Rarities), require(Config.Events), require(Config.Assets)
+local Items, Rarities, Events = require(Config.Items), require(Config.Rarities), require(Config.Events)
 local C = require(script.Parent.UI.Components)
 local Layout = require(script.Parent.UI.Layout)
 local P = require(game.ReplicatedStorage.Shared.Visuals.Primitives)
 local Visuals = require(Config.Visuals)
 local Effects = {}
-function Effects.Create(gui, soundGroup, hud)
+function Effects.Create(gui, _soundGroup, hud)
 	local generation, skipAnimation = 0, false
 	local banner = C.Card(gui, C.Gold, true)
 	banner.Name, banner.Visible = "ServerEventBanner", false
@@ -20,23 +18,11 @@ function Effects.Create(gui, soundGroup, hud)
 	gui:GetPropertyChangedSignal("AbsoluteSize"):Connect(resize)
 	resize()
 	local tint = C.New("ColorCorrectionEffect", Lighting, { Name = "RareDropTint" })
-	local function sound(key)
-		local id = C.AssetId(Assets.Sounds[key])
-		if not id then
-			return
-		end
-		local cue = C.New("Sound", SoundService, { SoundId = id, SoundGroup = soundGroup })
-		cue:Play()
-		Debris:AddItem(cue, 15)
-	end
 	local function drop(item)
 		if skipAnimation then
 			return
 		end
 		local rarity = Rarities[item.Rarity]
-		if rarity.Order >= 4 then
-			sound(if rarity.Order >= 5 then "Legendary" else "Epic")
-		end
 		if rarity.Order < 5 then
 			return
 		end
@@ -85,10 +71,15 @@ function Effects.Create(gui, soundGroup, hud)
 				else Rarities[item.Rarity].Color:Lerp(Color3.new(1, 1, 1), 0.3)
 			banner.Visible = true
 			hud.EventActive(true)
+			if C.SoundHook then
+				C.SoundHook("ServerEvent")
+			end
+			if C.AudioHook then
+				C.AudioHook("Event", 5)
+			end
 			if not skipAnimation then
 				C.Pop(banner)
 				C.Shine(banner)
-				sound("ServerEvent")
 				local rgb = Events.Tints[item.Id] or Events.Tints.KingPoop
 				C.Tween(tint, 0.2, {
 					TintColor = Color3.new(1, 1, 1):Lerp(Color3.fromRGB(rgb[1], rgb[2], rgb[3]), 0.3),

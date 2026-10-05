@@ -487,6 +487,46 @@ test("server handlers enforce token limits and preference types", function()
 	assert(not e:Load("src/server/Services/MonetizationService").Auto[player])
 end)
 
+test("audio preferences validate, rate limit, persist and migrate legacy profiles", function()
+	local e = server()
+	local player, profile = e:Join(31)
+	local request = { MusicVolume = 0.35, SFXVolume = 0.8, MusicMuted = true, SFXMuted = false }
+	assert(profile.Settings.MusicVolume == 0.25 and profile.Settings.SFXVolume == 0.7)
+	for _, bad in ipairs({
+		{ MusicVolume = 0.5 },
+		{ MusicVolume = 0 / 0, SFXVolume = 0.8, MusicMuted = false, SFXMuted = false },
+		{ MusicVolume = 0.3, SFXVolume = math.huge, MusicMuted = false, SFXMuted = false },
+		{ MusicVolume = -1, SFXVolume = 0.8, MusicMuted = false, SFXMuted = false },
+		{ MusicVolume = 0.3, SFXVolume = 0.8, MusicMuted = "true", SFXMuted = false },
+		{ MusicVolume = 0.3, SFXVolume = 0.8, MusicMuted = false, SFXMuted = false, Coins = 999 },
+	}) do
+		e:Fire("Settings", player, bad)
+	end
+	assert(profile.Settings.MusicVolume == 0.25 and profile.Coins == 0)
+	e:Fire("Settings", player, request, true)
+	assert(profile.Settings.MusicVolume == 0.25, "Extra arguments bypassed validation")
+	e:Fire("Settings", player, request)
+	assert(profile.Settings.MusicVolume == 0.35 and profile.Settings.MusicMuted and not profile.Settings.SFXMuted)
+	assert(profile.Settings.PlotColor == "Default" and profile.Settings.SkipAnimation == false)
+	local count = #e.Results
+	for _ = 1, 100 do
+		e:Fire("Settings", player, request)
+	end
+	assert(#e.Results == count + 2, "Audio Settings bypassed the token bucket")
+	local data = e:Load(dataPath)
+	data:Close(player)
+	local joined = e:Player(31)
+	data:Load(joined)
+	local saved = data:Get(joined).Settings
+	assert(saved.MusicVolume == 0.35 and saved.SFXVolume == 0.8 and saved.MusicMuted and not saved.SFXMuted)
+	data:Close(joined)
+	e.Store.Records.Player_32 = { Data = { Settings = { Sound = false, MusicVolume = 0 / 0, SFXVolume = 8 } } }
+	local legacy = e:Player(32)
+	data:Load(legacy)
+	local migrated = data:Get(legacy).Settings
+	assert(migrated.MusicVolume == 0.25 and migrated.SFXVolume == 1 and migrated.MusicMuted and migrated.SFXMuted)
+end)
+
 test("manual, prompt and auto flush share cooldown and server-owned RNG", function()
 	local e = server()
 	local player, profile = e:Join(22)

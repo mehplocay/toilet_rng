@@ -66,7 +66,25 @@ return {
 		ForegroundFoliage = { MeshId = "", TextureId = "" },
 	},
 	Textures = { Sparkle = "rbxasset://textures/particles/sparkles_main.dds" }, -- Engine-bundled texture; no external ID.
-	Sounds = { Flush = "", Epic = "", Legendary = "", ServerEvent = "", Click = "" },
+	Music = { "", "", "", "", "" }, -- Five shuffled, loop-ready chill tracks.
+	Sounds = {
+		Click = "",
+		Hover = "",
+		Open = "",
+		Close = "",
+		CoinCollect = "",
+		Flush = "",
+		FlushRumble = "",
+		Epic = "",
+		Legendary = "",
+		Mythic = "",
+		Godly = "",
+		Secret = "",
+		ServerEvent = "",
+		PurchaseSuccess = "",
+		Error = "",
+		AutoFlushTick = "",
+	},
 	Gamepasses = {}, -- No real asset/product IDs configured yet.
 	DeveloperProducts = {},
 }

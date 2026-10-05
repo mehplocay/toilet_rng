@@ -2,6 +2,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
 Players.CharacterAutoLoads = false
 local definitions = require(ReplicatedStorage.Shared.Config.Remotes)
+local AudioSettings = require(ReplicatedStorage.Shared.AudioSettings)
 local folder = Instance.new("Folder")
 folder.Name = definitions.Folder
 local remotes = {}
@@ -105,12 +106,12 @@ Players.PlayerRemoving:Connect(function(player)
 end)
 monetization:Start(limiter, remotes, sync, data, world)
 remotes.Settings.OnServerEvent:Connect(function(player, sound, ...)
-	if select("#", ...) ~= 0 or type(sound) ~= "boolean" or not limiter:Allow(player, "Settings") then
+	if select("#", ...) ~= 0 or not AudioSettings.ValidRequest(sound) or not limiter:Allow(player, "Settings") then
 		return
 	end
 	local profile = data:Get(player)
 	if profile then
-		profile.Settings.Sound = sound
+		AudioSettings.Apply(profile.Settings, sound)
 		sync(player)
 	end
 end)

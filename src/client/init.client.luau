@@ -1,11 +1,9 @@
 local Players = game:GetService("Players")
-local SoundService = game:GetService("SoundService")
 local RunService = game:GetService("RunService")
-local Debris = game:GetService("Debris")
 local ContextActionService = game:GetService("ContextActionService")
 local player = Players.LocalPlayer
 local Config = game.ReplicatedStorage.Shared.Config
-local definitions, Items, Assets = require(Config.Remotes), require(Config.Items), require(Config.Assets)
+local definitions, Items = require(Config.Remotes), require(Config.Items)
 local folder = game.ReplicatedStorage:WaitForChild(definitions.Folder)
 local remotes = {}
 for _, name in ipairs({
@@ -31,6 +29,17 @@ for _, name in ipairs({
 	remotes[name] = folder:WaitForChild(definitions[name])
 end
 local C = require(script.UI.Components)
+local audio = require(script.Audio.AudioService).Start()
+C.SoundHook = function(key)
+	audio:Play(key)
+end
+C.AudioHook = function(key, duration)
+	audio:Duck(key, duration)
+end
+script.Destroying:Connect(function()
+	audio:Destroy()
+	C.SoundHook, C.AudioHook = nil, nil
+end)
 local prompts = require(script.UI.FlushPrompt).Start()
 require(script.VisualIdle).Start()
 require(script.PlotGuidance).Start()
@@ -49,32 +58,12 @@ local upgrades = require(script.UI.Upgrades).Create(root, remotes)
 local rewards = require(script.UI.Rewards).Create(root, remotes)
 local passes = require(script.UI.Passes).Create(root, remotes)
 local settings = C.Panel(root, "Settings", C.Blue)
-local soundOn, skipAnimation = true, false
-local soundGroup = C.New("SoundGroup", SoundService, { Name = "ToiletSounds" })
--- One startup traversal; new sounds are assigned as they arrive. State only sets group volume.
-local function registerSound(object)
-	if object:IsA("Sound") then
-		object.SoundGroup = soundGroup
-	end
-end
-workspace.DescendantAdded:Connect(registerSound)
-for _, object in ipairs(workspace:GetDescendants()) do
-	registerSound(object)
-end
-C.SoundHook = function(key)
-	local id = C.AssetId(Assets.Sounds[key])
-	if not id or not soundOn then
-		return
-	end
-	local sound = C.New("Sound", SoundService, { SoundId = id, SoundGroup = soundGroup, Volume = 0.35 })
-	sound:Play()
-	Debris:AddItem(sound, 5)
-end
+local skipAnimation, autoFlush = false, false
 local settingsList = C.Scroll(settings.ContentScroll.Body, UDim2.fromScale(1, 1))
 C.New("UIListLayout", settingsList, { Padding = UDim.new(0, 18), SortOrder = Enum.SortOrder.LayoutOrder })
 local intro = C.BodyText(settingsList, "Play your way. Your preferences are saved.", UDim2.new(1, -18, 0, 46))
 intro.LayoutOrder = 1
-local toggle
+local audioSettings = require(script.Audio.SettingsUI).Create(settingsList, remotes.Settings, audio)
 local function settingsRow(title, description, order, callback)
 	local row = C.Card(settingsList, C.Blue)
 	row.Size, row.LayoutOrder = UDim2.new(1, -18, 0, 130), order
@@ -83,16 +72,10 @@ local function settingsRow(title, description, order, callback)
 		Enum.TextXAlignment.Left
 	return C.Button(row, "", UDim2.new(1, -24, 0, 44), UDim2.fromOffset(12, 76), callback, C.Green, { TextSize = 20 })
 end
-toggle = settingsRow("Game sounds", "Flush sounds, rewards and button clicks.", 2, function()
-	soundOn = not soundOn
-	toggle.Text = if soundOn then "Sound: ON" else "Sound: OFF"
-	soundGroup.Volume = if soundOn then 1 else 0
-	remotes.Settings:FireServer(soundOn)
-end)
 local skipToggle = settingsRow(
 	"Quick reveals",
 	"Shorten drop reveals and skip event effects. Free for everyone.",
-	3,
+	4,
 	function()
 		remotes.AnimationSkip:FireServer(not skipAnimation)
 	end
@@ -123,7 +106,7 @@ if RunService:IsStudio() then
 		settings.Visible = false
 		dev.Visible = true
 	end, C.Purple)
-	button.LayoutOrder = 4
+	button.LayoutOrder = 5
 end
 local backdrop = C.New("TextButton", root, {
 	Name = "ModalBackdrop",
@@ -203,7 +186,7 @@ ContextActionService:BindAction("CloseToiletPanel", function(_, state)
 	return Enum.ContextActionResult.Pass
 end, false, Enum.KeyCode.ButtonB)
 require(script.UI.Tutorial).Create(player, remotes, hud, prompts)
-local effects = require(script.Effects).Create(hud.Frame, soundGroup, hud)
+local effects = require(script.Effects).Create(hud.Frame, audio.SFX, hud)
 local reveal = require(script.UI.Reveal).Create(hud.Frame, hud)
 local showServiceCoins = require(script.UI.CoinPopup).Create(hud.Frame)
 local toast = C.Toast(root)
@@ -225,6 +208,7 @@ remotes.Result.OnClientEvent:Connect(function(action, payload)
 		if not item then
 			return
 		end
+		audio:Flush(autoFlush)
 		hud.Flushed(payload)
 		hud.Best(player.DisplayName, item)
 		showServiceCoins(payload.ServiceCoins)
@@ -237,13 +221,18 @@ remotes.Result.OnClientEvent:Connect(function(action, payload)
 			toast("Upgrade unlocked! Your next great flush awaits.", C.Green)
 		end
 	end
+	if payload.Success == false then
+		audio:Play("Error")
+	elseif payload.Success == true and (action == "BuyToilet" or action == "BuyPass") then
+		audio:Play("PurchaseSuccess")
+	elseif payload.Success == true and action == "Sell" then
+		audio:Play("CoinCollect")
+	end
 end)
 remotes.State.OnClientEvent:Connect(function(state)
-	soundOn, skipAnimation = state.Settings.Sound, state.Settings.SkipAnimation == true
-	toggle.Text, skipToggle.Text =
-		if soundOn then "Sound: ON" else "Sound: OFF",
-		if skipAnimation then "Quick reveals: ON" else "Quick reveals: OFF"
-	soundGroup.Volume = if soundOn then 1 else 0
+	skipAnimation, autoFlush = state.Settings.SkipAnimation == true, state.AutoFlush == true
+	audioSettings.Update(state.Settings)
+	skipToggle.Text = if skipAnimation then "Quick reveals: ON" else "Quick reveals: OFF"
 	effects.SetSkip(skipAnimation)
 	hud.Update(state)
 	collection.Update(state)
