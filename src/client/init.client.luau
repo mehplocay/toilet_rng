@@ -171,6 +171,7 @@ local popup = C.New("Frame", gui, {
 C.Chrome(popup, C.Navy)
 local resultText = C.Text(popup, "", UDim2.fromScale(0.94, 0.9), UDim2.fromScale(0.03, 0.05))
 local effects = require(script.Effects).Create(gui, soundGroup)
+local showServiceCoins = require(script.UI.CoinPopup).Create(gui)
 local autoOwned, autoEnabled = false, false
 local autoButton
 autoButton = C.Button(
@@ -194,6 +195,7 @@ remotes.Result.OnClientEvent:Connect(function(action, payload)
 	generation += 1
 	local token = generation
 	if action == "Flush" then
+		showServiceCoins(payload.ServiceCoins)
 		for _, item in ipairs(Items) do
 			if item.Id == payload.ItemId then
 				local rarity = Rarities[item.Rarity]
