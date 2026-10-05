@@ -9,7 +9,7 @@ local function largest(size)
 end
 
 local function warm(name)
-	local folder = Storage:FindFirstChild("ModelTemplates")
+	local folder = Storage:FindFirstChild(Catalog[name].Folder or "ModelTemplates")
 	local source = folder and folder:FindFirstChild(name)
 	local count = if source then #source:GetDescendants() else 0
 	-- Missing replicas are retried on the next build, never waited for on a flush.
@@ -67,7 +67,7 @@ local function warm(name)
 		part.Name = name
 		part.Anchored = true
 		part.CanCollide, part.CanQuery, part.CanTouch = false, false, false
-		part.CastShadow = name ~= "CloudPuffs"
+		part.CastShadow = not Catalog[name].NoShadow and name ~= "CloudPuffs"
 		part.Color, part.Material = Color3.new(1, 1, 1), Enum.Material.SmoothPlastic
 		-- RenderFidelity is authored Automatic in the rbxm (PluginSecurity at runtime).
 		-- Mesh collision fidelity is imported; walking collision uses separate Box Parts.

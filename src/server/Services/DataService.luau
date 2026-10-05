@@ -3,6 +3,7 @@ local HttpService = game:GetService("HttpService")
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local Items = require(game.ReplicatedStorage.Shared.Config.Items)
+local leaderboardStats = require(game.ReplicatedStorage.Shared.LeaderboardStats).new(Items)
 local Toilets = require(game.ReplicatedStorage.Shared.Config.Toilets)
 local Rewards = require(game.ReplicatedStorage.Shared.Config.Rewards)
 local index = require(game.ReplicatedStorage.Shared.IndexProgress).new(
@@ -64,7 +65,7 @@ function DataService.DefaultProfile()
 		DisplaySlots = 3,
 		Displays = {},
 		Income = income:Sanitize(nil),
-		Stats = { Flushes = 0, Earned = 0 },
+		Stats = leaderboardStats:Sanitize(nil),
 	}
 end
 
@@ -92,10 +93,7 @@ local function sanitize(raw)
 		profile.Collection[item.Id] =
 			integer(if type(raw.Collection) == "table" then raw.Collection[item.Id] else nil, 0)
 	end
-	if type(raw.Stats) == "table" then
-		profile.Stats.Flushes = integer(raw.Stats.Flushes, 0)
-		profile.Stats.Earned = integer(raw.Stats.Earned, 0)
-	end
+	profile.Stats = leaderboardStats:Sanitize(raw.Stats)
 	-- Preserve display assignments only for known, owned items.
 	local reserved = {}
 	if type(raw.Displays) == "table" then

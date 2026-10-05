@@ -10,6 +10,8 @@ $generatedPath = Join-Path $workspaceRoot '.visual-check.generated.luau'
 $harness = "local testMode = '$MeshMode'`nlocal checkWorld = $($World.IsPresent.ToString().ToLower())`nlocal snapshot = $($Snapshot.IsPresent.ToString().ToLower())`n"
 $harness += Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'world-harness.luau')
 $modulePaths = @(
+    'src/shared/Config/MapLayout.luau', 'src/server/World/Kit.luau', 'src/server/World/DisplayRows.luau',
+    'src/shared/IncomeAccrual.luau', 'src/shared/LeaderboardStats.luau',
     'src/shared/Config/Income.luau', 'src/server/World/IncomeDisplay.luau',
     'src/shared/Config/Assets.luau', 'src/shared/Config/MeshCatalog.luau', 'src/shared/Config/WorldModels.luau',
     'src/shared/Config/Visuals.luau', 'src/shared/Config/World.luau',
@@ -30,13 +32,15 @@ foreach ($modulePath in $modulePaths) {
 # Verify the actual runtime catalog against the independent Blender manifest.
 $manifest = Get-Content -Raw -LiteralPath (Join-Path $workspaceRoot 'assets/manifest.json') | ConvertFrom-Json
 $harness += "`nlocal manifest = {`n"
-foreach ($asset in $manifest.assets) {
+$envManifest = Get-Content -Raw -LiteralPath (Join-Path $workspaceRoot 'assets/manifest-env.json') | ConvertFrom-Json
+foreach ($asset in @($manifest.assets) + @($envManifest.assets)) {
     $size = ($asset.size_studs | ForEach-Object { $_.ToString([Globalization.CultureInfo]::InvariantCulture) }) -join ', '
     $harness += "['$($asset.name)'] = { Size = Vector3.new($size), Triangles = $($asset.tris) },`n"
 }
 $harness += "}`n"
 $harness += & (Join-Path $PSScriptRoot 'read-model-templates.ps1')
 $harness += Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'world-checks.luau')
+if ($World) { $harness += Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'map-layout-checks.luau') }
 try {
     [IO.File]::WriteAllText($generatedPath, $harness, [Text.UTF8Encoding]::new($false))
     if ($Snapshot) {

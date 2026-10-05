@@ -196,7 +196,7 @@ end
 local Instance = {}
 local templateClones = 0
 function methods:Clone()
-	if self.Parent and self.Parent.Name == "ModelTemplates" then
+	if self.Parent and (self.Parent.Name == "ModelTemplates" or self.Parent.Name == "EnvTemplates") then
 		templateClones += 1
 	end
 	local result = Instance.new(self.ClassName)
@@ -277,6 +277,12 @@ workspace.Terrain = terrain
 terrain.Parent = workspace
 local terrainWrites, terrainCells, terrainMaterials = 0, 0, {}
 function methods:SetMaterialColor() end
+function methods:FillBlock(cf, size, material)
+	assert(material == Enum.Material.Water, "Terrain must be water only")
+	assert(cf.Position.Y + size.Y / 2 < -13, "Ocean must stay below beaches")
+	terrainWrites += 1
+	terrainMaterials[material] = true
+end
 function methods:WriteVoxels(region, resolution, materials, occupancy)
 	assert(resolution == 4)
 	local size = (region.Max - region.Min) * (1 / resolution)
@@ -298,6 +304,11 @@ function methods:WriteVoxels(region, resolution, materials, occupancy)
 end
 local calls, preloads, warnings = 0, 0, 0
 local services = { Lighting = Instance.new("Lighting"), ServerStorage = Instance.new("ServerStorage") }
+services.Players = {
+	GetPlayers = function()
+		return {}
+	end,
+}
 services.InsertService = {
 	CreateMeshPartAsync = function()
 		calls += 1

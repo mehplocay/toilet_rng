@@ -10,6 +10,8 @@ local configured = 0
 local names = {}
 local sourceRoot = Instance.new("Model")
 sourceRoot.Name = "ModelTemplates"
+local envRoot = Instance.new("Model")
+envRoot.Name = "EnvTemplates"
 for name, entry in pairs(manifest) do
 	assert(Catalog[name] and importedTemplates[name], "Missing catalog/template: " .. name)
 	assert((Catalog[name].Size - entry.Size).Magnitude < 0.00001, "Manifest size drift: " .. name)
@@ -33,15 +35,15 @@ for name, entry in pairs(manifest) do
 	end
 	part.Parent, model.PrimaryPart = model, part
 	if testMode ~= "Mixed" or name ~= "PalmTree" then
-		model.Parent = sourceRoot
+		model.Parent = if Catalog[name].Folder == "EnvTemplates" then envRoot else sourceRoot
 	end
 end
 for name in pairs(Catalog) do
 	assert(manifest[name])
 end
-assert(#names == 31)
+assert(#names == 75)
 if testMode ~= "Empty" and testMode ~= "Late" then
-	sourceRoot.Parent = storage
+	sourceRoot.Parent, envRoot.Parent = storage, storage
 end
 Loader.Preload()
 local startupCalls = calls
@@ -77,12 +79,12 @@ for _, name in ipairs(names) do
 		model:Destroy()
 	end
 end
-assert(configured == (if testMode == "Ready" or testMode == "Scaled" then 31 elseif testMode == "Mixed" then 30 else 0))
+assert(configured == (if testMode == "Ready" or testMode == "Scaled" then 75 elseif testMode == "Mixed" then 74 else 0))
 local root = Instance.new("Folder")
 local function checkAccents(model)
 	local effect = loadModule(node("src/shared/Config/TemplateEffects"))[model:GetAttribute("MeshAsset")]
 	if effect and not model:GetAttribute("MeshFallback") then
-		local lights, emitters, bubbles = 0, 0, 0
+		local lights, emitters = 0, 0
 		for _, child in ipairs(model:GetDescendants()) do
 			if child:IsA("PointLight") then
 				lights += 1
@@ -91,12 +93,8 @@ local function checkAccents(model)
 				emitters += 1
 				assert(child.Name == effect.Particles and child.Rate == 2)
 			end
-			if child.Name == "RadioactiveBubble" then
-				bubbles += 1
-			end
 		end
-		assert(lights == 1 and emitters == (if effect.Bubbles then 0 else 1))
-		assert(bubbles == (if effect.Bubbles then 3 else 0))
+		assert(lights == 1 and emitters == 1)
 		local count = #model:GetDescendants()
 		loadModule(node("src/shared/Visuals/TemplateAccents")).Apply(model)
 		assert(#model:GetDescendants() == count, "Accents duplicated")
@@ -110,8 +108,16 @@ local function validate(container)
 			assert(object.CanCollide or not object.CanQuery, "Queryable decoration: " .. object.Name)
 			assert(object.Size.X > 0 and object.Size.Y > 0 and object.Size.Z > 0, "Invalid part size")
 			if object.ClassName == "MeshPart" then
-				assert(not object.CanCollide and object.Color.R == 1 and object.Color.G == 1 and object.Color.B == 1)
-				assert(object.TextureID ~= "" and object.Parent.ModelStreamingMode == Enum.ModelStreamingMode.Atomic)
+				assert(not object.CanCollide)
+				assert(object.TextureID ~= "" or object.Parent:GetAttribute("SolidFinish"))
+				assert(
+					object.Parent.ModelStreamingMode
+						== (
+							if object.Parent:GetAttribute("ResortSkyline")
+								then Enum.ModelStreamingMode.Persistent
+								else Enum.ModelStreamingMode.Atomic
+						)
+				)
 			end
 		elseif object:IsA("ParticleEmitter") then
 			assert(
@@ -129,7 +135,7 @@ local function validate(container)
 end
 local Hub = loadModule(node("src/server/World/Builders/Hub"))
 local Plot = loadModule(node("src/server/World/Builders/Plot"))
-local _, bestBoard = Hub.Build(root)
+local boards, bestBoard = Hub.Build(root)
 local hubCount = P.Count(root)
 assert(hubCount <= V.Budget.Hub)
 local used = {}
@@ -159,6 +165,16 @@ local function recordAssets(container)
 end
 recordAssets(root)
 local maxItem, maxItemId, maxItemTriangles = 0, nil, 0
+local maxItemMeshes, maxItemInstances, maxItemHighlights = 0, 0, 0
+local function countClass(container, class)
+	local count = 0
+	for _, object in ipairs(container:GetDescendants()) do
+		if object:IsA(class) then
+			count += 1
+		end
+	end
+	return count
+end
 for _, item in ipairs(Items) do
 	local preview = ItemBuilder.Build(root, CFrame.new(), item, true)
 	assert(preview.PrimaryPart and P.Count(preview) >= 1, item.Id .. " missing preview geometry")
@@ -173,7 +189,10 @@ for _, item in ipairs(Items) do
 	local model = Models.Item(root, CFrame.new(), item)
 	assert(model.PrimaryPart)
 	checkAccents(model)
-	local _, _, itemTriangles = stats(model)
+	local itemMeshes, _, itemTriangles = stats(model)
+	maxItemMeshes = math.max(maxItemMeshes, itemMeshes)
+	maxItemInstances = math.max(maxItemInstances, #model:GetDescendants())
+	maxItemHighlights = math.max(maxItemHighlights, countClass(model, "Highlight"))
 	if P.Count(model) > maxItem or (P.Count(model) == maxItem and itemTriangles > maxItemTriangles) then
 		maxItem, maxItemId = P.Count(model), item.Id
 		maxItemTriangles = itemTriangles
@@ -183,12 +202,33 @@ for _, item in ipairs(Items) do
 	model:Destroy()
 end
 local World = loadModule(node("src/server/World/WorldService"))
+World.Boards = boards
+local boardPlayers = { { UserId = 2, DisplayName = "<b>Second</b>" }, { UserId = 1, DisplayName = "First" } }
+services.Players.GetPlayers = function()
+	return boardPlayers
+end
+World.Data = {
+	Get = function(_, player)
+		return {
+			Coins = player.UserId * 100,
+			Stats = { Flushes = 10 - player.UserId, RarestItemId = Items[player.UserId].Id },
+		}
+	end,
+}
+World:RefreshLeaderboards()
+assert(boards.Coins[1].Name.Text == "1.  <b>Second</b>" and not boards.Coins[1].Name.RichText)
+assert(boards.Flushes[1].Name.Text == "1.  First" and boards.Coins[1].Value.Text == "200")
+boardPlayers = {}
+World:RefreshLeaderboards()
+assert(boards.Coins[1].Name.Text == "Waiting for players" and boards.Coins[2].Name.Text == "")
 local maxPlot, maxToilet, maxPlotMeshes, maxPlotTriangles = 0, 0, 0, 0
+local hubInstances, maxPlotInstances = #root:GetDescendants(), 0
+local maxPlotHighlights = 0
 for tier = 1, 7 do
 	local plot = Plot.Build(root, CFrame.new(), tier)
 	assert(plot.Spawn:IsA("SpawnLocation") and plot.Spawn.Neutral and plot.Spawn.Enabled)
 	assert(plot.Spawn.Transparency == 1 and not plot.Spawn.CanCollide and not plot.Spawn.AllowTeamChangeOnTouch)
-	assert(plot.SpawnCFrame.Position.Z == -5 and plot.SpawnCFrame.Position.Y == 4.3)
+	assert(plot.SpawnCFrame.Position.Z == 15 and math.abs(plot.SpawnCFrame.Position.Y - 4.5) < 0.001)
 	-- Preserve the original primitive tier contract used by client previews.
 	local preview = Toilets.Build(root, CFrame.new(), tier, true)
 	for _, name in ipairs({ "Bowl", "Tank", "Foot", "OpenLid", "FlushHandle", "Water", "Seat" }) do
@@ -198,20 +238,26 @@ for tier = 1, 7 do
 	plot.Toilet = Models.Toilet(plot.Model, plot.CFrame, tier)
 	checkAccents(plot.Toilet)
 	maxToilet = math.max(maxToilet, P.Count(plot.Toilet))
-	local profile = { DisplaySlots = 100, Displays = {} }
+	local profile = { ToiletTier = tier, DisplaySlots = 100, Displays = {} }
 	for slot = 1, 100 do
 		profile.Displays[tostring(slot)] = maxItemId
 	end
 	plot.Profile = profile
 	plot.Owner = { UserId = tier }
-	for page = 1, 20 do
+	for page = 1, 10 do
 		plot.Page = page
 		World:RenderDisplays(plot)
+		assert(#plot.CollectPoints == 11, "Ten collect pads plus jar required")
+		for i = 1, 10 do
+			local pad = plot.CollectPoints[i]
+			assert(pad.CFrame:VectorToWorldSpace(Vector3.new(0, 0, -1)).Y > 0.99, "Collect dollar faces underground")
+		end
 		assert(plot.IncomePoint.Parent == plot.Displays and plot.IncomePrompt.ActionText == "Collect")
 		assert(plot.IncomePrompt:GetAttribute("IncomeOwnerUserId") == tier)
 		local incomeVisual = loadModule(node("src/server/World/IncomeDisplay"))
 		for _, pending in ipairs({ 0, 1, 10, 100, 0 }) do
 			incomeVisual.Refresh(plot, plot.Owner, pending)
+			assert(plot.IncomeLabel.Text == "COLLECT ALL\n$" .. pending)
 			for level, coin in ipairs(plot.IncomeCoins) do
 				assert(coin.Transparency == (if pending >= ({ 1, 10, 100 })[level] then 0 else 1))
 			end
@@ -221,10 +267,12 @@ for tier = 1, 7 do
 		-- FastFlush can briefly overlap two 1.5-second visuals at the Galaxy tier.
 		assert(count + maxItem <= V.Budget.Plot, "Overlapping drops exceed plot budget")
 		maxPlot = math.max(maxPlot, count)
+		maxPlotInstances = math.max(maxPlotInstances, #plot.Model:GetDescendants())
+		maxPlotHighlights = math.max(maxPlotHighlights, countClass(plot.Model, "Highlight"))
 		local meshes, _, triangles = stats(plot.Model)
 		maxPlotMeshes = math.max(maxPlotMeshes, meshes)
 		maxPlotTriangles = math.max(maxPlotTriangles, triangles)
-		assert(plot.Displays:FindFirstChild("Slot" .. ((page - 1) * 5 + 1)), "Display page lost a slot")
+		assert(plot.Displays:FindFirstChild("Slot" .. ((page - 1) * 10 + 1)), "Display page lost a slot")
 	end
 	recordAssets(plot.Model)
 	validate(plot.Model)
@@ -240,17 +288,7 @@ assert(templateClones == startupClones, "Placements renormalized cached template
 if checkWorld then
 	local Island = loadModule(node("src/server/World/Builders/Island"))
 	Island.Build(terrain)
-	assert(terrainWrites == 100 and terrainCells == 819200)
-	for _, material in ipairs({ "Grass", "Sand", "Water", "Rock", "Air" }) do
-		assert(terrainMaterials[Enum.Material[material]], "Missing terrain material: " .. material)
-	end
-	for x = -100, 100, 4 do
-		for z = -100, 100, 4 do
-			if x * x + z * z <= 106 * 106 then
-				assert(Island.Height(x, z) == -0.35, "Gameplay core obstructed")
-			end
-		end
-	end
+	assert(terrainWrites == 1 and terrainMaterials[Enum.Material.Water])
 	loadModule(node("src/server/World/Builders/Lighting")).Build()
 	loadModule(node("src/server/World/Builders/Lighting")).Build()
 	assert(#services.Lighting:GetChildren() == 5 and #terrain:GetChildren() == 1, "Duplicate sky/effects")
@@ -280,9 +318,9 @@ if checkWorld then
 	World:RecordFlush({ DisplayName = "Spoof", UserId = 4 }, spoof)
 	assert(workspace:GetAttribute("BestFlushUserId") == 42 and workspace:GetAttribute("BestFlushChance") == best.Chance)
 	if testMode == "Invalid" then
-		assert(warnings == 31, "Invalid templates must warn once and stay uncached")
+		assert(warnings == 75, "Invalid templates must warn once and stay uncached")
 	elseif testMode == "Late" then
-		sourceRoot.Parent = storage
+		sourceRoot.Parent, envRoot.Parent = storage, storage
 		assert(Loader.Status("Poop") == "Ready", "Late replication did not recover")
 		local preview = ItemBuilder.Build(root, CFrame.new(), Items[1], true)
 		assert(preview:GetAttribute("MeshAsset"), "Client preview did not recover")
@@ -305,17 +343,28 @@ if checkWorld then
 end
 
 if snapshot then
-	local Style = loadModule(node("src/shared/Config/World"))
-	local Island = loadModule(node("src/server/World/Builders/Island"))
-	for i = 1, 10 do
-		local a = i * math.pi * 2 / 10
-		local p = Vector3.new(math.sin(a) * Style.Radius, 0, math.cos(a) * Style.Radius)
-		local plot = Plot.Build(root, CFrame.lookAt(p, Vector3.new()), i)
+	local Layout = loadModule(node("src/shared/Config/MapLayout"))
+	-- Clearly named fixtures exercise the production board formatter in offline previews.
+	for i = 1, 12 do
+		boardPlayers[i] = { UserId = i, DisplayName = "Preview player " .. i }
+	end
+	World.Data = {
+		Get = function(_, player)
+			return {
+				Coins = player.UserId * 1400,
+				Stats = { Flushes = player.UserId * 410, RarestItemId = Items[player.UserId % #Items + 1].Id },
+			}
+		end,
+	}
+	World:RefreshLeaderboards()
+	for i, entry in ipairs(Layout.Plots) do
+		local plot = Plot.Build(root, CFrame.new(entry.X, 0, entry.Z) * CFrame.Angles(0, math.rad(entry.Yaw), 0), i)
 		plot.Toilet = Models.Toilet(plot.Model, plot.CFrame, (i - 1) % 7 + 1)
-		plot.Profile = {
-			DisplaySlots = 3,
-			Displays = { ["1"] = Items[(i - 1) % 11 + 1].Id, ["2"] = "GoldenPoop", ["3"] = "Duck" },
-		}
+		plot.Profile = { ToiletTier = (i - 1) % 7 + 1, DisplaySlots = 10, Displays = {} }
+		for slot = 1, 10 do
+			plot.Profile.Displays[tostring(slot)] = Items[(i + slot - 2) % #Items + 1].Id
+		end
+		plot.Owner = { UserId = i }
 		World:RenderDisplays(plot)
 	end
 	for _, part in ipairs(root:GetDescendants()) do
@@ -346,20 +395,38 @@ if snapshot then
 					.. tostring(part.Material)
 					.. "|"
 					.. table.concat(values, ",")
+					.. "|"
+					.. tostring(part.Parent:GetAttribute("SolidFinish") == true)
 			)
-		elseif part.ClassName == "TextLabel" and part.Parent.ClassName == "SurfaceGui" then
-			print("SCENE|TEXT|" .. part.Parent.Parent.Name .. "|" .. part.Text:gsub("\n", "~"))
-		end
-	end
-	for x = -320, 320, 4 do
-		for z = -320, 320, 4 do
-			print("SCENE|HEIGHT|" .. x .. "," .. z .. "," .. Island.Height(x, z))
+		elseif part.ClassName == "TextLabel" and part.Text ~= "" then
+			local gui = part.Parent
+			local frame = if gui.ClassName == "Frame" then gui else nil
+			if frame then
+				gui = frame.Parent
+			end
+			if gui.ClassName ~= "SurfaceGui" and gui.ClassName ~= "BillboardGui" then
+				continue
+			end
+			local anchor = gui.Parent
+			local cf, size = anchor.CFrame, anchor.Size
+			if frame then
+				local w, h = frame.Size[1] * part.Size[1], frame.Size[2] * part.Size[2]
+				local x = frame.Position[1] + frame.Size[1] * part.Position[1] + w / 2
+				local y = frame.Position[2] + frame.Size[2] * part.Position[2] + h / 2
+				cf *= CFrame.new((0.5 - x) * size.X, (0.5 - y) * size.Y, 0)
+				size = Vector3.new(size.X * w, size.Y * h, size.Z)
+			end
+			local values = { size.X, size.Y, size.Z, cf.Position.X, cf.Position.Y, cf.Position.Z }
+			for _, v in ipairs(cf.R) do
+				table.insert(values, v)
+			end
+			print("SCENE|LABEL|" .. part.Text:gsub("\n", "~"):gsub("|", "/") .. "|" .. table.concat(values, ","))
 		end
 	end
 end
 print(
 	string.format(
-		"Headless %s checks passed: hub %d parts; worst plot + drop %d; largest toilet %d, item %d; all 31 asset paths covered; %d normalized templates. Startup calls: %d.",
+		"Headless %s checks passed: hub %d parts; worst plot + drop %d; largest toilet %d, item %d; all 75 asset paths covered; %d normalized templates. Startup calls: %d.",
 		testMode,
 		hubCount,
 		maxPlot,

@@ -21,6 +21,11 @@ function IncomeService.Start(data, limiter, remotes, sync, world)
 			return
 		end
 		local distance = (root.Position - plot.IncomePoint.Position).Magnitude
+		for _, point in ipairs(plot.CollectPoints or {}) do
+			if point.Parent then
+				distance = math.min(distance, (root.Position - point.Position).Magnitude)
+			end
+		end
 		if distance ~= distance or distance < 0 or distance > Config.CollectRange then
 			return
 		end

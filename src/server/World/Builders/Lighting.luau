@@ -5,10 +5,10 @@ function Builder.Build()
 	for key, value in pairs(Visuals.Lighting) do
 		Lighting[key] = value
 	end
-	Lighting.ClockTime = 15.6
+	Lighting.ClockTime = 15.1
 	Lighting.GeographicLatitude = 18
-	Lighting.Ambient = Color3.fromRGB(123, 131, 180)
-	Lighting.OutdoorAmbient = Color3.fromRGB(148, 180, 208)
+	Lighting.Ambient = Color3.fromRGB(66, 91, 155)
+	Lighting.OutdoorAmbient = Color3.fromRGB(99, 149, 198)
 	Lighting.ColorShift_Top = Color3.fromRGB(255, 218, 160)
 	for _, name in ipairs({ "ToyAtmosphere", "ToyBloom", "ToyColor", "ToySunRays", "IslandSky" }) do
 		local old = Lighting:FindFirstChild(name)
@@ -19,13 +19,13 @@ function Builder.Build()
 	local atmosphere = Instance.new("Atmosphere")
 	atmosphere.Name = "ToyAtmosphere"
 	atmosphere.Color, atmosphere.Decay = Color3.fromRGB(148, 212, 255), Color3.fromRGB(255, 223, 172)
-	atmosphere.Density, atmosphere.Offset, atmosphere.Haze, atmosphere.Glare = 0.26, 0.15, 1.25, 0.12
+	atmosphere.Density, atmosphere.Offset, atmosphere.Haze, atmosphere.Glare = 0.22, 0.1, 1.1, 0.12
 	atmosphere.Parent = Lighting
 	local bloom = Instance.new("BloomEffect")
-	bloom.Name, bloom.Intensity, bloom.Size, bloom.Threshold = "ToyBloom", 0.16, 18, 1.2
+	bloom.Name, bloom.Intensity, bloom.Size, bloom.Threshold = "ToyBloom", 0.24, 24, 1.15
 	bloom.Parent = Lighting
 	local correction = Instance.new("ColorCorrectionEffect")
-	correction.Name, correction.Saturation, correction.Contrast = "ToyColor", 0.16, 0.035
+	correction.Name, correction.Saturation, correction.Contrast = "ToyColor", 0.18, 0.08
 	correction.TintColor = Color3.fromRGB(255, 250, 244)
 	correction.Parent = Lighting
 	local rays = Instance.new("SunRaysEffect")

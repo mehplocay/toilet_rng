@@ -1,4 +1,5 @@
 local Items = require(game.ReplicatedStorage.Shared.Config.Items)
+local leaderboardStats = require(game.ReplicatedStorage.Shared.LeaderboardStats).new(Items)
 local Toilets = require(game.ReplicatedStorage.Shared.Config.Toilets)
 local Monetization = require(game.ReplicatedStorage.Shared.Config.Monetization)
 local Rules = require(game.ReplicatedStorage.Shared.MonetizationRules)
@@ -32,7 +33,7 @@ function FlushService.Start(data, limiter, remotes, sync, world, events, monetiz
 		if not serviceCoins then
 			return
 		end
-		profile.Stats.Flushes += 1
+		leaderboardStats:Record(profile, item)
 		profile.Inventory[item.Id] = (profile.Inventory[item.Id] or 0) + 1
 		profile.Collection[item.Id] = (profile.Collection[item.Id] or 0) + 1
 		events:Trigger(player, item, profile.Stats.Flushes)

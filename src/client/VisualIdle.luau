@@ -78,6 +78,7 @@ function Idle.Start()
 				local part = if object:IsA("BasePart")
 					then object
 					elseif object:IsA("Model") then object:FindFirstChildWhichIsA("BasePart")
+					elseif object:IsA("Highlight") then object.Parent.PrimaryPart
 					else object.Parent
 				local toilet = object:FindFirstAncestor("Toilet")
 				local flushing = toilet and toilet:GetAttribute("Flushing")
@@ -95,7 +96,7 @@ function Idle.Start()
 							entry.Tween:Pause()
 						end
 					end
-					if object:IsA("ParticleEmitter") or object:IsA("PointLight") then
+					if object:IsA("ParticleEmitter") or object:IsA("PointLight") or object:IsA("Highlight") then
 						object.Enabled = enabled
 					end
 				end

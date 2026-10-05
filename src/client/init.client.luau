@@ -135,8 +135,13 @@ local function show(panel)
 end
 local function travelHome()
 	local cf = player:GetAttribute("PlotCFrame")
-	if typeof(cf) == "CFrame" and player.Character then
-		player.Character:PivotTo(cf)
+	if typeof(cf) == "CFrame" then
+		pcall(function()
+			player:RequestStreamAroundAsync(cf.Position, 3)
+		end)
+		if player.Character then
+			player.Character:PivotTo(cf)
+		end
 	end
 end
 local function open(name)
@@ -145,12 +150,7 @@ local function open(name)
 		travelHome()
 	elseif name == "Hub" or name == "TravelShop" then
 		closeAll()
-		local hub = workspace:FindFirstChild("Hub", true)
-		local spawn = hub and hub:FindFirstChild(if name == "TravelShop" then "ShowcaseStand" else "SpawnPad")
-		if spawn and player.Character then
-			local offset = if name == "TravelShop" then Vector3.new(0, 4, -8) else Vector3.new(0, 4, 0)
-			player.Character:PivotTo(CFrame.lookAt(spawn.Position + offset, spawn.Position + Vector3.new(0, 4, 1)))
-		end
+		require(script.WorldNavigation).Travel(name)
 		if name == "TravelShop" then
 			show(upgrades.Panel)
 		end
@@ -167,6 +167,7 @@ local function open(name)
 	end
 end
 hud = require(script.UI.HUD).Create(root, remotes, open, prompts)
+require(script.WorldNavigation).Start(open)
 local function syncModal()
 	local any = false
 	for _, panel in ipairs(panels) do

@@ -40,18 +40,37 @@ function Models.Label(part, text, color, surface)
 	gui.Parent = part
 	return label
 end
-function Models.Item(parent, cf, item)
+function Models.Item(parent, cf, item, display)
 	-- Existing callers pass the drop center; uploaded artwork uses a ground pivot.
 	local model = Loader.Build(Placement.ItemNames[item.Id] or item.Id, parent, cf * CFrame.new(0, -0.8, 0), function()
+		if display then
+			local fallback = Instance.new("Model")
+			fallback.Name, fallback.Parent = item.Id, parent
+			fallback.PrimaryPart =
+				P.Ball(fallback, "MissingItem", Vector3.new(2, 2, 2), cf, Rarities[item.Rarity].Color)
+			return fallback
+		end
 		return require(Shared.Visuals.Items).BuildPrimitive(parent, cf, item)
 	end)
 	if not model:GetAttribute("MeshFallback") then
 		require(Shared.Visuals.TemplateAccents).Apply(model)
 		local color = if item.Rarity == "Secret" then Visuals.Palette.Cyan else Rarities[item.Rarity].Color
-		P.Ring(model, "RarityAura", cf * CFrame.new(0, -0.85, 0), 1.45, 1.45, 0.09, color, Enum.Material.Neon, 8)
-		if Rarities[item.Rarity].Order >= 5 and not model:GetAttribute("TemplateAccents") then
+		if Rarities[item.Rarity].Order >= 4 then
+			local highlight = Instance.new("Highlight")
+			highlight.Name, highlight.Adornee = "RarityOutline", model
+			highlight.DepthMode = Enum.HighlightDepthMode.Occluded
+			highlight.FillColor, highlight.OutlineColor = color, color
+			highlight.FillTransparency, highlight.OutlineTransparency = 0.85, 0.1
+			highlight.Enabled = false
+			highlight:SetAttribute("VisualIdle", true)
+			highlight.Parent = model
+		end
+		if Rarities[item.Rarity].Order >= 4 and not model:GetAttribute("TemplateAccents") then
 			P.Particles(model.PrimaryPart, "RareAura", color, Visuals.Budget.IdleRate)
 		end
+	end
+	if display then
+		return model
 	end
 	Models.Label(
 		model.PrimaryPart,
