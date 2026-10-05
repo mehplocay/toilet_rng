@@ -13,6 +13,10 @@ local Monetization = require(game.ReplicatedStorage.Shared.Config.Monetization)
 local MonetizationRules = require(game.ReplicatedStorage.Shared.MonetizationRules)
 local AudioSettings = require(game.ReplicatedStorage.Shared.AudioSettings)
 local Audio = require(game.ReplicatedStorage.Shared.Config.Audio)
+local income = require(game.ReplicatedStorage.Shared.IncomeAccrual).new(
+	require(game.ReplicatedStorage.Shared.Config.Income),
+	Items
+)
 
 local DataService = {
 	Profiles = {},
@@ -59,6 +63,7 @@ function DataService.DefaultProfile()
 		ToiletTier = 1,
 		DisplaySlots = 3,
 		Displays = {},
+		Income = income:Sanitize(nil),
 		Stats = { Flushes = 0, Earned = 0 },
 	}
 end
@@ -69,6 +74,7 @@ local function sanitize(raw)
 		return profile
 	end
 	profile.TutorialDone = raw.TutorialDone == true
+	profile.Income = income:Sanitize(raw.Income)
 	MonetizationRules.RestoreSettings(profile.Settings, raw.Settings, Monetization)
 	AudioSettings.Apply(profile.Settings, AudioSettings.Sanitize(raw.Settings, Audio.Defaults))
 	profile.Coins = integer(raw.Coins, 0)
@@ -135,7 +141,12 @@ function DataService:Get(player)
 		player:Kick("Your data session expired. Please rejoin.")
 		return nil
 	end
-	return self.Profiles[player]
+	local profile = self.Profiles[player]
+	if profile then
+		-- Every gameplay mutation settles the previous display/tier first, without yielding.
+		income:Settle(profile, os.time(), false)
+	end
+	return profile
 end
 
 local function finishLoad(self, player)
@@ -187,8 +198,10 @@ function DataService:Load(player)
 			then
 				return nil
 			end
+			local profile = sanitize(if type(old) == "table" then old.Data else nil)
+			income:Settle(profile, os.time(), true)
 			return {
-				Data = sanitize(if type(old) == "table" then old.Data else nil),
+				Data = profile,
 				Lock = { Session = session, Expires = os.time() + LOCK_SECONDS },
 			}
 		end)
@@ -229,6 +242,9 @@ function DataService:Save(player, release)
 		return true
 	end
 	self.Saving[player] = true
+	if not self.Closing[player] and os.time() < (self.LeaseExpires[player] or 0) then
+		income:Settle(profile, os.time(), false)
+	end
 	-- Copy before UpdateAsync yields, so concurrent gameplay cannot mutate the snapshot.
 	local snapshot = sanitize(profile)
 	local session = self.Sessions[player]
@@ -263,6 +279,16 @@ function DataService:Save(player, release)
 end
 
 function DataService:Close(player)
+	-- Freeze the departure timestamp before waiting behind an in-flight save.
+	-- Otherwise backend latency could extend the offline cap after the player leaves.
+	local profile = self.Profiles[player]
+	if
+		profile
+		and not self.Closing[player]
+		and (self.NoPersistence[player] or os.time() < (self.LeaseExpires[player] or 0))
+	then
+		income:Settle(profile, os.time(), false)
+	end
 	self.Closing[player] = true
 	-- The load owns cleanup until its yielding acquisition has completed.
 	if self.Loading[player] then

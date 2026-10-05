@@ -203,9 +203,19 @@ for tier = 1, 7 do
 		profile.Displays[tostring(slot)] = maxItemId
 	end
 	plot.Profile = profile
+	plot.Owner = { UserId = tier }
 	for page = 1, 20 do
 		plot.Page = page
 		World:RenderDisplays(plot)
+		assert(plot.IncomePoint.Parent == plot.Displays and plot.IncomePrompt.ActionText == "Collect")
+		assert(plot.IncomePrompt:GetAttribute("IncomeOwnerUserId") == tier)
+		local incomeVisual = loadModule(node("src/server/World/IncomeDisplay"))
+		for _, pending in ipairs({ 0, 1, 10, 100, 0 }) do
+			incomeVisual.Refresh(plot, plot.Owner, pending)
+			for level, coin in ipairs(plot.IncomeCoins) do
+				assert(coin.Transparency == (if pending >= ({ 1, 10, 100 })[level] then 0 else 1))
+			end
+		end
 		local count = P.Count(plot.Model) + maxItem
 		assert(count <= V.Budget.Plot, "Plot with transient drop exceeds budget: " .. count)
 		-- FastFlush can briefly overlap two 1.5-second visuals at the Galaxy tier.

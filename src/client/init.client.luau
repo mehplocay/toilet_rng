@@ -13,6 +13,8 @@ for _, name in ipairs({
 	"Sell",
 	"BuyToilet",
 	"Display",
+	"CollectIncome",
+	"IncomePending",
 	"Event",
 	"ServerLuck",
 	"Settings",
@@ -190,6 +192,14 @@ local effects = require(script.Effects).Create(hud.Frame, audio.SFX, hud)
 local reveal = require(script.UI.Reveal).Create(hud.Frame, hud)
 local showServiceCoins = require(script.UI.CoinPopup).Create(hud.Frame)
 local toast = C.Toast(root)
+local incomeChip = require(script.UI.IncomeChip).Create(hud.Frame)
+local PromptService = game:GetService("ProximityPromptService")
+PromptService.PromptTriggered:Connect(function(prompt)
+	if prompt:GetAttribute("IncomeOwnerUserId") == player.UserId then
+		remotes.CollectIncome:FireServer()
+	end
+end)
+remotes.IncomePending.OnClientEvent:Connect(incomeChip.Update)
 local byId = {}
 for _, item in ipairs(Items) do
 	byId[item.Id] = item
@@ -214,6 +224,11 @@ remotes.Result.OnClientEvent:Connect(function(action, payload)
 		showServiceCoins(payload.ServiceCoins)
 		effects.Drop(item)
 		reveal(item, skipAnimation)
+	elseif action == "CollectIncome" then
+		toast(
+			if payload.Success then "+" .. C.Commas(payload.Coins) .. " display coins collected!" else payload.Message,
+			C.Gold
+		)
 	elseif action == "Sell" or action == "BuyToilet" or action == "Display" or action == "AutoFlush" then
 		if payload.Success == false then
 			toast(payload.Message or "Not available yet. Check your coins, items or distance.", C.Gold)
@@ -235,6 +250,7 @@ remotes.State.OnClientEvent:Connect(function(state)
 	skipToggle.Text = if skipAnimation then "Quick reveals: ON" else "Quick reveals: OFF"
 	effects.SetSkip(skipAnimation)
 	hud.Update(state)
+	incomeChip.Update(state.PendingCoins or 0)
 	collection.Update(state)
 	upgrades.Update(state)
 	rewards.Update(state)

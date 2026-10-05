@@ -136,3 +136,77 @@ for tier = 1, 4 do
 	)
 end
 print("Balance checks passed: legacy targets, deterministic progression bounds and median Dirty <= 2 min.")
+
+local IncomeConfig = require("../src/shared/Config/Income")
+local Income = require("../src/shared/IncomeAccrual").new(IncomeConfig, Items)
+print("\nDisplay income: 1% sell value/minute, tier rate caps, no boosts/rewards/offline starting wallet.")
+print("Realistic upper showcase: best copies from floor(expected drops in 60 min at this tier, 75% uptime).")
+print("Copies are reserved, not sold; construction cost is ignored, so this overstates immediate benefit.")
+print(
+	"Tier        Slots  Display coins/min  Active coins/min  Ratio   Next upgrade min (base / +display)  Best realistic copies"
+)
+for tier, toilet in ipairs(Toilets) do
+	local entries = table.clone(distributions[tier])
+	table.sort(entries, function(a, b)
+		return a.Item.Value > b.Item.Value
+	end)
+	local flushesPerMinute, ev = 60 / toilet.Cooldown * uptime, 0
+	for _, entry in ipairs(entries) do
+		ev += entry.Probability * entry.Item.Value
+	end
+	local active = flushesPerMinute * (ev + toilet.ServiceCoins)
+	for _, slots in ipairs({ 3, 10 }) do
+		local p = { ToiletTier = tier, DisplaySlots = slots, Displays = {} }
+		local used, description = 0, {}
+		for _, entry in ipairs(entries) do
+			local count = math.min(slots - used, math.floor(entry.Probability * flushesPerMinute * 60))
+			if count > 0 then
+				table.insert(description, count .. "x " .. entry.Item.Id)
+				for _ = 1, count do
+					used += 1
+					p.Displays[tostring(used)] = entry.Item.Id
+				end
+			end
+		end
+		local passive = 0
+		for _, units in pairs(Income:Rates(p)) do
+			passive += units * 60 / IncomeConfig.UnitsPerCoin
+		end
+		assert(passive / active <= 1 / 3, "Realistic display income exceeded one third")
+		local nextToilet = Toilets[tier + 1]
+		local timing = "final tier"
+		if nextToilet then
+			local before, after = nextToilet.Price / active, nextToilet.Price / (active + passive)
+			assert(after >= before * 0.8, "Passive income accelerated upgrade timing by more than 20%")
+			timing = string.format("%.2f / %.2f", before, after)
+		end
+		print(
+			string.format(
+				"%-12s %2d %17.2f %17.2f %6.2f%%  %-33s %s",
+				toilet.Id,
+				slots,
+				passive,
+				active,
+				passive / active * 100,
+				timing,
+				table.concat(description, ", ")
+			)
+		)
+	end
+	-- Stronger proof: even 100 retained jackpot copies cannot beat this bound, independent of drop luck.
+	local maximum = IncomeConfig.PlayerRateCaps[tier]
+	local guaranteed = flushesPerMinute * toilet.ServiceCoins
+	assert(maximum <= guaranteed / 3, "Absolute cap exceeds one third of service-only active income")
+	assert(maximum <= guaranteed * 0.2 + 1e-9, "Absolute cap changes guaranteed timing by more than 1/6")
+	print(
+		string.format(
+			"  Absolute cap: %.2f/min = %.2f%% of service-only active income; full offline tank <= %.0f coins.",
+			maximum,
+			maximum / guaranteed * 100,
+			math.min(maximum * IncomeConfig.OfflineMinutes, IncomeConfig.PlayerPendingCap)
+		)
+	)
+end
+print(
+	"Income balance passed: 3/10-slot ratios, all-inventory cap <=20% of guaranteed active income, existing upgrade targets unchanged."
+)

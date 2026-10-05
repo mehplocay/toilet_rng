@@ -10,6 +10,7 @@ $generatedPath = Join-Path $workspaceRoot '.visual-check.generated.luau'
 $harness = "local testMode = '$MeshMode'`nlocal checkWorld = $($World.IsPresent.ToString().ToLower())`nlocal snapshot = $($Snapshot.IsPresent.ToString().ToLower())`n"
 $harness += Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'world-harness.luau')
 $modulePaths = @(
+    'src/shared/Config/Income.luau', 'src/server/World/IncomeDisplay.luau',
     'src/shared/Config/Assets.luau', 'src/shared/Config/MeshCatalog.luau', 'src/shared/Config/WorldModels.luau',
     'src/shared/Config/Visuals.luau', 'src/shared/Config/World.luau',
     'src/shared/Config/Items.luau', 'src/shared/Config/Toilets.luau', 'src/shared/Config/Rarities.luau',

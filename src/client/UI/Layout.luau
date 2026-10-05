@@ -56,6 +56,10 @@ function Layout.Compute(w, h, touch)
 		result.Hint = rect((w - 440) / 2, math.max(182, h * 0.24), 440, 94)
 		result.Board = rect((w - 340) / 2, 90, 340, 72)
 	end
+	result.PendingIncome = if portrait
+		then rect(88, 76, math.min(200, w - 106), 26)
+		elseif short then rect(w - 132, 114, 120, 26)
+		else rect(result.Coins.X, result.Coins.Y - 20, math.min(200, result.Coins.W), 18)
 	result.Offers = rect(w - 190, math.max(190, h * 0.29), 168, 292)
 	local flushW = result.Action.W - 96
 	result.Pointer = if portrait

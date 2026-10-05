@@ -16,6 +16,9 @@ send a snapshot. All request remotes are validated and token-bucket limited.
 Flush additionally checks proximity to the assigned plot and the tier cooldown.
 
 `Result(action, payload)` supplies flush drops and operation outcomes.
+`CollectIncome()` collects pending display earnings at the player's central plot pedestal;
+`IncomePending(integerCoins)` is outbound-only. State also includes `PendingCoins`.
+See [passive income](design/passive-income.md) for caps, persistence and validation.
 Teleport uses the replicated own-plot position locally; it has no custom remote.
 Shop opens Toilet Upgrades. Sound settings are sanitized and persisted.
 

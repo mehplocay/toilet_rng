@@ -5,6 +5,8 @@ return {
 	BuyToilet = "BuyToilet",
 	Result = "Result",
 	Display = "Display",
+	CollectIncome = "CollectIncome",
+	IncomePending = "IncomePending",
 	State = "State",
 	Event = "Event",
 	ServerLuck = "ServerLuck",
@@ -19,6 +21,7 @@ return {
 	ClaimReward = "ClaimReward",
 	ClaimIndexReward = "ClaimIndexReward",
 	Limits = {
+		CollectIncome = { Capacity = 1, Refill = 0.2 },
 		ClaimIndexReward = { Capacity = 3, Refill = 0.5 },
 		AnimationSkip = { Capacity = 3, Refill = 1 },
 		PlotColor = { Capacity = 3, Refill = 1 },

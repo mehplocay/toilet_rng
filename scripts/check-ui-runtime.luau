@@ -85,6 +85,7 @@ local hud = H.Load("src/client/UI/HUD").Create(root, remotes, function() end, {
 	end,
 })
 hud.Update(state)
+H.Load("src/client/UI/IncomeChip").Create(hud.Frame).Update(1234)
 H.Services.RunService.Heartbeat:Fire(0.2)
 local flush = hud.Frame.FlushActions:FindFirstChild("FLUSH")
 flush.Activated:Fire()
@@ -120,6 +121,17 @@ hud.Frame.Visible = false
 daily.Panel.Visible = true
 H.Snapshot(root, "daily-landscape")
 local bootRemotes = H.Remotes()
+local actualPrompts = H.Load("src/client/UI/FlushPrompt").Start()
+local collectPrompt = H.Instance.new("ProximityPrompt")
+collectPrompt.ActionText = "Collect"
+collectPrompt:SetAttribute("OwnerUserId", H.Services.Players.LocalPlayer.UserId)
+H.Workspace.DescendantAdded:Fire(collectPrompt)
+assert(actualPrompts.Own() == nil, "Collect prompt was selected as the flush target")
+local flushPrompt = H.Instance.new("ProximityPrompt")
+flushPrompt.ActionText = "FLUSH"
+flushPrompt:SetAttribute("OwnerUserId", H.Services.Players.LocalPlayer.UserId)
+H.Workspace.DescendantAdded:Fire(flushPrompt)
+assert(actualPrompts.Own() == flushPrompt)
 H.Services.UserInputService.TouchEnabled = false
 local clientRoot = H.BootClient(bootRemotes)
 bootRemotes.State.OnClientEvent:Fire(state)
@@ -127,6 +139,23 @@ H.StartTasks()
 H.Services.RunService.Heartbeat:Fire(0.3)
 assert(clientRoot.HUD.Daily.ClaimBadge.Visible, "Daily claim badge missing")
 local reads = H.WorkspaceReads
+local pendingChip = clientRoot.HUD.PendingIncome
+assert(pendingChip, "Pending income chip missing")
+local objectCount = #H.Objects
+for _ = 1, 20 do
+	bootRemotes.IncomePending.OnClientEvent:Fire(123)
+end
+assert(#H.Objects == objectCount, "Pending updates create UI instances")
+assert(pendingChip:FindFirstChildWhichIsA("TextLabel").Text == "Pending: 123")
+local prompt = H.Instance.new("ProximityPrompt")
+prompt:SetAttribute("IncomeOwnerUserId", H.Services.Players.LocalPlayer.UserId)
+H.Services.ProximityPromptService.PromptTriggered:Fire(prompt)
+assert(H.Calls[#H.Calls].Name == "CollectIncome" and H.Calls[#H.Calls].Count == 0)
+local requests = #H.Calls
+prompt:SetAttribute("IncomeOwnerUserId", -1)
+H.Services.ProximityPromptService.PromptTriggered:Fire(prompt)
+assert(#H.Calls == requests, "Foreign collect prompt sent a request")
+bootRemotes.Result.OnClientEvent:Fire("CollectIncome", { Success = true, Coins = 123 })
 for _ = 1, 20 do
 	bootRemotes.State.OnClientEvent:Fire(state)
 end

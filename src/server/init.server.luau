@@ -11,6 +11,8 @@ for _, key in ipairs({
 	"Sell",
 	"BuyToilet",
 	"Display",
+	"CollectIncome",
+	"IncomePending",
 	"State",
 	"Result",
 	"Event",
@@ -32,6 +34,10 @@ for _, key in ipairs({
 	remotes[key] = remote
 end
 local data = require(script.Services.DataService)
+local income = require(ReplicatedStorage.Shared.IncomeAccrual).new(
+	require(ReplicatedStorage.Shared.Config.Income),
+	require(ReplicatedStorage.Shared.Config.Items)
+)
 local index = require(ReplicatedStorage.Shared.IndexProgress).new(
 	require(ReplicatedStorage.Shared.Config.Items),
 	require(ReplicatedStorage.Shared.Config.IndexRewards)
@@ -55,9 +61,11 @@ local function sync(player)
 	local profile = data:Get(player)
 	if profile then
 		world:Refresh(player, profile)
+		world:RefreshIncome(player, income:PendingCoins(profile))
 		monetization:Apply(player)
 		remotes.State:FireClient(player, {
 			Coins = profile.Coins,
+			PendingCoins = income:PendingCoins(profile),
 			TutorialDone = profile.TutorialDone,
 			LastClaimDay = profile.LastClaimDay,
 			Streak = profile.Streak,
@@ -105,6 +113,7 @@ Players.PlayerRemoving:Connect(function(player)
 	limiter:Remove(player)
 end)
 monetization:Start(limiter, remotes, sync, data, world)
+require(script.Services.IncomeService).Start(data, limiter, remotes, sync, world)
 remotes.Settings.OnServerEvent:Connect(function(player, sound, ...)
 	if select("#", ...) ~= 0 or not AudioSettings.ValidRequest(sound) or not limiter:Allow(player, "Settings") then
 		return

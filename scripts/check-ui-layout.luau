@@ -19,6 +19,7 @@ for _, case in ipairs(cases) do
 		Travel = layout.Travel,
 		Settings = layout.Settings,
 		Coins = layout.Coins,
+		PendingIncome = layout.PendingIncome,
 		Boosts = layout.Boosts,
 		Hint = layout.Hint,
 		Action = layout.Action,
