@@ -1,0 +1,1553 @@
+{
+  "schema_version": 1,
+  "generator": "Blender 4.5 / assets/blender/build_env.py",
+  "coordinate_system": "Export Y-up / Z-forward; author Z-up; dimension order Roblox X,Y,Z",
+  "socket_convention": "Canonical front -Z after Studio orientation acceptance; socket order X,Y,Z",
+  "units": "stud (1 stud = 0.28 m)",
+  "import_settings": {
+    "scale_unit": "Stud",
+    "scale_factor": 1,
+    "world_forward": "Front",
+    "world_up": "Top"
+  },
+  "atlas_sha256": "1f1b2d5b903956746c7d92e25389fa3bd2c40c3b4deb6fa91ed669a0bb2d56f3",
+  "maximum_dimension_studs": 256,
+  "assets": [
+    {
+      "name": "HubMedallion",
+      "display_name": "Hub Medallion",
+      "category": "env",
+      "family": "hub",
+      "tris": 2136,
+      "budget": 4000,
+      "size_studs": [
+        24.0,
+        1.1115,
+        24.0
+      ],
+      "file": "assets/models/env/HubMedallion.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/HubMedallion.png",
+      "front_preview": "assets/previews/HubMedallion_front.png",
+      "source": "assets/blender/generated/env/HubMedallion.blend",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1,
+      "author_center_offset": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "sockets_studs": {},
+      "assembly": {
+        "radius": 12,
+        "surface": 1.112
+      },
+      "fbx_sha256": "b930230499cc7efc378e85a9a814b8f20fca331a239a3fb07f51587d5896122a"
+    },
+    {
+      "name": "HubRingSegment",
+      "display_name": "Hub Ring Segment",
+      "category": "env",
+      "family": "hub",
+      "tris": 644,
+      "budget": 3500,
+      "size_studs": [
+        19.7771,
+        1.05,
+        20.5873
+      ],
+      "file": "assets/models/env/HubRingSegment.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/HubRingSegment.png",
+      "front_preview": "assets/previews/HubRingSegment_front.png",
+      "source": "assets/blender/generated/env/HubRingSegment.blend",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1,
+      "author_center_offset": [
+        0.0,
+        -21.706339,
+        0.0
+      ],
+      "sockets_studs": {
+        "arc_center": [
+          0.0,
+          0.0,
+          21.70634
+        ]
+      },
+      "assembly": {
+        "arc_center": [
+          0,
+          0,
+          0
+        ],
+        "radii": [
+          12,
+          32
+        ],
+        "sector_degrees": 36,
+        "surface": 1
+      },
+      "fbx_sha256": "2e313c4365a4cf18d6b5ece449a82ef3e47e750df1c5f3a26717de9b23518bc9"
+    },
+    {
+      "name": "HubCurbSegment",
+      "display_name": "Hub Curb Segment",
+      "category": "env",
+      "family": "hub",
+      "tris": 204,
+      "budget": 1000,
+      "size_studs": [
+        11.6344,
+        1.4,
+        1.9862
+      ],
+      "file": "assets/models/env/HubCurbSegment.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/HubCurbSegment.png",
+      "front_preview": "assets/previews/HubCurbSegment_front.png",
+      "source": "assets/blender/generated/env/HubCurbSegment.blend",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1,
+      "author_center_offset": [
+        0.0,
+        -32.506924,
+        0.0
+      ],
+      "sockets_studs": {
+        "arc_center": [
+          0.0,
+          0.0,
+          32.50692
+        ]
+      },
+      "assembly": {
+        "arc_center": [
+          0,
+          0,
+          0
+        ],
+        "radii": [
+          32,
+          33.5
+        ],
+        "sector_degrees": 20
+      },
+      "fbx_sha256": "a858ab5fb9e8e408413367e2d2953fb9361752e04b81abd75ac6d5470edd9460"
+    },
+    {
+      "name": "HubPathStrip",
+      "display_name": "Hub Path Strip",
+      "category": "env",
+      "family": "hub",
+      "tris": 1080,
+      "budget": 2500,
+      "size_studs": [
+        8.0,
+        1.04,
+        12.0
+      ],
+      "file": "assets/models/env/HubPathStrip.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/HubPathStrip.png",
+      "front_preview": "assets/previews/HubPathStrip_front.png",
+      "source": "assets/blender/generated/env/HubPathStrip.blend",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1,
+      "author_center_offset": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "sockets_studs": {},
+      "assembly": {
+        "grid": [
+          8,
+          12
+        ],
+        "surface": 1.04
+      },
+      "fbx_sha256": "c2bcc0e0c79b91e6e0380e210accbe873cd7809133bb580f2db18f514220a012"
+    },
+    {
+      "name": "HubEdgeStraight",
+      "display_name": "Hub Edge Straight",
+      "category": "env",
+      "family": "hub",
+      "tris": 324,
+      "budget": 800,
+      "size_studs": [
+        12.0,
+        1.275,
+        1.545
+      ],
+      "file": "assets/models/env/HubEdgeStraight.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/HubEdgeStraight.png",
+      "front_preview": "assets/previews/HubEdgeStraight_front.png",
+      "source": "assets/blender/generated/env/HubEdgeStraight.blend",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1,
+      "author_center_offset": [
+        0.0,
+        -0.0225,
+        0.0
+      ],
+      "sockets_studs": {},
+      "assembly": {
+        "grid": [
+          12,
+          1.5
+        ]
+      },
+      "fbx_sha256": "bc47b23d79d8f9551302f79a0f6ac4597a548ad9d2013a2b8a0f651df1bc5c7a"
+    },
+    {
+      "name": "FountainPedestal",
+      "display_name": "Fountain Pedestal",
+      "category": "env",
+      "family": "hub",
+      "tris": 2304,
+      "budget": 4000,
+      "size_studs": [
+        10.8,
+        3.3,
+        10.8
+      ],
+      "file": "assets/models/env/FountainPedestal.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/FountainPedestal.png",
+      "front_preview": "assets/previews/FountainPedestal_front.png",
+      "source": "assets/blender/generated/env/FountainPedestal.blend",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1,
+      "author_center_offset": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "sockets_studs": {
+        "trophy_socket": [
+          0.0,
+          3.3,
+          0.0
+        ]
+      },
+      "assembly": {
+        "trophy_socket": [
+          0,
+          0,
+          3.3
+        ]
+      },
+      "fbx_sha256": "6c9b4d9c2767bb64cb83be32a906e9834a40bc27af31c4343b3540dcb015b2ee"
+    },
+    {
+      "name": "PlazaSteps",
+      "display_name": "Plaza Steps",
+      "category": "env",
+      "family": "hub",
+      "tris": 1296,
+      "budget": 1800,
+      "size_studs": [
+        10.0,
+        2.16,
+        8.0
+      ],
+      "file": "assets/models/env/PlazaSteps.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/PlazaSteps.png",
+      "front_preview": "assets/previews/PlazaSteps_front.png",
+      "source": "assets/blender/generated/env/PlazaSteps.blend",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1,
+      "author_center_offset": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "sockets_studs": {},
+      "assembly": {
+        "rise": 2.12,
+        "run": 8
+      },
+      "fbx_sha256": "b394df209c47f6eabaa4a966409f1d114fa9b0211329edf840020abc67b0da08"
+    },
+    {
+      "name": "PlotPlatform",
+      "display_name": "Plot Platform",
+      "category": "env",
+      "family": "plot",
+      "tris": 1380,
+      "budget": 3500,
+      "size_studs": [
+        32.0,
+        1.68,
+        32.0
+      ],
+      "file": "assets/models/env/PlotPlatform.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/PlotPlatform.png",
+      "front_preview": "assets/previews/PlotPlatform_front.png",
+      "source": "assets/blender/generated/env/PlotPlatform.blend",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1,
+      "author_center_offset": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "sockets_studs": {},
+      "assembly": {
+        "grid": [
+          32,
+          32
+        ],
+        "surface": 1.45,
+        "fence_channels": [
+          -14.35,
+          14.35
+        ],
+        "fence_slot_floor": 1.2,
+        "fence_slot_width": 0.7
+      },
+      "fbx_sha256": "fe80497e6c6278dac15551c1e2b4af4d85042b52fc50f6316cc35bf3874b34e7"
+    },
+    {
+      "name": "PlotGateArch",
+      "display_name": "Plot Gate Arch",
+      "category": "env",
+      "family": "plot",
+      "tris": 1344,
+      "budget": 4000,
+      "size_studs": [
+        13.0,
+        10.34,
+        2.13
+      ],
+      "file": "assets/models/env/PlotGateArch.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/PlotGateArch.png",
+      "front_preview": "assets/previews/PlotGateArch_front.png",
+      "source": "assets/blender/generated/env/PlotGateArch.blend",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1,
+      "author_center_offset": [
+        0.0,
+        -0.065,
+        0.0
+      ],
+      "sockets_studs": {
+        "text_face": [
+          0.0,
+          8.25,
+          -1.075
+        ]
+      },
+      "assembly": {
+        "clear_width": 9.7,
+        "text_face": [
+          0,
+          -1.14,
+          8.25
+        ]
+      },
+      "fbx_sha256": "c7751212ecb9efb3b0aabb1f7aaece87c50f8e747c169400a77e8e1e99aff900"
+    },
+    {
+      "name": "PlotPathStraight",
+      "display_name": "Plot Path Straight",
+      "category": "env",
+      "family": "plot",
+      "tris": 1080,
+      "budget": 2500,
+      "size_studs": [
+        8.0,
+        1.04,
+        12.0
+      ],
+      "file": "assets/models/env/PlotPathStraight.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/PlotPathStraight.png",
+      "front_preview": "assets/previews/PlotPathStraight_front.png",
+      "source": "assets/blender/generated/env/PlotPathStraight.blend",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1,
+      "author_center_offset": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "sockets_studs": {},
+      "assembly": {
+        "grid": [
+          8,
+          12
+        ],
+        "surface": 1.04
+      },
+      "fbx_sha256": "b74e6180d20abe9b90d1d8680d870c5a03a54dabd4d24b1f5dd99d981964d76e"
+    },
+    {
+      "name": "PlotPathCorner",
+      "display_name": "Plot Path Corner",
+      "category": "env",
+      "family": "plot",
+      "tris": 364,
+      "budget": 1200,
+      "size_studs": [
+        12.0,
+        1.06,
+        12.0
+      ],
+      "file": "assets/models/env/PlotPathCorner.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/PlotPathCorner.png",
+      "front_preview": "assets/previews/PlotPathCorner_front.png",
+      "source": "assets/blender/generated/env/PlotPathCorner.blend",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1,
+      "author_center_offset": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "sockets_studs": {},
+      "assembly": {
+        "grid": [
+          12,
+          12
+        ],
+        "surface": 1.06
+      },
+      "fbx_sha256": "797ca6b23512e1bfe02ed1d60d225dbafbc397ed4a2f62353436b7a632d46662"
+    },
+    {
+      "name": "PlotCornerGarden",
+      "display_name": "Plot Corner Garden",
+      "category": "env",
+      "family": "plot",
+      "tris": 2180,
+      "budget": 3000,
+      "size_studs": [
+        4.6,
+        3.93,
+        4.6
+      ],
+      "file": "assets/models/env/PlotCornerGarden.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/PlotCornerGarden.png",
+      "front_preview": "assets/previews/PlotCornerGarden_front.png",
+      "source": "assets/blender/generated/env/PlotCornerGarden.blend",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1,
+      "author_center_offset": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "sockets_studs": {},
+      "assembly": {},
+      "fbx_sha256": "d522366cabfbf5dd77334dc4826779b2f2b04db87e170c90f9d160d88b104eee"
+    },
+    {
+      "name": "PlotSignPost",
+      "display_name": "Plot Sign Post",
+      "category": "env",
+      "family": "plot",
+      "tris": 540,
+      "budget": 1500,
+      "size_studs": [
+        5.6,
+        6.32,
+        1.5
+      ],
+      "file": "assets/models/env/PlotSignPost.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/PlotSignPost.png",
+      "front_preview": "assets/previews/PlotSignPost_front.png",
+      "source": "assets/blender/generated/env/PlotSignPost.blend",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1,
+      "author_center_offset": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "sockets_studs": {
+        "text_face": [
+          0.0,
+          4.7,
+          -0.42
+        ]
+      },
+      "assembly": {
+        "text_face": [
+          0,
+          -0.42,
+          4.7
+        ]
+      },
+      "fbx_sha256": "72751b592c9466ae586a8dec36e725a0a8d77b27c939649da9a8a2cb79188de1"
+    },
+    {
+      "name": "PlotFenceSection",
+      "display_name": "Plot Fence Section",
+      "category": "env",
+      "family": "plot",
+      "tris": 1388,
+      "budget": 2000,
+      "size_studs": [
+        8.7989,
+        3.5,
+        0.84
+      ],
+      "file": "assets/models/env/PlotFenceSection.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/PlotFenceSection.png",
+      "front_preview": "assets/previews/PlotFenceSection_front.png",
+      "source": "assets/blender/generated/env/PlotFenceSection.blend",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1,
+      "author_center_offset": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "sockets_studs": {},
+      "assembly": {
+        "post_spacing": 8,
+        "post_width": 0.6
+      },
+      "fbx_sha256": "d137c2542151b380340d952101337782138aed0c499b6ef3515f9eac6dc3641f"
+    },
+    {
+      "name": "CliffStraightA",
+      "display_name": "Cliff Straight A",
+      "category": "env",
+      "family": "island",
+      "tris": 244,
+      "budget": 1500,
+      "size_studs": [
+        24.0,
+        13.4,
+        12.4588
+      ],
+      "file": "assets/models/env/CliffStraightA.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/CliffStraightA.png",
+      "front_preview": "assets/previews/CliffStraightA_front.png",
+      "source": "assets/blender/generated/env/CliffStraightA.blend",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1,
+      "author_center_offset": [
+        0.0,
+        -0.2294,
+        0.0
+      ],
+      "sockets_studs": {},
+      "assembly": {
+        "grid": [
+          24,
+          12
+        ],
+        "surface": 13.4
+      },
+      "fbx_sha256": "c6791dde27fa6ac368bbd2cee4e7a8ce99fd4f0d2a29909ce8f0700d4189c241"
+    },
+    {
+      "name": "CliffStraightB",
+      "display_name": "Cliff Straight B",
+      "category": "env",
+      "family": "island",
+      "tris": 244,
+      "budget": 1500,
+      "size_studs": [
+        24.0,
+        13.4,
+        12.6443
+      ],
+      "file": "assets/models/env/CliffStraightB.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/CliffStraightB.png",
+      "front_preview": "assets/previews/CliffStraightB_front.png",
+      "source": "assets/blender/generated/env/CliffStraightB.blend",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1,
+      "author_center_offset": [
+        0.0,
+        -0.322131,
+        0.0
+      ],
+      "sockets_studs": {},
+      "assembly": {
+        "grid": [
+          24,
+          12
+        ],
+        "surface": 13.4
+      },
+      "fbx_sha256": "e6b8b7af4abe6553a5247b6ac0045b5dc2b553c6701d58742d37cc0853b73b4f"
+    },
+    {
+      "name": "CliffStraightC",
+      "display_name": "Cliff Straight C",
+      "category": "env",
+      "family": "island",
+      "tris": 244,
+      "budget": 1500,
+      "size_studs": [
+        24.0,
+        13.4,
+        12.6054
+      ],
+      "file": "assets/models/env/CliffStraightC.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/CliffStraightC.png",
+      "front_preview": "assets/previews/CliffStraightC_front.png",
+      "source": "assets/blender/generated/env/CliffStraightC.blend",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1,
+      "author_center_offset": [
+        0.0,
+        -0.30268,
+        0.0
+      ],
+      "sockets_studs": {},
+      "assembly": {
+        "grid": [
+          24,
+          12
+        ],
+        "surface": 13.4
+      },
+      "fbx_sha256": "05587f3c79291d61268a9ab6e6552126319ccc36318eb1b05d663847dc27dc24"
+    },
+    {
+      "name": "CliffCorner",
+      "display_name": "Cliff Corner",
+      "category": "env",
+      "family": "island",
+      "tris": 208,
+      "budget": 1000,
+      "size_studs": [
+        12.0,
+        13.55,
+        12.0
+      ],
+      "file": "assets/models/env/CliffCorner.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/CliffCorner.png",
+      "front_preview": "assets/previews/CliffCorner_front.png",
+      "source": "assets/blender/generated/env/CliffCorner.blend",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1,
+      "author_center_offset": [
+        6.0,
+        -6.0,
+        0.0
+      ],
+      "sockets_studs": {
+        "arc_center": [
+          -6.0,
+          0.0,
+          6.0
+        ]
+      },
+      "assembly": {
+        "arc_center": [
+          0,
+          0,
+          0
+        ],
+        "radii": [
+          0.5,
+          12
+        ],
+        "sector_degrees": 90,
+        "surface": 13.4
+      },
+      "fbx_sha256": "446a327954c1ca6f4c0233d7169fcb1e89a5e806ad6917abb73c5d0f46d4d92a"
+    },
+    {
+      "name": "BeachStrip",
+      "display_name": "Beach Strip",
+      "category": "env",
+      "family": "island",
+      "tris": 264,
+      "budget": 1200,
+      "size_studs": [
+        24.0,
+        1.13,
+        8.3
+      ],
+      "file": "assets/models/env/BeachStrip.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/BeachStrip.png",
+      "front_preview": "assets/previews/BeachStrip_front.png",
+      "source": "assets/blender/generated/env/BeachStrip.blend",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1,
+      "author_center_offset": [
+        0.0,
+        -0.15,
+        0.0
+      ],
+      "sockets_studs": {},
+      "assembly": {
+        "grid": [
+          24,
+          8
+        ],
+        "surface": 0.8
+      },
+      "fbx_sha256": "882c1a2f09898644d08359ccd96eef673e84f00a3cde7596398564d47c6e7c32"
+    },
+    {
+      "name": "BeachCorner",
+      "display_name": "Beach Corner",
+      "category": "env",
+      "family": "island",
+      "tris": 300,
+      "budget": 1000,
+      "size_studs": [
+        20.0,
+        0.8,
+        20.0
+      ],
+      "file": "assets/models/env/BeachCorner.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/BeachCorner.png",
+      "front_preview": "assets/previews/BeachCorner_front.png",
+      "source": "assets/blender/generated/env/BeachCorner.blend",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1,
+      "author_center_offset": [
+        10.0,
+        -10.0,
+        0.0
+      ],
+      "sockets_studs": {
+        "arc_center": [
+          -10.0,
+          0.0,
+          10.0
+        ]
+      },
+      "assembly": {
+        "arc_center": [
+          0,
+          0,
+          0
+        ],
+        "radii": [
+          12,
+          20
+        ],
+        "sector_degrees": 90,
+        "surface": 0.8
+      },
+      "fbx_sha256": "cc884730df46515ffdef760214aa4a368e3000d1d188ca79672d68feaea5c125"
+    },
+    {
+      "name": "GrassSlab",
+      "display_name": "Grass Slab",
+      "category": "env",
+      "family": "island",
+      "tris": 24,
+      "budget": 200,
+      "size_studs": [
+        24.0,
+        1.4,
+        24.0
+      ],
+      "file": "assets/models/env/GrassSlab.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/GrassSlab.png",
+      "front_preview": "assets/previews/GrassSlab_front.png",
+      "source": "assets/blender/generated/env/GrassSlab.blend",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1,
+      "author_center_offset": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "sockets_studs": {},
+      "assembly": {
+        "grid": [
+          24,
+          24
+        ],
+        "surface": 1.4
+      },
+      "fbx_sha256": "ea294d3fc31bc83f069b739b3fc30e1e77b7373e42e9f120c66d71409ad36ffb"
+    },
+    {
+      "name": "SmallCove",
+      "display_name": "Small Cove",
+      "category": "env",
+      "family": "island",
+      "tris": 748,
+      "budget": 2200,
+      "size_studs": [
+        31.9951,
+        9.15,
+        26.2846
+      ],
+      "file": "assets/models/env/SmallCove.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/SmallCove.png",
+      "front_preview": "assets/previews/SmallCove_front.png",
+      "source": "assets/blender/generated/env/SmallCove.blend",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1,
+      "author_center_offset": [
+        0.0,
+        -2.857699,
+        0.0
+      ],
+      "sockets_studs": {
+        "arc_center": [
+          0.0,
+          0.0,
+          2.8577
+        ]
+      },
+      "assembly": {
+        "arc_center": [
+          0,
+          0,
+          0
+        ],
+        "radii": [
+          9,
+          16
+        ],
+        "sector_degrees": 260
+      },
+      "fbx_sha256": "00ba5222a11e5dcf992c684c5d756abe9964c4db2cb23cde7a4531b01b5b6262"
+    },
+    {
+      "name": "ShoreRocks",
+      "display_name": "Shore Rocks",
+      "category": "env",
+      "family": "island",
+      "tris": 396,
+      "budget": 1200,
+      "size_studs": [
+        8.2749,
+        3.0014,
+        5.3376
+      ],
+      "file": "assets/models/env/ShoreRocks.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/ShoreRocks.png",
+      "front_preview": "assets/previews/ShoreRocks_front.png",
+      "source": "assets/blender/generated/env/ShoreRocks.blend",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1,
+      "author_center_offset": [
+        -0.430423,
+        0.027509,
+        0.0
+      ],
+      "sockets_studs": {},
+      "assembly": {},
+      "fbx_sha256": "985a3f8b06d437aed9edfc00942535668bc044e28b56ad3891da84a3f80ec709"
+    },
+    {
+      "name": "TreeStump",
+      "display_name": "Tree Stump",
+      "category": "env",
+      "family": "island",
+      "tris": 918,
+      "budget": 2000,
+      "size_studs": [
+        4.4345,
+        2.545,
+        4.0734
+      ],
+      "file": "assets/models/env/TreeStump.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/TreeStump.png",
+      "front_preview": "assets/previews/TreeStump_front.png",
+      "source": "assets/blender/generated/env/TreeStump.blend",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1,
+      "author_center_offset": [
+        0.149157,
+        0.063323,
+        0.0
+      ],
+      "sockets_studs": {},
+      "assembly": {},
+      "fbx_sha256": "c051e6eb992651e72dc159b0abccd3dc4c1af0f5858801958db39e58d1ff3095"
+    },
+    {
+      "name": "RopeBridge",
+      "display_name": "Rope Bridge",
+      "category": "env",
+      "family": "island",
+      "tris": 3728,
+      "budget": 4500,
+      "size_studs": [
+        9.3,
+        4.12,
+        24.0
+      ],
+      "file": "assets/models/env/RopeBridge.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/RopeBridge.png",
+      "front_preview": "assets/previews/RopeBridge_front.png",
+      "source": "assets/blender/generated/env/RopeBridge.blend",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1,
+      "author_center_offset": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "sockets_studs": {},
+      "assembly": {
+        "grid": [
+          8,
+          24
+        ],
+        "deck_height": 2.625
+      },
+      "fbx_sha256": "9a9f05142e96b23d34cf126f4aa25fff37232e4dbfb6079777959614fad7be75"
+    },
+    {
+      "name": "IslandStairs",
+      "display_name": "Island Stairs",
+      "category": "env",
+      "family": "island",
+      "tris": 1296,
+      "budget": 1800,
+      "size_studs": [
+        8.0,
+        2.16,
+        8.0
+      ],
+      "file": "assets/models/env/IslandStairs.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/IslandStairs.png",
+      "front_preview": "assets/previews/IslandStairs_front.png",
+      "source": "assets/blender/generated/env/IslandStairs.blend",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1,
+      "author_center_offset": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "sockets_studs": {},
+      "assembly": {
+        "rise": 2.12,
+        "run": 8
+      },
+      "fbx_sha256": "4d75a285bb6bc370eb94b6b784e349a736efda0e607f0eb9aebc740310a7d2a4"
+    },
+    {
+      "name": "DockPier",
+      "display_name": "Dock Pier",
+      "category": "env",
+      "family": "island",
+      "tris": 2920,
+      "budget": 3500,
+      "size_studs": [
+        9.3,
+        4.12,
+        16.0
+      ],
+      "file": "assets/models/env/DockPier.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/DockPier.png",
+      "front_preview": "assets/previews/DockPier_front.png",
+      "source": "assets/blender/generated/env/DockPier.blend",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1,
+      "author_center_offset": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "sockets_studs": {},
+      "assembly": {
+        "grid": [
+          8,
+          16
+        ],
+        "deck_height": 2.625
+      },
+      "fbx_sha256": "6f1719fdf76bccf4b4e0ac0d98d34306d290ad127527886dfa6d567f38c33bc4"
+    },
+    {
+      "name": "Lighthouse",
+      "display_name": "Lighthouse",
+      "category": "env",
+      "family": "island",
+      "tris": 2568,
+      "budget": 6000,
+      "size_studs": [
+        10.6,
+        21.78,
+        10.6
+      ],
+      "file": "assets/models/env/Lighthouse.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/Lighthouse.png",
+      "front_preview": "assets/previews/Lighthouse_front.png",
+      "source": "assets/blender/generated/env/Lighthouse.blend",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1,
+      "author_center_offset": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "sockets_studs": {},
+      "assembly": {},
+      "fbx_sha256": "2c04bf6c3651135fd4be995ee85dbbc5857fb10fe4150c2ec9c00e99decb9795"
+    },
+    {
+      "name": "MountainRidgeA",
+      "display_name": "Mountain Ridge A",
+      "category": "env",
+      "family": "background",
+      "tris": 36,
+      "budget": 300,
+      "size_studs": [
+        100.0,
+        49.0,
+        17.0
+      ],
+      "file": "assets/models/env/MountainRidgeA.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/MountainRidgeA.png",
+      "front_preview": "assets/previews/MountainRidgeA_front.png",
+      "source": "assets/blender/generated/env/MountainRidgeA.blend",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1,
+      "author_center_offset": [
+        -1.0,
+        0.5,
+        0.0
+      ],
+      "sockets_studs": {},
+      "assembly": {
+        "tintable": true,
+        "suggested_rgb": [
+          58,
+          141,
+          235
+        ]
+      },
+      "fbx_sha256": "4319f1d4ffa5f7224525848efdf24a805f9d5d7c4c788e5d976e6b5b8fe5ccd2"
+    },
+    {
+      "name": "MountainRidgeB",
+      "display_name": "Mountain Ridge B",
+      "category": "env",
+      "family": "background",
+      "tris": 36,
+      "budget": 300,
+      "size_studs": [
+        99.0,
+        57.0,
+        17.0
+      ],
+      "file": "assets/models/env/MountainRidgeB.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/MountainRidgeB.png",
+      "front_preview": "assets/previews/MountainRidgeB_front.png",
+      "source": "assets/blender/generated/env/MountainRidgeB.blend",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1,
+      "author_center_offset": [
+        -3.5,
+        0.5,
+        0.0
+      ],
+      "sockets_studs": {},
+      "assembly": {
+        "tintable": true,
+        "suggested_rgb": [
+          58,
+          161,
+          235
+        ]
+      },
+      "fbx_sha256": "728182c20d9e48b7ff1721652446fa47459a3c77599b5bdb398242a93314d496"
+    },
+    {
+      "name": "MountainRidgeC",
+      "display_name": "Mountain Ridge C",
+      "category": "env",
+      "family": "background",
+      "tris": 36,
+      "budget": 300,
+      "size_studs": [
+        101.0,
+        51.0,
+        17.0
+      ],
+      "file": "assets/models/env/MountainRidgeC.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/MountainRidgeC.png",
+      "front_preview": "assets/previews/MountainRidgeC_front.png",
+      "source": "assets/blender/generated/env/MountainRidgeC.blend",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1,
+      "author_center_offset": [
+        -0.5,
+        0.5,
+        0.0
+      ],
+      "sockets_studs": {},
+      "assembly": {
+        "tintable": true,
+        "suggested_rgb": [
+          58,
+          181,
+          235
+        ]
+      },
+      "fbx_sha256": "68cd2be023228594f421283774c99dc92248037133ae73dfd90ecb01e21f28a6"
+    },
+    {
+      "name": "CloudBankTall",
+      "display_name": "Cloud Bank Tall",
+      "category": "env",
+      "family": "background",
+      "tris": 840,
+      "budget": 1800,
+      "size_studs": [
+        55.0,
+        18.0,
+        18.0
+      ],
+      "file": "assets/models/env/CloudBankTall.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/CloudBankTall.png",
+      "front_preview": "assets/previews/CloudBankTall_front.png",
+      "source": "assets/blender/generated/env/CloudBankTall.blend",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1,
+      "author_center_offset": [
+        0.5,
+        0.0,
+        0.0
+      ],
+      "sockets_studs": {},
+      "assembly": {
+        "cast_shadow": false
+      },
+      "fbx_sha256": "d540fd3fd22e9edd6d93b3baf7bea9b6eab43247a159a1af4a29fcd44c9f6fc7"
+    },
+    {
+      "name": "CloudBankWide",
+      "display_name": "Cloud Bank Wide",
+      "category": "env",
+      "family": "background",
+      "tris": 840,
+      "budget": 1800,
+      "size_studs": [
+        58.2,
+        11.7,
+        18.0
+      ],
+      "file": "assets/models/env/CloudBankWide.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/CloudBankWide.png",
+      "front_preview": "assets/previews/CloudBankWide_front.png",
+      "source": "assets/blender/generated/env/CloudBankWide.blend",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1,
+      "author_center_offset": [
+        0.3,
+        0.0,
+        0.0
+      ],
+      "sockets_studs": {},
+      "assembly": {
+        "cast_shadow": false
+      },
+      "fbx_sha256": "7131d1d6442c992c2857ed9be0cfc1fb2c6ce3590113e6db6438636dafa938f0"
+    },
+    {
+      "name": "FloatingIsletA",
+      "display_name": "Floating Islet A",
+      "category": "env",
+      "family": "background",
+      "tris": 1792,
+      "budget": 4000,
+      "size_studs": [
+        18.9745,
+        21.0293,
+        15.4546
+      ],
+      "file": "assets/models/env/FloatingIsletA.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/FloatingIsletA.png",
+      "front_preview": "assets/previews/FloatingIsletA_front.png",
+      "source": "assets/blender/generated/env/FloatingIsletA.blend",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1,
+      "author_center_offset": [
+        0.429975,
+        0.193685,
+        0.0
+      ],
+      "sockets_studs": {},
+      "assembly": {},
+      "fbx_sha256": "17484c491d42e818155c5742c4c88f6f37ffeb1efde1ef9e0826a0eb84c63ee4"
+    },
+    {
+      "name": "FloatingIsletB",
+      "display_name": "Floating Islet B",
+      "category": "env",
+      "family": "background",
+      "tris": 244,
+      "budget": 4000,
+      "size_studs": [
+        20.3245,
+        20.1,
+        14.9461
+      ],
+      "file": "assets/models/env/FloatingIsletB.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/FloatingIsletB.png",
+      "front_preview": "assets/previews/FloatingIsletB_front.png",
+      "source": "assets/blender/generated/env/FloatingIsletB.blend",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1,
+      "author_center_offset": [
+        -0.400189,
+        0.497043,
+        0.0
+      ],
+      "sockets_studs": {},
+      "assembly": {},
+      "fbx_sha256": "aa4436b8a6921683613aa5a91accec2ee5d3d50d6a087afb7eab6c26154460c0"
+    },
+    {
+      "name": "FloatingIsletC",
+      "display_name": "Floating Islet C",
+      "category": "env",
+      "family": "background",
+      "tris": 1266,
+      "budget": 4000,
+      "size_studs": [
+        19.7161,
+        16.154,
+        15.7228
+      ],
+      "file": "assets/models/env/FloatingIsletC.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/FloatingIsletC.png",
+      "front_preview": "assets/previews/FloatingIsletC_front.png",
+      "source": "assets/blender/generated/env/FloatingIsletC.blend",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1,
+      "author_center_offset": [
+        0.420789,
+        0.083154,
+        0.0
+      ],
+      "sockets_studs": {},
+      "assembly": {},
+      "fbx_sha256": "6d868795db1d017449f78158d9b17c316d64759391e96de295eaf1b2ffcf05bd"
+    },
+    {
+      "name": "GiantPalmCluster",
+      "display_name": "Giant Palm Cluster",
+      "category": "env",
+      "family": "background",
+      "tris": 4868,
+      "budget": 6000,
+      "size_studs": [
+        24.9108,
+        18.4043,
+        20.7429
+      ],
+      "file": "assets/models/env/GiantPalmCluster.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/GiantPalmCluster.png",
+      "front_preview": "assets/previews/GiantPalmCluster_front.png",
+      "source": "assets/blender/generated/env/GiantPalmCluster.blend",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1,
+      "author_center_offset": [
+        -0.339898,
+        0.929383,
+        -0.105874
+      ],
+      "sockets_studs": {},
+      "assembly": {},
+      "fbx_sha256": "5031e9c3fd149a120f8db2782c650a68469ef60217f7215e81923a0f5eef7afc"
+    },
+    {
+      "name": "ToiletCastle",
+      "display_name": "Toilet Castle",
+      "category": "env",
+      "family": "hero",
+      "tris": 9800,
+      "budget": 14000,
+      "size_studs": [
+        28.0,
+        32.633,
+        23.5
+      ],
+      "file": "assets/models/env/ToiletCastle.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/ToiletCastle.png",
+      "front_preview": "assets/previews/ToiletCastle_front.png",
+      "source": "assets/blender/generated/env/ToiletCastle.blend",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1,
+      "author_center_offset": [
+        0.0,
+        -2.25,
+        0.0
+      ],
+      "sockets_studs": {},
+      "assembly": {},
+      "fbx_sha256": "fca556c287368e95ed3eeb24d55d6570c85115ad4e4e2dcea4d7eff3df0e57e5"
+    },
+    {
+      "name": "PortalSewer",
+      "display_name": "Portal Sewer",
+      "category": "env",
+      "family": "hero",
+      "tris": 2436,
+      "budget": 6500,
+      "size_studs": [
+        11.6,
+        11.65,
+        3.0
+      ],
+      "file": "assets/models/env/PortalSewer.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/PortalSewer.png",
+      "front_preview": "assets/previews/PortalSewer_front.png",
+      "source": "assets/blender/generated/env/PortalSewer.blend",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1,
+      "author_center_offset": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "sockets_studs": {},
+      "assembly": {
+        "extends": "PortalGate",
+        "clear_width": 7.6
+      },
+      "fbx_sha256": "e62f2e8e6195f9c6b9dd6a5e708bb9e229426b2b5f43bf44e430e01f5354105a"
+    },
+    {
+      "name": "PortalSpace",
+      "display_name": "Portal Space",
+      "category": "env",
+      "family": "hero",
+      "tris": 1540,
+      "budget": 6500,
+      "size_studs": [
+        11.6,
+        12.7514,
+        3.0
+      ],
+      "file": "assets/models/env/PortalSpace.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/PortalSpace.png",
+      "front_preview": "assets/previews/PortalSpace_front.png",
+      "source": "assets/blender/generated/env/PortalSpace.blend",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1,
+      "author_center_offset": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "sockets_studs": {},
+      "assembly": {
+        "extends": "PortalGate",
+        "clear_width": 7.6
+      },
+      "fbx_sha256": "83a9fea18a3987e658e3280089656c53ba81c92279918642af4b90ffc5bf609e"
+    },
+    {
+      "name": "PortalHell",
+      "display_name": "Portal Hell",
+      "category": "env",
+      "family": "hero",
+      "tris": 1064,
+      "budget": 6500,
+      "size_studs": [
+        12.5,
+        12.83,
+        3.0
+      ],
+      "file": "assets/models/env/PortalHell.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/PortalHell.png",
+      "front_preview": "assets/previews/PortalHell_front.png",
+      "source": "assets/blender/generated/env/PortalHell.blend",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1,
+      "author_center_offset": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "sockets_studs": {},
+      "assembly": {
+        "extends": "PortalGate",
+        "clear_width": 7.6
+      },
+      "fbx_sha256": "1ebc3a73c76ff103650dc60b01b531c5752c66caf33e40108709919738c5da29"
+    },
+    {
+      "name": "ShopKiosk",
+      "display_name": "Shop Kiosk",
+      "category": "env",
+      "family": "hero",
+      "tris": 2936,
+      "budget": 8000,
+      "size_studs": [
+        12.0,
+        13.75,
+        8.0
+      ],
+      "file": "assets/models/env/ShopKiosk.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/ShopKiosk.png",
+      "front_preview": "assets/previews/ShopKiosk_front.png",
+      "source": "assets/blender/generated/env/ShopKiosk.blend",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1,
+      "author_center_offset": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "sockets_studs": {
+        "text_face": [
+          0.0,
+          10.5,
+          -0.83
+        ]
+      },
+      "assembly": {
+        "text_face": [
+          0,
+          -0.83,
+          10.5
+        ]
+      },
+      "fbx_sha256": "412580003d839f4fd1ec2feef1bc3aec798eb89746bf355559fb7a4be78e1568"
+    },
+    {
+      "name": "IndexBookPedestal",
+      "display_name": "Index Book Pedestal",
+      "category": "env",
+      "family": "hero",
+      "tris": 1900,
+      "budget": 4000,
+      "size_studs": [
+        5.8,
+        4.5922,
+        5.8
+      ],
+      "file": "assets/models/env/IndexBookPedestal.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/IndexBookPedestal.png",
+      "front_preview": "assets/previews/IndexBookPedestal_front.png",
+      "source": "assets/blender/generated/env/IndexBookPedestal.blend",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1,
+      "author_center_offset": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "sockets_studs": {},
+      "assembly": {},
+      "fbx_sha256": "0854cda7f5c955447901f6857f98a15d28653e88c943879d6180ce92b4f52fe8"
+    },
+    {
+      "name": "CollectCoinJar",
+      "display_name": "Collect Coin Jar",
+      "category": "env",
+      "family": "hero",
+      "tris": 3200,
+      "budget": 6000,
+      "size_studs": [
+        6.6,
+        6.47,
+        6.6
+      ],
+      "file": "assets/models/env/CollectCoinJar.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/CollectCoinJar.png",
+      "front_preview": "assets/previews/CollectCoinJar_front.png",
+      "source": "assets/blender/generated/env/CollectCoinJar.blend",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1,
+      "author_center_offset": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "sockets_studs": {},
+      "assembly": {},
+      "fbx_sha256": "adda55b65aab8d97714d79fadcde7d82ba0891883f74d29c1a3a1bcc20bacfa7"
+    }
+  ]
+}

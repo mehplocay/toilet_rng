@@ -1,0 +1,13 @@
+{
+  "assets": 44,
+  "individual_previews": 88,
+  "contact_sheets": 10,
+  "assembly_views": 3,
+  "unique_triangles": 63200,
+  "maximum_asset_triangles": 9800,
+  "maximum_dimension_studs": 101.0,
+  "assembly_mesh_instances": 515,
+  "assembly_placed_triangles": 469334,
+  "status": "passed",
+  "boundary": "Local artifact and Blender round-trip audit; Studio acceptance remains required"
+}

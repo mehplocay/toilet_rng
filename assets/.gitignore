@@ -2,4 +2,5 @@
 blender/*.log
 blender/__pycache__/
 blender/generated/*.blend1
+blender/generated/env/*.blend1
 models/**/*.fbm/

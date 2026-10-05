@@ -1,0 +1,402 @@
+{
+  "scope": "Blender FBX round trip, not Roblox Studio upload",
+  "manifest": "assets/manifest-env.json",
+  "assets": [
+    {
+      "name": "HubMedallion",
+      "tris": 2136,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "HubRingSegment",
+      "tris": 644,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "HubCurbSegment",
+      "tris": 204,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "HubPathStrip",
+      "tris": 1080,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "HubEdgeStraight",
+      "tris": 324,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "FountainPedestal",
+      "tris": 2304,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "PlazaSteps",
+      "tris": 1296,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "PlotPlatform",
+      "tris": 1380,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "PlotGateArch",
+      "tris": 1344,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "PlotPathStraight",
+      "tris": 1080,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "PlotPathCorner",
+      "tris": 364,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "PlotCornerGarden",
+      "tris": 2180,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "PlotSignPost",
+      "tris": 540,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "PlotFenceSection",
+      "tris": 1388,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "CliffStraightA",
+      "tris": 244,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "CliffStraightB",
+      "tris": 244,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "CliffStraightC",
+      "tris": 244,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "CliffCorner",
+      "tris": 208,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "BeachStrip",
+      "tris": 264,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "BeachCorner",
+      "tris": 300,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "GrassSlab",
+      "tris": 24,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "SmallCove",
+      "tris": 748,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "ShoreRocks",
+      "tris": 396,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "TreeStump",
+      "tris": 918,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "RopeBridge",
+      "tris": 3728,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "IslandStairs",
+      "tris": 1296,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "DockPier",
+      "tris": 2920,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "Lighthouse",
+      "tris": 2568,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "MountainRidgeA",
+      "tris": 36,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "MountainRidgeB",
+      "tris": 36,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "MountainRidgeC",
+      "tris": 36,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "CloudBankTall",
+      "tris": 840,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "CloudBankWide",
+      "tris": 840,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "FloatingIsletA",
+      "tris": 1792,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "FloatingIsletB",
+      "tris": 244,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "FloatingIsletC",
+      "tris": 1266,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "GiantPalmCluster",
+      "tris": 4868,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "ToiletCastle",
+      "tris": 9800,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "PortalSewer",
+      "tris": 2436,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "PortalSpace",
+      "tris": 1540,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "PortalHell",
+      "tris": 1064,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "ShopKiosk",
+      "tris": 2936,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "IndexBookPedestal",
+      "tris": 1900,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "CollectCoinJar",
+      "tris": 3200,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    }
+  ]
+}

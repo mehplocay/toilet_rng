@@ -1,0 +1,5181 @@
+{
+  "scope": "Art assembly recipe only. Import acceptance and runtime integration are separate.",
+  "coordinate_system": "Roblox X/Y/Z, front -Z; yaw about +Y after orientation correction",
+  "surface_height_studs": 13.4,
+  "plot_radius_studs": 85,
+  "plot_count": 10,
+  "mesh_instances": 515,
+  "placed_triangles": 469334,
+  "placements": [
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        -108,
+        12,
+        -108
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        -108,
+        12,
+        -84
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        -108,
+        12,
+        -60
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        -108,
+        12,
+        -36
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        -108,
+        12,
+        -12
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        -108,
+        12,
+        12
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        -108,
+        12,
+        36
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        -108,
+        12,
+        60
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        -108,
+        12,
+        84
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        -108,
+        12,
+        108
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        -84,
+        12,
+        -108
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        -84,
+        12,
+        -84
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        -84,
+        12,
+        -60
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        -84,
+        12,
+        -36
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        -84,
+        12,
+        -12
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        -84,
+        12,
+        12
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        -84,
+        12,
+        36
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        -84,
+        12,
+        60
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        -84,
+        12,
+        84
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        -84,
+        12,
+        108
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        -60,
+        12,
+        -108
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        -60,
+        12,
+        -84
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        -60,
+        12,
+        -60
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        -60,
+        12,
+        -36
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        -60,
+        12,
+        -12
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        -60,
+        12,
+        12
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        -60,
+        12,
+        36
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        -60,
+        12,
+        60
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        -60,
+        12,
+        84
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        -60,
+        12,
+        108
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        -36,
+        12,
+        -108
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        -36,
+        12,
+        -84
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        -36,
+        12,
+        -60
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        -36,
+        12,
+        -36
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        -36,
+        12,
+        -12
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        -36,
+        12,
+        12
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        -36,
+        12,
+        36
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        -36,
+        12,
+        60
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        -36,
+        12,
+        84
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        -36,
+        12,
+        108
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        -12,
+        12,
+        -108
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        -12,
+        12,
+        -84
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        -12,
+        12,
+        -60
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        -12,
+        12,
+        -36
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        -12,
+        12,
+        -12
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        -12,
+        12,
+        12
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        -12,
+        12,
+        36
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        -12,
+        12,
+        60
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        -12,
+        12,
+        84
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        -12,
+        12,
+        108
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        12,
+        12,
+        -108
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        12,
+        12,
+        -84
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        12,
+        12,
+        -60
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        12,
+        12,
+        -36
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        12,
+        12,
+        -12
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        12,
+        12,
+        12
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        12,
+        12,
+        36
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        12,
+        12,
+        60
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        12,
+        12,
+        84
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        12,
+        12,
+        108
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        36,
+        12,
+        -108
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        36,
+        12,
+        -84
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        36,
+        12,
+        -60
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        36,
+        12,
+        -36
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        36,
+        12,
+        -12
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        36,
+        12,
+        12
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        36,
+        12,
+        36
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        36,
+        12,
+        60
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        36,
+        12,
+        84
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        36,
+        12,
+        108
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        60,
+        12,
+        -108
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        60,
+        12,
+        -84
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        60,
+        12,
+        -60
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        60,
+        12,
+        -36
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        60,
+        12,
+        -12
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        60,
+        12,
+        12
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        60,
+        12,
+        36
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        60,
+        12,
+        60
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        60,
+        12,
+        84
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        60,
+        12,
+        108
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        84,
+        12,
+        -108
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        84,
+        12,
+        -84
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        84,
+        12,
+        -60
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        84,
+        12,
+        -36
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        84,
+        12,
+        -12
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        84,
+        12,
+        12
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        84,
+        12,
+        36
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        84,
+        12,
+        60
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        84,
+        12,
+        84
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        84,
+        12,
+        108
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        108,
+        12,
+        -108
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        108,
+        12,
+        -84
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        108,
+        12,
+        -60
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        108,
+        12,
+        -36
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        108,
+        12,
+        -12
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        108,
+        12,
+        12
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        108,
+        12,
+        36
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        108,
+        12,
+        60
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        108,
+        12,
+        84
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        108,
+        12,
+        108
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "CliffStraightA",
+      "position_studs": [
+        -108.0,
+        -0.01,
+        -114.2294
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "CliffStraightA",
+      "position_studs": [
+        -108.0,
+        -0.01,
+        114.2294
+      ],
+      "yaw_degrees": -180,
+      "scale": 1
+    },
+    {
+      "asset": "CliffStraightA",
+      "position_studs": [
+        114.2294,
+        -0.01,
+        -108.0
+      ],
+      "yaw_degrees": -90,
+      "scale": 1
+    },
+    {
+      "asset": "CliffStraightA",
+      "position_studs": [
+        -114.2294,
+        -0.01,
+        -108.0
+      ],
+      "yaw_degrees": -270,
+      "scale": 1
+    },
+    {
+      "asset": "CliffStraightB",
+      "position_studs": [
+        -84.0,
+        -0.01,
+        -114.32213
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "BeachStrip",
+      "position_studs": [
+        -84.0,
+        -0.3,
+        -123.0
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "CliffStraightB",
+      "position_studs": [
+        -84.0,
+        -0.01,
+        114.32213
+      ],
+      "yaw_degrees": -180,
+      "scale": 1
+    },
+    {
+      "asset": "BeachStrip",
+      "position_studs": [
+        -84.0,
+        -0.3,
+        123.0
+      ],
+      "yaw_degrees": -180,
+      "scale": 1
+    },
+    {
+      "asset": "CliffStraightB",
+      "position_studs": [
+        114.32213,
+        -0.01,
+        -84.0
+      ],
+      "yaw_degrees": -90,
+      "scale": 1
+    },
+    {
+      "asset": "BeachStrip",
+      "position_studs": [
+        123.0,
+        -0.3,
+        -84.0
+      ],
+      "yaw_degrees": -90,
+      "scale": 1
+    },
+    {
+      "asset": "CliffStraightB",
+      "position_studs": [
+        -114.32213,
+        -0.01,
+        -84.0
+      ],
+      "yaw_degrees": -270,
+      "scale": 1
+    },
+    {
+      "asset": "BeachStrip",
+      "position_studs": [
+        -123.0,
+        -0.3,
+        -84.0
+      ],
+      "yaw_degrees": -270,
+      "scale": 1
+    },
+    {
+      "asset": "CliffStraightC",
+      "position_studs": [
+        -60.0,
+        -0.01,
+        -114.30268
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "BeachStrip",
+      "position_studs": [
+        -60.0,
+        -0.3,
+        -123.0
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "CliffStraightC",
+      "position_studs": [
+        -60.0,
+        -0.01,
+        114.30268
+      ],
+      "yaw_degrees": -180,
+      "scale": 1
+    },
+    {
+      "asset": "BeachStrip",
+      "position_studs": [
+        -60.0,
+        -0.3,
+        123.0
+      ],
+      "yaw_degrees": -180,
+      "scale": 1
+    },
+    {
+      "asset": "CliffStraightC",
+      "position_studs": [
+        114.30268,
+        -0.01,
+        -60.0
+      ],
+      "yaw_degrees": -90,
+      "scale": 1
+    },
+    {
+      "asset": "BeachStrip",
+      "position_studs": [
+        123.0,
+        -0.3,
+        -60.0
+      ],
+      "yaw_degrees": -90,
+      "scale": 1
+    },
+    {
+      "asset": "CliffStraightC",
+      "position_studs": [
+        -114.30268,
+        -0.01,
+        -60.0
+      ],
+      "yaw_degrees": -270,
+      "scale": 1
+    },
+    {
+      "asset": "BeachStrip",
+      "position_studs": [
+        -123.0,
+        -0.3,
+        -60.0
+      ],
+      "yaw_degrees": -270,
+      "scale": 1
+    },
+    {
+      "asset": "CliffStraightA",
+      "position_studs": [
+        -36.0,
+        -0.01,
+        -114.2294
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "BeachStrip",
+      "position_studs": [
+        -36.0,
+        -0.3,
+        -123.0
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "CliffStraightA",
+      "position_studs": [
+        -36.0,
+        -0.01,
+        114.2294
+      ],
+      "yaw_degrees": -180,
+      "scale": 1
+    },
+    {
+      "asset": "BeachStrip",
+      "position_studs": [
+        -36.0,
+        -0.3,
+        123.0
+      ],
+      "yaw_degrees": -180,
+      "scale": 1
+    },
+    {
+      "asset": "CliffStraightA",
+      "position_studs": [
+        114.2294,
+        -0.01,
+        -36.0
+      ],
+      "yaw_degrees": -90,
+      "scale": 1
+    },
+    {
+      "asset": "BeachStrip",
+      "position_studs": [
+        123.0,
+        -0.3,
+        -36.0
+      ],
+      "yaw_degrees": -90,
+      "scale": 1
+    },
+    {
+      "asset": "CliffStraightA",
+      "position_studs": [
+        -114.2294,
+        -0.01,
+        -36.0
+      ],
+      "yaw_degrees": -270,
+      "scale": 1
+    },
+    {
+      "asset": "BeachStrip",
+      "position_studs": [
+        -123.0,
+        -0.3,
+        -36.0
+      ],
+      "yaw_degrees": -270,
+      "scale": 1
+    },
+    {
+      "asset": "CliffStraightB",
+      "position_studs": [
+        -12.0,
+        -0.01,
+        -114.32213
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "BeachStrip",
+      "position_studs": [
+        -12.0,
+        -0.3,
+        -123.0
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "CliffStraightB",
+      "position_studs": [
+        -12.0,
+        -0.01,
+        114.32213
+      ],
+      "yaw_degrees": -180,
+      "scale": 1
+    },
+    {
+      "asset": "BeachStrip",
+      "position_studs": [
+        -12.0,
+        -0.3,
+        123.0
+      ],
+      "yaw_degrees": -180,
+      "scale": 1
+    },
+    {
+      "asset": "CliffStraightB",
+      "position_studs": [
+        114.32213,
+        -0.01,
+        -12.0
+      ],
+      "yaw_degrees": -90,
+      "scale": 1
+    },
+    {
+      "asset": "BeachStrip",
+      "position_studs": [
+        123.0,
+        -0.3,
+        -12.0
+      ],
+      "yaw_degrees": -90,
+      "scale": 1
+    },
+    {
+      "asset": "CliffStraightB",
+      "position_studs": [
+        -114.32213,
+        -0.01,
+        -12.0
+      ],
+      "yaw_degrees": -270,
+      "scale": 1
+    },
+    {
+      "asset": "BeachStrip",
+      "position_studs": [
+        -123.0,
+        -0.3,
+        -12.0
+      ],
+      "yaw_degrees": -270,
+      "scale": 1
+    },
+    {
+      "asset": "CliffStraightC",
+      "position_studs": [
+        12.0,
+        -0.01,
+        -114.30268
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "BeachStrip",
+      "position_studs": [
+        12.0,
+        -0.3,
+        -123.0
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "CliffStraightC",
+      "position_studs": [
+        12.0,
+        -0.01,
+        114.30268
+      ],
+      "yaw_degrees": -180,
+      "scale": 1
+    },
+    {
+      "asset": "BeachStrip",
+      "position_studs": [
+        12.0,
+        -0.3,
+        123.0
+      ],
+      "yaw_degrees": -180,
+      "scale": 1
+    },
+    {
+      "asset": "CliffStraightC",
+      "position_studs": [
+        114.30268,
+        -0.01,
+        12.0
+      ],
+      "yaw_degrees": -90,
+      "scale": 1
+    },
+    {
+      "asset": "BeachStrip",
+      "position_studs": [
+        123.0,
+        -0.3,
+        12.0
+      ],
+      "yaw_degrees": -90,
+      "scale": 1
+    },
+    {
+      "asset": "CliffStraightC",
+      "position_studs": [
+        -114.30268,
+        -0.01,
+        12.0
+      ],
+      "yaw_degrees": -270,
+      "scale": 1
+    },
+    {
+      "asset": "BeachStrip",
+      "position_studs": [
+        -123.0,
+        -0.3,
+        12.0
+      ],
+      "yaw_degrees": -270,
+      "scale": 1
+    },
+    {
+      "asset": "CliffStraightA",
+      "position_studs": [
+        36.0,
+        -0.01,
+        -114.2294
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "BeachStrip",
+      "position_studs": [
+        36.0,
+        -0.3,
+        -123.0
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "CliffStraightA",
+      "position_studs": [
+        36.0,
+        -0.01,
+        114.2294
+      ],
+      "yaw_degrees": -180,
+      "scale": 1
+    },
+    {
+      "asset": "BeachStrip",
+      "position_studs": [
+        36.0,
+        -0.3,
+        123.0
+      ],
+      "yaw_degrees": -180,
+      "scale": 1
+    },
+    {
+      "asset": "CliffStraightA",
+      "position_studs": [
+        114.2294,
+        -0.01,
+        36.0
+      ],
+      "yaw_degrees": -90,
+      "scale": 1
+    },
+    {
+      "asset": "BeachStrip",
+      "position_studs": [
+        123.0,
+        -0.3,
+        36.0
+      ],
+      "yaw_degrees": -90,
+      "scale": 1
+    },
+    {
+      "asset": "CliffStraightA",
+      "position_studs": [
+        -114.2294,
+        -0.01,
+        36.0
+      ],
+      "yaw_degrees": -270,
+      "scale": 1
+    },
+    {
+      "asset": "BeachStrip",
+      "position_studs": [
+        -123.0,
+        -0.3,
+        36.0
+      ],
+      "yaw_degrees": -270,
+      "scale": 1
+    },
+    {
+      "asset": "CliffStraightB",
+      "position_studs": [
+        60.0,
+        -0.01,
+        -114.32213
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "BeachStrip",
+      "position_studs": [
+        60.0,
+        -0.3,
+        -123.0
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "CliffStraightB",
+      "position_studs": [
+        60.0,
+        -0.01,
+        114.32213
+      ],
+      "yaw_degrees": -180,
+      "scale": 1
+    },
+    {
+      "asset": "BeachStrip",
+      "position_studs": [
+        60.0,
+        -0.3,
+        123.0
+      ],
+      "yaw_degrees": -180,
+      "scale": 1
+    },
+    {
+      "asset": "CliffStraightB",
+      "position_studs": [
+        114.32213,
+        -0.01,
+        60.0
+      ],
+      "yaw_degrees": -90,
+      "scale": 1
+    },
+    {
+      "asset": "BeachStrip",
+      "position_studs": [
+        123.0,
+        -0.3,
+        60.0
+      ],
+      "yaw_degrees": -90,
+      "scale": 1
+    },
+    {
+      "asset": "CliffStraightB",
+      "position_studs": [
+        -114.32213,
+        -0.01,
+        60.0
+      ],
+      "yaw_degrees": -270,
+      "scale": 1
+    },
+    {
+      "asset": "BeachStrip",
+      "position_studs": [
+        -123.0,
+        -0.3,
+        60.0
+      ],
+      "yaw_degrees": -270,
+      "scale": 1
+    },
+    {
+      "asset": "CliffStraightC",
+      "position_studs": [
+        84.0,
+        -0.01,
+        -114.30268
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "BeachStrip",
+      "position_studs": [
+        84.0,
+        -0.3,
+        -123.0
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "CliffStraightC",
+      "position_studs": [
+        84.0,
+        -0.01,
+        114.30268
+      ],
+      "yaw_degrees": -180,
+      "scale": 1
+    },
+    {
+      "asset": "BeachStrip",
+      "position_studs": [
+        84.0,
+        -0.3,
+        123.0
+      ],
+      "yaw_degrees": -180,
+      "scale": 1
+    },
+    {
+      "asset": "CliffStraightC",
+      "position_studs": [
+        114.30268,
+        -0.01,
+        84.0
+      ],
+      "yaw_degrees": -90,
+      "scale": 1
+    },
+    {
+      "asset": "BeachStrip",
+      "position_studs": [
+        123.0,
+        -0.3,
+        84.0
+      ],
+      "yaw_degrees": -90,
+      "scale": 1
+    },
+    {
+      "asset": "CliffStraightC",
+      "position_studs": [
+        -114.30268,
+        -0.01,
+        84.0
+      ],
+      "yaw_degrees": -270,
+      "scale": 1
+    },
+    {
+      "asset": "BeachStrip",
+      "position_studs": [
+        -123.0,
+        -0.3,
+        84.0
+      ],
+      "yaw_degrees": -270,
+      "scale": 1
+    },
+    {
+      "asset": "CliffStraightA",
+      "position_studs": [
+        108.0,
+        -0.01,
+        -114.2294
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "CliffStraightA",
+      "position_studs": [
+        108.0,
+        -0.01,
+        114.2294
+      ],
+      "yaw_degrees": -180,
+      "scale": 1
+    },
+    {
+      "asset": "CliffStraightA",
+      "position_studs": [
+        114.2294,
+        -0.01,
+        108.0
+      ],
+      "yaw_degrees": -90,
+      "scale": 1
+    },
+    {
+      "asset": "CliffStraightA",
+      "position_studs": [
+        -114.2294,
+        -0.01,
+        108.0
+      ],
+      "yaw_degrees": -270,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        -12,
+        12,
+        132
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        -12,
+        12,
+        156
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        12,
+        12,
+        132
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GrassSlab",
+      "position_studs": [
+        12,
+        12,
+        156
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "CliffStraightA",
+      "position_studs": [
+        18.2294,
+        -0.01,
+        132.0
+      ],
+      "yaw_degrees": -90,
+      "scale": 1
+    },
+    {
+      "asset": "CliffStraightB",
+      "position_studs": [
+        -18.32213,
+        -0.01,
+        132.0
+      ],
+      "yaw_degrees": -270,
+      "scale": 1
+    },
+    {
+      "asset": "CliffStraightA",
+      "position_studs": [
+        18.2294,
+        -0.01,
+        156.0
+      ],
+      "yaw_degrees": -90,
+      "scale": 1
+    },
+    {
+      "asset": "CliffStraightB",
+      "position_studs": [
+        -18.32213,
+        -0.01,
+        156.0
+      ],
+      "yaw_degrees": -270,
+      "scale": 1
+    },
+    {
+      "asset": "CliffStraightC",
+      "position_studs": [
+        -12.0,
+        -0.01,
+        162.30268
+      ],
+      "yaw_degrees": -180,
+      "scale": 1
+    },
+    {
+      "asset": "CliffStraightC",
+      "position_studs": [
+        12.0,
+        -0.01,
+        162.30268
+      ],
+      "yaw_degrees": -180,
+      "scale": 1
+    },
+    {
+      "asset": "HubMedallion",
+      "position_studs": [
+        0,
+        13.4,
+        0
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "FountainPedestal",
+      "position_studs": [
+        0,
+        14.512,
+        0
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GoldenTrophy",
+      "position_studs": [
+        0,
+        17.812,
+        0
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "HubRingSegment",
+      "position_studs": [
+        0.0,
+        13.4,
+        -21.70634
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "HubCurbSegment",
+      "position_studs": [
+        10.04519,
+        13.4,
+        -30.91592
+      ],
+      "yaw_degrees": -18,
+      "scale": 1
+    },
+    {
+      "asset": "HubPathStrip",
+      "position_studs": [
+        0.0,
+        13.4,
+        -38.0
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "HubPathStrip",
+      "position_studs": [
+        0.0,
+        13.4,
+        -50.0
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "HubPathStrip",
+      "position_studs": [
+        0.0,
+        13.4,
+        -62.0
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "PlotPlatform",
+      "position_studs": [
+        0.0,
+        13.4,
+        -85.0
+      ],
+      "yaw_degrees": -180,
+      "scale": 1
+    },
+    {
+      "asset": "PlotGateArch",
+      "position_studs": [
+        0.0,
+        14.85,
+        -71.0
+      ],
+      "yaw_degrees": -180,
+      "scale": 1
+    },
+    {
+      "asset": "PlotPathStraight",
+      "position_studs": [
+        0.0,
+        13.85,
+        -78.0
+      ],
+      "yaw_degrees": -180,
+      "scale": 1
+    },
+    {
+      "asset": "PlotSignPost",
+      "position_studs": [
+        11.0,
+        14.85,
+        -73.5
+      ],
+      "yaw_degrees": -180,
+      "scale": 0.75
+    },
+    {
+      "asset": "PlotCornerGarden",
+      "position_studs": [
+        11.0,
+        14.85,
+        -95.5
+      ],
+      "yaw_degrees": -180,
+      "scale": 1
+    },
+    {
+      "asset": "PlotCornerGarden",
+      "position_studs": [
+        -11.0,
+        14.85,
+        -95.5
+      ],
+      "yaw_degrees": -180,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        8.0,
+        14.6,
+        -99.35
+      ],
+      "yaw_degrees": -180,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        -0.0,
+        14.6,
+        -99.35
+      ],
+      "yaw_degrees": -180,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        -8.0,
+        14.6,
+        -99.35
+      ],
+      "yaw_degrees": -180,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        14.35,
+        14.6,
+        -77.0
+      ],
+      "yaw_degrees": -270,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        14.35,
+        14.6,
+        -85.0
+      ],
+      "yaw_degrees": -270,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        14.35,
+        14.6,
+        -93.0
+      ],
+      "yaw_degrees": -270,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        -14.35,
+        14.6,
+        -77.0
+      ],
+      "yaw_degrees": -270,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        -14.35,
+        14.6,
+        -85.0
+      ],
+      "yaw_degrees": -270,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        -14.35,
+        14.6,
+        -93.0
+      ],
+      "yaw_degrees": -270,
+      "scale": 1
+    },
+    {
+      "asset": "BasicToilet",
+      "position_studs": [
+        -0.0,
+        14.85,
+        -90.0
+      ],
+      "yaw_degrees": -180,
+      "scale": 1.45
+    },
+    {
+      "asset": "DisplayPedestal",
+      "position_studs": [
+        8.0,
+        14.85,
+        -86.0
+      ],
+      "yaw_degrees": -180,
+      "scale": 1.35
+    },
+    {
+      "asset": "DisplayPedestal",
+      "position_studs": [
+        4.0,
+        14.85,
+        -86.0
+      ],
+      "yaw_degrees": -180,
+      "scale": 1.35
+    },
+    {
+      "asset": "DisplayPedestal",
+      "position_studs": [
+        -4.0,
+        14.85,
+        -86.0
+      ],
+      "yaw_degrees": -180,
+      "scale": 1.35
+    },
+    {
+      "asset": "DisplayPedestal",
+      "position_studs": [
+        -8.0,
+        14.85,
+        -86.0
+      ],
+      "yaw_degrees": -180,
+      "scale": 1.35
+    },
+    {
+      "asset": "RubberDuck",
+      "position_studs": [
+        8.0,
+        16.6,
+        -86.0
+      ],
+      "yaw_degrees": -180,
+      "scale": 0.65
+    },
+    {
+      "asset": "GoldenPoop",
+      "position_studs": [
+        -8.0,
+        16.6,
+        -86.0
+      ],
+      "yaw_degrees": -180,
+      "scale": 0.65
+    },
+    {
+      "asset": "PalmTree",
+      "position_studs": [
+        16.3779,
+        13.4,
+        -50.406
+      ],
+      "yaw_degrees": -18,
+      "scale": 2
+    },
+    {
+      "asset": "LampPost",
+      "position_studs": [
+        10.50658,
+        13.4,
+        -32.33592
+      ],
+      "yaw_degrees": -18,
+      "scale": 1.35
+    },
+    {
+      "asset": "HubRingSegment",
+      "position_studs": [
+        12.75867,
+        13.4,
+        -17.5608
+      ],
+      "yaw_degrees": -36,
+      "scale": 1
+    },
+    {
+      "asset": "HubCurbSegment",
+      "position_studs": [
+        26.29865,
+        13.4,
+        -19.10709
+      ],
+      "yaw_degrees": -54,
+      "scale": 1
+    },
+    {
+      "asset": "HubPathStrip",
+      "position_studs": [
+        22.33584,
+        13.4,
+        -30.74265
+      ],
+      "yaw_degrees": -36,
+      "scale": 1
+    },
+    {
+      "asset": "HubPathStrip",
+      "position_studs": [
+        29.38926,
+        13.4,
+        -40.45085
+      ],
+      "yaw_degrees": -36,
+      "scale": 1
+    },
+    {
+      "asset": "HubPathStrip",
+      "position_studs": [
+        36.44269,
+        13.4,
+        -50.15905
+      ],
+      "yaw_degrees": -36,
+      "scale": 1
+    },
+    {
+      "asset": "PlotPlatform",
+      "position_studs": [
+        49.96175,
+        13.4,
+        -68.76644
+      ],
+      "yaw_degrees": -216,
+      "scale": 1
+    },
+    {
+      "asset": "PlotGateArch",
+      "position_studs": [
+        41.73275,
+        14.85,
+        -57.44021
+      ],
+      "yaw_degrees": -216,
+      "scale": 1
+    },
+    {
+      "asset": "PlotPathStraight",
+      "position_studs": [
+        45.84725,
+        13.85,
+        -63.10333
+      ],
+      "yaw_degrees": -216,
+      "scale": 1
+    },
+    {
+      "asset": "PlotSignPost",
+      "position_studs": [
+        52.1014,
+        14.85,
+        -52.99711
+      ],
+      "yaw_degrees": -216,
+      "scale": 0.75
+    },
+    {
+      "asset": "PlotCornerGarden",
+      "position_studs": [
+        65.03268,
+        14.85,
+        -70.79549
+      ],
+      "yaw_degrees": -216,
+      "scale": 1
+    },
+    {
+      "asset": "PlotCornerGarden",
+      "position_studs": [
+        47.2343,
+        14.85,
+        -83.72676
+      ],
+      "yaw_degrees": -216,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        64.8686,
+        14.6,
+        -75.67356
+      ],
+      "yaw_degrees": -216,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        58.39646,
+        14.6,
+        -80.37584
+      ],
+      "yaw_degrees": -216,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        51.92433,
+        14.6,
+        -85.07812
+      ],
+      "yaw_degrees": -216,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        56.86886,
+        14.6,
+        -53.85959
+      ],
+      "yaw_degrees": -306,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        61.57114,
+        14.6,
+        -60.33173
+      ],
+      "yaw_degrees": -306,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        66.27342,
+        14.6,
+        -66.80386
+      ],
+      "yaw_degrees": -306,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        33.65007,
+        14.6,
+        -70.72903
+      ],
+      "yaw_degrees": -306,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        38.35235,
+        14.6,
+        -77.20116
+      ],
+      "yaw_degrees": -306,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        43.05463,
+        14.6,
+        -83.6733
+      ],
+      "yaw_degrees": -306,
+      "scale": 1
+    },
+    {
+      "asset": "GoldenToilet",
+      "position_studs": [
+        52.90067,
+        14.85,
+        -72.81153
+      ],
+      "yaw_degrees": -216,
+      "scale": 1.45
+    },
+    {
+      "asset": "DisplayPedestal",
+      "position_studs": [
+        57.02167,
+        14.85,
+        -64.87318
+      ],
+      "yaw_degrees": -216,
+      "scale": 1.35
+    },
+    {
+      "asset": "DisplayPedestal",
+      "position_studs": [
+        53.7856,
+        14.85,
+        -67.22432
+      ],
+      "yaw_degrees": -216,
+      "scale": 1.35
+    },
+    {
+      "asset": "DisplayPedestal",
+      "position_studs": [
+        47.31346,
+        14.85,
+        -71.9266
+      ],
+      "yaw_degrees": -216,
+      "scale": 1.35
+    },
+    {
+      "asset": "DisplayPedestal",
+      "position_studs": [
+        44.0774,
+        14.85,
+        -74.27774
+      ],
+      "yaw_degrees": -216,
+      "scale": 1.35
+    },
+    {
+      "asset": "RubberDuck",
+      "position_studs": [
+        57.02167,
+        16.6,
+        -64.87318
+      ],
+      "yaw_degrees": -216,
+      "scale": 0.65
+    },
+    {
+      "asset": "GoldenPoop",
+      "position_studs": [
+        44.0774,
+        16.6,
+        -74.27774
+      ],
+      "yaw_degrees": -216,
+      "scale": 0.65
+    },
+    {
+      "asset": "PalmTree",
+      "position_studs": [
+        42.8779,
+        13.4,
+        -31.15262
+      ],
+      "yaw_degrees": -54,
+      "scale": 2
+    },
+    {
+      "asset": "LampPost",
+      "position_studs": [
+        27.50658,
+        13.4,
+        -19.9847
+      ],
+      "yaw_degrees": -54,
+      "scale": 1.35
+    },
+    {
+      "asset": "HubRingSegment",
+      "position_studs": [
+        20.64396,
+        13.4,
+        -6.70763
+      ],
+      "yaw_degrees": -72,
+      "scale": 1
+    },
+    {
+      "asset": "HubCurbSegment",
+      "position_studs": [
+        32.50692,
+        13.4,
+        -0.0
+      ],
+      "yaw_degrees": -90,
+      "scale": 1
+    },
+    {
+      "asset": "HubPathStrip",
+      "position_studs": [
+        36.14015,
+        13.4,
+        -11.74265
+      ],
+      "yaw_degrees": -72,
+      "scale": 1
+    },
+    {
+      "asset": "HubPathStrip",
+      "position_studs": [
+        47.55283,
+        13.4,
+        -15.45085
+      ],
+      "yaw_degrees": -72,
+      "scale": 1
+    },
+    {
+      "asset": "HubPathStrip",
+      "position_studs": [
+        58.9655,
+        13.4,
+        -19.15905
+      ],
+      "yaw_degrees": -72,
+      "scale": 1
+    },
+    {
+      "asset": "PlotPlatform",
+      "position_studs": [
+        80.8398,
+        13.4,
+        -26.26644
+      ],
+      "yaw_degrees": -252,
+      "scale": 1
+    },
+    {
+      "asset": "PlotGateArch",
+      "position_studs": [
+        67.52501,
+        14.85,
+        -21.94021
+      ],
+      "yaw_degrees": -252,
+      "scale": 1
+    },
+    {
+      "asset": "PlotPathStraight",
+      "position_studs": [
+        74.18241,
+        13.85,
+        -24.10333
+      ],
+      "yaw_degrees": -252,
+      "scale": 1
+    },
+    {
+      "asset": "PlotSignPost",
+      "position_studs": [
+        73.30184,
+        14.85,
+        -12.25113
+      ],
+      "yaw_degrees": -252,
+      "scale": 0.75
+    },
+    {
+      "asset": "PlotCornerGarden",
+      "position_studs": [
+        94.22508,
+        14.85,
+        -19.0495
+      ],
+      "yaw_degrees": -252,
+      "scale": 1
+    },
+    {
+      "asset": "PlotCornerGarden",
+      "position_studs": [
+        87.42671,
+        14.85,
+        -39.97274
+      ],
+      "yaw_degrees": -252,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        96.9596,
+        14.6,
+        -23.09239
+      ],
+      "yaw_degrees": -252,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        94.48746,
+        14.6,
+        -30.70084
+      ],
+      "yaw_degrees": -252,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        92.01533,
+        14.6,
+        -38.30929
+      ],
+      "yaw_degrees": -252,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        77.66575,
+        14.6,
+        -10.14665
+      ],
+      "yaw_degrees": -342,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        85.2742,
+        14.6,
+        -12.61878
+      ],
+      "yaw_degrees": -342,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        92.88265,
+        14.6,
+        -15.09092
+      ],
+      "yaw_degrees": -342,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        68.79696,
+        14.6,
+        -37.44197
+      ],
+      "yaw_degrees": -342,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        76.40541,
+        14.6,
+        -39.91411
+      ],
+      "yaw_degrees": -342,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        84.01386,
+        14.6,
+        -42.38624
+      ],
+      "yaw_degrees": -342,
+      "scale": 1
+    },
+    {
+      "asset": "DiamondToilet",
+      "position_studs": [
+        85.59509,
+        14.85,
+        -27.81153
+      ],
+      "yaw_degrees": -252,
+      "scale": 1.45
+    },
+    {
+      "asset": "DisplayPedestal",
+      "position_studs": [
+        84.263,
+        14.85,
+        -18.96701
+      ],
+      "yaw_degrees": -252,
+      "scale": 1.35
+    },
+    {
+      "asset": "DisplayPedestal",
+      "position_studs": [
+        83.02693,
+        14.85,
+        -22.77124
+      ],
+      "yaw_degrees": -252,
+      "scale": 1.35
+    },
+    {
+      "asset": "DisplayPedestal",
+      "position_studs": [
+        80.55479,
+        14.85,
+        -30.37969
+      ],
+      "yaw_degrees": -252,
+      "scale": 1.35
+    },
+    {
+      "asset": "DisplayPedestal",
+      "position_studs": [
+        79.31872,
+        14.85,
+        -34.18391
+      ],
+      "yaw_degrees": -252,
+      "scale": 1.35
+    },
+    {
+      "asset": "RubberDuck",
+      "position_studs": [
+        84.263,
+        16.6,
+        -18.96701
+      ],
+      "yaw_degrees": -252,
+      "scale": 0.65
+    },
+    {
+      "asset": "GoldenPoop",
+      "position_studs": [
+        79.31872,
+        16.6,
+        -34.18391
+      ],
+      "yaw_degrees": -252,
+      "scale": 0.65
+    },
+    {
+      "asset": "PalmTree",
+      "position_studs": [
+        53.0,
+        13.4,
+        -0.0
+      ],
+      "yaw_degrees": -90,
+      "scale": 2
+    },
+    {
+      "asset": "LampPost",
+      "position_studs": [
+        34.0,
+        13.4,
+        -0.0
+      ],
+      "yaw_degrees": -90,
+      "scale": 1.35
+    },
+    {
+      "asset": "HubRingSegment",
+      "position_studs": [
+        20.64396,
+        13.4,
+        6.70763
+      ],
+      "yaw_degrees": -108,
+      "scale": 1
+    },
+    {
+      "asset": "HubCurbSegment",
+      "position_studs": [
+        26.29865,
+        13.4,
+        19.10709
+      ],
+      "yaw_degrees": -126,
+      "scale": 1
+    },
+    {
+      "asset": "HubPathStrip",
+      "position_studs": [
+        36.14015,
+        13.4,
+        11.74265
+      ],
+      "yaw_degrees": -108,
+      "scale": 1
+    },
+    {
+      "asset": "HubPathStrip",
+      "position_studs": [
+        47.55283,
+        13.4,
+        15.45085
+      ],
+      "yaw_degrees": -108,
+      "scale": 1
+    },
+    {
+      "asset": "HubPathStrip",
+      "position_studs": [
+        58.9655,
+        13.4,
+        19.15905
+      ],
+      "yaw_degrees": -108,
+      "scale": 1
+    },
+    {
+      "asset": "PlotPlatform",
+      "position_studs": [
+        80.8398,
+        13.4,
+        26.26644
+      ],
+      "yaw_degrees": -288,
+      "scale": 1
+    },
+    {
+      "asset": "PlotGateArch",
+      "position_studs": [
+        67.52501,
+        14.85,
+        21.94021
+      ],
+      "yaw_degrees": -288,
+      "scale": 1
+    },
+    {
+      "asset": "PlotPathStraight",
+      "position_studs": [
+        74.18241,
+        13.85,
+        24.10333
+      ],
+      "yaw_degrees": -288,
+      "scale": 1
+    },
+    {
+      "asset": "PlotSignPost",
+      "position_studs": [
+        66.50347,
+        14.85,
+        33.17437
+      ],
+      "yaw_degrees": -288,
+      "scale": 0.75
+    },
+    {
+      "asset": "PlotCornerGarden",
+      "position_studs": [
+        87.42671,
+        14.85,
+        39.97274
+      ],
+      "yaw_degrees": -288,
+      "scale": 1
+    },
+    {
+      "asset": "PlotCornerGarden",
+      "position_studs": [
+        94.22508,
+        14.85,
+        19.0495
+      ],
+      "yaw_degrees": -288,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        92.01533,
+        14.6,
+        38.30929
+      ],
+      "yaw_degrees": -288,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        94.48746,
+        14.6,
+        30.70084
+      ],
+      "yaw_degrees": -288,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        96.9596,
+        14.6,
+        23.09239
+      ],
+      "yaw_degrees": -288,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        68.79696,
+        14.6,
+        37.44197
+      ],
+      "yaw_degrees": -378,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        76.40541,
+        14.6,
+        39.91411
+      ],
+      "yaw_degrees": -378,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        84.01386,
+        14.6,
+        42.38624
+      ],
+      "yaw_degrees": -378,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        77.66575,
+        14.6,
+        10.14665
+      ],
+      "yaw_degrees": -378,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        85.2742,
+        14.6,
+        12.61878
+      ],
+      "yaw_degrees": -378,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        92.88265,
+        14.6,
+        15.09092
+      ],
+      "yaw_degrees": -378,
+      "scale": 1
+    },
+    {
+      "asset": "GalaxyToilet",
+      "position_studs": [
+        85.59509,
+        14.85,
+        27.81153
+      ],
+      "yaw_degrees": -288,
+      "scale": 1.45
+    },
+    {
+      "asset": "DisplayPedestal",
+      "position_studs": [
+        79.31872,
+        14.85,
+        34.18391
+      ],
+      "yaw_degrees": -288,
+      "scale": 1.35
+    },
+    {
+      "asset": "DisplayPedestal",
+      "position_studs": [
+        80.55479,
+        14.85,
+        30.37969
+      ],
+      "yaw_degrees": -288,
+      "scale": 1.35
+    },
+    {
+      "asset": "DisplayPedestal",
+      "position_studs": [
+        83.02693,
+        14.85,
+        22.77124
+      ],
+      "yaw_degrees": -288,
+      "scale": 1.35
+    },
+    {
+      "asset": "DisplayPedestal",
+      "position_studs": [
+        84.263,
+        14.85,
+        18.96701
+      ],
+      "yaw_degrees": -288,
+      "scale": 1.35
+    },
+    {
+      "asset": "RubberDuck",
+      "position_studs": [
+        79.31872,
+        16.6,
+        34.18391
+      ],
+      "yaw_degrees": -288,
+      "scale": 0.65
+    },
+    {
+      "asset": "GoldenPoop",
+      "position_studs": [
+        84.263,
+        16.6,
+        18.96701
+      ],
+      "yaw_degrees": -288,
+      "scale": 0.65
+    },
+    {
+      "asset": "PalmTree",
+      "position_studs": [
+        42.8779,
+        13.4,
+        31.15262
+      ],
+      "yaw_degrees": -126,
+      "scale": 2
+    },
+    {
+      "asset": "LampPost",
+      "position_studs": [
+        27.50658,
+        13.4,
+        19.9847
+      ],
+      "yaw_degrees": -126,
+      "scale": 1.35
+    },
+    {
+      "asset": "HubRingSegment",
+      "position_studs": [
+        12.75867,
+        13.4,
+        17.5608
+      ],
+      "yaw_degrees": -144,
+      "scale": 1
+    },
+    {
+      "asset": "HubCurbSegment",
+      "position_studs": [
+        10.04519,
+        13.4,
+        30.91592
+      ],
+      "yaw_degrees": -162,
+      "scale": 1
+    },
+    {
+      "asset": "HubPathStrip",
+      "position_studs": [
+        22.33584,
+        13.4,
+        30.74265
+      ],
+      "yaw_degrees": -144,
+      "scale": 1
+    },
+    {
+      "asset": "HubPathStrip",
+      "position_studs": [
+        29.38926,
+        13.4,
+        40.45085
+      ],
+      "yaw_degrees": -144,
+      "scale": 1
+    },
+    {
+      "asset": "HubPathStrip",
+      "position_studs": [
+        36.44269,
+        13.4,
+        50.15905
+      ],
+      "yaw_degrees": -144,
+      "scale": 1
+    },
+    {
+      "asset": "PlotPlatform",
+      "position_studs": [
+        49.96175,
+        13.4,
+        68.76644
+      ],
+      "yaw_degrees": -324,
+      "scale": 1
+    },
+    {
+      "asset": "PlotGateArch",
+      "position_studs": [
+        41.73275,
+        14.85,
+        57.44021
+      ],
+      "yaw_degrees": -324,
+      "scale": 1
+    },
+    {
+      "asset": "PlotPathStraight",
+      "position_studs": [
+        45.84725,
+        13.85,
+        63.10333
+      ],
+      "yaw_degrees": -324,
+      "scale": 1
+    },
+    {
+      "asset": "PlotSignPost",
+      "position_studs": [
+        34.30303,
+        14.85,
+        65.92839
+      ],
+      "yaw_degrees": -324,
+      "scale": 0.75
+    },
+    {
+      "asset": "PlotCornerGarden",
+      "position_studs": [
+        47.2343,
+        14.85,
+        83.72676
+      ],
+      "yaw_degrees": -324,
+      "scale": 1
+    },
+    {
+      "asset": "PlotCornerGarden",
+      "position_studs": [
+        65.03268,
+        14.85,
+        70.79549
+      ],
+      "yaw_degrees": -324,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        51.92433,
+        14.6,
+        85.07812
+      ],
+      "yaw_degrees": -324,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        58.39646,
+        14.6,
+        80.37584
+      ],
+      "yaw_degrees": -324,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        64.8686,
+        14.6,
+        75.67356
+      ],
+      "yaw_degrees": -324,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        33.65007,
+        14.6,
+        70.72903
+      ],
+      "yaw_degrees": -414,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        38.35235,
+        14.6,
+        77.20116
+      ],
+      "yaw_degrees": -414,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        43.05463,
+        14.6,
+        83.6733
+      ],
+      "yaw_degrees": -414,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        56.86886,
+        14.6,
+        53.85959
+      ],
+      "yaw_degrees": -414,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        61.57114,
+        14.6,
+        60.33173
+      ],
+      "yaw_degrees": -414,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        66.27342,
+        14.6,
+        66.80386
+      ],
+      "yaw_degrees": -414,
+      "scale": 1
+    },
+    {
+      "asset": "BasicToilet",
+      "position_studs": [
+        52.90067,
+        14.85,
+        72.81153
+      ],
+      "yaw_degrees": -324,
+      "scale": 1.45
+    },
+    {
+      "asset": "DisplayPedestal",
+      "position_studs": [
+        44.0774,
+        14.85,
+        74.27774
+      ],
+      "yaw_degrees": -324,
+      "scale": 1.35
+    },
+    {
+      "asset": "DisplayPedestal",
+      "position_studs": [
+        47.31346,
+        14.85,
+        71.9266
+      ],
+      "yaw_degrees": -324,
+      "scale": 1.35
+    },
+    {
+      "asset": "DisplayPedestal",
+      "position_studs": [
+        53.7856,
+        14.85,
+        67.22432
+      ],
+      "yaw_degrees": -324,
+      "scale": 1.35
+    },
+    {
+      "asset": "DisplayPedestal",
+      "position_studs": [
+        57.02167,
+        14.85,
+        64.87318
+      ],
+      "yaw_degrees": -324,
+      "scale": 1.35
+    },
+    {
+      "asset": "RubberDuck",
+      "position_studs": [
+        44.0774,
+        16.6,
+        74.27774
+      ],
+      "yaw_degrees": -324,
+      "scale": 0.65
+    },
+    {
+      "asset": "GoldenPoop",
+      "position_studs": [
+        57.02167,
+        16.6,
+        64.87318
+      ],
+      "yaw_degrees": -324,
+      "scale": 0.65
+    },
+    {
+      "asset": "PalmTree",
+      "position_studs": [
+        16.3779,
+        13.4,
+        50.406
+      ],
+      "yaw_degrees": -162,
+      "scale": 2
+    },
+    {
+      "asset": "LampPost",
+      "position_studs": [
+        10.50658,
+        13.4,
+        32.33592
+      ],
+      "yaw_degrees": -162,
+      "scale": 1.35
+    },
+    {
+      "asset": "HubRingSegment",
+      "position_studs": [
+        0.0,
+        13.4,
+        21.70634
+      ],
+      "yaw_degrees": -180,
+      "scale": 1
+    },
+    {
+      "asset": "HubCurbSegment",
+      "position_studs": [
+        -10.04519,
+        13.4,
+        30.91592
+      ],
+      "yaw_degrees": -198,
+      "scale": 1
+    },
+    {
+      "asset": "HubPathStrip",
+      "position_studs": [
+        0.0,
+        13.4,
+        38.0
+      ],
+      "yaw_degrees": -180,
+      "scale": 1
+    },
+    {
+      "asset": "HubPathStrip",
+      "position_studs": [
+        0.0,
+        13.4,
+        50.0
+      ],
+      "yaw_degrees": -180,
+      "scale": 1
+    },
+    {
+      "asset": "HubPathStrip",
+      "position_studs": [
+        0.0,
+        13.4,
+        62.0
+      ],
+      "yaw_degrees": -180,
+      "scale": 1
+    },
+    {
+      "asset": "PlotPlatform",
+      "position_studs": [
+        0.0,
+        13.4,
+        85.0
+      ],
+      "yaw_degrees": -360,
+      "scale": 1
+    },
+    {
+      "asset": "PlotGateArch",
+      "position_studs": [
+        0.0,
+        14.85,
+        71.0
+      ],
+      "yaw_degrees": -360,
+      "scale": 1
+    },
+    {
+      "asset": "PlotPathStraight",
+      "position_studs": [
+        0.0,
+        13.85,
+        78.0
+      ],
+      "yaw_degrees": -360,
+      "scale": 1
+    },
+    {
+      "asset": "PlotSignPost",
+      "position_studs": [
+        -11.0,
+        14.85,
+        73.5
+      ],
+      "yaw_degrees": -360,
+      "scale": 0.75
+    },
+    {
+      "asset": "PlotCornerGarden",
+      "position_studs": [
+        -11.0,
+        14.85,
+        95.5
+      ],
+      "yaw_degrees": -360,
+      "scale": 1
+    },
+    {
+      "asset": "PlotCornerGarden",
+      "position_studs": [
+        11.0,
+        14.85,
+        95.5
+      ],
+      "yaw_degrees": -360,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        -8.0,
+        14.6,
+        99.35
+      ],
+      "yaw_degrees": -360,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        0.0,
+        14.6,
+        99.35
+      ],
+      "yaw_degrees": -360,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        8.0,
+        14.6,
+        99.35
+      ],
+      "yaw_degrees": -360,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        -14.35,
+        14.6,
+        77.0
+      ],
+      "yaw_degrees": -450,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        -14.35,
+        14.6,
+        85.0
+      ],
+      "yaw_degrees": -450,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        -14.35,
+        14.6,
+        93.0
+      ],
+      "yaw_degrees": -450,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        14.35,
+        14.6,
+        77.0
+      ],
+      "yaw_degrees": -450,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        14.35,
+        14.6,
+        85.0
+      ],
+      "yaw_degrees": -450,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        14.35,
+        14.6,
+        93.0
+      ],
+      "yaw_degrees": -450,
+      "scale": 1
+    },
+    {
+      "asset": "GoldenToilet",
+      "position_studs": [
+        0.0,
+        14.85,
+        90.0
+      ],
+      "yaw_degrees": -360,
+      "scale": 1.45
+    },
+    {
+      "asset": "DisplayPedestal",
+      "position_studs": [
+        -8.0,
+        14.85,
+        86.0
+      ],
+      "yaw_degrees": -360,
+      "scale": 1.35
+    },
+    {
+      "asset": "DisplayPedestal",
+      "position_studs": [
+        -4.0,
+        14.85,
+        86.0
+      ],
+      "yaw_degrees": -360,
+      "scale": 1.35
+    },
+    {
+      "asset": "DisplayPedestal",
+      "position_studs": [
+        4.0,
+        14.85,
+        86.0
+      ],
+      "yaw_degrees": -360,
+      "scale": 1.35
+    },
+    {
+      "asset": "DisplayPedestal",
+      "position_studs": [
+        8.0,
+        14.85,
+        86.0
+      ],
+      "yaw_degrees": -360,
+      "scale": 1.35
+    },
+    {
+      "asset": "RubberDuck",
+      "position_studs": [
+        -8.0,
+        16.6,
+        86.0
+      ],
+      "yaw_degrees": -360,
+      "scale": 0.65
+    },
+    {
+      "asset": "GoldenPoop",
+      "position_studs": [
+        8.0,
+        16.6,
+        86.0
+      ],
+      "yaw_degrees": -360,
+      "scale": 0.65
+    },
+    {
+      "asset": "PalmTree",
+      "position_studs": [
+        -16.3779,
+        13.4,
+        50.406
+      ],
+      "yaw_degrees": -198,
+      "scale": 2
+    },
+    {
+      "asset": "LampPost",
+      "position_studs": [
+        -10.50658,
+        13.4,
+        32.33592
+      ],
+      "yaw_degrees": -198,
+      "scale": 1.35
+    },
+    {
+      "asset": "HubRingSegment",
+      "position_studs": [
+        -12.75867,
+        13.4,
+        17.5608
+      ],
+      "yaw_degrees": -216,
+      "scale": 1
+    },
+    {
+      "asset": "HubCurbSegment",
+      "position_studs": [
+        -26.29865,
+        13.4,
+        19.10709
+      ],
+      "yaw_degrees": -234,
+      "scale": 1
+    },
+    {
+      "asset": "HubPathStrip",
+      "position_studs": [
+        -22.33584,
+        13.4,
+        30.74265
+      ],
+      "yaw_degrees": -216,
+      "scale": 1
+    },
+    {
+      "asset": "HubPathStrip",
+      "position_studs": [
+        -29.38926,
+        13.4,
+        40.45085
+      ],
+      "yaw_degrees": -216,
+      "scale": 1
+    },
+    {
+      "asset": "HubPathStrip",
+      "position_studs": [
+        -36.44269,
+        13.4,
+        50.15905
+      ],
+      "yaw_degrees": -216,
+      "scale": 1
+    },
+    {
+      "asset": "PlotPlatform",
+      "position_studs": [
+        -49.96175,
+        13.4,
+        68.76644
+      ],
+      "yaw_degrees": -396,
+      "scale": 1
+    },
+    {
+      "asset": "PlotGateArch",
+      "position_studs": [
+        -41.73275,
+        14.85,
+        57.44021
+      ],
+      "yaw_degrees": -396,
+      "scale": 1
+    },
+    {
+      "asset": "PlotPathStraight",
+      "position_studs": [
+        -45.84725,
+        13.85,
+        63.10333
+      ],
+      "yaw_degrees": -396,
+      "scale": 1
+    },
+    {
+      "asset": "PlotSignPost",
+      "position_studs": [
+        -52.1014,
+        14.85,
+        52.99711
+      ],
+      "yaw_degrees": -396,
+      "scale": 0.75
+    },
+    {
+      "asset": "PlotCornerGarden",
+      "position_studs": [
+        -65.03268,
+        14.85,
+        70.79549
+      ],
+      "yaw_degrees": -396,
+      "scale": 1
+    },
+    {
+      "asset": "PlotCornerGarden",
+      "position_studs": [
+        -47.2343,
+        14.85,
+        83.72676
+      ],
+      "yaw_degrees": -396,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        -64.8686,
+        14.6,
+        75.67356
+      ],
+      "yaw_degrees": -396,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        -58.39646,
+        14.6,
+        80.37584
+      ],
+      "yaw_degrees": -396,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        -51.92433,
+        14.6,
+        85.07812
+      ],
+      "yaw_degrees": -396,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        -56.86886,
+        14.6,
+        53.85959
+      ],
+      "yaw_degrees": -486,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        -61.57114,
+        14.6,
+        60.33173
+      ],
+      "yaw_degrees": -486,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        -66.27342,
+        14.6,
+        66.80386
+      ],
+      "yaw_degrees": -486,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        -33.65007,
+        14.6,
+        70.72903
+      ],
+      "yaw_degrees": -486,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        -38.35235,
+        14.6,
+        77.20116
+      ],
+      "yaw_degrees": -486,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        -43.05463,
+        14.6,
+        83.6733
+      ],
+      "yaw_degrees": -486,
+      "scale": 1
+    },
+    {
+      "asset": "DiamondToilet",
+      "position_studs": [
+        -52.90067,
+        14.85,
+        72.81153
+      ],
+      "yaw_degrees": -396,
+      "scale": 1.45
+    },
+    {
+      "asset": "DisplayPedestal",
+      "position_studs": [
+        -57.02167,
+        14.85,
+        64.87318
+      ],
+      "yaw_degrees": -396,
+      "scale": 1.35
+    },
+    {
+      "asset": "DisplayPedestal",
+      "position_studs": [
+        -53.7856,
+        14.85,
+        67.22432
+      ],
+      "yaw_degrees": -396,
+      "scale": 1.35
+    },
+    {
+      "asset": "DisplayPedestal",
+      "position_studs": [
+        -47.31346,
+        14.85,
+        71.9266
+      ],
+      "yaw_degrees": -396,
+      "scale": 1.35
+    },
+    {
+      "asset": "DisplayPedestal",
+      "position_studs": [
+        -44.0774,
+        14.85,
+        74.27774
+      ],
+      "yaw_degrees": -396,
+      "scale": 1.35
+    },
+    {
+      "asset": "RubberDuck",
+      "position_studs": [
+        -57.02167,
+        16.6,
+        64.87318
+      ],
+      "yaw_degrees": -396,
+      "scale": 0.65
+    },
+    {
+      "asset": "GoldenPoop",
+      "position_studs": [
+        -44.0774,
+        16.6,
+        74.27774
+      ],
+      "yaw_degrees": -396,
+      "scale": 0.65
+    },
+    {
+      "asset": "PalmTree",
+      "position_studs": [
+        -42.8779,
+        13.4,
+        31.15262
+      ],
+      "yaw_degrees": -234,
+      "scale": 2
+    },
+    {
+      "asset": "LampPost",
+      "position_studs": [
+        -27.50658,
+        13.4,
+        19.9847
+      ],
+      "yaw_degrees": -234,
+      "scale": 1.35
+    },
+    {
+      "asset": "HubRingSegment",
+      "position_studs": [
+        -20.64396,
+        13.4,
+        6.70763
+      ],
+      "yaw_degrees": -252,
+      "scale": 1
+    },
+    {
+      "asset": "HubCurbSegment",
+      "position_studs": [
+        -32.50692,
+        13.4,
+        0.0
+      ],
+      "yaw_degrees": -270,
+      "scale": 1
+    },
+    {
+      "asset": "HubPathStrip",
+      "position_studs": [
+        -36.14015,
+        13.4,
+        11.74265
+      ],
+      "yaw_degrees": -252,
+      "scale": 1
+    },
+    {
+      "asset": "HubPathStrip",
+      "position_studs": [
+        -47.55283,
+        13.4,
+        15.45085
+      ],
+      "yaw_degrees": -252,
+      "scale": 1
+    },
+    {
+      "asset": "HubPathStrip",
+      "position_studs": [
+        -58.9655,
+        13.4,
+        19.15905
+      ],
+      "yaw_degrees": -252,
+      "scale": 1
+    },
+    {
+      "asset": "PlotPlatform",
+      "position_studs": [
+        -80.8398,
+        13.4,
+        26.26644
+      ],
+      "yaw_degrees": -432,
+      "scale": 1
+    },
+    {
+      "asset": "PlotGateArch",
+      "position_studs": [
+        -67.52501,
+        14.85,
+        21.94021
+      ],
+      "yaw_degrees": -432,
+      "scale": 1
+    },
+    {
+      "asset": "PlotPathStraight",
+      "position_studs": [
+        -74.18241,
+        13.85,
+        24.10333
+      ],
+      "yaw_degrees": -432,
+      "scale": 1
+    },
+    {
+      "asset": "PlotSignPost",
+      "position_studs": [
+        -73.30184,
+        14.85,
+        12.25113
+      ],
+      "yaw_degrees": -432,
+      "scale": 0.75
+    },
+    {
+      "asset": "PlotCornerGarden",
+      "position_studs": [
+        -94.22508,
+        14.85,
+        19.0495
+      ],
+      "yaw_degrees": -432,
+      "scale": 1
+    },
+    {
+      "asset": "PlotCornerGarden",
+      "position_studs": [
+        -87.42671,
+        14.85,
+        39.97274
+      ],
+      "yaw_degrees": -432,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        -96.9596,
+        14.6,
+        23.09239
+      ],
+      "yaw_degrees": -432,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        -94.48746,
+        14.6,
+        30.70084
+      ],
+      "yaw_degrees": -432,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        -92.01533,
+        14.6,
+        38.30929
+      ],
+      "yaw_degrees": -432,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        -77.66575,
+        14.6,
+        10.14665
+      ],
+      "yaw_degrees": -522,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        -85.2742,
+        14.6,
+        12.61878
+      ],
+      "yaw_degrees": -522,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        -92.88265,
+        14.6,
+        15.09092
+      ],
+      "yaw_degrees": -522,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        -68.79696,
+        14.6,
+        37.44197
+      ],
+      "yaw_degrees": -522,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        -76.40541,
+        14.6,
+        39.91411
+      ],
+      "yaw_degrees": -522,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        -84.01386,
+        14.6,
+        42.38624
+      ],
+      "yaw_degrees": -522,
+      "scale": 1
+    },
+    {
+      "asset": "GalaxyToilet",
+      "position_studs": [
+        -85.59509,
+        14.85,
+        27.81153
+      ],
+      "yaw_degrees": -432,
+      "scale": 1.45
+    },
+    {
+      "asset": "DisplayPedestal",
+      "position_studs": [
+        -84.263,
+        14.85,
+        18.96701
+      ],
+      "yaw_degrees": -432,
+      "scale": 1.35
+    },
+    {
+      "asset": "DisplayPedestal",
+      "position_studs": [
+        -83.02693,
+        14.85,
+        22.77124
+      ],
+      "yaw_degrees": -432,
+      "scale": 1.35
+    },
+    {
+      "asset": "DisplayPedestal",
+      "position_studs": [
+        -80.55479,
+        14.85,
+        30.37969
+      ],
+      "yaw_degrees": -432,
+      "scale": 1.35
+    },
+    {
+      "asset": "DisplayPedestal",
+      "position_studs": [
+        -79.31872,
+        14.85,
+        34.18391
+      ],
+      "yaw_degrees": -432,
+      "scale": 1.35
+    },
+    {
+      "asset": "RubberDuck",
+      "position_studs": [
+        -84.263,
+        16.6,
+        18.96701
+      ],
+      "yaw_degrees": -432,
+      "scale": 0.65
+    },
+    {
+      "asset": "GoldenPoop",
+      "position_studs": [
+        -79.31872,
+        16.6,
+        34.18391
+      ],
+      "yaw_degrees": -432,
+      "scale": 0.65
+    },
+    {
+      "asset": "PalmTree",
+      "position_studs": [
+        -53.0,
+        13.4,
+        0.0
+      ],
+      "yaw_degrees": -270,
+      "scale": 2
+    },
+    {
+      "asset": "LampPost",
+      "position_studs": [
+        -34.0,
+        13.4,
+        0.0
+      ],
+      "yaw_degrees": -270,
+      "scale": 1.35
+    },
+    {
+      "asset": "HubRingSegment",
+      "position_studs": [
+        -20.64396,
+        13.4,
+        -6.70763
+      ],
+      "yaw_degrees": -288,
+      "scale": 1
+    },
+    {
+      "asset": "HubCurbSegment",
+      "position_studs": [
+        -26.29865,
+        13.4,
+        -19.10709
+      ],
+      "yaw_degrees": -306,
+      "scale": 1
+    },
+    {
+      "asset": "HubPathStrip",
+      "position_studs": [
+        -36.14015,
+        13.4,
+        -11.74265
+      ],
+      "yaw_degrees": -288,
+      "scale": 1
+    },
+    {
+      "asset": "HubPathStrip",
+      "position_studs": [
+        -47.55283,
+        13.4,
+        -15.45085
+      ],
+      "yaw_degrees": -288,
+      "scale": 1
+    },
+    {
+      "asset": "HubPathStrip",
+      "position_studs": [
+        -58.9655,
+        13.4,
+        -19.15905
+      ],
+      "yaw_degrees": -288,
+      "scale": 1
+    },
+    {
+      "asset": "PlotPlatform",
+      "position_studs": [
+        -80.8398,
+        13.4,
+        -26.26644
+      ],
+      "yaw_degrees": -468,
+      "scale": 1
+    },
+    {
+      "asset": "PlotGateArch",
+      "position_studs": [
+        -67.52501,
+        14.85,
+        -21.94021
+      ],
+      "yaw_degrees": -468,
+      "scale": 1
+    },
+    {
+      "asset": "PlotPathStraight",
+      "position_studs": [
+        -74.18241,
+        13.85,
+        -24.10333
+      ],
+      "yaw_degrees": -468,
+      "scale": 1
+    },
+    {
+      "asset": "PlotSignPost",
+      "position_studs": [
+        -66.50347,
+        14.85,
+        -33.17437
+      ],
+      "yaw_degrees": -468,
+      "scale": 0.75
+    },
+    {
+      "asset": "PlotCornerGarden",
+      "position_studs": [
+        -87.42671,
+        14.85,
+        -39.97274
+      ],
+      "yaw_degrees": -468,
+      "scale": 1
+    },
+    {
+      "asset": "PlotCornerGarden",
+      "position_studs": [
+        -94.22508,
+        14.85,
+        -19.0495
+      ],
+      "yaw_degrees": -468,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        -92.01533,
+        14.6,
+        -38.30929
+      ],
+      "yaw_degrees": -468,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        -94.48746,
+        14.6,
+        -30.70084
+      ],
+      "yaw_degrees": -468,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        -96.9596,
+        14.6,
+        -23.09239
+      ],
+      "yaw_degrees": -468,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        -68.79696,
+        14.6,
+        -37.44197
+      ],
+      "yaw_degrees": -558,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        -76.40541,
+        14.6,
+        -39.91411
+      ],
+      "yaw_degrees": -558,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        -84.01386,
+        14.6,
+        -42.38624
+      ],
+      "yaw_degrees": -558,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        -77.66575,
+        14.6,
+        -10.14665
+      ],
+      "yaw_degrees": -558,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        -85.2742,
+        14.6,
+        -12.61878
+      ],
+      "yaw_degrees": -558,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        -92.88265,
+        14.6,
+        -15.09092
+      ],
+      "yaw_degrees": -558,
+      "scale": 1
+    },
+    {
+      "asset": "BasicToilet",
+      "position_studs": [
+        -85.59509,
+        14.85,
+        -27.81153
+      ],
+      "yaw_degrees": -468,
+      "scale": 1.45
+    },
+    {
+      "asset": "DisplayPedestal",
+      "position_studs": [
+        -79.31872,
+        14.85,
+        -34.18391
+      ],
+      "yaw_degrees": -468,
+      "scale": 1.35
+    },
+    {
+      "asset": "DisplayPedestal",
+      "position_studs": [
+        -80.55479,
+        14.85,
+        -30.37969
+      ],
+      "yaw_degrees": -468,
+      "scale": 1.35
+    },
+    {
+      "asset": "DisplayPedestal",
+      "position_studs": [
+        -83.02693,
+        14.85,
+        -22.77124
+      ],
+      "yaw_degrees": -468,
+      "scale": 1.35
+    },
+    {
+      "asset": "DisplayPedestal",
+      "position_studs": [
+        -84.263,
+        14.85,
+        -18.96701
+      ],
+      "yaw_degrees": -468,
+      "scale": 1.35
+    },
+    {
+      "asset": "RubberDuck",
+      "position_studs": [
+        -79.31872,
+        16.6,
+        -34.18391
+      ],
+      "yaw_degrees": -468,
+      "scale": 0.65
+    },
+    {
+      "asset": "GoldenPoop",
+      "position_studs": [
+        -84.263,
+        16.6,
+        -18.96701
+      ],
+      "yaw_degrees": -468,
+      "scale": 0.65
+    },
+    {
+      "asset": "PalmTree",
+      "position_studs": [
+        -42.8779,
+        13.4,
+        -31.15262
+      ],
+      "yaw_degrees": -306,
+      "scale": 2
+    },
+    {
+      "asset": "LampPost",
+      "position_studs": [
+        -27.50658,
+        13.4,
+        -19.9847
+      ],
+      "yaw_degrees": -306,
+      "scale": 1.35
+    },
+    {
+      "asset": "HubRingSegment",
+      "position_studs": [
+        -12.75867,
+        13.4,
+        -17.5608
+      ],
+      "yaw_degrees": -324,
+      "scale": 1
+    },
+    {
+      "asset": "HubCurbSegment",
+      "position_studs": [
+        -10.04519,
+        13.4,
+        -30.91592
+      ],
+      "yaw_degrees": -342,
+      "scale": 1
+    },
+    {
+      "asset": "HubPathStrip",
+      "position_studs": [
+        -22.33584,
+        13.4,
+        -30.74265
+      ],
+      "yaw_degrees": -324,
+      "scale": 1
+    },
+    {
+      "asset": "HubPathStrip",
+      "position_studs": [
+        -29.38926,
+        13.4,
+        -40.45085
+      ],
+      "yaw_degrees": -324,
+      "scale": 1
+    },
+    {
+      "asset": "HubPathStrip",
+      "position_studs": [
+        -36.44269,
+        13.4,
+        -50.15905
+      ],
+      "yaw_degrees": -324,
+      "scale": 1
+    },
+    {
+      "asset": "PlotPlatform",
+      "position_studs": [
+        -49.96175,
+        13.4,
+        -68.76644
+      ],
+      "yaw_degrees": -504,
+      "scale": 1
+    },
+    {
+      "asset": "PlotGateArch",
+      "position_studs": [
+        -41.73275,
+        14.85,
+        -57.44021
+      ],
+      "yaw_degrees": -504,
+      "scale": 1
+    },
+    {
+      "asset": "PlotPathStraight",
+      "position_studs": [
+        -45.84725,
+        13.85,
+        -63.10333
+      ],
+      "yaw_degrees": -504,
+      "scale": 1
+    },
+    {
+      "asset": "PlotSignPost",
+      "position_studs": [
+        -34.30303,
+        14.85,
+        -65.92839
+      ],
+      "yaw_degrees": -504,
+      "scale": 0.75
+    },
+    {
+      "asset": "PlotCornerGarden",
+      "position_studs": [
+        -47.2343,
+        14.85,
+        -83.72676
+      ],
+      "yaw_degrees": -504,
+      "scale": 1
+    },
+    {
+      "asset": "PlotCornerGarden",
+      "position_studs": [
+        -65.03268,
+        14.85,
+        -70.79549
+      ],
+      "yaw_degrees": -504,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        -51.92433,
+        14.6,
+        -85.07812
+      ],
+      "yaw_degrees": -504,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        -58.39646,
+        14.6,
+        -80.37584
+      ],
+      "yaw_degrees": -504,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        -64.8686,
+        14.6,
+        -75.67356
+      ],
+      "yaw_degrees": -504,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        -33.65007,
+        14.6,
+        -70.72903
+      ],
+      "yaw_degrees": -594,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        -38.35235,
+        14.6,
+        -77.20116
+      ],
+      "yaw_degrees": -594,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        -43.05463,
+        14.6,
+        -83.6733
+      ],
+      "yaw_degrees": -594,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        -56.86886,
+        14.6,
+        -53.85959
+      ],
+      "yaw_degrees": -594,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        -61.57114,
+        14.6,
+        -60.33173
+      ],
+      "yaw_degrees": -594,
+      "scale": 1
+    },
+    {
+      "asset": "PlotFenceSection",
+      "position_studs": [
+        -66.27342,
+        14.6,
+        -66.80386
+      ],
+      "yaw_degrees": -594,
+      "scale": 1
+    },
+    {
+      "asset": "GoldenToilet",
+      "position_studs": [
+        -52.90067,
+        14.85,
+        -72.81153
+      ],
+      "yaw_degrees": -504,
+      "scale": 1.45
+    },
+    {
+      "asset": "DisplayPedestal",
+      "position_studs": [
+        -44.0774,
+        14.85,
+        -74.27774
+      ],
+      "yaw_degrees": -504,
+      "scale": 1.35
+    },
+    {
+      "asset": "DisplayPedestal",
+      "position_studs": [
+        -47.31346,
+        14.85,
+        -71.9266
+      ],
+      "yaw_degrees": -504,
+      "scale": 1.35
+    },
+    {
+      "asset": "DisplayPedestal",
+      "position_studs": [
+        -53.7856,
+        14.85,
+        -67.22432
+      ],
+      "yaw_degrees": -504,
+      "scale": 1.35
+    },
+    {
+      "asset": "DisplayPedestal",
+      "position_studs": [
+        -57.02167,
+        14.85,
+        -64.87318
+      ],
+      "yaw_degrees": -504,
+      "scale": 1.35
+    },
+    {
+      "asset": "RubberDuck",
+      "position_studs": [
+        -44.0774,
+        16.6,
+        -74.27774
+      ],
+      "yaw_degrees": -504,
+      "scale": 0.65
+    },
+    {
+      "asset": "GoldenPoop",
+      "position_studs": [
+        -57.02167,
+        16.6,
+        -64.87318
+      ],
+      "yaw_degrees": -504,
+      "scale": 0.65
+    },
+    {
+      "asset": "PalmTree",
+      "position_studs": [
+        -16.3779,
+        13.4,
+        -50.406
+      ],
+      "yaw_degrees": -342,
+      "scale": 2
+    },
+    {
+      "asset": "LampPost",
+      "position_studs": [
+        -10.50658,
+        13.4,
+        -32.33592
+      ],
+      "yaw_degrees": -342,
+      "scale": 1.35
+    },
+    {
+      "asset": "ToiletCastle",
+      "position_studs": [
+        0,
+        13.4,
+        143
+      ],
+      "yaw_degrees": 0,
+      "scale": 1.5
+    },
+    {
+      "asset": "PlazaSteps",
+      "position_studs": [
+        0,
+        13.4,
+        121
+      ],
+      "yaw_degrees": -180,
+      "scale": 1.5
+    },
+    {
+      "asset": "ShopKiosk",
+      "position_studs": [
+        -36,
+        13.4,
+        -30
+      ],
+      "yaw_degrees": -40,
+      "scale": 1.25
+    },
+    {
+      "asset": "IndexBookPedestal",
+      "position_studs": [
+        -12,
+        13.4,
+        -36
+      ],
+      "yaw_degrees": -25,
+      "scale": 1.1
+    },
+    {
+      "asset": "CollectCoinJar",
+      "position_studs": [
+        12,
+        13.4,
+        -36
+      ],
+      "yaw_degrees": 25,
+      "scale": 1
+    },
+    {
+      "asset": "PortalSewer",
+      "position_studs": [
+        -110,
+        13.4,
+        55
+      ],
+      "yaw_degrees": -65,
+      "scale": 1.2
+    },
+    {
+      "asset": "PortalSpace",
+      "position_studs": [
+        110,
+        13.4,
+        55
+      ],
+      "yaw_degrees": 65,
+      "scale": 1.2
+    },
+    {
+      "asset": "PortalHell",
+      "position_studs": [
+        108,
+        13.4,
+        -40
+      ],
+      "yaw_degrees": 110,
+      "scale": 1.2
+    },
+    {
+      "asset": "Lighthouse",
+      "position_studs": [
+        -104,
+        13.4,
+        103
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GiantPalmCluster",
+      "position_studs": [
+        -109,
+        13.4,
+        -105
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "GiantPalmCluster",
+      "position_studs": [
+        111,
+        13.4,
+        103
+      ],
+      "yaw_degrees": -150,
+      "scale": 1
+    },
+    {
+      "asset": "SmallCove",
+      "position_studs": [
+        -78,
+        -5,
+        -137
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "DockPier",
+      "position_studs": [
+        28,
+        -0.3,
+        -131
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "DockPier",
+      "position_studs": [
+        28,
+        -0.3,
+        -147
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "DockPier",
+      "position_studs": [
+        28,
+        -0.3,
+        -163
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "RopeBridge",
+      "position_studs": [
+        0,
+        10.775,
+        181
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "FloatingIsletB",
+      "position_studs": [
+        0,
+        0,
+        201
+      ],
+      "yaw_degrees": 0,
+      "scale": 1.03
+    },
+    {
+      "asset": "FloatingIsletA",
+      "position_studs": [
+        -154,
+        28,
+        60
+      ],
+      "yaw_degrees": 0,
+      "scale": 1.4
+    },
+    {
+      "asset": "FloatingIsletB",
+      "position_studs": [
+        160,
+        40,
+        115
+      ],
+      "yaw_degrees": 0,
+      "scale": 1.4
+    },
+    {
+      "asset": "FloatingIsletC",
+      "position_studs": [
+        -125,
+        53,
+        175
+      ],
+      "yaw_degrees": 0,
+      "scale": 1.4
+    },
+    {
+      "asset": "MountainRidgeA",
+      "position_studs": [
+        -150,
+        -1,
+        208
+      ],
+      "yaw_degrees": 0,
+      "scale": 1.4,
+      "preview_tint_linear": [
+        0.16,
+        0.51,
+        0.9
+      ]
+    },
+    {
+      "asset": "MountainRidgeB",
+      "position_studs": [
+        -42,
+        -1,
+        234
+      ],
+      "yaw_degrees": 0,
+      "scale": 1.8,
+      "preview_tint_linear": [
+        0.16,
+        0.51,
+        0.9
+      ]
+    },
+    {
+      "asset": "MountainRidgeC",
+      "position_studs": [
+        93,
+        -1,
+        220
+      ],
+      "yaw_degrees": 0,
+      "scale": 1.65,
+      "preview_tint_linear": [
+        0.16,
+        0.51,
+        0.9
+      ]
+    },
+    {
+      "asset": "MountainRidgeA",
+      "position_studs": [
+        182,
+        -1,
+        169
+      ],
+      "yaw_degrees": 0,
+      "scale": 1.4,
+      "preview_tint_linear": [
+        0.16,
+        0.51,
+        0.9
+      ]
+    },
+    {
+      "asset": "CloudBankWide",
+      "position_studs": [
+        -172,
+        79,
+        191
+      ],
+      "yaw_degrees": 0,
+      "scale": 1.5
+    },
+    {
+      "asset": "CloudBankTall",
+      "position_studs": [
+        -66,
+        107,
+        243
+      ],
+      "yaw_degrees": 0,
+      "scale": 1.5
+    },
+    {
+      "asset": "CloudBankWide",
+      "position_studs": [
+        65,
+        88,
+        239
+      ],
+      "yaw_degrees": 0,
+      "scale": 1.5
+    },
+    {
+      "asset": "CloudBankTall",
+      "position_studs": [
+        174,
+        108,
+        183
+      ],
+      "yaw_degrees": 0,
+      "scale": 1.5
+    },
+    {
+      "asset": "ShoreRocks",
+      "position_studs": [
+        -114,
+        13.4,
+        -64
+      ],
+      "yaw_degrees": 0,
+      "scale": 1.4
+    },
+    {
+      "asset": "TreeStump",
+      "position_studs": [
+        -111,
+        13.4,
+        -69
+      ],
+      "yaw_degrees": 0,
+      "scale": 1
+    },
+    {
+      "asset": "ShoreRocks",
+      "position_studs": [
+        -118,
+        13.4,
+        24
+      ],
+      "yaw_degrees": -51,
+      "scale": 1.4
+    },
+    {
+      "asset": "TreeStump",
+      "position_studs": [
+        -115,
+        13.4,
+        19
+      ],
+      "yaw_degrees": -35,
+      "scale": 1
+    },
+    {
+      "asset": "ShoreRocks",
+      "position_studs": [
+        112,
+        13.4,
+        -90
+      ],
+      "yaw_degrees": -102,
+      "scale": 1.4
+    },
+    {
+      "asset": "TreeStump",
+      "position_studs": [
+        115,
+        13.4,
+        -95
+      ],
+      "yaw_degrees": -70,
+      "scale": 1
+    },
+    {
+      "asset": "ShoreRocks",
+      "position_studs": [
+        119,
+        13.4,
+        6
+      ],
+      "yaw_degrees": -153,
+      "scale": 1.4
+    },
+    {
+      "asset": "TreeStump",
+      "position_studs": [
+        122,
+        13.4,
+        1
+      ],
+      "yaw_degrees": -105,
+      "scale": 1
+    },
+    {
+      "asset": "ShoreRocks",
+      "position_studs": [
+        -40,
+        13.4,
+        112
+      ],
+      "yaw_degrees": -204,
+      "scale": 1.4
+    },
+    {
+      "asset": "TreeStump",
+      "position_studs": [
+        -37,
+        13.4,
+        107
+      ],
+      "yaw_degrees": -140,
+      "scale": 1
+    },
+    {
+      "asset": "ShoreRocks",
+      "position_studs": [
+        52,
+        13.4,
+        111
+      ],
+      "yaw_degrees": -255,
+      "scale": 1.4
+    },
+    {
+      "asset": "TreeStump",
+      "position_studs": [
+        55,
+        13.4,
+        106
+      ],
+      "yaw_degrees": -175,
+      "scale": 1
+    }
+  ]
+}
