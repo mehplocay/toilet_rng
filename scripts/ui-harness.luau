@@ -1,5 +1,15 @@
 -- Small Roblox UI double: executes production constructors/callbacks, not engine rendering.
-local H = { Objects = {}, Delays = {}, Spawned = {}, Calls = {}, Writes = 0 }
+local H = {
+	Objects = {},
+	Delays = {},
+	Spawned = {},
+	Calls = {},
+	Writes = 0,
+	Now = 100,
+	Timers = {},
+	Threads = {},
+	Preloads = {},
+}
 local function signal()
 	local s = { Listeners = {} }
 	function s:Connect(fn)
@@ -177,6 +187,10 @@ end
 function methods:WaitForChild(name)
 	return assert(self:FindFirstChild(name), name)
 end
+function methods:Play()
+	self.IsPlaying = true
+	self.Plays = (self.Plays or 0) + 1
+end
 local function baseSize(object)
 	if object._fixed then
 		return object._fixed
@@ -254,6 +268,7 @@ function Instance.new(class)
 		"Changed",
 		"DescendantAdded",
 		"DescendantRemoving",
+		"Ended",
 	}) do
 		object._props[event] = signal()
 	end
@@ -262,13 +277,28 @@ function Instance.new(class)
 end
 local services = {
 	RunService = { Heartbeat = signal() },
-	UserInputService = { TouchEnabled = false },
+	UserInputService = { TouchEnabled = false, InputChanged = signal(), InputEnded = signal() },
 	TweenService = {},
+	ContentProvider = {},
 	Players = {},
 	ContextActionService = {},
 }
 function services.RunService:IsStudio()
 	return true
+end
+function services.ContentProvider:PreloadAsync(values, callback)
+	table.insert(H.Preloads, values)
+	if H.HoldPreload then
+		coroutine.yield()
+	end
+	for _, value in ipairs(values) do
+		if type(value) ~= "string" then
+			value.IsLoaded, value.TimeLength, value.TimePosition = not H.FailPreload, 120, 0
+		end
+		if callback then
+			callback("test", if H.FailPreload then Enum.AssetFetchStatus.Failure else Enum.AssetFetchStatus.Success)
+		end
+	end
 end
 function services.TweenService:Create(object, _, props)
 	return {
@@ -306,6 +336,9 @@ for path in pairs(sources) do
 	node(path)
 end
 local game = { ReplicatedStorage = { Shared = node("src/shared") }, Players = services.Players }
+function game:IsLoaded()
+	return true
+end
 function game:GetService(name)
 	if not services[name] then
 		services[name] = Instance.new(name)
@@ -317,8 +350,9 @@ function workspace:GetServerTimeNow()
 	return 1800000000
 end
 local task = {
-	delay = function(_, fn)
+	delay = function(seconds, fn)
 		table.insert(H.Delays, fn)
+		table.insert(H.Timers, { At = H.Now + seconds, Fn = fn })
 	end,
 	spawn = function(fn)
 		table.insert(H.Spawned, fn)
@@ -340,6 +374,12 @@ local globals = {
 	NumberSequence = sequence,
 	NumberSequenceKeypoint = sequence,
 	TweenInfo = sequence,
+	os = {
+		clock = function()
+			return H.Now
+		end,
+		time = os.time,
+	},
 	task = task,
 }
 local loadModule
@@ -575,11 +615,40 @@ function H.StartTasks()
 	local pending = H.Spawned
 	H.Spawned = {}
 	for _, fn in ipairs(pending) do
-		local ok, err = coroutine.resume(coroutine.create(fn))
+		local thread = coroutine.create(fn)
+		local ok, err = coroutine.resume(thread)
 		assert(ok, err)
+		if coroutine.status(thread) ~= "dead" then
+			table.insert(H.Threads, thread)
+		end
+	end
+end
+function H.Advance(seconds)
+	H.Now += seconds
+	local pending = H.Timers
+	H.Timers = {}
+	for _, timer in ipairs(pending) do
+		if timer.At <= H.Now then
+			timer.Fn()
+		else
+			table.insert(H.Timers, timer)
+		end
+	end
+	services.RunService.Heartbeat:Fire(seconds)
+end
+function H.ResumeTasks()
+	local pending = H.Threads
+	H.Threads = {}
+	for _, thread in ipairs(pending) do
+		local ok, err = coroutine.resume(thread)
+		assert(ok, err)
+		if coroutine.status(thread) ~= "dead" then
+			table.insert(H.Threads, thread)
+		end
 	end
 end
 function H.BootClient(remotes)
+	node("src/client").Destroying = signal()
 	-- World animation/guidance and spatial input are outside this UI-only double.
 	for _, name in ipairs({ "VisualIdle", "PlotGuidance", "VIPChat" }) do
 		cache["src/client/" .. name] = { Start = function() end }

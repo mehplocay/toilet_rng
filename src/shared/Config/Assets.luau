@@ -32,7 +32,25 @@ return {
 	ToiletIcons = { Basic = 0, Dirty = 0, Golden = 0, Diamond = 0, Radioactive = 0, Demon = 0, Galaxy = 0 },
 	Models = {}, -- All visual models are generated from built-in primitives.
 	Textures = { Sparkle = "rbxasset://textures/particles/sparkles_main.dds" }, -- Engine-bundled texture; no external ID.
-	Sounds = { Flush = "", Epic = "", Legendary = "", ServerEvent = "", Click = "" },
+	Music = { "", "", "", "", "" }, -- Five shuffled, loop-ready chill tracks.
+	Sounds = {
+		Click = "",
+		Hover = "",
+		Open = "",
+		Close = "",
+		CoinCollect = "",
+		Flush = "",
+		FlushRumble = "",
+		Epic = "",
+		Legendary = "",
+		Mythic = "",
+		Godly = "",
+		Secret = "",
+		ServerEvent = "",
+		PurchaseSuccess = "",
+		Error = "",
+		AutoFlushTick = "",
+	},
 	Gamepasses = {}, -- No real asset/product IDs configured yet.
 	DeveloperProducts = {},
 }

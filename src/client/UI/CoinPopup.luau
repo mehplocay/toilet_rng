@@ -9,6 +9,9 @@ function CoinPopup.Create(parent)
 		if type(amount) ~= "number" or amount <= 0 or amount >= math.huge or amount % 1 ~= 0 then
 			return
 		end
+		if C.SoundHook then
+			C.SoundHook("CoinCollect")
+		end
 		-- Each award owns its label/tween so fast flushes cannot cancel earlier popups.
 		local layout = Layout.Compute(parent.AbsoluteSize.X, parent.AbsoluteSize.Y, UserInputService.TouchEnabled)
 		local label = C.Text(parent, "+" .. C.Commas(amount) .. " Coins", UDim2.fromOffset(180, 36), nil, 27)

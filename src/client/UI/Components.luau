@@ -199,6 +199,9 @@ function C.Button(parent, text, size, position, callback, color, options)
 	button.MouseEnter:Connect(function()
 		if button.Interactable then
 			animate(1.035)
+			if C.SoundHook then
+				C.SoundHook("Hover")
+			end
 		end
 	end)
 	button.MouseLeave:Connect(function()
@@ -437,6 +440,9 @@ function C.Panel(parent, title, color)
 	end
 	parent:GetPropertyChangedSignal("AbsoluteSize"):Connect(resize)
 	panel:GetPropertyChangedSignal("Visible"):Connect(function()
+		if C.SoundHook then
+			C.SoundHook(if panel.Visible then "Open" else "Close")
+		end
 		if panel.Visible then
 			resize()
 			C.Pop(panel)

@@ -29,6 +29,15 @@ function Reveal.Create(parent, hud)
 		end
 		icon = Preview.Create(frame, UDim2.fromScale(0.25, 0.75), UDim2.fromScale(0.025, 0.12), item)
 		frame.Visible = true
+		local duration = if skip then 1 else 2.4
+		if Rarities[item.Rarity].Order >= 4 then
+			if C.SoundHook then
+				C.SoundHook(item.Rarity)
+			end
+			if C.AudioHook then
+				C.AudioHook("Reveal", duration)
+			end
+		end
 		hud.SetHintVisible(false)
 		if not skip then
 			C.Pop(frame)
@@ -36,7 +45,7 @@ function Reveal.Create(parent, hud)
 				C.Shine(frame)
 			end
 		end
-		task.delay(if skip then 1 else 2.4, function()
+		task.delay(duration, function()
 			if generation == token then
 				frame.Visible = false
 				hud.SetHintVisible(true)
