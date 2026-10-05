@@ -33,6 +33,10 @@ for _, name in ipairs({
 	"ServerLuck",
 	"Settings",
 	"AutoFlush",
+	"AnimationSkip",
+	"PlotColor",
+	"BuyPass",
+	"RefreshPasses",
 	"DevGrant",
 	"TutorialDone",
 	"ClaimReward",
@@ -42,6 +46,7 @@ end
 local C = require(script.UI.Components)
 require(script.UI.FlushPrompt).Start()
 require(script.VisualIdle).Start()
+require(script.VIPChat).Start()
 local gui = C.New(
 	"ScreenGui",
 	player:WaitForChild("PlayerGui"),
@@ -72,6 +77,7 @@ local coins = C.Text(coinBox, "Loading...", UDim2.fromScale(0.72, 0.85), UDim2.f
 local collection = require(script.UI.Collection).Create(gui, remotes)
 local upgrades = require(script.UI.Upgrades).Create(gui, remotes)
 local rewards = require(script.UI.Rewards).Create(gui, remotes)
+local passes = require(script.UI.Passes).Create(gui, remotes)
 if RunService:IsStudio() then
 	local panel = C.New("Frame", gui, {
 		Size = UDim2.fromScale(0.28, 0.16),
@@ -117,9 +123,19 @@ toggle = C.Button(settings, "Sound: ON", UDim2.fromScale(0.6, 0.16), UDim2.fromS
 	updateSounds()
 	remotes.Settings:FireServer(soundOn)
 end)
-C.Text(settings, "Sound settings are saved.", UDim2.fromScale(0.9, 0.12), UDim2.fromScale(0.05, 0.6))
+local skipAnimation, skipToggle = false, nil
+skipToggle = C.Button(
+	settings,
+	"Animation skip: OFF",
+	UDim2.fromScale(0.6, 0.14),
+	UDim2.fromScale(0.2, 0.55),
+	function()
+		remotes.AnimationSkip:FireServer(not skipAnimation)
+	end
+)
+C.Text(settings, "Settings are saved.", UDim2.fromScale(0.9, 0.12), UDim2.fromScale(0.05, 0.76))
 local function open(panel)
-	for _, other in ipairs({ collection.Panel, upgrades.Panel, settings, rewards.Panel }) do
+	for _, other in ipairs({ collection.Panel, upgrades.Panel, settings, rewards.Panel, passes.Panel }) do
 		other.Visible = other == panel and not other.Visible
 	end
 end
@@ -130,9 +146,10 @@ local colors = {
 	Color3.fromRGB(160, 65, 225),
 	Color3.fromRGB(65, 85, 105),
 	Color3.fromRGB(195, 140, 35),
+	Color3.fromRGB(210, 140, 65),
 }
 local navigation = {}
-for index, name in ipairs({ "Shop", "Collection", "Upgrades", "Teleport", "Settings", "Daily" }) do
+for index, name in ipairs({ "Shop", "Collection", "Upgrades", "Teleport", "Settings", "Daily", "Passes" }) do
 	local button = C.Button(
 		gui,
 		name,
@@ -145,6 +162,8 @@ for index, name in ipairs({ "Shop", "Collection", "Upgrades", "Teleport", "Setti
 				open(settings)
 			elseif name == "Daily" then
 				open(rewards.Panel)
+			elseif name == "Passes" then
+				open(passes.Panel)
 			elseif name == "Teleport" then
 				local position = player:GetAttribute("PlotPosition")
 				if typeof(position) == "Vector3" and player.Character then
@@ -158,7 +177,7 @@ for index, name in ipairs({ "Shop", "Collection", "Upgrades", "Teleport", "Setti
 	)
 	local label = button:FindFirstChildWhichIsA("TextLabel")
 	label.Size, label.Position = UDim2.fromScale(0.73, 0.78), UDim2.fromScale(0.25, 0.11)
-	C.Icon(button, name, UDim2.fromScale(0.19, 0.7), UDim2.fromScale(0.04, 0.15))
+	C.Icon(button, if name == "Passes" then "Shop" else name, UDim2.fromScale(0.19, 0.7), UDim2.fromScale(0.04, 0.15))
 	navigation[name] = button
 end
 require(script.UI.Tutorial).Create(player, remotes, navigation)
@@ -171,24 +190,26 @@ local popup = C.New("Frame", gui, {
 C.Chrome(popup, C.Navy)
 local resultText = C.Text(popup, "", UDim2.fromScale(0.94, 0.9), UDim2.fromScale(0.03, 0.05))
 local effects = require(script.Effects).Create(gui, soundGroup)
-local autoOwned, autoEnabled = false, false
+local autoUnlocked, autoEnabled = false, false
+local autoUnlock = require(Config.Monetization).AutoFlushUnlock
 local autoButton
 autoButton = C.Button(
 	gui,
-	"Auto Flush: Coming soon",
+	"Auto Flush: 0/" .. autoUnlock,
 	UDim2.fromScale(0.23, 0.06),
 	UDim2.fromScale(0.75, 0.1),
 	function()
-		if autoOwned then
+		if autoUnlocked then
 			remotes.AutoFlush:FireServer(not autoEnabled)
 		end
 	end
 )
+autoButton.Interactable = false
 remotes.Event.OnClientEvent:Connect(effects.Event)
 remotes.ServerLuck.OnClientEvent:Connect(effects.Luck)
 local generation = 0
 remotes.Result.OnClientEvent:Connect(function(action, payload)
-	if action == "ClaimReward" then
+	if action == "ClaimReward" or action == "BuyPass" or action == "RefreshPasses" or action == "PlotColor" then
 		return
 	end
 	generation += 1
@@ -201,7 +222,7 @@ remotes.Result.OnClientEvent:Connect(function(action, payload)
 				resultText.Text = item.Name .. "\n" .. item.Rarity .. " - 1 in " .. item.Chance
 				resultText.TextColor3 = rarity.Color
 				popup.Size = if rarity.Order >= 4 then UDim2.fromScale(0.52, 0.26) else UDim2.fromScale(0.43, 0.2)
-				if rarity.Order >= 4 then
+				if rarity.Order >= 4 and not skipAnimation then
 					TweenService:Create(popup, TweenInfo.new(0.3, Enum.EasingStyle.Back), { Rotation = 3 }):Play()
 				else
 					popup.Rotation = 0
@@ -225,14 +246,19 @@ remotes.State.OnClientEvent:Connect(function(state)
 	soundOn = state.Settings.Sound
 	toggle.Text = if soundOn then "Sound: ON" else "Sound: OFF"
 	updateSounds()
-	autoOwned, autoEnabled = state.OwnedPasses.AutoFlush == true, state.AutoFlush
-	autoButton.Text = if autoOwned
+	skipAnimation = state.Settings.SkipAnimation == true
+	skipToggle.Text = if skipAnimation then "Animation skip: ON" else "Animation skip: OFF"
+	effects.SetSkip(skipAnimation)
+	autoUnlocked, autoEnabled = (state.LifetimeFlushes or 0) >= autoUnlock, state.AutoFlush
+	autoButton.Interactable = autoUnlocked
+	autoButton.Text = if autoUnlocked
 		then (if autoEnabled then "Auto Flush: ON" else "Auto Flush: OFF")
-		else "Auto Flush: Coming soon"
+		else "Auto Flush: " .. tostring(state.LifetimeFlushes or 0) .. "/" .. autoUnlock
 	effects.Luck(state.ServerLuckExpires)
 	coins.Text = C.Commas(state.Coins)
 	collection.Update(state)
 	upgrades.Update(state)
 	rewards.Update(state)
+	passes.Update(state)
 end)
 remotes.State:FireServer()

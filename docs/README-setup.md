@@ -20,14 +20,18 @@ Poop always supplies the fallback. Displayed odds are base odds.
 `Events.luau` controls server luck duration, multiplier, visual cooldown and
 tints. Event luck refreshes to five minutes without stacking. During the visual
 cooldown, another event refreshes luck immediately and queues its announcement.
-Personal and server luck multiply toilet luck. Auto Flush requires ownership
-and still requires the player to stay near their toilet.
+Free reward and server luck multiply toilet luck. Auto-Flush unlocks for free
+after 100 lifetime flushes and runs only near the player's own toilet. It starts
+OFF on join and stops on leaving range or character removal. Animation skip is
+a free saved setting; it never shortens cooldowns.
 
 Sound hooks live in `Assets.luau`; empty strings play nothing. `Monetization.luau`
 has zero IDs and makes no ownership requests until valid IDs are configured.
-VIP Toilet, extra slots and the developer product are configuration stubs only;
-there is no receipt handler or purchase flow. Do not sell the product until a
-durable, idempotent receipt handler has been implemented.
+The Passes panel lists Sparkle Trail, VIP Star, Custom Plot Color and Fast Flush
+with disabled Coming soon buttons while IDs are 0. Configured passes use actual
+platform prices and server purchase prompts/entitlement fulfillment. Paid luck
+and developer products are disabled. See [the feature handoff](autoflush-passes.md)
+for integration details, research links and the Studio purchase/recovery checklist.
 
 Checks: `stylua --check src scripts`, `rojo build -o build.rbxl`,
 `luau scripts/check-foundation.luau`, `luau scripts/check-display.luau`,

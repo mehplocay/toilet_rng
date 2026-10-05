@@ -15,6 +15,7 @@ local function commas(value)
 end
 function Effects.Create(gui, soundGroup)
 	local expires, generation = 0, 0
+	local skipAnimation = false
 	local luck = C.Text(gui, "", UDim2.fromScale(0.26, 0.05), UDim2.fromScale(0.71, 0.18))
 	luck.TextColor3 = Color3.fromRGB(255, 225, 80)
 	local banner = C.Text(gui, "", UDim2.fromScale(0.65, 0.12), UDim2.fromScale(0.02, 0.02))
@@ -47,6 +48,9 @@ function Effects.Create(gui, soundGroup)
 	end
 	local pulseTween
 	local function drop(item)
+		if skipAnimation then
+			return
+		end
 		local rarity = Rarities[item.Rarity]
 		if rarity.Order >= 4 then
 			sound(if rarity.Order >= 5 then "Legendary" else "Epic")
@@ -89,6 +93,22 @@ function Effects.Create(gui, soundGroup)
 	end)
 	local activeTween
 	return {
+		SetSkip = function(enabled)
+			if enabled == skipAnimation then
+				return
+			end
+			skipAnimation = enabled
+			if enabled then
+				if activeTween then
+					activeTween:Cancel()
+				end
+				if pulseTween then
+					pulseTween:Cancel()
+				end
+				popup.Visible = false
+				tint.TintColor, tint.Brightness = Color3.new(1, 1, 1), 0
+			end
+		end,
 		Luck = function(value)
 			expires = value
 		end,
@@ -113,6 +133,15 @@ function Effects.Create(gui, soundGroup)
 				.. string.upper(item.Name)
 				.. "!\nServer Luck increased for 5 minutes!"
 			banner.TextColor3 = Rarities[item.Rarity].Color
+			if skipAnimation then
+				banner.Visible = true
+				task.delay(3, function()
+					if generation == token then
+						banner.Visible = false
+					end
+				end)
+				return
+			end
 			banner.Visible, popup.Visible = true, true
 			title.Text = string.upper(item.Name) .. "\n1/" .. commas(item.Chance) .. "\n" .. string.upper(item.Rarity)
 			if activeTween then
