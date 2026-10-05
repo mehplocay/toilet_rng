@@ -11,7 +11,9 @@ return {
 	Settings = "Settings",
 	AutoFlush = "AutoFlush",
 	DevGrant = "DevGrant",
+	ClaimReward = "ClaimReward",
 	Limits = {
+		ClaimReward = { Capacity = 2, Refill = 0.2 },
 		Settings = { Capacity = 3, Refill = 1 },
 		AutoFlush = { Capacity = 3, Refill = 1 },
 		Display = { Capacity = 4, Refill = 2 },

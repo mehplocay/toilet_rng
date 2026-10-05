@@ -34,6 +34,7 @@ for _, name in ipairs({
 	"Settings",
 	"AutoFlush",
 	"DevGrant",
+	"ClaimReward",
 }) do
 	remotes[name] = folder:WaitForChild(definitions[name])
 end
@@ -63,6 +64,7 @@ coins.BackgroundColor3 = C.Navy
 C.Round(coins)
 local collection = require(script.UI.Collection).Create(gui, remotes)
 local upgrades = require(script.UI.Upgrades).Create(gui, remotes)
+local rewards = require(script.UI.Rewards).Create(gui, remotes)
 if RunService:IsStudio() then
 	local panel = C.New("Frame", gui, {
 		Size = UDim2.fromScale(0.28, 0.16),
@@ -110,7 +112,7 @@ toggle = C.Button(settings, "Sound: ON", UDim2.fromScale(0.6, 0.16), UDim2.fromS
 end)
 C.Text(settings, "Sound settings are saved.", UDim2.fromScale(0.9, 0.12), UDim2.fromScale(0.05, 0.6))
 local function open(panel)
-	for _, other in ipairs({ collection.Panel, upgrades.Panel, settings }) do
+	for _, other in ipairs({ collection.Panel, upgrades.Panel, settings, rewards.Panel }) do
 		other.Visible = other == panel and not other.Visible
 	end
 end
@@ -120,13 +122,16 @@ local colors = {
 	Color3.fromRGB(40, 175, 110),
 	Color3.fromRGB(160, 65, 225),
 	Color3.fromRGB(65, 85, 105),
+	Color3.fromRGB(195, 140, 35),
 }
-for index, name in ipairs({ "Shop", "Collection", "Upgrades", "Teleport", "Settings" }) do
+for index, name in ipairs({ "Shop", "Collection", "Upgrades", "Teleport", "Settings", "Daily" }) do
 	C.Button(gui, name, UDim2.fromScale(0.16, 0.075), UDim2.fromScale(0.025, 0.24 + (index - 1) * 0.09), function()
 		if name == "Collection" then
 			open(collection.Panel)
 		elseif name == "Settings" then
 			open(settings)
+		elseif name == "Daily" then
+			open(rewards.Panel)
 		elseif name == "Teleport" then
 			local position = player:GetAttribute("PlotPosition")
 			if typeof(position) == "Vector3" and player.Character then
@@ -163,6 +168,9 @@ remotes.Event.OnClientEvent:Connect(effects.Event)
 remotes.ServerLuck.OnClientEvent:Connect(effects.Luck)
 local generation = 0
 remotes.Result.OnClientEvent:Connect(function(action, payload)
+	if action == "ClaimReward" then
+		return
+	end
 	generation += 1
 	local token = generation
 	if action == "Flush" then
@@ -205,5 +213,6 @@ remotes.State.OnClientEvent:Connect(function(state)
 	coins.Text = tostring(state.Coins) .. " Coins"
 	collection.Update(state)
 	upgrades.Update(state)
+	rewards.Update(state)
 end)
 remotes.State:FireServer()

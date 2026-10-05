@@ -16,6 +16,7 @@ for _, key in ipairs({
 	"Settings",
 	"AutoFlush",
 	"DevGrant",
+	"ClaimReward",
 }) do
 	local remote = Instance.new("RemoteEvent")
 	remote.Name = definitions[key]
@@ -26,6 +27,11 @@ local data = require(script.Services.DataService)
 local limiter = require(script.Services.RateLimiter).new(definitions.Limits)
 local world = require(script.World.WorldService)
 local monetization = require(script.Services.MonetizationService)
+local rewards = require(script.Services.RewardService).new(
+	require(ReplicatedStorage.Shared.Config.Rewards),
+	require(ReplicatedStorage.Shared.RewardSchedule),
+	os.time
+)
 local events = require(script.Services.EventService).new(require(ReplicatedStorage.Shared.Config.Events), function()
 	return workspace:GetServerTimeNow()
 end, function(payload)
@@ -39,6 +45,9 @@ local function sync(player)
 		world:Refresh(player, profile)
 		remotes.State:FireClient(player, {
 			Coins = profile.Coins,
+			LastClaimDay = profile.LastClaimDay,
+			Streak = profile.Streak,
+			RewardLuckExpires = profile.RewardLuckExpires,
 			Settings = profile.Settings,
 			OwnedPasses = monetization.Owned[player] or {},
 			AutoFlush = monetization.Auto[player] == true,
@@ -52,7 +61,8 @@ local function sync(player)
 	end
 end
 world:Start(data)
-require(script.Services.FlushService).Start(data, limiter, remotes, sync, world, events, monetization)
+require(script.Services.FlushService).Start(data, limiter, remotes, sync, world, events, monetization, rewards)
+rewards:Start(data, limiter, remotes, sync)
 require(script.Services.EconomyService).Start(data, limiter, remotes, sync)
 require(script.Services.DisplayService).Start(data, limiter, remotes, sync)
 require(script.Services.DevGrantService).Start(data, limiter, remotes, sync)

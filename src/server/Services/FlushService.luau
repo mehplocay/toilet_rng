@@ -2,7 +2,7 @@ local Items = require(game.ReplicatedStorage.Shared.Config.Items)
 local Toilets = require(game.ReplicatedStorage.Shared.Config.Toilets)
 local RollService = require(script.Parent.RollService)
 local FlushService = {}
-function FlushService.Start(data, limiter, remotes, sync, world, events, monetization)
+function FlushService.Start(data, limiter, remotes, sync, world, events, monetization, rewards)
 	local nextFlush, random = {}, Random.new()
 	local function flush(player)
 		if not limiter:Allow(player, "Flush") then
@@ -22,7 +22,7 @@ function FlushService.Start(data, limiter, remotes, sync, world, events, monetiz
 		nextFlush[player] = now + toilet.Cooldown
 		local item = RollService.Roll(Items, Toilets, profile.ToiletTier, function()
 			return random:NextNumber()
-		end, toilet.Luck * events:Multiplier() * monetization:Luck(player))
+		end, toilet.Luck * events:Multiplier() * monetization:Luck(player) * rewards:Luck(profile))
 		profile.Stats.Flushes += 1
 		profile.Inventory[item.Id] = (profile.Inventory[item.Id] or 0) + 1
 		profile.Collection[item.Id] = (profile.Collection[item.Id] or 0) + 1

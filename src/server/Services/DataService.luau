@@ -4,6 +4,7 @@ local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local Items = require(game.ReplicatedStorage.Shared.Config.Items)
 local Toilets = require(game.ReplicatedStorage.Shared.Config.Toilets)
+local Rewards = require(game.ReplicatedStorage.Shared.Config.Rewards)
 
 local DataService = { Profiles = {}, Saving = {}, Closing = {}, NoPersistence = {}, Stopping = false }
 local storeOk, store = pcall(DataStoreService.GetDataStore, DataStoreService, "ToiletRNG_v1")
@@ -28,6 +29,9 @@ function DataService.DefaultProfile()
 		Version = 1,
 		Settings = { Sound = true },
 		Coins = 0,
+		LastClaimDay = 0,
+		Streak = 0,
+		RewardLuckExpires = 0,
 		Inventory = {},
 		Collection = {},
 		ToiletTier = 1,
@@ -46,6 +50,12 @@ local function sanitize(raw)
 		profile.Settings.Sound = raw.Settings.Sound
 	end
 	profile.Coins = integer(raw.Coins, 0)
+	profile.LastClaimDay = integer(raw.LastClaimDay, 0)
+	profile.Streak = math.clamp(integer(raw.Streak, 0), 0, #Rewards.BaseCoins)
+	if profile.LastClaimDay == 0 or profile.Streak == 0 then
+		profile.LastClaimDay, profile.Streak = 0, 0
+	end
+	profile.RewardLuckExpires = integer(raw.RewardLuckExpires, 0)
 	profile.ToiletTier = math.clamp(integer(raw.ToiletTier, 1), 1, #Toilets)
 	profile.DisplaySlots = math.clamp(integer(raw.DisplaySlots, 3), 1, 100)
 	for _, item in ipairs(Items) do
