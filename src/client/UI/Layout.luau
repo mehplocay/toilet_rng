@@ -92,4 +92,24 @@ function Layout.Grid(width, minimum, gap, maximumColumns)
 	columns = math.min(columns, maximumColumns or columns)
 	return columns, math.floor((width - (columns - 1) * gap) / columns)
 end
+-- The top of each grid cell reserves space for the overflowing sculpture.
+Layout.PassCard = {
+	MinimumWidth = 224,
+	CellHeight = 314,
+	Top = 48,
+	Height = 266,
+	IconSize = 128,
+	IconY = -48,
+	TitleY = 88,
+	TitleHeight = 40,
+	DescriptionY = 134,
+	DescriptionHeight = 24,
+	StatusY = 164,
+	StatusHeight = 24,
+	ButtonY = 204,
+	ButtonHeight = 50,
+	GiftWidth = 72,
+	Inset = 12,
+	Gap = 10,
+}
 return Layout

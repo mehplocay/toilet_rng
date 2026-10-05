@@ -24,8 +24,10 @@ function Rewards.Create(gui, remotes)
 			UDim2.new(0.5, -28, 0, 38)
 		)
 		local value = C.Text(card, "", UDim2.new(1, -12, 0, 43), UDim2.fromOffset(6, 98), 21)
-		local _, status = C.Pill(card, "Locked", C.Navy, UDim2.new(1, -18, 0, 26), UDim2.fromOffset(9, 149))
-		cards[day] = { Frame = card, Value = value, Status = status }
+		local pill, status = C.Pill(card, "Locked", C.Navy, UDim2.new(1, -18, 0, 26), UDim2.fromOffset(9, 149))
+		status.Position, status.Size = UDim2.fromOffset(28, 3), UDim2.new(1, -32, 1, -6)
+		local marks = C.StatusIcons(pill, UDim2.fromOffset(22, 22), UDim2.fromOffset(3, 2))
+		cards[day] = { Frame = card, Value = value, Status = status, Marks = marks }
 	end
 	local countdown = C.Text(body, "Loading rewards...", UDim2.new(1, 0, 0, 28), UDim2.new(0, 0, 1, -122), 19)
 	local message = C.BodyText(
@@ -49,6 +51,7 @@ function Rewards.Create(gui, remotes)
 			local today = available and index == day
 			card.Status.Text = if claimed then "CLAIMED" elseif today then "READY!" else "UP NEXT"
 			card.Status.TextColor3 = if claimed then C.Muted elseif today then C.Green else Color3.new(1, 1, 1)
+			card.Marks(not claimed and not today, claimed)
 			card.Frame.Background.UIStroke.Color = if today then C.Green elseif claimed then C.Muted else C.Gold
 			card.Value.Text = C.Commas(Schedule.Coins(index, state.ToiletTier, Config))
 				.. " Coins"

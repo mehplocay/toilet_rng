@@ -32,16 +32,19 @@ function HUD.Create(root, remotes, open, prompts)
 	dailyBadge.Set(0)
 	local travel = C.New("Frame", gui, { Name = "Travel", BackgroundTransparency = 1 })
 	for i, name in ipairs({ "Hub", "Home", "Shop" }) do
-		C.Button(travel, name, UDim2.new(1 / 3, -10, 1, 0), UDim2.new((i - 1) / 3, 5, 0, 0), function()
+		local button = C.Button(travel, name, UDim2.new(1 / 3, -10, 1, 0), UDim2.new((i - 1) / 3, 5, 0, 0), function()
 			open(if name == "Shop" then "TravelShop" else name)
 		end, ({ C.Gold, C.Blue, C.Green })[i], { Icon = name, TextSize = 30 })
+		if name == "Home" then
+			navigation.Home = button
+		end
 	end
 	local settings = C.Button(gui, "", UDim2.fromOffset(44, 44), nil, function()
 		open("Settings")
 	end, C.Navy)
 	C.Icon(settings, "Settings", UDim2.fromScale(0.74, 0.74), UDim2.fromScale(0.13, 0.13))
 	local wallet = C.New("Frame", gui, { Name = "Wallet", BackgroundTransparency = 1 })
-	C.Icon(wallet, "Coins", UDim2.fromScale(0.22, 0.94), UDim2.fromScale(0, 0.03))
+	C.Icon(wallet, "Coin", UDim2.fromScale(0.22, 0.94), UDim2.fromScale(0, 0.03))
 	local coins = C.Text(wallet, "0", UDim2.fromScale(0.76, 0.92), UDim2.fromScale(0.24, 0.04), 58)
 	coins.TextXAlignment, coins.TextColor3 = Enum.TextXAlignment.Left, Color3.fromRGB(193, 255, 76)
 	coins.UIStroke.Thickness = 3
@@ -108,7 +111,9 @@ function HUD.Create(root, remotes, open, prompts)
 		if autoUnlocked then
 			remotes.AutoFlush:FireServer(not autoEnabled)
 		end
-	end, C.Blue, { TextSize = 18 })
+	end, C.Blue, { TextSize = 18, Icon = "AutoFlush" })
+	auto.Label.TextWrapped = false
+	auto.Label.UITextSizeConstraint.MaxTextSize = 14
 	auto.Interactable = false
 	local autoProgress = C.ProgressBar(auto, UDim2.new(1, -14, 0, 5), UDim2.new(0, 7, 1, -9), C.Gold)
 	local offers = C.New("Frame", gui, { Name = "Offers", BackgroundTransparency = 1 })
@@ -116,14 +121,14 @@ function HUD.Create(root, remotes, open, prompts)
 		local card = C.Button(offers, "", UDim2.new(1, 0, 0, 130), UDim2.fromOffset(0, y), function()
 			open(target)
 		end, color)
+		local burst = C.Icon(card, "OfferBurst", UDim2.fromOffset(52, 52), UDim2.new(1, -48, 0, -12))
+		burst.Rotation = 12
 		C.Icon(card, icon, UDim2.fromOffset(64, 64), UDim2.new(0.5, -32, 0, 8))
 		C.Text(card, title, UDim2.new(1, -12, 0, 26), UDim2.fromOffset(6, 72), 25)
 		local text = C.Text(card, detail, UDim2.new(1, -12, 0, 23), UDim2.fromOffset(6, 101), 16)
 		return card, text
 	end
-	local passOffer = offer(0, "STYLE UP!", "Explore passes", "Crown", C.Purple, "Passes")
-	local sticker = C.Pill(passOffer, "VIP", C.Gold, UDim2.fromOffset(46, 27), UDim2.new(1, -46, 0, -9))
-	sticker.Rotation = 12
+	offer(0, "STYLE UP!", "Explore passes", "Crown", C.Purple, "Passes")
 	local _, luckyText = offer(154, "FEELING LUCKY?", "Daily rewards", "Luck", C.Green, "Daily")
 	local layout, eventActive, revealing = nil, false, false
 	local function resize()

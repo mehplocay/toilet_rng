@@ -12,24 +12,23 @@ function CoinPopup.Create(parent)
 		if C.SoundHook then
 			C.SoundHook("CoinCollect")
 		end
-		-- Each award owns its label/tween so fast flushes cannot cancel earlier popups.
+		-- Each award owns its group/tween so overlapping awards fade independently.
 		local layout = Layout.Compute(parent.AbsoluteSize.X, parent.AbsoluteSize.Y, UserInputService.TouchEnabled)
-		local label = C.Text(parent, "+" .. C.Commas(amount) .. " Coins", UDim2.fromOffset(180, 36), nil, 27)
-		label.Name = "ServiceCoinPopup"
-		label.AnchorPoint = Vector2.new(0.5, 0.5)
-		C.Place(label, layout.CoinPopup)
+		local group = C.New(
+			"CanvasGroup",
+			parent,
+			{ Name = "ServiceCoinPopup", BackgroundTransparency = 1, ZIndex = 50, AnchorPoint = Vector2.new(0.5, 0.5) }
+		)
+		C.Place(group, layout.CoinPopup)
+		C.Icon(group, "Coin", UDim2.fromOffset(32, 32), UDim2.fromOffset(2, 2))
+		local label = C.Text(group, "+" .. C.Commas(amount), UDim2.new(1, -40, 1, -4), UDim2.fromOffset(38, 2), 27)
 		label.TextColor3 = Color3.fromRGB(255, 220, 80)
-		label.ZIndex = 50
-		local tween = TweenService:Create(label, TweenInfo.new(0.9, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-			Position = label.Position - UDim2.fromOffset(0, layout.CoinRise),
-			TextTransparency = 1,
+		local tween = TweenService:Create(group, TweenInfo.new(0.9, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+			Position = group.Position - UDim2.fromOffset(0, layout.CoinRise),
+			GroupTransparency = 1,
 		})
-		local outline = label:FindFirstChildWhichIsA("UIStroke")
-		if outline then
-			TweenService:Create(outline, TweenInfo.new(0.9), { Transparency = 1 }):Play()
-		end
 		tween.Completed:Once(function()
-			label:Destroy()
+			group:Destroy()
 			tween:Destroy()
 		end)
 		tween:Play()

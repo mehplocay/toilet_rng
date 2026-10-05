@@ -11,7 +11,7 @@ function Upgrades.Create(gui, remotes)
 	local row = C.Scroll(body, UDim2.new(1, 0, 1, -72), UDim2.fromOffset(0, 38))
 	C.Grid(row, 144, 310)
 	C.BodyText(body, "Better toilets = new drops + higher odds!", UDim2.new(1, 0, 0, 26), UDim2.new(0, 0, 1, -26))
-	local buttons, bars = {}, {}
+	local buttons, bars, marks = {}, {}, {}
 	for tier, toilet in ipairs(Toilets) do
 		local color = Style.ToiletColors[tier]
 		local card = C.Card(row, color, tier >= 3)
@@ -34,6 +34,7 @@ function Upgrades.Create(gui, remotes)
 			remotes.BuyToilet:FireServer(toilet.Id)
 		end, C.Green, { TextSize = 20 })
 		buttons[tier].Interactable = false
+		marks[tier] = C.StatusIcons(card, UDim2.fromOffset(24, 24), UDim2.new(1, -32, 0, 8))
 	end
 	return {
 		Panel = panel,
@@ -47,6 +48,7 @@ function Upgrades.Create(gui, remotes)
 						else "Save up")
 					else "Locked"
 				button.Interactable = tier == state.ToiletTier + 1 and state.Coins >= Toilets[tier].Price
+				marks[tier](tier > state.ToiletTier + 1, tier <= state.ToiletTier)
 				bars[tier].Set(if tier <= state.ToiletTier then 1 else state.Coins / math.max(1, Toilets[tier].Price))
 			end
 		end,

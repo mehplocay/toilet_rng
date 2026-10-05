@@ -16,12 +16,13 @@ end
 function Tutorial.Create(player, remotes, hud, prompts)
 	local C = require(script.Parent.Components)
 	local step, snapshot, stopped, finishing = 1, nil, false, false
-	local connections, highlight = {}, nil
+	local connections, highlight, highlightedButton = {}, nil, nil
 	local function clearHighlight()
 		if highlight then
 			highlight:Destroy()
 			highlight = nil
 		end
+		highlightedButton = nil
 	end
 	local function stop()
 		if stopped then
@@ -77,15 +78,23 @@ function Tutorial.Create(player, remotes, hud, prompts)
 					finish(true)
 				end
 		)
-		clearHighlight()
-		local button = if step == 3 then hud.Navigation.Collection elseif step == 4 then hud.Navigation.Upgrades else nil
-		if button then
+		local button = if step == 1
+			then hud.Navigation.Home
+			elseif step == 3 then hud.Navigation.Collection
+			elseif step == 4 then hud.Navigation.Upgrades
+			else nil
+		if button ~= highlightedButton then
+			clearHighlight()
+		end
+		if button and not highlight then
+			highlightedButton = button
 			highlight = C.New(
 				"Frame",
 				button,
 				{ Name = "TutorialHighlight", Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1 }
 			)
 			C.Round(highlight, C.Gold, 12, 4)
+			C.Icon(highlight, "Pointer", UDim2.fromOffset(28, 28), UDim2.new(1, -28, 0, 0))
 		end
 		if step == 5 then
 			finish(false)

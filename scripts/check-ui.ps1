@@ -4,6 +4,18 @@ $workspaceRoot = Split-Path $PSScriptRoot -Parent
 $generatedPath = Join-Path $workspaceRoot '.ui-check.generated.luau'
 $parts = [System.Collections.Generic.List[string]]::new()
 $parts.Add('local sources = {}')
+$parts.Add('local expectedIcons = {}')
+$parts.Add('local previewIcons = ' + ([bool]$SnapshotDirectory).ToString().ToLower())
+$manifest = Get-Content -Raw -LiteralPath (Join-Path $workspaceRoot 'assets/icons/manifest.json') | ConvertFrom-Json
+$uploads = Get-Content -Raw -LiteralPath (Join-Path $workspaceRoot 'assets/icons/uploaded-ids.json') | ConvertFrom-Json
+foreach ($asset in $manifest.assets) {
+    if ($asset.config_key -and $asset.size[0] -eq 512) {
+        $section, $key = $asset.config_key.Split('.')
+        $id = $uploads.($asset.category).($asset.name)
+        if (!$id) { throw "Missing uploaded icon: $($asset.name)" }
+        $parts.Add("table.insert(expectedIcons, { Group = '$section', Key = '$key', Id = 'rbxassetid://$id' })")
+    }
+}
 foreach ($file in (Get-ChildItem -LiteralPath (Join-Path $workspaceRoot 'src') -Recurse -Filter '*.luau')) {
     $relative = $file.FullName.Substring($workspaceRoot.Length + 1).Replace('\', '/')
     $moduleName = $relative.Substring(0, $relative.Length - 5)

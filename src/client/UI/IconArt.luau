@@ -130,6 +130,34 @@ function Art.Draw(C, parent, kind, tint)
 		shape(0.18, 0.11, 0.64, 0.62, Color3.fromRGB(255, 197, 151), 0.5)
 		eyes(0.3, 0.33, 0.24)
 		shape(0.43, 0.56, 0.18, 0.14, Color3.fromRGB(108, 224, 255), 1)
+	elseif kind == "Lock" then
+		shape(0.28, 0.08, 0.44, 0.54, C.Gold, 0.45)
+		shape(0.38, 0.2, 0.24, 0.3, C.Navy, 0.4)
+		shape(0.17, 0.4, 0.66, 0.5, C.Gold, 0.16)
+		glyph("!", 0.37, 0.47, 0.26, 0.33, ink)
+	elseif kind == "Check" then
+		shape(0.16, 0.42, 0.2, 0.42, C.Green, 0.2, -42)
+		shape(0.49, 0.12, 0.2, 0.75, C.Green, 0.2, 38)
+	elseif kind == "Gem" then
+		shape(0.2, 0.2, 0.6, 0.6, C.Purple, 0.08, 45)
+		shape(0.33, 0.25, 0.28, 0.28, Color3.fromRGB(255, 155, 240), 0.05, 45)
+	elseif kind == "AutoFlush" then
+		glyph("↻", 0.03, 0, 0.94, 0.96, C.Blue)
+		shape(0.4, 0.4, 0.2, 0.2, white, 1)
+	elseif kind == "OfferBurst" then
+		shape(0.17, 0.17, 0.66, 0.66, C.Gold, 0.06, 25)
+		shape(0.17, 0.17, 0.66, 0.66, C.Gold, 0.06, -20)
+		glyph("OP!", 0.08, 0.27, 0.84, 0.43, white)
+	elseif kind == "Robux" then
+		-- Original vector currency mark; no unrelated uploaded asset is used.
+		shape(0.18, 0.18, 0.64, 0.64, white, 0.12, 22)
+		shape(0.4, 0.4, 0.2, 0.2, C.Green, 0.02, 22)
+	elseif kind == "Gift" then
+		shape(0.17, 0.37, 0.66, 0.5, C.Purple, 0.08)
+		shape(0.1, 0.29, 0.8, 0.19, white, 0.08)
+		shape(0.43, 0.29, 0.14, 0.58, C.Gold, 0.05)
+		shape(0.25, 0.08, 0.25, 0.22, C.Gold, 0.35, 22)
+		shape(0.5, 0.08, 0.25, 0.22, C.Gold, 0.35, -22)
 	elseif kind == "Mystery" or kind == "Locked" then
 		shape(0.16, 0.16, 0.67, 0.68, C.Navy, 0.15, -7)
 		glyph("?", 0.25, 0.18, 0.5, 0.6, C.Purple)

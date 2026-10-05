@@ -9,6 +9,7 @@ local H = {
 	Timers = {},
 	Threads = {},
 	Preloads = {},
+	Warnings = {},
 }
 local function signal()
 	local s = { Listeners = {} }
@@ -97,8 +98,15 @@ local sequence = {
 		return { ... }
 	end,
 }
-local guiClasses =
-	{ Frame = true, TextLabel = true, TextButton = true, TextBox = true, ImageLabel = true, ScrollingFrame = true }
+local guiClasses = {
+	Frame = true,
+	CanvasGroup = true,
+	TextLabel = true,
+	TextButton = true,
+	TextBox = true,
+	ImageLabel = true,
+	ScrollingFrame = true,
+}
 local defaults = {
 	Visible = true,
 	Interactable = true,
@@ -363,6 +371,9 @@ local task = {
 	end,
 }
 local globals = {
+	warn = function(message)
+		table.insert(H.Warnings, message)
+	end,
 	game = game,
 	workspace = workspace,
 	Enum = Enum,
@@ -372,6 +383,7 @@ local globals = {
 	UDim = UDim,
 	UDim2 = UDim2,
 	ColorSequence = sequence,
+	ColorSequenceKeypoint = sequence,
 	NumberSequence = sequence,
 	NumberSequenceKeypoint = sequence,
 	TweenInfo = sequence,
@@ -560,6 +572,19 @@ local function json(value)
 	return "{" .. table.concat(parts, ",") .. "}"
 end
 function H.Snapshot(root, name)
+	-- Offline previews use supplied local PNGs, never evidence of Roblox permission/loading.
+	if previewIcons then
+		for _, object in ipairs(root:GetDescendants()) do
+			if object.ClassName == "ImageLabel" then
+				for _, icon in ipairs(expectedIcons) do
+					if object.Image == icon.Id then
+						object.IsLoaded = true
+						break
+					end
+				end
+			end
+		end
+	end
 	H.Layout(root)
 	local function serialize(object)
 		if not object:IsA("GuiObject") or not object.Visible then
@@ -592,6 +617,7 @@ function H.Snapshot(root, name)
 			alpha = 1 - object.BackgroundTransparency,
 			rotation = object.Rotation,
 			text = object.Text,
+			image = object.Image,
 			textAlpha = 1 - object.TextTransparency,
 			textColor = object.TextColor3,
 			font = object.Font,
@@ -607,6 +633,7 @@ function H.Snapshot(root, name)
 				else nil,
 			corner = if corner then corner.CornerRadius.Offset + math.min(a.X, a.Y) * corner.CornerRadius.Scale else 0,
 			gradient = if gradient then gradient.Color else nil,
+			gradientRotation = if gradient then gradient.Rotation else nil,
 			clip = object.ClassName == "ScrollingFrame" or object.ClipsDescendants == true,
 			children = children,
 		}

@@ -3,6 +3,40 @@ local C = H.Load("src/client/UI/Components")
 local Assets = H.Load("src/shared/Config/Assets")
 local Items = H.Load("src/shared/Config/Items")
 local root, remotes = H.Root(1280, 684), H.Remotes()
+assert(#expectedIcons == 37, "Incomplete icon manifest")
+for _, icon in ipairs(expectedIcons) do
+	assert(Assets[icon.Group][icon.Key] == icon.Id, "Wrong upload mapping: " .. icon.Group .. "." .. icon.Key)
+end
+assert(Assets.Icons.Coin == Assets.Icons.Coins, "Coin compatibility alias differs")
+-- A stalled fetch must not block UI construction; duplicate aliases preload once.
+C.PreloadIcons()
+assert(#H.Preloads == 0, "Preload blocked the calling thread")
+H.HoldPreload = true
+H.StartTasks()
+assert(#H.Preloads == 1 and #H.Preloads[1] == 37, "Preload omitted icons or duplicated aliases")
+local preloadSeen = {}
+for _, label in ipairs(H.Preloads[1]) do
+	assert(not preloadSeen[label.Image], "Duplicate icon preload")
+	preloadSeen[label.Image] = true
+end
+local duringFetch = C.Icon(root, "Shop", H.UDim2.fromOffset(80, 80))
+assert(
+	duringFetch.Fallback.Visible and duringFetch.Asset.Visible and duringFetch.Asset.ImageTransparency == 0.999,
+	"Pending icon must retain fallback and remain render-eligible"
+)
+C.PreloadIcons()
+H.StartTasks()
+assert(#H.Preloads == 1, "Startup preloaded twice")
+H.HoldPreload = false
+H.FailPreload = true
+H.ResumeTasks()
+H.FailPreload = false
+assert(#H.Warnings == 37, "Failed preload did not report per-image status")
+assert(duringFetch.Fallback.Visible and duringFetch.Asset.ImageTransparency == 0.999, "Failed preload hid fallback")
+for _, label in ipairs(H.Preloads[1]) do
+	assert(label._dead, "Preload ImageLabel leaked")
+end
+duringFetch:Destroy()
 local state = {
 	Coins = 12450,
 	Collection = {},
@@ -71,20 +105,153 @@ for name, screen in pairs({ upgrades = upgrades, daily = daily, passes = passes 
 	screen.Panel.Visible = false
 end
 local imageRoot = H.Root(100, 100)
+local shopId = Assets.Icons.Shop
 Assets.Icons.Shop = 123 -- Test-only mock ID; never shipped in Assets.
 local image = C.Icon(imageRoot, "Shop", H.UDim2.fromOffset(80, 80))
 assert(image.Fallback.Visible and image.Asset.Image == "rbxassetid://123")
 image.Asset.IsLoaded = true
-assert(not image.Fallback.Visible, "Loaded image does not replace fallback")
+assert(not image.Fallback.Visible and image.Asset.ImageTransparency == 0, "Loaded image does not replace fallback")
 image.Asset.IsLoaded = false
-assert(image.Fallback.Visible, "Failed image removes fallback")
-Assets.Icons.Shop = 0
+assert(image.Fallback.Visible and image.Asset.ImageTransparency == 0.999, "Failed image removes fallback")
+for _, value in ipairs({ 0, "", "0", "rbxassetid://0" }) do
+	local fallback = C.Icon(imageRoot, "Shop", H.UDim2.fromOffset(80, 80), nil, value)
+	assert(fallback.Fallback.Visible and not fallback:FindFirstChild("Asset"), "Zero/empty icon lost fallback")
+end
+Assets.Icons.Shop = shopId
+local previewModule = H.Load("src/client/UI/Preview")
+for _, item in ipairs(Items) do
+	local itemPreview = previewModule.Create(imageRoot, H.UDim2.fromOffset(80, 80), nil, item)
+	assert(itemPreview:FindFirstChild("Asset", true).Image == Assets.ItemIcons[item.Id], "Item icon mismatch")
+end
+for tier, toilet in ipairs(H.Load("src/shared/Config/Toilets")) do
+	local toiletPreview = previewModule.Create(imageRoot, H.UDim2.fromOffset(80, 80), nil, nil, tier)
+	assert(toiletPreview:FindFirstChild("Asset", true).Image == Assets.ToiletIcons[toilet.Id], "Toilet icon mismatch")
+end
+local hiddenPreview = previewModule.Create(imageRoot, H.UDim2.fromOffset(80, 80), nil, Items[11], nil, true)
+assert(hiddenPreview:FindFirstChild("Asset", true).Image == Assets.Icons.Lock, "Undiscovered icon leaks item art")
+local poopId, basicId = Assets.ItemIcons.Poop, Assets.ToiletIcons.Basic
+Assets.ItemIcons.Poop, Assets.ToiletIcons.Basic = "", 0
+for _, fallback in ipairs({
+	previewModule.Create(imageRoot, H.UDim2.fromOffset(80, 80), nil, Items[1]),
+	previewModule.Create(imageRoot, H.UDim2.fromOffset(80, 80), nil, nil, 1),
+}) do
+	assert(not fallback:FindFirstChild("Asset", true), "Empty preview accidentally used a UI asset")
+end
+Assets.ItemIcons.Poop, Assets.ToiletIcons.Basic = poopId, basicId
+
+-- Measure real offer subtrees at every supported safe viewport.
+local shopConfig = H.Load("src/shared/Config/Shop")
+local passConfig = H.Load("src/shared/Config/Monetization")
+local offerGrid = passes.Panel:FindFirstChild("OfferGrid", true)
+passes.Panel.Visible = true
+for _, viewport in ipairs({
+	{ 1920, 1044 },
+	{ 1280, 684 },
+	{ 375, 690 },
+	{ 724, 318 },
+	{ 1024, 712 },
+	{ 768, 968 },
+	{
+		1116,
+		483,
+	},
+}) do
+	root._fixed, root._abs = { X = viewport[1], Y = viewport[2] }, nil
+	root:GetPropertyChangedSignal("AbsoluteSize"):Fire()
+	H.Layout(root)
+	for _, key in ipairs(passConfig.PassOrder) do
+		local slot, offer = offerGrid[key], offerGrid[key].OfferCard
+		local icon = offer[shopConfig.Offers[key].Icon .. "Icon"]
+		assert(icon.Asset.Image == Assets.Icons[shopConfig.Offers[key].Icon])
+		assert(icon.AbsolutePosition.Y >= slot.AbsolutePosition.Y, "Offer sculpture clips above grid cell")
+		assert(icon.AbsolutePosition.Y < offer.AbsolutePosition.Y, "Offer sculpture does not overflow card")
+		assert(
+			icon.AbsolutePosition.Y + icon.AbsoluteSize.Y <= offer.OfferTitle.AbsolutePosition.Y,
+			"Sculpture overlaps title"
+		)
+		local lastBottom = offer.OfferTitle.AbsolutePosition.Y
+		for _, element in ipairs({ offer.OfferTitle, offer.Description, offer.OfferStatus, offer.Buy }) do
+			assert(element.AbsolutePosition.Y >= lastBottom, "Offer text/actions overlap")
+			lastBottom = element.AbsolutePosition.Y + element.AbsoluteSize.Y
+		end
+		assert(not offer.Description.TextWrapped, "Description is not one line")
+		assert(offer.Buy.AbsoluteSize.X >= 100 and offer.Buy.AbsoluteSize.Y >= 44)
+		assert(offer.Gift.AbsoluteSize.X >= 44 and offer.Gift.AbsoluteSize.Y >= 44)
+		assert(
+			offer.Buy.AbsolutePosition.X + offer.Buy.AbsoluteSize.X < offer.Gift.AbsolutePosition.X,
+			"Buy/gift overlap"
+		)
+		assert(lastBottom <= offer.AbsolutePosition.Y + offer.AbsoluteSize.Y, "Buy button clips below card")
+		assert(offer.Gift.Text == "Coming soon" and not offer.Gift.Interactable)
+		local before = #H.Calls
+		offer.Gift.Activated:Fire()
+		offer.Buy.Activated:Fire()
+		assert(#H.Calls == before, "Zero-ID purchase or gift sent a request")
+	end
+	H.Snapshot(root, "passes-" .. viewport[1] .. "x" .. viewport[2])
+end
+root._fixed, root._abs = { X = 1280, Y = 684 }, nil
+root:GetPropertyChangedSignal("AbsoluteSize"):Fire()
+H.Layout(root)
+assert(H.Services.Lighting.PassesBlur.Enabled, "Opening passes did not enable blur")
+passes.Panel.TitleBar.X.Activated:Fire()
+assert(not H.Services.Lighting.PassesBlur.Enabled, "Closing passes left blur enabled")
+
+-- Mock-only product ID and metadata exercise the original BuyPass path.
+local productCalls, productInfo = 0, { IsForSale = true, PriceInRobux = 79 }
+H.Services.MarketplaceService.GetProductInfoAsync = function(_, id, infoType)
+	assert(id == 123 and infoType == "InfoType.GamePass")
+	productCalls += 1
+	if productInfo == false then
+		error("Test price lookup failure")
+	end
+	return productInfo
+end
+H.StartTasks()
+assert(productCalls == 0, "Zero-ID pass requested metadata")
+passConfig.Gamepasses.SparkleTrail.Id = 123
+passes.Panel.Visible = true
+H.StartTasks()
+local offer = offerGrid.SparkleTrail.OfferCard
+assert(offer.Buy.Text == "79" and offer.Buy.RobuxIcon.Visible and offer.Buy.Interactable)
+offer.Buy.Activated:Fire()
+assert(H.Calls[#H.Calls].Name == "BuyPass" and H.Calls[#H.Calls].Args[1] == "SparkleTrail")
+H.Snapshot(root, "passes-price-preview")
+state.OwnedPasses.SparkleTrail = true
+passes.Update(state)
+assert(not offer.Buy.Interactable and offer.Buy.Text == "Owned" and offer.CheckIcon.Visible)
+state.OwnedPasses.SparkleTrail = nil
+for _, info in ipairs({ { IsForSale = false, PriceInRobux = 79 }, false, { IsForSale = true, PriceInRobux = -1 } }) do
+	productInfo = info
+	passes.Panel.Visible = false
+	passes.Panel.Visible = true
+	H.StartTasks()
+	assert(not offer.Buy.Interactable and offer.Buy.Text == "Unavailable", "Bad metadata enabled purchase")
+end
+passConfig.Gamepasses.SparkleTrail.Id = 0
+passes.Update(state)
+passes.Panel.Visible = false
+local passBlur = H.Services.Lighting.PassesBlur
+passes.Panel:Destroy()
+assert(passBlur._dead, "Destroyed shop leaked its blur effect")
+print(
+	"Icon/shop checks passed: 37 upload mappings, async preload, fallbacks, 7 card layouts, prices, ownership and disabled gifting"
+)
 local hud = H.Load("src/client/UI/HUD").Create(root, remotes, function() end, {
 	Near = function()
 		return true
 	end,
 })
 hud.Update(state)
+for _, name in ipairs({ "Shop", "Collection", "Upgrades", "Passes", "Daily" }) do
+	assert(hud.Navigation[name][name .. "Icon"].Asset.Image == Assets.Icons[name], "HUD icon slot not wired")
+end
+for _, name in ipairs({ "Hub", "Home", "Shop" }) do
+	assert(hud.Frame.Travel[name][name .. "Icon"].Asset.Image == Assets.Icons[name], "Travel icon slot not wired")
+end
+assert(hud.Frame.Wallet.CoinIcon.Asset.Image == Assets.Icons.Coin)
+assert(hud.Frame.FlushActions:FindFirstChild("AutoFlushIcon", true).Asset.Image == Assets.Icons.AutoFlush)
+assert(hud.Frame.Offers:FindFirstChild("OfferBurstIcon", true).Asset.Image == Assets.Icons.OfferBurst)
 H.Load("src/client/UI/IncomeChip").Create(hud.Frame).Update(1234)
 H.Services.RunService.Heartbeat:Fire(0.2)
 local flush = hud.Frame.FlushActions:FindFirstChild("FLUSH")
