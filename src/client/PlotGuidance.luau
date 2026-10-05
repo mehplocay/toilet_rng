@@ -22,6 +22,15 @@ function Guidance.Start()
 	local pillar, target, sign = part("OwnPlotPillar"), part("GuideTarget"), part("OwnPlotSign")
 	pillar.Material, pillar.Color = Enum.Material.Neon, Config.Color
 	pillar.Size = Vector3.new(Config.BeaconWidth, Config.BeaconHeight, Config.BeaconWidth)
+	local pillarBase, pillarTop = Instance.new("Attachment"), Instance.new("Attachment")
+	pillarBase.Position, pillarTop.Position =
+		Vector3.new(0, -Config.BeaconHeight / 2, 0), Vector3.new(0, Config.BeaconHeight / 2, 0)
+	pillarBase.Parent, pillarTop.Parent = pillar, pillar
+	local pillarBeam = Instance.new("Beam")
+	pillarBeam.Attachment0, pillarBeam.Attachment1, pillarBeam.FaceCamera = pillarBase, pillarTop, true
+	pillarBeam.Width0, pillarBeam.Width1 = Config.BeaconWidth, Config.BeaconWidth * 0.4
+	pillarBeam.Color, pillarBeam.Transparency = ColorSequence.new(Config.Color), NumberSequence.new(0.55)
+	pillarBeam.LightEmission, pillarBeam.Parent = 1, pillar
 	local destination = Instance.new("Attachment")
 	destination.Parent = target
 	local beam = Instance.new("Beam")
@@ -46,7 +55,7 @@ function Guidance.Start()
 		local valid = typeof(center) == "Vector3"
 			and typeof(position) == "Vector3"
 			and typeof(signPosition) == "Vector3"
-		pillar.Transparency, billboard.Enabled = if valid then 0.55 else 1, valid
+		pillarBeam.Enabled, billboard.Enabled = valid, valid
 		if not valid then
 			beam.Enabled = false
 			return

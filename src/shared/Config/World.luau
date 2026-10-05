@@ -1,5 +1,5 @@
 return {
-	PlotCount = 10,
+	PlotCount = 12,
 	Radius = 85,
 	ToiletColors = {
 		Color3.fromRGB(245, 245, 255),

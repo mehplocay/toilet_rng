@@ -338,7 +338,7 @@ test("merged profile fields survive sanitize, save and rejoin", function()
 			ToiletTier = 3,
 			DisplaySlots = 3,
 			Displays = { ["1"] = "Poop", ["2"] = "Poop", ["3"] = "Poop", ["4"] = "Unknown" },
-			Stats = { Flushes = 150, Earned = 600 },
+			Stats = { Flushes = 150, Earned = 600, RarestItemId = "Poop", RarestChance = 9e15 },
 		},
 	}
 	local function verify(profile)
@@ -367,6 +367,7 @@ test("merged profile fields survive sanitize, save and rejoin", function()
 		end
 		assert(displayed == 2 and profile.Displays["4"] == nil)
 		assert(profile.Stats.Flushes == 150 and profile.Stats.Earned == 600)
+		assert(profile.Stats.RarestItemId == "Poop" and profile.Stats.RarestChance == 2)
 	end
 	data:Load(player)
 	verify(data:Get(player))
@@ -415,7 +416,7 @@ local function server(options)
 			IncomePoint = { Position = position },
 			CFrame = { Position = position },
 			Model = {
-				GetChildren = function()
+				GetDescendants = function()
 					return {}
 				end,
 			},
@@ -811,6 +812,34 @@ test("income collect validates geometry, ownership, life, arguments and shared r
 	e.Now += 5
 	e:Fire("CollectIncome", player)
 	assert(p.Coins == 11 and e.Store.Records.Player_52.Data.Coins == 11)
+end)
+
+test("income accepts a live owned collect pad but rejects a removed pad and supplied positions", function()
+	local e = server()
+	local player, p = e:Join(59)
+	local plot = e.World.Assigned[player]
+	local padPosition = {}
+	local position = setmetatable({}, {
+		__sub = function(_, target)
+			return { Magnitude = if target == padPosition then 3 else 100 }
+		end,
+	})
+	player.Character.FindFirstChild = function(_, name)
+		return if name == "HumanoidRootPart" then { Position = position } else nil
+	end
+	local pad = { Position = padPosition }
+	plot.CollectPoints = { pad }
+	p.Income.Pending["1"] = 60000
+	e:Fire("CollectIncome", player)
+	assert(p.Coins == 0, "Removed pad authorized remote collection")
+	pad.Parent = plot.Model
+	e.Now += 5
+	e:Fire("CollectIncome", player, padPosition)
+	assert(p.Coins == 0, "Client-supplied pad accepted")
+	e.Now += 5
+	e:Fire("CollectIncome", player)
+	assert(p.Coins == 10 and next(p.Income.Pending) == nil)
+	assert(e.Store.Records.Player_59.Data.Coins == 10)
 end)
 
 test("income delayed collect save, duplicate requests and overlapping rejoin cannot duplicate", function()

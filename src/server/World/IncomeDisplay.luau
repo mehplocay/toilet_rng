@@ -1,37 +1,42 @@
--- A central collection pedestal: bounded primitive geometry, independent of item builders.
-local P = require(game.ReplicatedStorage.Shared.Visuals.Primitives)
+-- Existing aggregate-income remote is shared by the jar and the visible green pads.
+local Kit = require(script.Parent.Kit)
 local Config = require(game.ReplicatedStorage.Shared.Config.Income)
-local V = require(game.ReplicatedStorage.Shared.Config.Visuals).Palette
 local IncomeDisplay = {}
 function IncomeDisplay.Refresh(plot, player, pending)
 	if not plot.IncomePoint or not plot.IncomePoint.Parent then
 		local offset = Config.CollectOffset
-		local cf = plot.CFrame * CFrame.new(offset.X, offset.Y, offset.Z)
-		local point = P.Cylinder(plot.Displays, "IncomeCollect", 1, 0.25, cf, V.Navy)
-		local prompt = Instance.new("ProximityPrompt")
-		prompt.ActionText, prompt.ObjectText = "Collect", "Display income"
-		prompt.MaxActivationDistance = Config.CollectRange
-		prompt.KeyboardKeyCode, prompt.GamepadKeyCode = Enum.KeyCode.F, Enum.KeyCode.ButtonY
-		prompt.RequiresLineOfSight = false
-		prompt:SetAttribute("IncomeOwnerUserId", player.UserId)
-		prompt:SetAttribute("OwnerUserId", player.UserId)
-		prompt.Parent = point
-		plot.IncomePoint, plot.IncomePrompt, plot.IncomeCoins = point, prompt, {}
-		for level = 1, 3 do
-			local coin = P.Cylinder(
-				plot.Displays,
-				"PendingCoin",
-				0.6,
-				0.15,
-				cf * CFrame.new((level % 2) * 0.14, 0.2 + level * 0.17, 0),
-				V.Gold
-			)
-			plot.IncomeCoins[level] = coin
+		local cf = plot.CFrame * CFrame.new(offset.X, offset.Y - 1, offset.Z)
+		local jar = Kit.Place(plot.Displays, { Asset = "CollectCoinJar", Position = Vector3.new(), Scale = 0.8 }, cf)
+		local point = Kit.Proxy(plot.Displays, "IncomeCollect", cf * CFrame.new(0, 2, 0), Vector3.new(1, 1, 1), false)
+		plot.IncomePoint, plot.IncomeCoins = point, {}
+		plot.CollectPoints = plot.CollectPoints or {}
+		table.insert(plot.CollectPoints, point)
+		plot.IncomeLabel = Kit.Label(
+			plot.Displays,
+			"PendingIncome",
+			cf * CFrame.new(0, 7, 0),
+			Vector3.new(9, 3, 0.1),
+			"",
+			Color3.fromRGB(134, 255, 128),
+			true,
+			70
+		)
+		for _, target in ipairs(plot.CollectPoints) do
+			local prompt = Instance.new("ProximityPrompt")
+			prompt.ActionText, prompt.ObjectText = "Collect", "All display income"
+			prompt.MaxActivationDistance = Config.CollectRange
+			prompt.KeyboardKeyCode, prompt.GamepadKeyCode = Enum.KeyCode.F, Enum.KeyCode.ButtonY
+			prompt.RequiresLineOfSight = false
+			prompt:SetAttribute("IncomeOwnerUserId", player.UserId)
+			prompt:SetAttribute("OwnerUserId", player.UserId)
+			prompt.Parent = target
+			if target == point then
+				plot.IncomePrompt = prompt
+			end
 		end
+		jar:SetAttribute("IncomeJar", true)
 	end
-	plot.IncomePrompt.ObjectText = "Display income: " .. pending .. " coins"
-	for level, coin in ipairs(plot.IncomeCoins) do
-		coin.Transparency = if pending >= ({ 1, 10, 100 })[level] then 0 else 1
-	end
+	plot.IncomePrompt.ObjectText = "All display income: " .. pending .. " coins"
+	plot.IncomeLabel.Text = "COLLECT ALL\n$" .. pending
 end
 return IncomeDisplay

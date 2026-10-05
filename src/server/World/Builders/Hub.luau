@@ -1,182 +1,218 @@
 local Shared = game.ReplicatedStorage.Shared
+local Kit = require(script.Parent.Parent.Kit)
+local Layout = require(Shared.Config.MapLayout)
 local P = require(Shared.Visuals.Primitives)
-local Visuals, Style = require(Shared.Config.Visuals), require(Shared.Config.World)
-local Settings = require(Shared.Config.WorldModels)
-local Models = require(script.Parent.Parent.Models)
-local Decor = require(script.Parent.Decor)
-local Island = require(script.Parent.Island)
-local V = Visuals.Palette
 local Hub = {}
-local function ground(cf)
-	local position = cf.Position
-	return cf + Vector3.new(0, Island.Height(position.X, position.Z) - 0.15 - position.Y, 0)
+local white, cyan = Color3.new(1, 1, 1), Color3.fromRGB(95, 255, 237)
+local function board(parent, entry)
+	local cf = CFrame.new(entry.X, 0, entry.Z)
+	local model = Instance.new("Model")
+	model.Name, model.Parent = entry.Key .. "Leaderboard", parent
+	Kit.Proxy(model, "BoardFootprint", cf * CFrame.new(0, 18, 0), Vector3.new(46, 36, 8), true)
+	Kit.Place(
+		model,
+		{ Asset = "GrassSlab", Position = Vector3.new(), Size = Vector3.new(36, 0.5, 29), Solid = { 18, 38, 83 } },
+		cf * CFrame.new(0, 18, 0) * CFrame.Angles(math.pi / 2, 0, 0)
+	)
+	Kit.Place(model, {
+		Asset = "MountainRidgeC",
+		Position = Vector3.new(0, 33, 0),
+		Size = Vector3.new(45, 5, 1),
+		Solid = { 26, 70, 142 },
+	}, cf)
+	for _, x in ipairs({ -20, 20 }) do
+		Kit.Place(model, { Asset = "RocksCrystals", Position = Vector3.new(x, 0, 0), Size = Vector3.new(5, 33, 5) }, cf)
+		Kit.Beam(model, cf, "CrystalEdge", Vector3.new(x, 2, -3), Vector3.new(x, 34, -3), cyan, 0.35, 0.1)
+	end
+	Kit.Place(model, { Asset = "HubEdgeStraight", Position = Vector3.new(0, 0, 0), Size = Vector3.new(46, 1.4, 8) }, cf)
+	Kit.Label(model, "Title", cf * CFrame.new(0, 35.6, -1), Vector3.new(36, 4.5, 0.1), entry.Title, white, false, 200)
+	local heading = Kit.Label(
+		model,
+		"ServerRanking",
+		cf * CFrame.new(0, 18.2, -0.35),
+		Vector3.new(33, 27, 0.1),
+		"THIS SERVER\nWaiting for players",
+		white,
+		false,
+		150
+	)
+	Kit.Label(
+		model,
+		"Scope",
+		cf * CFrame.new(0, 2.8, -2),
+		Vector3.new(32, 1.5, 0.1),
+		"THIS SERVER  /  UPDATES EVERY 10s",
+		cyan,
+		false,
+		120
+	)
+	heading.Text = ""
+	local rows = {}
+	for rank = 1, 12 do
+		local frame = Instance.new("Frame")
+		frame.Name = "Rank" .. rank
+		frame.Position, frame.Size = UDim2.fromScale(0.02, (rank - 1) / 12), UDim2.fromScale(0.96, 0.077)
+		frame.BackgroundColor3 = if rank % 2 == 0 then Color3.fromRGB(29, 63, 116) else Color3.fromRGB(18, 42, 88)
+		frame.BorderSizePixel, frame.Parent = 0, heading.Parent
+		local name, value = Instance.new("TextLabel"), Instance.new("TextLabel")
+		for _, label in ipairs({ name, value }) do
+			label.BackgroundTransparency, label.TextScaled, label.RichText = 1, true, false
+			label.Font, label.TextColor3 = Enum.Font.FredokaOne, white
+			label.Text, label.Parent = "", frame
+		end
+		name.Position, name.Size = UDim2.fromScale(0.03, 0.1), UDim2.fromScale(0.60, 0.8)
+		name.TextXAlignment = Enum.TextXAlignment.Left
+		value.Position, value.Size = UDim2.fromScale(0.65, 0.1), UDim2.fromScale(0.32, 0.8)
+		value.TextXAlignment, value.TextColor3 = Enum.TextXAlignment.Right, cyan
+		if rank == 1 then
+			name.Text = "Waiting for players"
+		end
+		rows[rank] = { Name = name, Value = value }
+	end
+	return rows
 end
 function Hub.Build(root)
 	local hub = Instance.new("Model")
 	hub.Name, hub.Parent = "Hub", root
-	local random = Random.new(Settings.Seed)
-	for x = -6, 5 do
-		for z = -6, 5 do
-			local tile = P.Part(
-				hub,
-				"PlazaTile",
-				Vector3.new(5.92, 0.25, 5.92),
-				CFrame.new(x * 6 + 3, 0.03, z * 6 + 3),
-				Settings.PlazaTiles[(x + z) % 2 + 1]
-			)
-			tile.CanCollide = true
+	local groups = {}
+	for _, entry in ipairs(Layout.Pieces) do
+		local group = entry.Group or "Scenery"
+		if not groups[group] then
+			local folder = Instance.new("Folder")
+			folder.Name, folder.Parent = group, hub
+			groups[group] = folder
+		end
+		Kit.Place(groups[group], entry)
+	end
+	local collision = Instance.new("Folder")
+	collision.Name, collision.Parent = "Walkability", hub
+	local occupied = {}
+	for _, cell in ipairs(Layout.LandCells) do
+		occupied[cell[1] .. ":" .. cell[2]] = true
+	end
+	for _, cell in ipairs(Layout.LandCells) do
+		local x, z = cell[1], cell[2]
+		Kit.Proxy(collision, "WalkFloor", CFrame.new(x, -0.5, z), Vector3.new(48, 1, 48), true)
+		for _, direction in ipairs({ { 48, 0 }, { -48, 0 }, { 0, 48 }, { 0, -48 } }) do
+			local dx, dz = direction[1], direction[2]
+			if not occupied[(x + dx) .. ":" .. (z + dz)] then
+				local cf = CFrame.new(x + dx / 2, 20, z + dz / 2)
+				local size = if dx == 0 then Vector3.new(48, 40, 2) else Vector3.new(2, 40, 48)
+				if x == 0 and z == -288 and dz == -48 then
+					for _, side in ipairs({ -1, 1 }) do
+						Kit.Proxy(collision, "Boundary", cf * CFrame.new(side * 14, 0, 0), Vector3.new(20, 40, 2), true)
+					end
+				else
+					Kit.Proxy(collision, "Boundary", cf, size, true)
+				end
+			end
 		end
 	end
-	for i = 1, 8 do
-		local cf = CFrame.new(0, 0.19, 3) * CFrame.Angles(0, i * math.pi / 4, 0)
-		P.Part(hub, "CompassInlay", Vector3.new(0.22, 0.04, 6), cf * CFrame.new(0, 0, 14), V.Gold)
-		P.Part(
-			hub,
-			"CompassGem",
-			Vector3.new(1.3, 0.05, 1.3),
-			cf * CFrame.new(0, 0, 18) * CFrame.Angles(0, math.pi / 4, 0),
-			V.Cyan
-		)
+	Kit.Proxy(collision, "CastleFootprint", CFrame.new(0, 7, 0), Vector3.new(84, 14, 70), true)
+	Kit.Proxy(collision, "PierDeck", CFrame.new(0, -0.5, -332), Vector3.new(8, 1, 40), true)
+	for _, x in ipairs({ -5, 5 }) do
+		Kit.Proxy(collision, "PierRail", CFrame.new(x, 20, -332), Vector3.new(2, 40, 40), true)
 	end
-	for i = 1, Style.PlotCount do
-		local angle = i * math.pi * 2 / Style.PlotCount
-		local cf = CFrame.Angles(0, angle, 0)
-		local pathColor = Settings.PathColors[(i - 1) % #Settings.PathColors + 1]
-		for _, side in ipairs({ -1, 1 }) do
-			P.Part(
-				hub,
-				"PlotPathStrip",
-				Vector3.new(0.3, 0.12, 36),
-				cf * CFrame.new(side * 3.2, 0.2, 53),
-				pathColor,
-				nil,
-				Enum.Material.Neon
-			)
-		end
-		for step = 0, 6 do
-			local tile = P.Part(
-				hub,
-				"PlotPath",
-				Vector3.new(7, 0.25, 5.2),
-				cf * CFrame.new(0, 0.02, 37 + step * 5.3),
-				if step % 2 == 0 then V.TileA else V.TileB
-			)
-			tile.CanCollide = true
-		end
-		local between = angle + math.pi / Style.PlotCount
-		local treeRadius = if i == 4 or i == 6 or i == 10 then 112 else 53
-		local tx, tz = math.sin(between) * treeRadius, math.cos(between) * treeRadius
-		local treeCF = CFrame.new(tx, Island.Height(tx, tz), tz)
-		Decor.Tree(hub, treeCF)
-		Decor.Bush(hub, ground(treeCF * CFrame.new(4, 0, 1)))
-		Decor.Flower(hub, ground(treeCF * CFrame.new(-3, 0, -2)), Color3.fromRGB(255, 111, 178))
-		Decor.Bench(hub, CFrame.new(math.sin(between) * 32, 0, math.cos(between) * 32) * CFrame.Angles(0, between, 0))
-		if i % 2 == 0 then
-			Decor.Lamp(hub, cf * CFrame.new(6, 0, 38))
-		end
-		Decor.Cloud(hub, CFrame.new(math.sin(between) * 175, 53 + i % 3 * 8, math.cos(between) * 175), 6 + i % 3)
-		if i % 2 == 0 then
-			Decor.Cloud(hub, CFrame.new(math.sin(between + 0.4) * 235, 100 + i, math.cos(between + 0.4) * 235), 9)
-		end
-	end
-	local fountain = CFrame.new(0, 0, 3)
-	P.Cylinder(hub, "FountainStep", 9, 0.5, fountain * CFrame.new(0, 0.3, 0), V.TileA)
-	P.Cylinder(hub, "FountainBasin", 7.5, 0.8, fountain * CFrame.new(0, 0.9, 0), V.Gold, Enum.Material.Metal)
-	P.Cylinder(hub, "FountainWater", 6.8, 0.12, fountain * CFrame.new(0, 1.36, 0), V.Cyan)
-	P.Ring(hub, "GoldenBasinRim", fountain * CFrame.new(0, 1.3, 0), 7.25, 7.25, 0.4, V.Gold, Enum.Material.Metal, 20)
-	Decor.Trophy(hub, fountain * CFrame.new(0, 1.5, 0))
-	Decor.Aura(hub, fountain * CFrame.new(0, 1.45, 0), 4.3, V.Gold)
-	for i = 1, 4 do
-		local a = i * math.pi / 2
-		local nozzle = P.Ball(
-			hub,
-			"WaterJet",
-			Vector3.new(0.4, 0.4, 0.4),
-			fountain * CFrame.new(math.sin(a) * 2.5, 3.9, math.cos(a) * 2.5),
-			V.Cyan,
-			Enum.Material.Neon
-		)
-		local start = Instance.new("Attachment")
-		start.CFrame = CFrame.Angles(0, 0, math.pi / 2)
-		start.Parent = nozzle
-		local finish = Instance.new("Attachment")
-		finish.Position = Vector3.new(math.sin(a) * 3.2, -2.3, math.cos(a) * 3.2)
-		finish.Parent = nozzle
-		local beam = Instance.new("Beam")
-		beam.Name, beam.Attachment0, beam.Attachment1 = "FountainStream", start, finish
-		beam.FaceCamera, beam.Segments, beam.Width0, beam.Width1 = true, 6, 0.18, 0.12
-		beam.CurveSize0, beam.CurveSize1, beam.LightEmission = 1.8, 1, 0.3
-		beam.Color, beam.Transparency = ColorSequence.new(V.Cyan), NumberSequence.new(0.2)
-		beam.Parent = nozzle
-	end
-	local spawn = Instance.new("SpawnLocation")
-	spawn.Name, spawn.Size, spawn.CFrame = "SpawnPad", Vector3.new(8, 0.4, 8), CFrame.new(0, 0.35, -24)
-	spawn.Anchored, spawn.Neutral, spawn.CanTouch = true, true, false
-	spawn.Color, spawn.Material = V.Cyan, Enum.Material.Neon
-	spawn.TopSurface, spawn.BottomSurface = Enum.SurfaceType.Smooth, Enum.SurfaceType.Smooth
-	spawn.Parent = hub
-	Models.Label(spawn, "SPAWN\nWelcome to Toilet RNG!", Color3.new(1, 1, 1))
-	P.Ring(hub, "SpawnHalo", CFrame.new(0, 0.45, -24), 5.7, 5.7, 0.18, V.Cyan, Enum.Material.Neon)
-	for _, x in ipairs({ -22, 22 }) do
-		P.Cylinder(hub, "BannerPost", 0.45, 14, CFrame.new(x, 7, 35), V.Gold, Enum.Material.Metal)
-	end
-	Decor.Sign(hub, CFrame.new(0, 13, 35), 42, 5, "TOILETS MAKE DREAMS COME TRUE!", V.Gold)
-	local best =
-		Decor.Sign(hub, CFrame.new(0, 17, 15), 27, 6, "BEST FLUSH EVER\nYour next flush could make history!", V.Gold)
-	best.Parent.MaxDistance = 180
-	for _, x in ipairs({ -14, 14 }) do
-		P.Cylinder(hub, "RecordBoardPost", 0.25, 18, CFrame.new(x, 9, 15.5), V.Navy)
-	end
-	Decor.Sign(
+	Kit.Proxy(collision, "PierEnd", CFrame.new(0, 20, -352), Vector3.new(12, 40, 2), true)
+	-- Stable legacy travel anchors; coordinates also live in MapLayout for streamed-out travel.
+	Kit.Proxy(hub, "SpawnPad", CFrame.new(Layout.HubArrival - Vector3.new(0, 4, 0)), Vector3.new(2, 0.1, 2), false)
+	Kit.Proxy(
 		hub,
-		CFrame.new(-36, 9, 17) * CFrame.Angles(0, -0.25, 0),
-		16,
-		5,
-		"SHOP\nBetter toilets. Bigger dreams!",
-		V.LeafLight
+		"ShowcaseStand",
+		CFrame.new(Layout.ShopArrival - Vector3.new(0, 4, -8)),
+		Vector3.new(2, 0.1, 2),
+		false
 	)
-	for tier = 1, 7 do
-		local cf = CFrame.new((tier - 4) * 7, 0.4, 26)
-		P.Cylinder(hub, "ShowcaseStand", 2.8, 0.6, cf, V.Navy)
-		Models.Toilet(hub, cf * CFrame.new(0, 0.3, 0), tier)
+	for _, station in ipairs(Layout.Stations) do
+		local cf = CFrame.new(station.X, 0.15, station.Z) * CFrame.Angles(0, math.rad(station.Yaw), 0)
+		Kit.Label(
+			hub,
+			station.Name .. "Billboard",
+			cf * CFrame.new(0, 26, 0),
+			Vector3.new(22, 4.5, 0.1),
+			string.upper(station.Name),
+			white,
+			true,
+			250
+		)
+		local anchor =
+			Kit.Proxy(hub, station.Name .. "Interaction", cf * CFrame.new(0, 3, -9), Vector3.new(1, 1, 1), false)
+		local prompt = Instance.new("ProximityPrompt")
+		prompt.ActionText, prompt.ObjectText = "Open", station.Name
+		prompt.MaxActivationDistance, prompt.RequiresLineOfSight = 12, false
+		prompt:SetAttribute("StationPanel", station.Panel)
+		prompt.Parent = anchor
 	end
-	local board = Decor.Sign(hub, CFrame.new(36, 9, 17) * CFrame.Angles(0, 0.25, 0), 17, 13, "Top Toilets", V.Gold)
-	for _, portal in ipairs(Settings.Portals) do
-		local position = Vector3.new(math.sin(portal.Angle) * 59, 0, math.cos(portal.Angle) * 59)
-		Decor.Portal(hub, CFrame.lookAt(position, Vector3.new(0, 0, 0)), portal.Name, portal.Color)
+	Kit.Label(
+		hub,
+		"UpgradeHint",
+		CFrame.new(66, 23, -66),
+		Vector3.new(26, 2.6, 0.1),
+		"Better toilets = new drops + higher odds!",
+		Color3.fromRGB(139, 255, 155),
+		true,
+		120
+	)
+	for _, gate in ipairs({ { "SEWER", -64 }, { "SPACE", 0 }, { "HELL", 64 } }) do
+		Kit.Label(
+			hub,
+			"PortalBillboard",
+			CFrame.new(gate[2], 29, 260),
+			Vector3.new(23, 7, 0.1),
+			gate[1] .. "\nComing soon",
+			white,
+			true,
+			200
+		)
 	end
-	-- Seeded coastal gardens sit beyond the playable plots; the central lanes stay clear.
-	for i = 1, 32 do
-		local angle = i * math.pi * 2 / 32 + random:NextNumber(-0.025, 0.025)
-		local radius = random:NextNumber(112, 123)
-		local x, z = math.sin(angle) * radius, math.cos(angle) * radius
-		local cf = CFrame.new(x, Island.Height(x, z) - 0.15, z) * CFrame.Angles(0, random:NextNumber(0, math.pi * 2), 0)
-		if i % 4 == 0 then
-			Decor.Tree(hub, cf)
+	local boards = {}
+	for _, entry in ipairs(Layout.Boards) do
+		boards[entry.Key] = board(hub, entry)
+	end
+	local best = Kit.Label(
+		hub,
+		"BestFlushBoard",
+		CFrame.new(0, 58, -37),
+		Vector3.new(58, 12, 0.1),
+		"BEST FLUSH EVER\nYour legendary moment starts here",
+		Color3.fromRGB(255, 220, 100),
+		true,
+		350
+	)
+	Kit.Label(
+		hub,
+		"ResortBanner",
+		CFrame.new(0, 15, -39),
+		Vector3.new(60, 4, 0.1),
+		"TOILETS MAKE DREAMS COME TRUE!",
+		white,
+		false,
+		180
+	)
+	for _, x in ipairs({ -38, 38 }) do
+		for _, z in ipairs({ -29, 29 }) do
+			Kit.Beam(
+				hub,
+				CFrame.new(),
+				"CastleAura",
+				Vector3.new(x, 2, z),
+				Vector3.new(x * 0.7, 112, z * 0.7),
+				Color3.fromRGB(255, 212, 76),
+				7,
+				0.72
+			)
 		end
-		Decor.Bush(hub, ground(cf * CFrame.new(3, 0, 0)))
-		if i % 2 == 0 then
-			Decor.Rocks(hub, cf, random:NextNumber(1.2, 2))
-		else
-			Decor.Flower(hub, cf, Settings.PathColors[i % #Settings.PathColors + 1])
+	end
+	for _, x in ipairs({ -114, 114 }) do
+		for _, z in ipairs({ -240, -144, -48, 48, 144, 240 }) do
+			Kit.Chevron(hub, CFrame.new(x, 0.28, z) * CFrame.Angles(0, if z < 0 then math.pi else 0, 0), 2)
 		end
-		Decor.Foliage(hub, ground(cf * CFrame.new(-3, 0, -1)), random:NextNumber(0.65, 1.1))
 	end
-	-- Foreground framing for the spawn camera, without hiding the trophy or paths.
-	for _, x in ipairs({ -18, 18 }) do
-		local cf = CFrame.new(x, 0, -17)
-		P.Cylinder(hub, "GardenPlanter", 2.8, 0.45, cf * CFrame.new(0, 0.3, 0), V.Navy)
-		P.Cylinder(hub, "PlanterGrass", 2.5, 0.12, cf * CFrame.new(0, 0.57, 0), V.Grass)
-		Decor.Bush(hub, cf * CFrame.new(0, 0.6, 0.4))
-		Decor.Flower(hub, cf * CFrame.new(-1, 0.6, -1.3), Color3.fromRGB(255, 120, 177))
-	end
-	for _, x in ipairs({ -29, 29 }) do
-		Decor.Tree(hub, CFrame.new(x, 0, -27))
-		Decor.Foliage(hub, CFrame.new(x + 3, 0, -31), 1.35)
-		Decor.Flower(hub, CFrame.new(x - 3, 0, -30), Color3.fromRGB(255, 120, 177))
+	for _, z in ipairs({ -124, 100, 204, 236 }) do
+		Kit.Chevron(hub, CFrame.new(0, 0.28, z) * CFrame.Angles(0, math.pi, 0), 2.5)
 	end
 	hub:SetAttribute("PartCount", P.Count(hub))
-	assert(P.Count(hub) <= Visuals.Budget.Hub, "Hub exceeds its visual part budget")
-	return board, best
+	assert(P.Count(hub) <= Layout.Budget.HubParts, "Hub exceeds map budget")
+	return boards, best
 end
 return Hub

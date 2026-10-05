@@ -6,11 +6,13 @@ try {
     & rojo build (Join-Path $workspaceRoot 'default.project.json') -o $xmlPath | Out-Host
     if ($LASTEXITCODE -ne 0) { throw 'Template XML build failed' }
     [xml]$place = [IO.File]::ReadAllText($xmlPath)
-    $root = $place.SelectSingleNode("//Item[@class='ReplicatedStorage']/Item[Properties/string[@name='Name']='ModelTemplates']")
-    if (-not $root -or $root.class -ne 'Model' -or @($root.Item).Count -ne 31) { throw 'Expected one ModelTemplates root with 31 direct models' }
-    $manifest = Get-Content -Raw (Join-Path $workspaceRoot 'assets/manifest.json') | ConvertFrom-Json
     $lines = [Collections.Generic.List[string]]::new()
     $lines.Add('local importedTemplates = {')
+    foreach ($batch in @(@('ModelTemplates','assets/manifest.json',31), @('EnvTemplates','assets/manifest-env.json',44))) {
+    $folderName, $manifestFile, $expectedCount = $batch
+    $root = $place.SelectSingleNode("//Item[@class='ReplicatedStorage']/Item[Properties/string[@name='Name']='$folderName']")
+    if (-not $root -or $root.class -ne 'Model' -or @($root.Item).Count -ne $expectedCount) { throw "Expected $folderName with $expectedCount direct models" }
+    $manifest = Get-Content -Raw (Join-Path $workspaceRoot $manifestFile) | ConvertFrom-Json
     foreach ($asset in $manifest.assets) {
         $name = $asset.name
         $models = $root.SelectNodes("Item[@class='Model'][Properties/string[@name='Name']='$name']")
@@ -37,9 +39,10 @@ try {
         $pivotValues = ($components | ForEach-Object { $pivot.$_ }) -join ', '
         $lines.Add("['$name'] = { Size = Vector3.new($sizeValues), CFrame = CFrame.new($frameValues), PivotOffset = CFrame.new($pivotValues), MeshContent = '$mesh', TextureID = '$texture' },")
     }
-    if ($root.SelectNodes(".//Item[@class='MeshPart']").Count -ne 31) { throw 'Wrong MeshPart count' }
+    if ($root.SelectNodes(".//Item[@class='MeshPart']").Count -ne $expectedCount) { throw 'Wrong MeshPart count' }
+    }
     $lines.Add('}')
-    Write-Host 'Verified binary import: 31 models, 31 MeshParts, 62 content references, manifest sizes, Y-up pivots, Automatic rendering.'
+    Write-Host 'Verified binary import: 75 models (31 original + 44 environment), 75 MeshParts, 150 content references, manifest sizes, Y-up pivots, Automatic rendering.'
     return (($lines -join "`n") + "`n")
 } finally {
     if (Test-Path -LiteralPath $xmlPath) { Remove-Item -LiteralPath $xmlPath }

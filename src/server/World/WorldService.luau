@@ -3,7 +3,8 @@ local TweenService = game:GetService("TweenService")
 local Debris = game:GetService("Debris")
 local Models = require(script.Parent.Models)
 local MeshLoader = require(script.Parent.MeshLoader)
-local Decor = require(script.Parent.Builders.Decor)
+local DisplayRows = require(script.Parent.DisplayRows)
+local Layout = require(game.ReplicatedStorage.Shared.Config.MapLayout)
 local P = require(game.ReplicatedStorage.Shared.Visuals.Primitives)
 local Visuals = require(game.ReplicatedStorage.Shared.Config.Visuals)
 local Hub = require(script.Parent.Builders.Hub)
@@ -11,8 +12,8 @@ local Plot = require(script.Parent.Builders.Plot)
 local PlotSpawn = require(script.Parent.PlotSpawn)
 local PlotChooser = require(game.ReplicatedStorage.Shared.PlotChooser)
 local Config = game.ReplicatedStorage.Shared.Config
-local Style, Items, Rarities, Assets =
-	require(Config.World), require(Config.Items), require(Config.Rarities), require(Config.Assets)
+local Items, Rarities, Assets = require(Config.Items), require(Config.Rarities), require(Config.Assets)
+local rankings = require(game.ReplicatedStorage.Shared.LeaderboardStats).new(Items)
 local World = { Plots = {}, Assigned = {} }
 local IncomeDisplay = require(script.Parent.IncomeDisplay)
 function World:RefreshIncome(player, pending)
@@ -79,7 +80,7 @@ function World:Refresh(player, profile)
 			end
 		end)
 	end
-	local entries = { tostring(profile.DisplaySlots) }
+	local entries = { tostring(profile.DisplaySlots), tostring(profile.ToiletTier) }
 	for slot = 1, profile.DisplaySlots do
 		table.insert(entries, profile.Displays[tostring(slot)] or "-")
 	end
@@ -92,57 +93,37 @@ function World:Refresh(player, profile)
 	plot.Model:SetAttribute("PartCount", P.Count(plot.Model))
 	PlotSpawn:Ready(player)
 end
--- Larger saved capacities rotate through five physical stands to retain the part budget.
+-- Preserve saved slot indexes/capacity; ten physical stands paginate legacy capacities.
 function World:RenderDisplays(plot)
-	local profile = plot.Profile
-	if not profile then
+	if not plot.Profile then
 		return
 	end
-	plot.Displays:ClearAllChildren()
-	local pageSize = Visuals.Budget.DisplayPageSize
-	local first = ((plot.Page or 1) - 1) * pageSize + 1
-	local last = math.min(profile.DisplaySlots, first + pageSize - 1)
-	local count = last - first + 1
-	for slot = first, last do
-		local cf = plot.CFrame * CFrame.new((slot - first - (count - 1) / 2) * 5.2, 0, -8)
-		local item = byId[profile.Displays[tostring(slot)]]
-		local color = if item then Rarities[item.Rarity].Color else Visuals.Palette.Cyan
-		if item and item.Rarity == "Secret" then
-			color = Visuals.Palette.Cyan
-		end
-		Decor.Pedestal(
-			plot.Displays,
-			cf,
-			slot,
-			if item then item.Name .. "\n1/" .. item.Chance else "Display " .. slot,
-			color
-		)
-		if item then
-			Models.Item(plot.Displays, cf * CFrame.new(0, 2.8, 0), item)
-		end
-	end
-	if profile.DisplaySlots > pageSize then
-		local page = P.Part(
-			plot.Displays,
-			"DisplayPage",
-			Vector3.new(6, 0.8, 0.1),
-			plot.CFrame * CFrame.new(0, 5, -8),
-			Visuals.Palette.Navy
-		)
-		Models.Label(
-			page,
-			"Display page " .. plot.Page .. "/" .. math.ceil(profile.DisplaySlots / pageSize),
-			Color3.new(1, 1, 1),
-			true
-		)
-	end
-	local countParts = P.Count(plot.Model)
+	DisplayRows.Build(plot)
 	if plot.Owner then
 		IncomeDisplay.Refresh(plot, plot.Owner, plot.PendingCoins or 0)
-		countParts = P.Count(plot.Model)
 	end
-	plot.Model:SetAttribute("PartCount", countParts)
-	assert(countParts <= Visuals.Budget.Plot, "Plot exceeds its visual part budget")
+	local count = P.Count(plot.Model)
+	plot.Model:SetAttribute("PartCount", count)
+	assert(count <= Visuals.Budget.Plot, "Plot exceeds its visual part budget")
+end
+function World:RefreshLeaderboards()
+	local entries = {}
+	for _, player in ipairs(Players:GetPlayers()) do
+		local profile = self.Data:Get(player)
+		if profile then
+			table.insert(entries, { Name = player.DisplayName, UserId = player.UserId, Profile = profile })
+		end
+	end
+	for key, board in pairs(self.Boards) do
+		local ranked = rankings:Rank(entries, key)
+		for rank, row in ipairs(board) do
+			local entry = ranked[rank]
+			row.Name.Text = if entry then rank .. ".  " .. entry.Name elseif rank == 1 then "Waiting for players" else ""
+			row.Value.Text = if entry
+				then (if key == "Rarest" and entry.Value > 0 then "1 in " else "") .. string.format("%.0f", entry.Value)
+				else ""
+		end
+	end
 end
 function World:Assign(player)
 	if self.Assigned[player] or self.Assigning[player] then
@@ -170,7 +151,7 @@ function World:Assign(player)
 	for index, plot in ipairs(self.Plots) do
 		owners[index] = if plot.Owner then plot.Owner.UserId else false
 	end
-	local index = PlotChooser.Choose(owners, friends)
+	local index = PlotChooser.Choose(owners, friends, Layout.Plots)
 	if index then
 		local plot = self.Plots[index]
 		plot.Owner = player
@@ -180,7 +161,7 @@ function World:Assign(player)
 		player:SetAttribute("PlotPosition", plot.SpawnCFrame.Position)
 		player:SetAttribute("PlotCFrame", plot.SpawnCFrame)
 		player:SetAttribute("PlotCenter", plot.CFrame.Position)
-		player:SetAttribute("PlotSignPosition", (plot.CFrame * CFrame.new(0, 11, 11)).Position)
+		player:SetAttribute("PlotSignPosition", plot.SignPosition)
 		PlotSpawn:Register(player, plot)
 		local profile = self.Data:Get(player)
 		if profile then
@@ -271,7 +252,7 @@ function World:Start(data)
 	MeshLoader.Preload()
 	require(script.Parent.Builders.Island).Build(workspace.Terrain)
 	require(script.Parent.Builders.Lighting).Build()
-	self.Board, self.BestBoard = Hub.Build(root)
+	self.Boards, self.BestBoard = Hub.Build(root)
 	self.BestChance = 0
 	workspace:SetAttribute("BestFlushChance", 0)
 	workspace:SetAttribute("BestFlushRarity", "")
@@ -279,10 +260,8 @@ function World:Start(data)
 	workspace:SetAttribute("BestFlushPlayer", "")
 	workspace:SetAttribute("BestFlushUserId", 0)
 	workspace:SetAttribute("BestFlushEver", self.BestBoard.Text)
-	for index = 1, Style.PlotCount do
-		local angle = index * math.pi * 2 / Style.PlotCount
-		local position = Vector3.new(math.sin(angle) * Style.Radius, 0, math.cos(angle) * Style.Radius)
-		local cf = CFrame.lookAt(position, Vector3.new(0, 0, 0))
+	for index, entry in ipairs(Layout.Plots) do
+		local cf = CFrame.new(entry.X, Layout.FloorY, entry.Z) * CFrame.Angles(0, math.rad(entry.Yaw), 0)
 		table.insert(self.Plots, Plot.Build(root, cf, index))
 	end
 	Players.PlayerAdded:Connect(function(player)
@@ -297,8 +276,10 @@ function World:Start(data)
 			plot.Tier = nil
 			plot.Profile, plot.DisplaySignature, plot.Page = nil, nil, nil
 			plot.PendingCoins, plot.IncomePoint, plot.IncomePrompt, plot.IncomeCoins = nil, nil, nil, nil
+			plot.CollectPoints, plot.IncomeLabel = nil, nil
 			plot.Sign.Text = "Available Plot"
 			plot.Displays:ClearAllChildren()
+			DisplayRows.Build(plot, { ToiletTier = 1, DisplaySlots = 0, Displays = {} })
 			if plot.Toilet then
 				plot.Toilet:Destroy()
 				plot.Toilet = nil
@@ -318,26 +299,8 @@ function World:Start(data)
 					self:RenderDisplays(plot)
 				end
 			end
-			local ranking = {}
-			for _, player in ipairs(Players:GetPlayers()) do
-				local profile = data:Get(player)
-				if profile then
-					local score = 0
-					for _, item in ipairs(Items) do
-						score += (profile.Inventory[item.Id] or 0) * item.Value
-					end
-					table.insert(ranking, { Name = player.DisplayName, Value = score })
-				end
-			end
-			table.sort(ranking, function(a, b)
-				return a.Value > b.Value
-			end)
-			local lines = { "Top Toilets" }
-			for i = 1, math.min(10, #ranking) do
-				table.insert(lines, i .. ". " .. ranking[i].Name .. "  " .. ranking[i].Value)
-			end
-			self.Board.Text = table.concat(lines, "\n")
-			task.wait(10)
+			self:RefreshLeaderboards()
+			task.wait(Layout.RefreshSeconds)
 		end
 	end)
 end

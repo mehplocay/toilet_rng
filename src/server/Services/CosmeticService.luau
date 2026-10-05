@@ -57,8 +57,11 @@ function CosmeticService:Apply(player, owned, profile)
 	local originals = self.Colors[plot]
 	if not originals then
 		originals = {}
-		for _, part in ipairs(plot.Model:GetChildren()) do
-			if part:IsA("BasePart") and (part.Name == "Lawn" or part.Name == "StoneBorder") then
+		for _, part in ipairs(plot.Model:GetDescendants()) do
+			if
+				part:IsA("BasePart")
+				and (part:GetAttribute("PlotTint") or part.Name == "Lawn" or part.Name == "StoneBorder")
+			then
 				originals[part] = part.Color
 			end
 		end

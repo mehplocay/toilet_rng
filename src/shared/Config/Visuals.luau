@@ -31,5 +31,5 @@ return {
 		ExposureCompensation = 0.05,
 		GlobalShadows = true,
 	},
-	Budget = { Hub = 2499, Plot = 399, IdleDistance = 100, IdleRate = 3, Burst = 24, DisplayPageSize = 5 },
+	Budget = { Hub = 1600, Plot = 399, IdleDistance = 100, IdleRate = 3, Burst = 24, DisplayPageSize = 10 },
 }
