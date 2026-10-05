@@ -130,18 +130,20 @@ function Hub.Build(root)
 			station.Name .. "Billboard",
 			cf * CFrame.new(0, 26, 0),
 			Vector3.new(22, 4.5, 0.1),
-			string.upper(station.Name),
+			string.upper(station.Name) .. (if station.ComingSoon then "\nComing soon" else ""),
 			white,
 			true,
 			250
 		)
-		local anchor =
-			Kit.Proxy(hub, station.Name .. "Interaction", cf * CFrame.new(0, 3, -9), Vector3.new(1, 1, 1), false)
-		local prompt = Instance.new("ProximityPrompt")
-		prompt.ActionText, prompt.ObjectText = "Open", station.Name
-		prompt.MaxActivationDistance, prompt.RequiresLineOfSight = 12, false
-		prompt:SetAttribute("StationPanel", station.Panel)
-		prompt.Parent = anchor
+		if not station.ComingSoon then
+			local anchor =
+				Kit.Proxy(hub, station.Name .. "Interaction", cf * CFrame.new(0, 3, -9), Vector3.new(1, 1, 1), false)
+			local prompt = Instance.new("ProximityPrompt")
+			prompt.ActionText, prompt.ObjectText = "Open", station.Name
+			prompt.MaxActivationDistance, prompt.RequiresLineOfSight = 12, false
+			prompt:SetAttribute("StationPanel", station.Panel)
+			prompt.Parent = anchor
+		end
 	end
 	Kit.Label(
 		hub,
@@ -210,6 +212,9 @@ function Hub.Build(root)
 	end
 	for _, z in ipairs({ -124, 100, 204, 236 }) do
 		Kit.Chevron(hub, CFrame.new(0, 0.28, z) * CFrame.Angles(0, math.pi, 0), 2.5)
+	end
+	for _, entry in ipairs(Layout.Wayfinding) do
+		Kit.Chevron(hub, CFrame.new(entry.Position) * CFrame.Angles(0, math.rad(entry.Yaw), 0), entry.Scale)
 	end
 	hub:SetAttribute("PartCount", P.Count(hub))
 	assert(P.Count(hub) <= Layout.Budget.HubParts, "Hub exceeds map budget")

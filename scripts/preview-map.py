@@ -76,6 +76,7 @@ for shape in ("Block", "Ball", "Cylinder", "Wedge"):
 
 asset_meshes = {}
 heights = {}
+labels = []
 last_part = None
 for line in (ROOT / ".world-scene.txt").read_text(encoding="utf-8-sig").splitlines():
     fields = line.split("|")
@@ -148,7 +149,9 @@ for line in (ROOT / ".world-scene.txt").read_text(encoding="utf-8-sig").splitlin
         ob = bpy.data.objects.new("World label approximation", curve)
         scene.collection.objects.link(ob)
         ob.matrix_world = CONVERT @ cf @ Matrix.Translation((0,0,-size[2]/2-.02)) @ Matrix.Rotation(math.pi,4,"Y")
-        curve.materials.append(material((1,.95,.76)))
+        color = tuple(map(float, fields[6].split(','))) if len(fields)>6 else (1,.95,.76)
+        curve.materials.append(material(color, True))
+        labels.append((ob, fields[4] if len(fields)>4 else 'SurfaceGui', float(fields[5]) if len(fields)>5 else 1000))
 
 bpy.ops.mesh.primitive_plane_add(size=1536, location=(0,0,-15))
 bpy.context.object.data.materials.append(material((.025,.53,.68)))
@@ -171,6 +174,10 @@ for name, eye, target, lens in (
     camera.location = position(*eye)
     camera.rotation_euler = (position(*target)-camera.location).to_track_quat("-Z","Y").to_euler()
     camera.data.lens = lens
+    for label, kind, distance in labels:
+        label.hide_render = (label.location-camera.location).length > distance
+        if kind == 'BillboardGui':
+            label.rotation_euler = camera.rotation_euler
     suffix = "-fallback" if "--fallback" in sys.argv else ""
     scene.render.filepath = str(out / (name + suffix + ".png"))
     bpy.ops.render.render(write_still=True)

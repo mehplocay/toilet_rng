@@ -224,18 +224,81 @@ assert(boards.Coins[1].Name.Text == "Waiting for players" and boards.Coins[2].Na
 local maxPlot, maxToilet, maxPlotMeshes, maxPlotTriangles = 0, 0, 0, 0
 local hubInstances, maxPlotInstances = #root:GetDescendants(), 0
 local maxPlotHighlights = 0
+-- Exercise the real refresh path: fixed prompt, all seven tier swaps, one glow
+-- per upgrade, same-profile idempotence, and no tween allocation on first load.
+do
+	local layout = loadModule(node("src/shared/Config/MapLayout"))
+	local plot = Plot.Build(root, CFrame.new(20, 0, -40) * CFrame.Angles(0, 0.7, 0), 1)
+	local owner = { UserId = 101, DisplayName = "A very long owner display name" }
+	local profile = { ToiletTier = 1, DisplaySlots = 3, Displays = {} }
+	World.Assigned[owner], plot.Owner = plot, owner
+	local count = #tweens
+	World:Refresh(owner, profile)
+	assert(#tweens == count, "Initial toilet load is not an upgrade")
+	local anchor = plot.PromptAnchor
+	for tier = 1, 7 do
+		local previous, oldTween = plot.Toilet, plot.GlowRing[1].Tween
+		profile.ToiletTier = tier
+		World:Refresh(owner, profile)
+		assert(plot.FlushPrompt.Parent == anchor and plot.FlushPrompt.ActionText == "FLUSH")
+		assert(plot.FlushPrompt:GetAttribute("OwnerUserId") == owner.UserId)
+		assert(#anchor:GetChildren() == 1, "Tier swap duplicated prompt")
+		assert((plot.Toilet:GetPivot().Position - plot.CFrame.Position).Magnitude < 0.001)
+		assert((plot.SpawnCFrame.Position - anchor.CFrame.Position).Magnitude < plot.FlushPrompt.MaxActivationDistance)
+		if tier > 1 then
+			assert(previous.Parent == nil)
+			for _, segment in ipairs(plot.GlowRing) do
+				assert(segment.Tween.Played and segment.Tween.Target == segment.Part)
+				assert(segment.Tween.Info[1] == layout.UpgradeGlow.Seconds)
+				assert((segment.Tween.Goal.Size - segment.Size).Magnitude < 0.001)
+			end
+			if oldTween then
+				assert(oldTween.Cancelled, "Overlapping upgrade glow leaked a tween")
+			end
+		end
+		local currentToilet, currentPrompt = plot.Toilet, plot.FlushPrompt
+		World:Refresh(owner, profile)
+		assert(plot.Toilet == currentToilet and plot.FlushPrompt == currentPrompt)
+	end
+	assert(#plot.GlowRing == 10 and #tweens == count + 6 * #plot.GlowRing)
+	World.Assigned[owner] = nil
+	plot.Model:Destroy()
+end
 for tier = 1, 7 do
 	local plot = Plot.Build(root, CFrame.new(), tier)
 	assert(plot.Spawn:IsA("SpawnLocation") and plot.Spawn.Neutral and plot.Spawn.Enabled)
 	assert(plot.Spawn.Transparency == 1 and not plot.Spawn.CanCollide and not plot.Spawn.AllowTeamChangeOnTouch)
-	assert(plot.SpawnCFrame.Position.Z == 15 and math.abs(plot.SpawnCFrame.Position.Y - 4.5) < 0.001)
+	local layout = loadModule(node("src/shared/Config/MapLayout"))
+	local guidance = loadModule(node("src/shared/Config/PlotGuidance"))
+	assert((plot.SpawnCFrame.Position - plot.CFrame.Position - guidance.SpawnOffset).Magnitude < 0.001)
+	assert((plot.SpawnCFrame.Position - plot.PromptAnchor.CFrame.Position).Magnitude < 10, "Home must enable FLUSH")
 	-- Preserve the original primitive tier contract used by client previews.
 	local preview = Toilets.Build(root, CFrame.new(), tier, true)
 	for _, name in ipairs({ "Bowl", "Tank", "Foot", "OpenLid", "FlushHandle", "Water", "Seat" }) do
 		assert(preview:GetAttribute("MeshAsset") or preview:FindFirstChild(name), "Missing toilet component: " .. name)
 	end
 	preview:Destroy()
-	plot.Toilet = Models.Toilet(plot.Model, plot.CFrame, tier)
+	plot.Toilet = Models.Toilet(plot.Model, plot.CFrame, tier, layout.ToiletScale)
+	if not plot.Toilet:GetAttribute("MeshFallback") then
+		assert(
+			(plot.Toilet.PrimaryPart.Size - Catalog[plot.Toilet:GetAttribute("MeshAsset")].Size * layout.ToiletScale).Magnitude
+				< 0.001,
+			"Toilet hero scale drift"
+		)
+	end
+	assert(
+		(plot.Toilet:GetPivot().Position - plot.CFrame.Position).Magnitude < 0.001,
+		"Tier swap moved the toilet base"
+	)
+	for _, part in ipairs(plot.Toilet:GetDescendants()) do
+		if isPart(part) then
+			local cf = plot.LayoutCFrame:Inverse() * part.CFrame
+			local extent = math.abs(cf:VectorToWorldSpace(Vector3.new(part.Size.X / 2, 0, 0)).Y)
+				+ math.abs(cf:VectorToWorldSpace(Vector3.new(0, part.Size.Y / 2, 0)).Y)
+				+ math.abs(cf:VectorToWorldSpace(Vector3.new(0, 0, part.Size.Z / 2)).Y)
+			assert(cf.Position.Y + extent < layout.PavilionHeight, "Toilet ornament intersects pavilion roof")
+		end
+	end
 	checkAccents(plot.Toilet)
 	maxToilet = math.max(maxToilet, P.Count(plot.Toilet))
 	local profile = { ToiletTier = tier, DisplaySlots = 100, Displays = {} }
@@ -243,10 +306,22 @@ for tier = 1, 7 do
 		profile.Displays[tostring(slot)] = maxItemId
 	end
 	plot.Profile = profile
-	plot.Owner = { UserId = tier }
+	plot.Owner = { UserId = tier, DisplayName = "Budget fixture" }
+	World.Assigned[plot.Owner] = plot
+	World:Refresh(plot.Owner, profile)
 	for page = 1, 10 do
 		plot.Page = page
 		World:RenderDisplays(plot)
+		for _, object in ipairs(plot.Displays:GetDescendants()) do
+			if object.Name == "IncomeNametag" then
+				local gui = object:GetChildren()[1]
+				local text = gui:GetChildren()[1].Text
+				assert(
+					gui.MaxDistance == layout.Labels.OccupiedDistance and text:find("1 in ") and text:find(" / min"),
+					"Occupied nametag lost odds/income"
+				)
+			end
+		end
 		assert(#plot.CollectPoints == 11, "Ten collect pads plus jar required")
 		for i = 1, 10 do
 			local pad = plot.CollectPoints[i]
@@ -276,6 +351,7 @@ for tier = 1, 7 do
 	end
 	recordAssets(plot.Model)
 	validate(plot.Model)
+	World.Assigned[plot.Owner] = nil
 	plot.Model:Destroy()
 end
 validate(root)
@@ -359,7 +435,8 @@ if snapshot then
 	World:RefreshLeaderboards()
 	for i, entry in ipairs(Layout.Plots) do
 		local plot = Plot.Build(root, CFrame.new(entry.X, 0, entry.Z) * CFrame.Angles(0, math.rad(entry.Yaw), 0), i)
-		plot.Toilet = Models.Toilet(plot.Model, plot.CFrame, (i - 1) % 7 + 1)
+		plot.Toilet = Models.Toilet(plot.Model, plot.CFrame, (i - 1) % 7 + 1, Layout.ToiletScale)
+		plot.Sign.Text = "Preview owner's Plot"
 		plot.Profile = { ToiletTier = (i - 1) % 7 + 1, DisplaySlots = 10, Displays = {} }
 		for slot = 1, 10 do
 			plot.Profile.Displays[tostring(slot)] = Items[(i + slot - 2) % #Items + 1].Id
@@ -420,7 +497,19 @@ if snapshot then
 			for _, v in ipairs(cf.R) do
 				table.insert(values, v)
 			end
-			print("SCENE|LABEL|" .. part.Text:gsub("\n", "~"):gsub("|", "/") .. "|" .. table.concat(values, ","))
+			local color = part.TextColor3
+			print(
+				"SCENE|LABEL|"
+					.. part.Text:gsub("\n", "~"):gsub("|", "/")
+					.. "|"
+					.. table.concat(values, ",")
+					.. "|"
+					.. gui.ClassName
+					.. "|"
+					.. tostring(gui.MaxDistance)
+					.. "|"
+					.. table.concat({ color.R, color.G, color.B }, ",")
+			)
 		end
 	end
 end

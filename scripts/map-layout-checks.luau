@@ -8,8 +8,50 @@ assert(
 )
 assert(Layout.PlotWidth * Layout.PlotDepth == 2.5 * 32 * 36)
 assert(Layout.PromenadeWidth >= 24 and Layout.HubRadius >= 90)
+assert(Layout.ToiletScale >= 2.5 and Layout.ToiletScale <= 3)
+assert(Layout.ToiletOffset.X == 0 and Layout.ToiletOffset.Z >= 18, "Toilet must head the carpet")
+assert(Layout.PlotSign.Position.Z < -26 and Layout.PlotSign.Position.Y - Layout.PlotSign.Size.Y / 2 > 12)
+for _, piece in ipairs(Layout.PlotPieces) do
+	if piece.Asset == "PlotGateArch" then
+		assert(
+			Layout.PlotSign.Position.Z < piece.Position.Z - Catalog.PlotGateArch.Size.Z * piece.Scale / 2,
+			"Owner sign is buried behind gate trim"
+		)
+	end
+end
+assert(Layout.Labels.EmptyDistance <= 18 and Layout.Labels.OccupiedDistance >= 60)
+assert(Layout.Rebirth.Steps == 5 and Layout.Rebirth.X > Layout.PlotWidth / 2)
+assert(#Layout.Stations == 7 and #Layout.Wayfinding == 2 * #Layout.Stations)
+local bobbers, spinners, pulses, flags = 0, 0, 0, 0
+for _, piece in ipairs(Layout.Pieces) do
+	bobbers += if piece.IdleBob then 1 else 0
+	spinners += if piece.IdleOrbit then 1 else 0
+	pulses += if piece.Pulse then 1 else 0
+	flags += if piece.Group == "Festival" then 1 else 0
+end
+assert(bobbers == 6 and spinners == 1 and pulses == 3 and flags == 48, "Bounded ambient and festival coverage")
 local function distance(a, b)
 	return math.sqrt((a.X - b.X) ^ 2 + (a.Z - b.Z) ^ 2)
+end
+-- Build all rotated plots for the route/collision check, including their new dais.
+local routePlots = {}
+for index, entry in ipairs(Layout.Plots) do
+	local plot = Plot.Build(root, CFrame.new(entry.X, 0, entry.Z) * CFrame.Angles(0, math.rad(entry.Yaw), 0), index)
+	table.insert(routePlots, plot)
+	assert((plot.PromptAnchor.CFrame.Position - plot.CFrame.Position).Magnitude < 0.001)
+	assert((plot.SpawnCFrame.Position - plot.CFrame.Position).Magnitude < 10)
+	local rebirth = 0
+	for _, object in ipairs(plot.Model:GetDescendants()) do
+		if object.Name == "RebirthLocked" then
+			rebirth += 1
+		end
+		assert(not object:IsA("ProximityPrompt"), "Vacant plots/Rebirth must not expose interaction")
+		if object.Name == "EmptySlot" then
+			local gui = object:GetChildren()[1]
+			assert(gui.MaxDistance == Layout.Labels.EmptyDistance and gui:GetChildren()[1].Text == "\u{1F512}")
+		end
+	end
+	assert(rebirth == 5)
 end
 for i, a in ipairs(Layout.Plots) do
 	assert(math.abs(a.Yaw) == 90, "Plots must face the promenade")
@@ -71,6 +113,8 @@ for _, part in ipairs(root:GetDescendants()) do
 		elseif part.Name == "PlotFloor" then
 			-- The 0.35-stud overlay remains walkable above the continuous island floor.
 			assert(box.Top <= 0.36)
+		elseif part.Name == "WalkStep" then
+			assert(part.Size.Y <= 0.65 and box.Top <= 1.61, "Toilet steps exceed the shallow walkable rise")
 		elseif part.Name == "Boundary" or part.Name == "PierRail" or part.Name == "PierEnd" then
 			table.insert(boundaries, box)
 		else
@@ -129,7 +173,8 @@ for _, plot in ipairs(Layout.Plots) do
 	reachable(plot.X, plot.Z)
 	local yaw = math.rad(plot.Yaw)
 	local cf = CFrame.new(plot.X, 0, plot.Z) * CFrame.Angles(0, yaw, 0)
-	local spawn = (cf * CFrame.new(0, 4, 15)).Position
+	local guidance = loadModule(node("src/shared/Config/PlotGuidance"))
+	local spawn = (cf * CFrame.new(Layout.ToiletOffset + guidance.SpawnOffset)).Position
 	reachable(spawn.X, spawn.Z)
 	for _, slot in ipairs(Layout.Slots) do
 		local point = (cf * CFrame.new(slot)).Position
@@ -196,8 +241,20 @@ assert(hubTriangles + 12 * (maxPlotTriangles + 2 * maxItemTriangles) <= Layout.B
 assert(maxPlot + maxItem <= Layout.Budget.PlotParts)
 assert(hubInstances + 12 * (maxPlotInstances + 2 * maxItemInstances) <= Layout.Budget.Instances, "Peak instance budget")
 assert(12 * (maxPlotHighlights + 2 * maxItemHighlights) <= Layout.Budget.Highlights, "Peak highlight budget")
-local persistent, persistentTriangles, beams = 0, 0, 0
+local persistent, persistentTriangles, beams, liveBobbers, liveSpinners, livePulses, liveSparkles = 0, 0, 0, 0, 0, 0, 0
 for _, object in ipairs(root:GetDescendants()) do
+	if object:GetAttribute("IdleBob") then
+		liveBobbers += 1
+	end
+	if object:GetAttribute("IdleOrbit") then
+		liveSpinners += 1
+	end
+	if object.Name == "PortalPulse" then
+		livePulses += 1
+	end
+	if object.Name == "CoinSparkles" then
+		liveSparkles += 1
+	end
 	if object:GetAttribute("ResortSkyline") then
 		persistent += 1
 		persistentTriangles += Catalog[object:GetAttribute("MeshAsset")].Triangles
@@ -217,6 +274,13 @@ for _, object in ipairs(root:GetDescendants()) do
 end
 assert(persistent == 25 and persistentTriangles < 30000, "Skyline persistence budget")
 assert(beams <= Layout.Budget.Beams)
+assert(
+	liveBobbers == 6 and liveSpinners == 1 and livePulses == 3 and liveSparkles == 1,
+	"Ambience is not wired to the client idle controller"
+)
+for _, plot in ipairs(routePlots) do
+	plot.Model:Destroy()
+end
 print(
 	string.format(
 		"Peak envelope: %d parts, %d meshes, %d mesh triangles, %d instances; %d persistent skyline meshes / %d triangles; %d hub beams.",

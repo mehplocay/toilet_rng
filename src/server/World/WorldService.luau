@@ -60,25 +60,52 @@ function World:Refresh(player, profile)
 	if not plot then
 		return
 	end
-	plot.Sign.Text = player.DisplayName .. "'s Plot\n" .. require(Config.Toilets)[profile.ToiletTier].Name
+	plot.Sign.Text = player.DisplayName .. "'s Plot"
 	if plot.Tier ~= profile.ToiletTier then
+		local upgraded = plot.Tier and profile.ToiletTier > plot.Tier
 		if plot.Toilet then
 			plot.Toilet:Destroy()
 		end
-		plot.Toilet = Models.Toilet(plot.Model, plot.CFrame, profile.ToiletTier)
+		plot.Toilet = Models.Toilet(plot.Model, plot.CFrame, profile.ToiletTier, Layout.ToiletScale)
 		plot.Tier = profile.ToiletTier
+		if plot.FlushPrompt then
+			plot.FlushPrompt:Destroy()
+		end
 		local prompt = Instance.new("ProximityPrompt")
 		prompt.ActionText, prompt.ObjectText, prompt.MaxActivationDistance =
 			"FLUSH", player.DisplayName .. "'s Toilet", 10
 		prompt:SetAttribute("OwnerUserId", player.UserId)
 		prompt.RequiresLineOfSight = false
 		prompt.Style = Enum.ProximityPromptStyle.Custom
-		prompt.Parent = plot.Toilet.PrimaryPart
+		prompt.Parent = plot.PromptAnchor
+		plot.FlushPrompt = prompt
 		prompt.Triggered:Connect(function(visitor)
 			if visitor == player then
 				self.Flush(player)
 			end
 		end)
+		if upgraded then
+			-- A bounded one-shot glow; the stable dais is never moved by toilet animation.
+			for _, segment in ipairs(plot.GlowRing) do
+				if segment.Tween then
+					segment.Tween:Cancel()
+				end
+				local ring = segment.Part
+				ring.Size = segment.Size * Layout.UpgradeGlow.Scale
+				ring.Color = Color3.fromRGB(unpack(Layout.UpgradeGlow.Color))
+				ring.Transparency = 0
+				segment.Tween = TweenService:Create(
+					ring,
+					TweenInfo.new(Layout.UpgradeGlow.Seconds, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+					{
+						Size = segment.Size,
+						Color = Color3.fromRGB(unpack(Layout.UpgradeGlow.RestColor)),
+						Transparency = 0.15,
+					}
+				)
+				segment.Tween:Play()
+			end
+		end
 	end
 	local entries =
 		{ tostring(profile.DisplaySlots), tostring(profile.ToiletTier), tostring((profile.Upgrades or {}).CashBoost) }
@@ -276,6 +303,19 @@ function World:Start(data)
 			plot.Owner = nil
 			plot.Model:SetAttribute("OwnerUserId", nil)
 			plot.Tier = nil
+			if plot.FlushPrompt then
+				plot.FlushPrompt:Destroy()
+				plot.FlushPrompt = nil
+			end
+			for _, segment in ipairs(plot.GlowRing) do
+				if segment.Tween then
+					segment.Tween:Cancel()
+				end
+				segment.Tween = nil
+				segment.Part.Size = segment.Size
+				segment.Part.Color = Color3.fromRGB(unpack(Layout.UpgradeGlow.RestColor))
+				segment.Part.Transparency = 0
+			end
 			plot.Profile, plot.DisplaySignature, plot.Page = nil, nil, nil
 			plot.PendingCoins, plot.IncomePoint, plot.IncomePrompt, plot.IncomeCoins = nil, nil, nil, nil
 			plot.CollectPoints, plot.IncomeLabel = nil, nil

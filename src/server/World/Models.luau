@@ -5,13 +5,19 @@ local Rarities = require(Shared.Config.Rarities)
 local Loader = require(script.Parent.MeshLoader)
 local Placement = require(Shared.Config.WorldModels)
 local Models = { Part = P.Part }
-function Models.Toilet(parent, cf, tier)
+function Models.Toilet(parent, cf, tier, scale)
 	local model = Loader.Build(Placement.ToiletNames[tier], parent, cf, function()
 		return require(Shared.Visuals.Toilets).BuildPrimitive(parent, cf, tier)
 	end)
 	model.Name = "Toilet"
+	-- Scale about the shared foot datum, including primitive fallbacks.
+	model.PrimaryPart.PivotOffset = model.PrimaryPart.CFrame:Inverse() * cf
+	if scale and scale ~= 1 then
+		model:ScaleTo(model:GetScale() * scale)
+		model:PivotTo(cf)
+	end
 	if not model:GetAttribute("MeshFallback") then
-		require(Shared.Visuals.TemplateAccents).Apply(model)
+		require(Shared.Visuals.TemplateAccents).Apply(model, scale)
 	end
 	return model
 end

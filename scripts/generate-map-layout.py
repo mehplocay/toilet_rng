@@ -40,9 +40,8 @@ for ix in range(-4,5):
         if abs(ix)==4 and abs(iz)==6: continue
         x,z=ix*48,iz*48
         cells.append((ix,iz))
-        for ox in [-12,12]:
-            for oz in [-12,12]:
-                put('GrassSlab',x+ox,-1.4,z+oz,Size=[24,1.4,24],Tint=([232,255,239] if (ox+oz)==0 else [255,255,255]),Group='Island')
+        # One spatially bounded slab per collision cell funds the richer garden kit.
+        put('GrassSlab',x,-1.4,z,Size=[48,1.4,48],Tint=([232,255,239] if (ix+iz)%2 else [255,255,255]),Group='Island')
         # Four exposed, slightly inset pavers give turf a chunky tiled surface without thousands of studs.
         if abs(ix)>=3 and iz%2==0:
             put('ShoreRocks',x+17,0,z+19,25+ix*11,.65,Group='Gardens')
@@ -81,6 +80,7 @@ put('ToiletCastle',0,.15,0,0,3,Group='Landmark')
 put('PlazaSteps',0,-1.8,-39,0,2,Group='Landmark')
 put('FountainPedestal',-36,0,-51,0,1.5,Group='Landmark')
 put('GoldenTrophy',-30,4.95,-24,0,1,Group='Landmark')
+put('HubMedallion',-36,8,-51,Size=[3,.3,3],Solid=[255,211,69],Neon=True,Pitch=90,IdleOrbit=True,Sparkle=True,Group='Ambience')
 
 stations=[
     dict(Name='Shop',Asset='ShopKiosk',X=-66,Z=-66,Yaw=-35,Panel='Shop'),
@@ -88,13 +88,15 @@ stations=[
     dict(Name='Index',Asset='ShopKiosk',X=-76,Z=58,Yaw=-140,Panel='Collection'),
     dict(Name='Daily',Asset='ShopKiosk',X=76,Z=58,Yaw=140,Panel='Daily'),
     dict(Name='Passes',Asset='ShopKiosk',X=0,Z=-182,Yaw=0,Panel='Passes'),
+    dict(Name='Trading',Asset='ShopKiosk',X=-65,Z=-262,Yaw=-25,ComingSoon=True),
+    dict(Name='Quests',Asset='ShopKiosk',X=65,Z=-262,Yaw=25,ComingSoon=True),
 ]
 for s in stations:
     put(s['Asset'],s['X'],.15,s['Z'],s['Yaw'],1.65,Group='Stations')
     if s['Name']=='Index':
         put('IndexBookPedestal',-61,.15,45,-140,1.25,Group='Stations')
 for asset,x in [('PortalSewer',-64),('PortalSpace',0),('PortalHell',64)]:
-    put(asset,x,.15,260,0,2,Group='Portals')
+    put(asset,x,.15,260,0,2,Group='Portals',Pulse=True)
     put('HubMedallion',x,-.65,250,0,1,Group='Portals')
 
 # Composed foreground, middle and far silhouettes; never place trunks inside routes.
@@ -129,8 +131,41 @@ for layer,entries in [
 for i,(x,y,z) in enumerate([(-290,120,360),(140,155,450),(400,100,80),(-415,150,-140),(180,120,-420),(-135,95,-355)]):
     put('CloudBankTall' if i%2 else 'CloudBankWide',x,y,z,i*17,3.5,Group='Skyline',NoShadow=True)
 for i,(x,y,z) in enumerate([(-250,65,170),(245,80,-130),(-150,110,355),(185,90,350)]):
-    put('FloatingIslet'+'ABC'[i%3],x,y,z,30*i,2,Group='Skyline',NoShadow=True)
+    put('FloatingIslet'+'ABC'[i%3],x,y,z,30*i,2,Group='Skyline',NoShadow=True,IdleBob=1.1)
 put('CloudPuffs',-215,70,-285,15,12,Group='Skyline',NoShadow=True)
+
+# Streamed foreground pockets between the promenades and central spine.
+# Three heights: low flower/rock edges, shrubs/benches, then palm silhouettes.
+for i,(x,z) in enumerate([(-61,-148),(61,-148),(-63,-219),(63,-219),(-64,114),(64,114),(-58,225),(58,225)]):
+    put('BeachCorner',x,-.6,z,i*90,Size=[29,.65,23],Group='Gardens')
+    put('PalmTree',x+8,0,z+5,i*37,4.2 if i%2 else 5,Group='Gardens')
+    put('RoundBush',x-7,0,z+4,i*21,2.2,Group='Gardens')
+    put('FlowerPack',x-6,0,z-5,i*17,1.6,Group='Gardens')
+    put('ForegroundFoliage',x+7,0,z-6,i*23,1.4,Group='Gardens')
+    put('ShoreRocks',x,0,z+9,i*40,.7,Group='Gardens')
+    put('Bench',x-1,0,z-11,180,1.65,Group='Gardens')
+    put('LampPost',x+12,0,z-10,0,1.6,Group='Gardens')
+# Shallow ornamental ponds reuse the cove artwork, seated flush into the lawn.
+for x,z in [(-61,-148),(58,225)]:
+    put('SmallCove',x,-3.3,z,0,.42,Group='Gardens')
+    put('GrassSlab',x,.02,z,Size=[8,.08,5],Solid=[45,188,215],Group='Gardens')
+# Festival flag ropes are mesh strips; no simulated cloth or server update loop.
+for x in [-114,114]:
+    for z in [-192,0,192]:
+        for side in [-1,1]:
+            put('HubEdgeStraight',x+side*13,0,z,Size=[.65,15,.65],Solid=[30,61,107],Group='Festival')
+        put('GrassSlab',x,13.6,z,Size=[26,.1,.12],Solid=[255,225,152],Group='Festival')
+        for j in [-2,-1,0,1,2]:
+            put('GrassSlab',x+j*4,10.7+abs(j)*.35,z,Size=[2.2,2.5,.13],Solid=([244,74,143] if j%2 else [89,229,222]),Group='Festival')
+# Pavers replace broad flat color with repeated inset cobbles at junctions.
+for x in [-114,114]:
+    for z in [-288,-192,-96,96,192,288]:
+        for dz in [-4,4]:
+            put('HubPathStrip',x,.1,z+dz,90,Size=[5,.18,19],Tint=[185,206,230],Group='Paving')
+for i,(x,y,z) in enumerate([(-255,100,-20),(260,110,230),(-120,140,-400),(300,155,-300)]):
+    put('CloudBankWide',x,y,z,25*i,2.4,Group='SkyDetail',NoShadow=True)
+for i,(x,y,z) in enumerate([(-95,38,-225),(94,42,215)]):
+    put('FloatingIsletB',x,y,z,45*i,.8,Group='SkyDetail',NoShadow=True,IdleBob=.8)
 
 # A scenic pier extension at the same walk datum, fenced by collision rails.
 put('RopeBridge',0,-2.625,-324,0,1,Group='Dock')
@@ -143,27 +178,48 @@ for side in [-1,1]:
         plots.append(dict(X=side*162,Z=z,Yaw=-90 if side<0 else 90))
 
 plotPieces=[]
+pavilion_height=22.5  # Clears the taller primitive Demon fallback as well as all imported tiers.
 def pp(asset,x,y,z,yaw=0,scale=1,**kw):
     plotPieces.append(dict(Asset=asset,Position=[x,y,z],Yaw=yaw,Scale=scale,**kw))
 pp('PlotPlatform',0,-1.45,0,Size=[48,1.65,60])
 pp('GrassSlab',0,.025,-2,Size=[13,.08,52],Solid=[244,74,143])
-pp('PlotGateArch',0,0,-26,0,1.55)
+pp('PlotGateArch',0,0,-27,0,1.8)
 # Rear pavilion roof/beams reuse architectural kit meshes, preserving open collection sightlines.
-pp('HubPathStrip',0,14.4,22,Size=[42,1.05,12])
+pp('HubPathStrip',0,pavilion_height,25,Size=[46,1.05,9])
 for x in [-20,20]:
-    for z in [16,28]: pp('HubEdgeStraight',x,0,z,Size=[1.4,14.4,1.4],Solid=[30,61,107])
-pp('PlotSignPost',-19,0,-22,0,1.2)
+    for z in [18,28]: pp('HubEdgeStraight',x,0,z,Size=[1.7,pavilion_height,1.7],Solid=[30,61,107])
+# The existing gate header holds the owner label; no second panel behind its trim.
+pp('PlotSignPost',28,0,8,90,.6)
 pp('PlotCornerGarden',-19,0,23,0,1.2)
 pp('PlotCornerGarden',19,0,23,0,1.2)
 pp('PalmTree',22,0,26,0,2.7)
 pp('RoundBush',-21,0,14,0,1.6)
 pp('FlowerPack',20,0,14,25,1)
+for x in [-21,21]:
+    pp('PlotCornerGarden',x,0,-25,0,.75)
+    pp('LampPost',x,0,-18,0,1.35)
+    pp('GrassSlab',x,12,23,Size=[2.2,4,.18],Solid=[244,74,143])
 pp('PlotPathStraight',0,-.95,-32,Size=[14,1.05,6])
 pp('PlotPathCorner',-19,-.96,-13,0,1)
 for x in [-16,0,16]: pp('PlotFenceSection',x,0,28.4,Size=[16.5,3.5,.8])
 for x in [-22.4,22.4]:
     for z in [4,20]: pp('PlotFenceSection',x,0,z,90,Size=[16.5,3.5,.8])
 pp('WoodenFence',-22.2,0,-19,90,1.8)
+# Shallow walkable dais with a step; the footprint does not enter the display rows.
+pp('GrassSlab',0,0,19,Size=[18,.6,18],Solid=[30,61,107],WalkStep=True)
+pp('GrassSlab',0,.6,20,Size=[15,.65,14],Solid=[226,240,250],WalkStep=True)
+# Ten low-poly curved kit segments make an actual open-center glow ring.
+for yaw in range(0,360,36):
+    socket=catalog['HubCurbSegment']['sockets_studs']['arc_center']
+    a=math.radians(yaw)
+    scale=.22
+    dx=(socket[0]*math.cos(a)+socket[2]*math.sin(a))*scale
+    dz=(-socket[0]*math.sin(a)+socket[2]*math.cos(a))*scale
+    pp('HubCurbSegment',-dx,1.25,20-dz,yaw,scale,Solid=[70,235,255],Neon=True,ToiletRing=True)
+# Five locked visual-only rebirth terraces on one side, outside the display envelope.
+for i in range(5):
+    pp('GrassSlab',28,0,-16+i*4,Size=[7,.6+i*.65,4],Solid=([33,61,106] if i%2 else [49,83,135]))
+    pp('GrassSlab',28,.6+i*.65,-17.8+i*4,Size=[6,.12,.25],Solid=[167,139,250],Neon=True)
 
 path=ROOT/'src/shared/Config/MapLayout.luau'
 lines=['-- Generated by scripts/generate-map-layout.py. Explicit base-pivot transforms; studs, +Z north.',
@@ -172,10 +228,25 @@ lines=['-- Generated by scripts/generate-map-layout.py. Explicit base-pivot tran
        '\tFloorY = 0, PlotRise = 0.35, PlotWidth = 48, PlotDepth = 60, PromenadeWidth = 24,',
        '\tHubRadius = 96, RefreshSeconds = 10,',
        '\tHubArrival = Vector3.new(0, 4, -108), ShopArrival = Vector3.new(-56, 4, -83),',
-       '\tToiletOffset = Vector3.new(0, 0.15, 20),',
-       '\tBudget = { HubParts = 1600, PlotParts = 180, TotalParts = 3600, Meshes = 1700, Triangles = 1400000, Instances = 11000, Beams = 140, Highlights = 144 },',
+       '\tToiletOffset = Vector3.new(0, 1.35, 20), ToiletScale = 2.75,',
+       f'\tPavilionHeight = {pavilion_height},',
+       '\tPlotSign = { Position = Vector3.new(0, 14.65, -29.05), Size = Vector3.new(13.8, 2.7, 0.1) },',
+       '\tFlushLabel = { Position = Vector3.new(0, 3, 13), Size = Vector3.new(7, 1.8, 0.1), Distance = 65 },',
+       '\tLabels = { EmptyDistance = 18, OccupiedDistance = 65, LockSize = 1.2 },',
+       '\tRebirth = { X = 28, StartZ = -16, Pitch = 4, Steps = 5, SignDistance = 35, SignBaseHeight = 3.4, Rise = 0.65, SignSize = Vector3.new(5, 1.8, 0.1), SignColor = { 189, 166, 255 } },',
+       '\tUpgradeGlow = { Seconds = 1.5, Scale = 1.6, Color = { 255, 220, 75 }, RestColor = { 70, 235, 255 } },',
+       '\tAmbience = { PortalLightHeight = 10, PortalLightRange = 18, PortalLightColor = { 110, 239, 225 }, CoinRate = 1 },',
+       '\tCollectPosition = Vector3.new(-6, 0.15, 5),',
+       '\tBudget = { HubParts = 1600, PlotParts = 225, TotalParts = 3600, Meshes = 1700, Triangles = 1400000, Instances = 11000, Beams = 140, Highlights = 144 },',
        '\tPlots = {']
 lines += ['\t\t'+lua(p)+',' for p in plots]
+lines+=['\t},','\tWayfinding = {']
+for s in stations:
+    yaw=math.radians(s['Yaw'])
+    for d in [19,25]:
+        x=s['X']-math.sin(yaw)*d
+        z=s['Z']-math.cos(yaw)*d
+        lines.append('\t\t{ Position = '+vec([x,.35,z])+', Yaw = '+str(s['Yaw']+180)+', Scale = 1.5 },')
 lines+=['\t},','\tStations = {']+['\t\t'+lua(s)+',' for s in stations]+['\t},',
         '\tBoards = { { Key = "Rarest", Title = "RAREST FIND", X = -72, Z = 150 }, { Key = "Flushes", Title = "TOTAL FLUSHES", X = 0, Z = 150 }, { Key = "Coins", Title = "COINS", X = 72, Z = 150 } },',
         '\tSlots = {']
@@ -249,7 +320,7 @@ notes = [
     'Walkable pier ends at Z = -352', '40-high invisible coastline walls',
     'Castle and boards have box exclusion proxies', '',
     'PLOT LOCAL COORDINATES', 'Entry Z = -30; toilet Z = +20',
-    'Carpet 13 x 52; spawn Z = +15', 'Stands X = -14 / +14, 8-stud row pitch',
+    'Carpet 13 x 52; spawn Z = +11', 'Stands X = -14 / +14, 8-stud row pitch',
     'Ten visible stands; green collect pads', '',
     'DEPTH LAYERS (outside this diagram)', 'Foreground palms / raised headlands',
     'Middle mountains ~280-385 from center', 'Far ridges ~435-515; clouds and islets',

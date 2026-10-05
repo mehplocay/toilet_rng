@@ -32,6 +32,7 @@ function Rows.Build(plot, previewProfile)
 			Position = Vector3.new(),
 			Size = Vector3.new(3.8, 0.14, 4.5),
 			Solid = { 51, 240, 101 },
+			Neon = true,
 		}, padCF)
 		local _, point = Kit.Label(
 			plot.Displays,
@@ -64,21 +65,20 @@ function Rows.Build(plot, previewProfile)
 					.. " / min",
 				color,
 				true,
-				70
+				Layout.Labels.OccupiedDistance
 			)
 		else
+			local unlocked = slot <= profile.DisplaySlots
+			local lockSize = Layout.Labels.LockSize
 			Kit.Label(
 				plot.Displays,
 				"EmptySlot",
 				cf * CFrame.new(0, 3, 0),
-				Vector3.new(5, 1.5, 0.1),
-				if previewProfile
-					then "Display " .. slot
-					elseif slot <= profile.DisplaySlots then "Display " .. slot
-					else "Locked slot",
+				if unlocked then Vector3.new(4, 1.2, 0.1) else Vector3.new(lockSize, lockSize, 0.1),
+				if unlocked then "Display " .. slot else "\u{1F512}",
 				Color3.new(1, 1, 1),
 				true,
-				50
+				Layout.Labels.EmptyDistance
 			)
 		end
 	end

@@ -1,11 +1,11 @@
 -- Existing aggregate-income remote is shared by the jar and the visible green pads.
 local Kit = require(script.Parent.Kit)
 local Config = require(game.ReplicatedStorage.Shared.Config.Income)
+local Layout = require(game.ReplicatedStorage.Shared.Config.MapLayout)
 local IncomeDisplay = {}
 function IncomeDisplay.Refresh(plot, player, pending)
 	if not plot.IncomePoint or not plot.IncomePoint.Parent then
-		local offset = Config.CollectOffset
-		local cf = plot.CFrame * CFrame.new(offset.X, offset.Y - 1, offset.Z)
+		local cf = plot.LayoutCFrame * CFrame.new(Layout.CollectPosition)
 		local jar = Kit.Place(plot.Displays, { Asset = "CollectCoinJar", Position = Vector3.new(), Scale = 0.8 }, cf)
 		local point = Kit.Proxy(plot.Displays, "IncomeCollect", cf * CFrame.new(0, 2, 0), Vector3.new(1, 1, 1), false)
 		plot.IncomePoint, plot.IncomeCoins = point, {}

@@ -2,6 +2,7 @@
 local Shared = game.ReplicatedStorage.Shared
 local Loader = require(script.Parent.MeshLoader)
 local Catalog = require(Shared.Config.MeshCatalog)
+local Layout = require(Shared.Config.MapLayout)
 local P = require(Shared.Visuals.Primitives)
 local Models = require(script.Parent.Models)
 local Kit = {}
@@ -12,7 +13,9 @@ function Kit.Proxy(parent, name, cf, size, collide)
 	return part
 end
 function Kit.Place(parent, entry, origin)
-	local cf = (origin or CFrame.new()) * CFrame.new(entry.Position) * CFrame.Angles(0, math.rad(entry.Yaw or 0), 0)
+	local cf = (origin or CFrame.new())
+		* CFrame.new(entry.Position)
+		* CFrame.Angles(math.rad(entry.Pitch or 0), math.rad(entry.Yaw or 0), 0)
 	local model = Loader.Build(entry.Asset, parent, CFrame.new(), function()
 		local fallback = Instance.new("Model")
 		fallback.Name, fallback.Parent = entry.Asset, parent
@@ -59,6 +62,28 @@ function Kit.Place(parent, entry, origin)
 		model:SetAttribute("ResortSkyline", true)
 	end
 	model:PivotTo(cf)
+	if entry.IdleBob then
+		part:SetAttribute("IdleBob", entry.IdleBob)
+	end
+	if entry.IdleOrbit then
+		model:SetAttribute("IdleOrbit", true)
+	end
+	if entry.Sparkle then
+		P.Particles(part, "CoinSparkles", part.Color, Layout.Ambience.CoinRate)
+	end
+	if entry.WalkStep then
+		Kit.Proxy(model, "WalkStep", cf * CFrame.new(0, entry.Size.Y / 2, 0), entry.Size, true)
+	end
+	if entry.Pulse then
+		local anchor = Kit.Proxy(
+			model,
+			"PortalPulse",
+			cf * CFrame.new(0, Layout.Ambience.PortalLightHeight, 0),
+			Vector3.new(0.1, 0.1, 0.1),
+			false
+		)
+		P.Light(anchor, Color3.fromRGB(unpack(Layout.Ambience.PortalLightColor)), Layout.Ambience.PortalLightRange)
+	end
 	return model
 end
 function Kit.Label(parent, name, cf, size, text, color, billboard, distance)

@@ -304,6 +304,20 @@ function methods:WriteVoxels(region, resolution, materials, occupancy)
 end
 local calls, preloads, warnings = 0, 0, 0
 local services = { Lighting = Instance.new("Lighting"), ServerStorage = Instance.new("ServerStorage") }
+local tweens = {}
+services.TweenService = {
+	Create = function(_, target, info, goal)
+		local tween = { Target = target, Info = info, Goal = goal }
+		function tween:Play()
+			self.Played = true
+		end
+		function tween:Cancel()
+			self.Cancelled = true
+		end
+		table.insert(tweens, tween)
+		return tween
+	end,
+}
 services.Players = {
 	GetPlayers = function()
 		return {}
@@ -378,6 +392,7 @@ local globals = {
 		end,
 	},
 	UDim2 = { fromScale = sequence, fromOffset = sequence },
+	TweenInfo = { new = sequence },
 	ColorSequence = { new = sequence },
 	NumberSequence = { new = sequence },
 	NumberSequenceKeypoint = { new = sequence },

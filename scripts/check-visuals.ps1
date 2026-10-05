@@ -8,7 +8,7 @@ $ErrorActionPreference = 'Stop'
 $workspaceRoot = Split-Path $PSScriptRoot -Parent
 $generatedPath = Join-Path $workspaceRoot '.visual-check.generated.luau'
 $harness = "local testMode = '$MeshMode'`nlocal checkWorld = $($World.IsPresent.ToString().ToLower())`nlocal snapshot = $($Snapshot.IsPresent.ToString().ToLower())`n"
-$harness += Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'world-harness.luau')
+$harness += Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'world-harness.luau')
 $modulePaths = @(
     'src/shared/Config/MapLayout.luau', 'src/server/World/Kit.luau', 'src/server/World/DisplayRows.luau',
     'src/shared/IncomeAccrual.luau', 'src/shared/LeaderboardStats.luau',
@@ -26,7 +26,7 @@ $modulePaths = @(
     'src/server/World/WorldService.luau'
 )
 foreach ($modulePath in $modulePaths) {
-    $source = Get-Content -Raw -LiteralPath (Join-Path $workspaceRoot $modulePath)
+    $source = Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $workspaceRoot $modulePath)
     $moduleName = $modulePath.Substring(0, $modulePath.Length - 5)
     $harness += "`nnode('$moduleName')`nsources['$moduleName'] = [====[`n$source`n]====]`n"
 }
@@ -40,8 +40,8 @@ foreach ($asset in @($manifest.assets) + @($envManifest.assets)) {
 }
 $harness += "}`n"
 $harness += & (Join-Path $PSScriptRoot 'read-model-templates.ps1')
-$harness += Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'world-checks.luau')
-if ($World) { $harness += Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'map-layout-checks.luau') }
+$harness += Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'world-checks.luau')
+if ($World) { $harness += Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'map-layout-checks.luau') }
 try {
     [IO.File]::WriteAllText($generatedPath, $harness, [Text.UTF8Encoding]::new($false))
     if ($Snapshot) {
