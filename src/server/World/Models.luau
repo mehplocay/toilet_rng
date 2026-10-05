@@ -7,9 +7,12 @@ local Placement = require(Shared.Config.WorldModels)
 local Models = { Part = P.Part }
 function Models.Toilet(parent, cf, tier)
 	local model = Loader.Build(Placement.ToiletNames[tier], parent, cf, function()
-		return require(Shared.Visuals.Toilets).Build(parent, cf, tier)
+		return require(Shared.Visuals.Toilets).BuildPrimitive(parent, cf, tier)
 	end)
 	model.Name = "Toilet"
+	if not model:GetAttribute("MeshFallback") then
+		require(Shared.Visuals.TemplateAccents).Apply(model)
+	end
 	return model
 end
 function Models.Label(part, text, color, surface)
@@ -40,12 +43,13 @@ end
 function Models.Item(parent, cf, item)
 	-- Existing callers pass the drop center; uploaded artwork uses a ground pivot.
 	local model = Loader.Build(Placement.ItemNames[item.Id] or item.Id, parent, cf * CFrame.new(0, -0.8, 0), function()
-		return require(Shared.Visuals.Items).Build(parent, cf, item)
+		return require(Shared.Visuals.Items).BuildPrimitive(parent, cf, item)
 	end)
 	if not model:GetAttribute("MeshFallback") then
+		require(Shared.Visuals.TemplateAccents).Apply(model)
 		local color = if item.Rarity == "Secret" then Visuals.Palette.Cyan else Rarities[item.Rarity].Color
 		P.Ring(model, "RarityAura", cf * CFrame.new(0, -0.85, 0), 1.45, 1.45, 0.09, color, Enum.Material.Neon, 8)
-		if Rarities[item.Rarity].Order >= 5 then
+		if Rarities[item.Rarity].Order >= 5 and not model:GetAttribute("TemplateAccents") then
 			P.Particles(model.PrimaryPart, "RareAura", color, Visuals.Budget.IdleRate)
 		end
 	end

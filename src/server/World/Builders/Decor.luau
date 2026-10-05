@@ -125,8 +125,22 @@ function Decor.Fence(parent, cf, length)
 end
 
 -- Keep the original builders as offline/permission-safe fallbacks.
+local function collision(model, name, cf, scale)
+	local box = Settings.BoxColliders[name]
+	if box then
+		local part = P.Part(
+			model,
+			"WalkingCollision",
+			box.Size * (scale or 1),
+			cf * CFrame.new(box.Center * (scale or 1)),
+			V.Navy
+		)
+		part.Transparency, part.CanCollide, part.CastShadow = 1, true, false
+	end
+end
+
 local function prop(name, parent, cf, fallback, scale)
-	return Loader.Build(name, parent, cf, function()
+	local model = Loader.Build(name, parent, cf, function()
 		local model = Instance.new("Model")
 		model.Name, model.WorldPivot = name, cf
 		model.ModelStreamingMode = Enum.ModelStreamingMode.Atomic
@@ -134,6 +148,8 @@ local function prop(name, parent, cf, fallback, scale)
 		model.Parent = parent
 		return model
 	end, scale)
+	collision(model, name, cf, scale)
+	return model
 end
 
 for method, asset in pairs({
@@ -283,12 +299,14 @@ function Decor.Aura(parent, cf, radius, color)
 end
 
 function Decor.Trophy(parent, cf)
-	return Loader.Build("GoldenTrophy", parent, cf, function()
-		local model = require(game.ReplicatedStorage.Shared.Visuals.Toilets).Build(parent, cf, 3, true)
+	local model = Loader.Build("GoldenTrophy", parent, cf, function()
+		local model = require(game.ReplicatedStorage.Shared.Visuals.Toilets).BuildPrimitive(parent, cf, 3, true)
 		P.Crown(model, cf * CFrame.new(0, 7.5, 1), 1.2)
 		model.Name = "GoldenTrophy"
 		return model
 	end)
+	collision(model, "GoldenTrophy", cf)
+	return model
 end
 
 function Decor.Portal(parent, cf, name, color)
@@ -319,6 +337,22 @@ function Decor.Portal(parent, cf, name, color)
 			)
 		end
 	end, scale)
+	if not model:GetAttribute("MeshFallback") then
+		for i = 1, #Settings.PortalTrim - 1 do
+			local a, b = Settings.PortalTrim[i] * scale, Settings.PortalTrim[i + 1] * scale
+			local midpoint = cf * CFrame.new((a + b) * 0.5)
+			local target = cf * CFrame.new(b)
+			P.Part(
+				model,
+				"PortalTrimGlow",
+				Vector3.new(0.18, 0.18, (b - a).Magnitude + 0.08),
+				CFrame.lookAt(midpoint.Position, target.Position),
+				color,
+				nil,
+				Enum.Material.Neon
+			)
+		end
+	end
 	-- Opaque recess gives the inactive entrance depth without a transparent fill plane.
 	P.Part(model, "PortalRecess", Vector3.new(7.3, 7.7, 0.25), cf * CFrame.new(0, 4, 0.5), V.Navy)
 	local label =

@@ -1,6 +1,23 @@
 -- Placement, runtime budgets and island art direction; no gameplay probabilities.
 return {
 	Seed = 73129,
+	-- Render meshes never collide; these inexpensive boxes provide walking collision.
+	BoxColliders = {
+		DisplayPedestal = { Size = Vector3.new(2.12, 1.16, 2.12), Center = Vector3.new(0, 0.58, 0) },
+		GoldenTrophy = { Size = Vector3.new(4.1, 0.8, 4.1), Center = Vector3.new(0, 0.4, 0) },
+		WoodenFence = { Size = Vector3.new(4.11, 2.46, 0.35), Center = Vector3.new(0, 1.23, 0) },
+	},
+	PortalTrim = {
+		Vector3.new(-2.26, 0.44, -0.36),
+		Vector3.new(-2.26, 3.79, -0.36),
+		Vector3.new(-1.89, 4.89, -0.36),
+		Vector3.new(-1.06, 5.62, -0.36),
+		Vector3.new(0, 5.86, -0.36),
+		Vector3.new(1.06, 5.62, -0.36),
+		Vector3.new(1.89, 4.89, -0.36),
+		Vector3.new(2.26, 3.79, -0.36),
+		Vector3.new(2.26, 0.44, -0.36),
+	},
 	PlazaTiles = { Color3.fromRGB(164, 195, 228), Color3.fromRGB(209, 228, 249) },
 	ItemNames = { Duck = "RubberDuck" },
 	ToiletNames = {

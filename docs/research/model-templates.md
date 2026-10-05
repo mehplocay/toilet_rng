@@ -1,0 +1,19 @@
+# Studio template integration research
+
+Checked 2026-10-05, with Rojo 7.7.0 installed.
+
+- Rojo's binary-model middleware accepts exactly one top-level instance and uses the project/file name for that instance. A single Model named ModelTemplates maps directly to ReplicatedStorage.ModelTemplates, without another wrapper. The 31 child Models survive. Source: https://raw.githubusercontent.com/rojo-rbx/rojo/master/src/snapshot_middleware/rbxm.rs
+- Rojo supports .rbxm/.rbxmx but cannot live-sync every MeshPart property. Build/reopen after replacing the import. The 7.7.0 release notes were checked before relying on the local build. Sources: https://rojo.space/docs/v7/sync-details/ and https://github.com/rojo-rbx/rojo/releases/tag/v7.7.0
+- Model:GetBoundingBox measures bounds in the PrimaryPart orientation; GetPivot/PivotTo use that part's PivotOffset. ScaleTo uniformly scales model contents around its pivot. Clone the imported content, measure before adding accents, normalize once, and clone the cache for placement. Sources: https://create.roblox.com/docs/reference/engine/classes/Model and https://create.roblox.com/docs/reference/engine/classes/PVInstance
+- MeshContent/MeshId cannot be reassigned by ordinary runtime scripts. RenderFidelity has PluginSecurity write access. CollisionFidelity describes precomputed collision and is not a reliable runtime setter. Do not put these writes in the loader's pcall: doing so would make valid imported assets fall back. Sources: https://create.roblox.com/docs/reference/engine/classes/MeshPart and https://create.roblox.com/docs/reference/engine/classes/TriangleMeshPart
+- Recent collision workflow changes add tunable precision; they do not justify assuming runtime recomputation. DevForum corroborates the runtime restriction. Sources: https://devforum.roblox.com/t/collision-geometry-workflow-improvements-tunable-precision-and-better-visualizations/4878198 and https://devforum.roblox.com/t/ability-to-change-collisionfidelity-locally/3216114
+- The importer unit-conversion change was checked; this batch is already in studs, so no meter conversion is appropriate. Source: https://devforum.roblox.com/t/more-control-over-importer-custom-scale-factor-and-updated-unit-conversions/4644371
+- PointLights illuminate geometry; particle LightEmission only brightens the particles. Emission cost depends on rate and lifetime. Use one shadowless, short-range light and at most one 2/sec emitter per special model, through the existing distance-culling controller. Sources: https://create.roblox.com/docs/reference/engine/classes/PointLight and https://create.roblox.com/docs/reference/engine/classes/ParticleEmitter
+
+## Local evidence and limits
+
+Rojo XML inspection verifies 31 direct Models, 31 MeshParts and 62 nonempty uploaded mesh/image references. MeshContent and TextureContent are the serialized names in this batch; runtime cloning preserves them without translating IDs. All bounds match the manifest within 0.001 stud. Part staging transforms vary, but every PivotOffset carries a 180-degree Y front correction and the base translation. Toilet pivot X/Z offsets preserve the common foot even for Dirty/Galaxy asymmetry.
+
+RenderFidelity is explicitly Automatic (0) for all 31 parts. CollisionFidelity is not an explicit serialized token in this Studio export; PhysicalConfigData is opaque precomputed data. No connected Studio was available to inspect/regenerate it. The implementation therefore leaves that data intact and uses invisible Box Parts for walking collision. Setting the mesh property itself to Box still needs Studio edit mode and a resaved rbxm. Do not patch opaque physics bytes or infer fidelity from their header.
+
+Headless tests use properties extracted from the actual Rojo build, including full CFrames and PivotOffsets. They verify normalization math, not downloaded geometry, rendered front direction or engine physics.
