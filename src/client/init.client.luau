@@ -42,6 +42,7 @@ end
 local C = require(script.UI.Components)
 require(script.UI.FlushPrompt).Start()
 require(script.VisualIdle).Start()
+require(script.PlotGuidance).Start()
 local gui = C.New(
 	"ScreenGui",
 	player:WaitForChild("PlayerGui"),
@@ -148,7 +149,8 @@ for index, name in ipairs({ "Shop", "Collection", "Upgrades", "Teleport", "Setti
 			elseif name == "Teleport" then
 				local position = player:GetAttribute("PlotPosition")
 				if typeof(position) == "Vector3" and player.Character then
-					player.Character:PivotTo(CFrame.new(position))
+					local cf = player:GetAttribute("PlotCFrame")
+					player.Character:PivotTo(if typeof(cf) == "CFrame" then cf else CFrame.new(position))
 				end
 			else
 				open(upgrades.Panel)
