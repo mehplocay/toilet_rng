@@ -6,6 +6,8 @@ local P = require(game.ReplicatedStorage.Shared.Visuals.Primitives)
 local Visuals = require(game.ReplicatedStorage.Shared.Config.Visuals)
 local Hub = require(script.Parent.Builders.Hub)
 local Plot = require(script.Parent.Builders.Plot)
+local PlotSpawn = require(script.Parent.PlotSpawn)
+local PlotChooser = require(game.ReplicatedStorage.Shared.PlotChooser)
 local Config = game.ReplicatedStorage.Shared.Config
 local Style, Items, Rarities, Assets =
 	require(Config.World), require(Config.Items), require(Config.Rarities), require(Config.Assets)
@@ -50,6 +52,7 @@ function World:Refresh(player, profile)
 		self:RenderDisplays(plot)
 	end
 	plot.Model:SetAttribute("PartCount", P.Count(plot.Model))
+	PlotSpawn:Ready(player)
 end
 -- Larger saved capacities rotate through five physical stands to retain the part budget.
 function World:RenderDisplays(plot)
@@ -103,14 +106,48 @@ function World:RenderDisplays(plot)
 	assert(countParts <= Visuals.Budget.Plot, "Plot exceeds its visual part budget")
 end
 function World:Assign(player)
+	if self.Assigned[player] or self.Assigning[player] then
+		return
+	end
+	self.Assigning[player] = true
+	local friends = {}
 	for _, plot in ipairs(self.Plots) do
-		if not plot.Owner then
-			plot.Owner = player
-			self.Assigned[player] = plot
-			plot.Sign.Text = player.DisplayName .. "'s Plot"
-			player:SetAttribute("PlotPosition", plot.CFrame.Position + Vector3.new(0, 4, -4))
-			return
+		local owner = plot.Owner
+		if owner and player.Parent == Players then
+			local ok, isFriend = pcall(function()
+				return player:IsFriendsWithAsync(owner.UserId)
+			end)
+			if ok and isFriend then
+				friends[owner.UserId] = true
+			end
 		end
+	end
+	self.Assigning[player] = nil
+	if player.Parent ~= Players then
+		return
+	end
+	-- Friendship checks yield. Read current occupancy and reserve without yielding.
+	local owners = {}
+	for index, plot in ipairs(self.Plots) do
+		owners[index] = if plot.Owner then plot.Owner.UserId else false
+	end
+	local index = PlotChooser.Choose(owners, friends)
+	if index then
+		local plot = self.Plots[index]
+		plot.Owner = player
+		self.Assigned[player] = plot
+		plot.Sign.Text = player.DisplayName .. "'s Plot"
+		plot.Model:SetAttribute("OwnerUserId", player.UserId)
+		player:SetAttribute("PlotPosition", plot.SpawnCFrame.Position)
+		player:SetAttribute("PlotCFrame", plot.SpawnCFrame)
+		player:SetAttribute("PlotCenter", plot.CFrame.Position)
+		player:SetAttribute("PlotSignPosition", (plot.CFrame * CFrame.new(0, 11, 11)).Position)
+		PlotSpawn:Register(player, plot)
+		local profile = self.Data:Get(player)
+		if profile then
+			self:Refresh(player, profile)
+		end
+		return
 	end
 	player:Kick("All plots are occupied. Please join another server.")
 end
@@ -181,6 +218,7 @@ function World:Animate(player, item)
 	end)
 end
 function World:Start(data)
+	self.Data, self.Assigning = data, {}
 	local root = Instance.new("Folder")
 	root.Name = "ToiletWorld"
 	root.Parent = workspace
@@ -196,9 +234,11 @@ function World:Start(data)
 		self:Assign(player)
 	end)
 	Players.PlayerRemoving:Connect(function(player)
+		PlotSpawn:Remove(player)
 		local plot = self.Assigned[player]
 		if plot then
 			plot.Owner = nil
+			plot.Model:SetAttribute("OwnerUserId", nil)
 			plot.Tier = nil
 			plot.Profile, plot.DisplaySignature, plot.Page = nil, nil, nil
 			plot.Sign.Text = "Available Plot"

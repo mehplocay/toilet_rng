@@ -1,5 +1,6 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
+Players.CharacterAutoLoads = false
 local definitions = require(ReplicatedStorage.Shared.Config.Remotes)
 local folder = Instance.new("Folder")
 folder.Name = definitions.Folder

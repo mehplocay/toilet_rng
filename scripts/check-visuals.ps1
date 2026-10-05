@@ -21,6 +21,7 @@ function CFrame.Angles() return CFrame.new() end
 function CFrame.lookAt(position) return CFrame.new(position) end
 cm.__mul = function(a,b) return CFrame.new(a.Position+b.Position) end
 cm.__add = function(a,b) return CFrame.new(a.Position+b) end
+cm.__sub = function(a,b) return CFrame.new(a.Position-b) end
 cm.__index = { VectorToWorldSpace = function(_,v) return v end }
 local Color3 = {}
 function Color3.new(r,g,b)
@@ -99,6 +100,7 @@ end
 $modulePaths = @(
     'src/shared/Config/Assets.luau', 'src/shared/Config/Visuals.luau', 'src/shared/Config/World.luau',
     'src/shared/Config/Items.luau', 'src/shared/Config/Toilets.luau', 'src/shared/Config/Rarities.luau',
+    'src/shared/Config/PlotGuidance.luau', 'src/shared/PlotChooser.luau', 'src/server/World/PlotSpawn.luau',
     'src/shared/Visuals/Primitives.luau', 'src/shared/Visuals/Items.luau', 'src/shared/Visuals/Toilets.luau',
     'src/server/World/Models.luau', 'src/server/World/Builders/Decor.luau',
     'src/server/World/Builders/Hub.luau', 'src/server/World/Builders/Plot.luau',
@@ -145,6 +147,9 @@ local maxPlot=0
 local maxToilet=0
 for tier=1,7 do
 	local plot=Plot.Build(root,CFrame.new(),tier)
+	assert(plot.Spawn:IsA("SpawnLocation") and plot.Spawn.Neutral and plot.Spawn.Enabled)
+	assert(plot.Spawn.Transparency==1 and not plot.Spawn.CanCollide and not plot.Spawn.AllowTeamChangeOnTouch)
+	assert(plot.SpawnCFrame.Position.Z==-5 and plot.SpawnCFrame.Position.Y==4.3)
 	plot.Toilet=Toilets.Build(plot.Model,plot.CFrame,tier)
 	maxToilet=math.max(maxToilet,P.Count(plot.Toilet))
 	for _,name in ipairs({"Bowl","Tank","Foot","OpenLid","FlushHandle","Water","Seat"}) do

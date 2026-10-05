@@ -1,6 +1,7 @@
 local P = require(game.ReplicatedStorage.Shared.Visuals.Primitives)
 local V = require(game.ReplicatedStorage.Shared.Config.Visuals).Palette
 local Decor = require(script.Parent.Decor)
+local Guidance = require(game.ReplicatedStorage.Shared.Config.PlotGuidance)
 local Plot = {}
 function Plot.Build(root, cf, index)
 	local model = Instance.new("Model")
@@ -27,9 +28,22 @@ function Plot.Build(root, cf, index)
 	for _, x in ipairs({ -10, 10 }) do
 		P.Part(model, "SignPost", Vector3.new(0.7, 8, 0.7), cf * CFrame.new(x, 4, 11), V.Wood, nil, Enum.Material.Wood)
 	end
-	local sign = Decor.Sign(model, cf * CFrame.new(0, 8, 11), 20, 3.3, "Available Plot", Color3.new(1, 1, 1))
+	local sign = Decor.Sign(model, cf * CFrame.new(0, 8, 11), 24, 4.5, "Available Plot", Color3.new(1, 1, 1))
+	sign.Parent.MaxDistance = Guidance.SignDistance
+	local toiletCF = cf * CFrame.new(0, 0.3, 0)
+	local position = (toiletCF * CFrame.new(Guidance.SpawnOffset)).Position
+	local spawnCF = CFrame.lookAt(position, Vector3.new(toiletCF.Position.X, position.Y, toiletCF.Position.Z))
+	local spawn = Instance.new("SpawnLocation")
+	spawn.Name = "PlotSpawn"
+	spawn.Size = Vector3.new(2, 0.2, 2)
+	spawn.CFrame = spawnCF - Vector3.new(0, Guidance.SpawnOffset.Y - 0.1, 0)
+	spawn.Anchored, spawn.CanCollide, spawn.CanTouch, spawn.CanQuery = true, false, false, false
+	spawn.Transparency, spawn.Duration = 1, 0
+	spawn.Neutral, spawn.AllowTeamChangeOnTouch = true, false
+	spawn.Enabled = true
+	spawn.Parent = model
 	local displays = Instance.new("Folder")
 	displays.Name, displays.Parent = "Displays", model
-	return { Model = model, CFrame = cf * CFrame.new(0, 0.3, 0), Sign = sign, Displays = displays }
+	return { Model = model, CFrame = toiletCF, Spawn = spawn, SpawnCFrame = spawnCF, Sign = sign, Displays = displays }
 end
 return Plot
