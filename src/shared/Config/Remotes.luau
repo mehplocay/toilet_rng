@@ -11,7 +11,9 @@ return {
 	Settings = "Settings",
 	AutoFlush = "AutoFlush",
 	DevGrant = "DevGrant",
+	TutorialDone = "TutorialDone",
 	Limits = {
+		TutorialDone = { Capacity = 2, Refill = 0.5 },
 		Settings = { Capacity = 3, Refill = 1 },
 		AutoFlush = { Capacity = 3, Refill = 1 },
 		Display = { Capacity = 4, Refill = 2 },

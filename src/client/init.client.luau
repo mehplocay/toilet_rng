@@ -34,6 +34,7 @@ for _, name in ipairs({
 	"Settings",
 	"AutoFlush",
 	"DevGrant",
+	"TutorialDone",
 }) do
 	remotes[name] = folder:WaitForChild(definitions[name])
 end
@@ -121,22 +122,31 @@ local colors = {
 	Color3.fromRGB(160, 65, 225),
 	Color3.fromRGB(65, 85, 105),
 }
+local navigation = {}
 for index, name in ipairs({ "Shop", "Collection", "Upgrades", "Teleport", "Settings" }) do
-	C.Button(gui, name, UDim2.fromScale(0.16, 0.075), UDim2.fromScale(0.025, 0.24 + (index - 1) * 0.09), function()
-		if name == "Collection" then
-			open(collection.Panel)
-		elseif name == "Settings" then
-			open(settings)
-		elseif name == "Teleport" then
-			local position = player:GetAttribute("PlotPosition")
-			if typeof(position) == "Vector3" and player.Character then
-				player.Character:PivotTo(CFrame.new(position))
+	navigation[name] = C.Button(
+		gui,
+		name,
+		UDim2.fromScale(0.16, 0.075),
+		UDim2.fromScale(0.025, 0.24 + (index - 1) * 0.09),
+		function()
+			if name == "Collection" then
+				open(collection.Panel)
+			elseif name == "Settings" then
+				open(settings)
+			elseif name == "Teleport" then
+				local position = player:GetAttribute("PlotPosition")
+				if typeof(position) == "Vector3" and player.Character then
+					player.Character:PivotTo(CFrame.new(position))
+				end
+			else
+				open(upgrades.Panel)
 			end
-		else
-			open(upgrades.Panel)
-		end
-	end, colors[index])
+		end,
+		colors[index]
+	)
 end
+require(script.UI.Tutorial).Create(player, remotes, navigation)
 local popup = C.New("Frame", gui, {
 	Visible = false,
 	Size = UDim2.fromScale(0.43, 0.2),

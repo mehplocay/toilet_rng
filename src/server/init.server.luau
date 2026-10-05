@@ -16,6 +16,7 @@ for _, key in ipairs({
 	"Settings",
 	"AutoFlush",
 	"DevGrant",
+	"TutorialDone",
 }) do
 	local remote = Instance.new("RemoteEvent")
 	remote.Name = definitions[key]
@@ -39,6 +40,7 @@ local function sync(player)
 		world:Refresh(player, profile)
 		remotes.State:FireClient(player, {
 			Coins = profile.Coins,
+			TutorialDone = profile.TutorialDone,
 			Settings = profile.Settings,
 			OwnedPasses = monetization.Owned[player] or {},
 			AutoFlush = monetization.Auto[player] == true,
@@ -58,6 +60,17 @@ require(script.Services.DisplayService).Start(data, limiter, remotes, sync)
 require(script.Services.DevGrantService).Start(data, limiter, remotes, sync)
 remotes.State.OnServerEvent:Connect(function(player, ...)
 	if select("#", ...) == 0 and limiter:Allow(player, "State") then
+		sync(player)
+	end
+end)
+-- This preference dismisses onboarding only; it grants no gameplay progression.
+remotes.TutorialDone.OnServerEvent:Connect(function(player, ...)
+	if select("#", ...) ~= 0 or not limiter:Allow(player, "TutorialDone") then
+		return
+	end
+	local profile = data:Get(player)
+	if profile then
+		profile.TutorialDone = true
 		sync(player)
 	end
 end)

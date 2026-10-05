@@ -26,6 +26,7 @@ end
 function DataService.DefaultProfile()
 	return {
 		Version = 1,
+		TutorialDone = false,
 		Settings = { Sound = true },
 		Coins = 0,
 		Inventory = {},
@@ -42,6 +43,7 @@ local function sanitize(raw)
 	if type(raw) ~= "table" then
 		return profile
 	end
+	profile.TutorialDone = raw.TutorialDone == true
 	if type(raw.Settings) == "table" and type(raw.Settings.Sound) == "boolean" then
 		profile.Settings.Sound = raw.Settings.Sound
 	end
