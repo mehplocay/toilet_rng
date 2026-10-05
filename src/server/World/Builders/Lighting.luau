@@ -5,7 +5,12 @@ function Builder.Build()
 	for key, value in pairs(Visuals.Lighting) do
 		Lighting[key] = value
 	end
-	for _, name in ipairs({ "ToyAtmosphere", "ToyBloom", "ToyColor", "ToySunRays" }) do
+	Lighting.ClockTime = 15.6
+	Lighting.GeographicLatitude = 18
+	Lighting.Ambient = Color3.fromRGB(123, 131, 180)
+	Lighting.OutdoorAmbient = Color3.fromRGB(148, 180, 208)
+	Lighting.ColorShift_Top = Color3.fromRGB(255, 218, 160)
+	for _, name in ipairs({ "ToyAtmosphere", "ToyBloom", "ToyColor", "ToySunRays", "IslandSky" }) do
 		local old = Lighting:FindFirstChild(name)
 		if old then
 			old:Destroy()
@@ -14,7 +19,7 @@ function Builder.Build()
 	local atmosphere = Instance.new("Atmosphere")
 	atmosphere.Name = "ToyAtmosphere"
 	atmosphere.Color, atmosphere.Decay = Color3.fromRGB(148, 212, 255), Color3.fromRGB(255, 223, 172)
-	atmosphere.Density, atmosphere.Offset, atmosphere.Haze, atmosphere.Glare = 0.22, 0.25, 1, 0.08
+	atmosphere.Density, atmosphere.Offset, atmosphere.Haze, atmosphere.Glare = 0.26, 0.15, 1.25, 0.12
 	atmosphere.Parent = Lighting
 	local bloom = Instance.new("BloomEffect")
 	bloom.Name, bloom.Intensity, bloom.Size, bloom.Threshold = "ToyBloom", 0.16, 18, 1.2
@@ -26,5 +31,18 @@ function Builder.Build()
 	local rays = Instance.new("SunRaysEffect")
 	rays.Name, rays.Intensity, rays.Spread = "ToySunRays", 0.025, 0.7
 	rays.Parent = Lighting
+	local sky = Instance.new("Sky")
+	sky.Name, sky.StarCount, sky.SunAngularSize, sky.MoonAngularSize = "IslandSky", 0, 12, 0
+	sky.CelestialBodiesShown = true
+	-- Retain Roblox's built-in default sky textures; no unowned skybox assets.
+	sky.Parent = Lighting
+	local terrain = workspace.Terrain
+	local oldClouds = terrain:FindFirstChild("IslandClouds")
+	if oldClouds then
+		oldClouds:Destroy()
+	end
+	local clouds = Instance.new("Clouds")
+	clouds.Name, clouds.Cover, clouds.Density = "IslandClouds", 0.32, 0.45
+	clouds.Color, clouds.Parent = Color3.fromRGB(255, 247, 232), terrain
 end
 return Builder
