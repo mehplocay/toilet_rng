@@ -1,5 +1,7 @@
 local TweenService = game:GetService("TweenService")
 local C = require(script.Parent.Components)
+local Layout = require(script.Parent.Layout)
+local UserInputService = game:GetService("UserInputService")
 local CoinPopup = {}
 
 function CoinPopup.Create(parent)
@@ -8,14 +10,15 @@ function CoinPopup.Create(parent)
 			return
 		end
 		-- Each award owns its label/tween so fast flushes cannot cancel earlier popups.
-		local label = C.Text(parent, "+" .. C.Commas(amount) .. " Coins", UDim2.fromScale(0.18, 0.05))
+		local layout = Layout.Compute(parent.AbsoluteSize.X, parent.AbsoluteSize.Y, UserInputService.TouchEnabled)
+		local label = C.Text(parent, "+" .. C.Commas(amount) .. " Coins", UDim2.fromOffset(180, 36), nil, 27)
 		label.Name = "ServiceCoinPopup"
 		label.AnchorPoint = Vector2.new(0.5, 0.5)
-		label.Position = UDim2.fromScale(0.56, 0.67)
+		C.Place(label, layout.CoinPopup)
 		label.TextColor3 = Color3.fromRGB(255, 220, 80)
 		label.ZIndex = 50
 		local tween = TweenService:Create(label, TweenInfo.new(0.9, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-			Position = label.Position - UDim2.fromOffset(0, 42),
+			Position = label.Position - UDim2.fromOffset(0, layout.CoinRise),
 			TextTransparency = 1,
 		})
 		local outline = label:FindFirstChildWhichIsA("UIStroke")

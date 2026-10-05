@@ -2,72 +2,63 @@ local C = require(script.Parent.Components)
 local Config = require(game.ReplicatedStorage.Shared.Config.Rewards)
 local Schedule = require(game.ReplicatedStorage.Shared.RewardSchedule)
 local Rewards = {}
-
 local function duration(seconds)
 	seconds = math.max(0, math.ceil(seconds))
 	return string.format("%02d:%02d:%02d", math.floor(seconds / 3600), math.floor(seconds / 60) % 60, seconds % 60)
 end
-
 function Rewards.Create(gui, remotes)
-	local panel = C.Panel(gui, "Daily Rewards")
-	C.Text(
-		panel,
-		"Claim every UTC day. Missing a day resets your streak.",
-		UDim2.fromScale(0.94, 0.07),
-		UDim2.fromScale(0.03, 0.12)
-	)
+	local panel = C.Panel(gui, "Daily Rewards", C.Gold)
+	local body = panel.ContentScroll.Body
+	C.BodyText(body, "A fresh reward every UTC day. Keep your streak!", UDim2.new(1, 0, 0, 32))
+	local row = C.Scroll(body, UDim2.new(1, 0, 1, -164), UDim2.fromOffset(0, 38))
+	C.Grid(row, 132, 184, 4)
 	local cards = {}
 	for day = 1, #Config.BaseCoins do
-		local card = C.New("Frame", panel, {
-			Size = UDim2.fromScale(0.22, 0.22),
-			Position = UDim2.fromScale(0.03 + ((day - 1) % 4) * 0.24, 0.22 + math.floor((day - 1) / 4) * 0.25),
-			BackgroundColor3 = C.Navy,
-		})
-		C.Round(card)
-		C.Text(card, "Day " .. day, UDim2.fromScale(0.9, 0.2), UDim2.fromScale(0.05, 0.04))
-		local value = C.Text(card, "", UDim2.fromScale(0.9, 0.3), UDim2.fromScale(0.05, 0.28))
-		local status = C.Text(card, "Locked", UDim2.fromScale(0.9, 0.22), UDim2.fromScale(0.05, 0.72))
+		local card = C.Card(row, if day == #Config.BaseCoins then C.Purple else C.Gold, day == #Config.BaseCoins)
+		card.LayoutOrder = day
+		C.Text(card, "DAY " .. day, UDim2.new(1, -12, 0, 26), UDim2.fromOffset(6, 8), 22)
+		C.Icon(
+			card,
+			if day == #Config.BaseCoins then "Luck" else "Coins",
+			UDim2.fromOffset(56, 56),
+			UDim2.new(0.5, -28, 0, 38)
+		)
+		local value = C.Text(card, "", UDim2.new(1, -12, 0, 43), UDim2.fromOffset(6, 98), 21)
+		local _, status = C.Pill(card, "Locked", C.Navy, UDim2.new(1, -18, 0, 26), UDim2.fromOffset(9, 149))
 		cards[day] = { Frame = card, Value = value, Status = status }
 	end
-	local countdown = C.Text(panel, "Loading rewards...", UDim2.fromScale(0.94, 0.06), UDim2.fromScale(0.03, 0.73))
-	local message = C.Text(
-		panel,
-		"Rewards scale with your current toilet tier.",
-		UDim2.fromScale(0.94, 0.06),
-		UDim2.fromScale(0.03, 0.92)
+	local countdown = C.Text(body, "Loading rewards...", UDim2.new(1, 0, 0, 28), UDim2.new(0, 0, 1, -122), 19)
+	local message = C.BodyText(
+		body,
+		"Missing a day resets your streak. Rewards grow with your tier.",
+		UDim2.new(1, 0, 0, 40),
+		UDim2.new(0, 0, 1, -40)
 	)
-	local state, pending = nil, false
-	local request = 0
+	local state, pending, request = nil, false, 0
 	local claim
 	local function render()
 		if not state then
 			claim.Interactable = false
 			return
 		end
-		-- This is only a preview; the server checks its own os.time() when claiming.
+		-- Preview only: claim validation and the UTC boundary remain on the server.
 		local now = workspace:GetServerTimeNow()
 		local available, day, nextAt = Schedule.Progress(state.LastClaimDay, state.Streak, now, Config)
 		for index, card in ipairs(cards) do
 			local claimed = if available then index < day else index <= day
 			local today = available and index == day
-			card.Status.Text = if claimed then "Claimed" elseif today then "Today" else "Locked"
-			card.Frame.BackgroundColor3 = if claimed
-				then Color3.fromRGB(35, 95, 70)
-				elseif today then Color3.fromRGB(115, 85, 25)
-				else C.Navy
-			card.Value.Text = Schedule.Coins(index, state.ToiletTier, Config)
+			card.Status.Text = if claimed then "CLAIMED" elseif today then "READY!" else "UP NEXT"
+			card.Status.TextColor3 = if claimed then C.Muted elseif today then C.Green else Color3.new(1, 1, 1)
+			card.Frame.Background.UIStroke.Color = if today then C.Green elseif claimed then C.Muted else C.Gold
+			card.Value.Text = C.Commas(Schedule.Coins(index, state.ToiletTier, Config))
 				.. " Coins"
-				.. (if index == #Config.BaseCoins then "\nLuck x2: 10 min" else "")
+				.. (if index == #Config.BaseCoins then "\n+ 10 min x2 Luck" else "")
 		end
-		countdown.Text = (if available then "Reward ready! Next UTC day in " else "Next reward in ")
-			.. duration(nextAt - now)
-		if state.RewardLuckExpires > now then
-			countdown.Text ..= " | Luck x2: " .. duration(state.RewardLuckExpires - now)
-		end
+		countdown.Text = (if available then "Ready! Resets in " else "Next reward in ") .. duration(nextAt - now)
 		claim.Text = if pending then "Claiming..." elseif available then "Claim Day " .. day else "Claimed Today"
 		claim.Interactable = available and not pending
 	end
-	claim = C.Button(panel, "Loading...", UDim2.fromScale(0.5, 0.1), UDim2.fromScale(0.25, 0.81), function()
+	claim = C.Button(body, "Loading...", UDim2.new(1, -32, 0, 48), UDim2.new(0, 16, 1, -90), function()
 		if pending or not state then
 			return
 		end
@@ -79,16 +70,19 @@ function Rewards.Create(gui, remotes)
 		task.delay(15, function()
 			if pending and request == token then
 				pending = false
-				message.Text = "Still waiting? Try again; each UTC day can only be claimed once."
+				message.Text = "Still waiting? You can retry safely."
 				render()
 			end
 		end)
-	end, Color3.fromRGB(40, 175, 110))
+	end, C.Green, { Icon = "Daily" })
 	remotes.Result.OnClientEvent:Connect(function(action, payload)
 		if action == "ClaimReward" then
 			pending = false
 			message.Text = payload.Message
 			render()
+			if payload.Success then
+				C.Shine(claim)
+			end
 		end
 	end)
 	task.spawn(function()
@@ -108,5 +102,4 @@ function Rewards.Create(gui, remotes)
 		end,
 	}
 end
-
 return Rewards

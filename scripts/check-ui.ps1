@@ -1,0 +1,33 @@
+param([string]$SnapshotDirectory)
+$ErrorActionPreference = 'Stop'
+$workspaceRoot = Split-Path $PSScriptRoot -Parent
+$generatedPath = Join-Path $workspaceRoot '.ui-check.generated.luau'
+$parts = [System.Collections.Generic.List[string]]::new()
+$parts.Add('local sources = {}')
+foreach ($file in (Get-ChildItem -LiteralPath (Join-Path $workspaceRoot 'src') -Recurse -Filter '*.luau')) {
+    $relative = $file.FullName.Substring($workspaceRoot.Length + 1).Replace('\', '/')
+    $moduleName = $relative.Substring(0, $relative.Length - 5)
+    $source = [IO.File]::ReadAllText($file.FullName)
+    $parts.Add("sources['$moduleName'] = [====[`n$source`n]====]")
+}
+$parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-harness.luau')))
+$parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'check-ui-runtime.luau')))
+try {
+    [IO.File]::WriteAllText($generatedPath, ($parts -join "`n"), [Text.UTF8Encoding]::new($false))
+    $output = & luau $generatedPath
+    $code = $LASTEXITCODE
+    foreach ($line in $output) {
+        if ($line.StartsWith('UI_SNAPSHOT ')) {
+            if ($SnapshotDirectory) {
+                $null = New-Item -ItemType Directory -Force -Path $SnapshotDirectory
+                $name, $json = $line.Substring(12).Split(' ', 2)
+                [IO.File]::WriteAllText((Join-Path $SnapshotDirectory "$name.json"), $json, [Text.UTF8Encoding]::new($false))
+            }
+        } else { Write-Output $line }
+    }
+    if ($code -ne 0) { throw 'UI runtime checks failed' }
+    & luau (Join-Path $PSScriptRoot 'check-ui-layout.luau')
+    if ($LASTEXITCODE -ne 0) { throw 'UI layout checks failed' }
+} finally {
+    if (Test-Path -LiteralPath $generatedPath) { Remove-Item -LiteralPath $generatedPath }
+}

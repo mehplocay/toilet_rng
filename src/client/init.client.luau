@@ -1,29 +1,15 @@
 local Players = game:GetService("Players")
 local SoundService = game:GetService("SoundService")
-local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
+local Debris = game:GetService("Debris")
+local ContextActionService = game:GetService("ContextActionService")
 local player = Players.LocalPlayer
-local function configurePrompt(object)
-	if object:IsA("ProximityPrompt") then
-		local function update()
-			local owner = object:GetAttribute("OwnerUserId")
-			if owner then
-				object.Enabled = owner == player.UserId
-			end
-		end
-		object:GetAttributeChangedSignal("OwnerUserId"):Connect(update)
-		update()
-	end
-end
-workspace.DescendantAdded:Connect(configurePrompt)
-for _, object in ipairs(workspace:GetDescendants()) do
-	configurePrompt(object)
-end
 local Config = game.ReplicatedStorage.Shared.Config
-local definitions, Items, Rarities = require(Config.Remotes), require(Config.Items), require(Config.Rarities)
+local definitions, Items, Assets = require(Config.Remotes), require(Config.Items), require(Config.Assets)
 local folder = game.ReplicatedStorage:WaitForChild(definitions.Folder)
 local remotes = {}
 for _, name in ipairs({
+	"Flush",
 	"State",
 	"Result",
 	"Sell",
@@ -45,228 +31,221 @@ for _, name in ipairs({
 	remotes[name] = folder:WaitForChild(definitions[name])
 end
 local C = require(script.UI.Components)
-require(script.UI.FlushPrompt).Start()
+local prompts = require(script.UI.FlushPrompt).Start()
 require(script.VisualIdle).Start()
 require(script.PlotGuidance).Start()
 require(script.VIPChat).Start()
-local gui = C.New(
-	"ScreenGui",
-	player:WaitForChild("PlayerGui"),
-	{ Name = "ToiletUI", ResetOnSpawn = false, ZIndexBehavior = Enum.ZIndexBehavior.Sibling }
-)
-local screen = gui
-gui = C.New("Frame", screen, { Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1 })
-local scale = C.New("UIScale", gui, { Scale = 1 })
-local function resize()
-	local camera = workspace.CurrentCamera
-	if camera then
-		scale.Scale = math.clamp(camera.ViewportSize.Y / 720, 0.65, 1)
-		gui.Size = UDim2.fromScale(1 / scale.Scale, 1 / scale.Scale)
-	end
-end
-if workspace.CurrentCamera then
-	workspace.CurrentCamera:GetPropertyChangedSignal("ViewportSize"):Connect(resize)
-end
-resize()
-local coinBox = C.New(
-	"Frame",
-	gui,
-	{ Size = UDim2.fromScale(0.23, 0.065), Position = UDim2.fromScale(0.75, 0.025), BackgroundTransparency = 1 }
-)
-C.Chrome(coinBox, C.Navy)
-C.Icon(coinBox, "Coins", UDim2.fromScale(0.2, 0.86), UDim2.fromScale(0.025, 0.07))
-local coins = C.Text(coinBox, "Loading...", UDim2.fromScale(0.72, 0.85), UDim2.fromScale(0.25, 0.075))
-local collection = require(script.UI.Collection).Create(gui, remotes)
-local upgrades = require(script.UI.Upgrades).Create(gui, remotes)
-local rewards = require(script.UI.Rewards).Create(gui, remotes)
-local passes = require(script.UI.Passes).Create(gui, remotes)
-if RunService:IsStudio() then
-	local panel = C.New("Frame", gui, {
-		Size = UDim2.fromScale(0.28, 0.16),
-		Position = UDim2.fromScale(0.02, 0.81),
-		BackgroundColor3 = C.Navy,
-	})
-	C.Round(panel, Color3.fromRGB(220, 80, 80))
-	C.Text(panel, "DEV", UDim2.fromScale(0.18, 0.28), UDim2.fromScale(0.02, 0.02))
-	for index, grantKey in ipairs({ "1000", "100000", "10000000" }) do
-		local labels = { "+1,000", "+100,000", "+10,000,000" }
-		C.Button(
-			panel,
-			labels[index],
-			UDim2.fromScale(0.3, 0.55),
-			UDim2.fromScale(0.03 + (index - 1) * 0.32, 0.38),
-			function()
-				remotes.DevGrant:FireServer(grantKey)
-			end,
-			Color3.fromRGB(160, 55, 65)
-		)
-	end
-end
-local settings = C.Panel(gui, "Settings")
-local soundOn = true
+local screen = C.New("ScreenGui", player:WaitForChild("PlayerGui"), {
+	Name = "ToiletUI",
+	ResetOnSpawn = false,
+	ScreenInsets = Enum.ScreenInsets.CoreUISafeInsets,
+	SafeAreaCompatibility = Enum.SafeAreaCompatibility.None,
+	ClipToDeviceSafeArea = true,
+	ZIndexBehavior = Enum.ZIndexBehavior.Sibling,
+})
+local root = C.New("Frame", screen, { Name = "SafeArea", Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1 })
+local collection = require(script.UI.Collection).Create(root, remotes)
+local upgrades = require(script.UI.Upgrades).Create(root, remotes)
+local rewards = require(script.UI.Rewards).Create(root, remotes)
+local passes = require(script.UI.Passes).Create(root, remotes)
+local settings = C.Panel(root, "Settings", C.Blue)
+local soundOn, skipAnimation = true, false
 local soundGroup = C.New("SoundGroup", SoundService, { Name = "ToiletSounds" })
-local toggle
-local function updateSounds()
-	soundGroup.Volume = if soundOn then 1 else 0
-	for _, sound in ipairs(workspace:GetDescendants()) do
-		if sound:IsA("Sound") then
-			sound.SoundGroup = soundGroup
-		end
-	end
-end
-workspace.DescendantAdded:Connect(function(object)
+-- One startup traversal; new sounds are assigned as they arrive. State only sets group volume.
+local function registerSound(object)
 	if object:IsA("Sound") then
 		object.SoundGroup = soundGroup
 	end
-end)
-toggle = C.Button(settings, "Sound: ON", UDim2.fromScale(0.6, 0.16), UDim2.fromScale(0.2, 0.35), function()
+end
+workspace.DescendantAdded:Connect(registerSound)
+for _, object in ipairs(workspace:GetDescendants()) do
+	registerSound(object)
+end
+C.SoundHook = function(key)
+	local id = C.AssetId(Assets.Sounds[key])
+	if not id or not soundOn then
+		return
+	end
+	local sound = C.New("Sound", SoundService, { SoundId = id, SoundGroup = soundGroup, Volume = 0.35 })
+	sound:Play()
+	Debris:AddItem(sound, 5)
+end
+local settingsList = C.Scroll(settings.ContentScroll.Body, UDim2.fromScale(1, 1))
+C.New("UIListLayout", settingsList, { Padding = UDim.new(0, 18), SortOrder = Enum.SortOrder.LayoutOrder })
+local intro = C.BodyText(settingsList, "Play your way. Your preferences are saved.", UDim2.new(1, -18, 0, 46))
+intro.LayoutOrder = 1
+local toggle
+local function settingsRow(title, description, order, callback)
+	local row = C.Card(settingsList, C.Blue)
+	row.Size, row.LayoutOrder = UDim2.new(1, -18, 0, 130), order
+	C.Text(row, title, UDim2.new(1, -24, 0, 28), UDim2.fromOffset(12, 8), 24).TextXAlignment = Enum.TextXAlignment.Left
+	C.BodyText(row, description, UDim2.new(1, -24, 0, 32), UDim2.fromOffset(12, 39)).TextXAlignment =
+		Enum.TextXAlignment.Left
+	return C.Button(row, "", UDim2.new(1, -24, 0, 44), UDim2.fromOffset(12, 76), callback, C.Green, { TextSize = 20 })
+end
+toggle = settingsRow("Game sounds", "Flush sounds, rewards and button clicks.", 2, function()
 	soundOn = not soundOn
 	toggle.Text = if soundOn then "Sound: ON" else "Sound: OFF"
-	updateSounds()
+	soundGroup.Volume = if soundOn then 1 else 0
 	remotes.Settings:FireServer(soundOn)
 end)
-local skipAnimation, skipToggle = false, nil
-skipToggle = C.Button(
-	settings,
-	"Animation skip: OFF",
-	UDim2.fromScale(0.6, 0.14),
-	UDim2.fromScale(0.2, 0.55),
+local skipToggle = settingsRow(
+	"Quick reveals",
+	"Shorten drop reveals and skip event effects. Free for everyone.",
+	3,
 	function()
 		remotes.AnimationSkip:FireServer(not skipAnimation)
 	end
 )
-C.Text(settings, "Settings are saved.", UDim2.fromScale(0.9, 0.12), UDim2.fromScale(0.05, 0.76))
-local function open(panel)
-	for _, other in ipairs({ collection.Panel, upgrades.Panel, settings, rewards.Panel, passes.Panel }) do
-		other.Visible = other == panel and not other.Visible
+local panels = { collection.Panel, upgrades.Panel, rewards.Panel, passes.Panel, settings }
+local dev
+if RunService:IsStudio() then
+	dev = C.Panel(root, "Developer Tools", Color3.fromRGB(219, 78, 105))
+	table.insert(panels, dev)
+	local row = C.Scroll(dev.ContentScroll.Body, UDim2.fromScale(1, 1))
+	C.New("UIListLayout", row, { Padding = UDim.new(0, 18), SortOrder = Enum.SortOrder.LayoutOrder })
+	local note = C.BodyText(row, "Studio test grants • server validated", UDim2.new(1, -18, 0, 50))
+	note.LayoutOrder = 1
+	for i, key in ipairs({ "1000", "100000", "10000000" }) do
+		local button = C.Button(
+			row,
+			"+" .. C.Commas(tonumber(key)) .. " Coins",
+			UDim2.new(1, -18, 0, 58),
+			nil,
+			function()
+				remotes.DevGrant:FireServer(key)
+			end,
+			C.Purple
+		)
+		button.LayoutOrder = i + 1
 	end
+	local button = C.Button(settingsList, "Open Developer Tools", UDim2.new(1, -18, 0, 48), nil, function()
+		settings.Visible = false
+		dev.Visible = true
+	end, C.Purple)
+	button.LayoutOrder = 4
 end
-local colors = {
-	Color3.fromRGB(230, 65, 70),
-	Color3.fromRGB(35, 150, 225),
-	Color3.fromRGB(40, 175, 110),
-	Color3.fromRGB(160, 65, 225),
-	Color3.fromRGB(65, 85, 105),
-	Color3.fromRGB(195, 140, 35),
-	Color3.fromRGB(210, 140, 65),
-}
-local navigation = {}
-for index, name in ipairs({ "Shop", "Collection", "Upgrades", "Teleport", "Settings", "Daily", "Passes" }) do
-	local button = C.Button(
-		gui,
-		name,
-		UDim2.fromScale(0.16, 0.068),
-		UDim2.fromScale(0.025, 0.19 + (index - 1) * 0.09),
-		function()
-			if name == "Collection" then
-				open(collection.Panel)
-			elseif name == "Settings" then
-				open(settings)
-			elseif name == "Daily" then
-				open(rewards.Panel)
-			elseif name == "Passes" then
-				open(passes.Panel)
-			elseif name == "Teleport" then
-				local position = player:GetAttribute("PlotPosition")
-				if typeof(position) == "Vector3" and player.Character then
-					local cf = player:GetAttribute("PlotCFrame")
-					player.Character:PivotTo(if typeof(cf) == "CFrame" then cf else CFrame.new(position))
-				end
-			else
-				open(upgrades.Panel)
-			end
-		end,
-		colors[index]
-	)
-	local label = button:FindFirstChildWhichIsA("TextLabel")
-	label.Size, label.Position = UDim2.fromScale(0.73, 0.78), UDim2.fromScale(0.25, 0.11)
-	C.Icon(button, if name == "Passes" then "Shop" else name, UDim2.fromScale(0.19, 0.7), UDim2.fromScale(0.04, 0.15))
-	navigation[name] = button
-end
-require(script.UI.Tutorial).Create(player, remotes, navigation)
-local popup = C.New("Frame", gui, {
+local backdrop = C.New("TextButton", root, {
+	Name = "ModalBackdrop",
+	Text = "",
+	AutoButtonColor = false,
+	Size = UDim2.fromScale(1, 1),
+	BackgroundColor3 = C.Ink,
+	BackgroundTransparency = 0.26,
 	Visible = false,
-	Size = UDim2.fromScale(0.43, 0.2),
-	Position = UDim2.fromScale(0.34, 0.72),
-	BackgroundColor3 = C.Navy,
+	Active = true,
+	Modal = true,
+	ZIndex = 30,
 })
-C.Chrome(popup, C.Navy)
-local resultText = C.Text(popup, "", UDim2.fromScale(0.94, 0.9), UDim2.fromScale(0.03, 0.05))
-local effects = require(script.Effects).Create(gui, soundGroup)
-local showServiceCoins = require(script.UI.CoinPopup).Create(gui)
-local autoUnlocked, autoEnabled = false, false
-local autoUnlock = require(Config.Monetization).AutoFlushUnlock
-local autoButton
-autoButton = C.Button(
-	gui,
-	"Auto Flush: 0/" .. autoUnlock,
-	UDim2.fromScale(0.23, 0.06),
-	UDim2.fromScale(0.75, 0.1),
-	function()
-		if autoUnlocked then
-			remotes.AutoFlush:FireServer(not autoEnabled)
-		end
+local hud
+local function closeAll()
+	for _, panel in ipairs(panels) do
+		panel.Visible = false
 	end
-)
-autoButton.Interactable = false
-remotes.Event.OnClientEvent:Connect(effects.Event)
-remotes.ServerLuck.OnClientEvent:Connect(effects.Luck)
-local generation = 0
-remotes.Result.OnClientEvent:Connect(function(action, payload)
-	if
-		action == "ClaimReward"
-		or action == "ClaimIndexReward"
-		or action == "BuyPass"
-		or action == "RefreshPasses"
-		or action == "PlotColor"
-	then
-		return
+end
+local function show(panel)
+	local wasOpen = panel.Visible
+	closeAll()
+	panel.Visible = not wasOpen
+end
+local function travelHome()
+	local cf = player:GetAttribute("PlotCFrame")
+	if typeof(cf) == "CFrame" and player.Character then
+		player.Character:PivotTo(cf)
 	end
-	generation += 1
-	local token = generation
-	if action == "Flush" then
-		showServiceCoins(payload.ServiceCoins)
-		for _, item in ipairs(Items) do
-			if item.Id == payload.ItemId then
-				local rarity = Rarities[item.Rarity]
-				effects.Drop(item)
-				resultText.Text = item.Name .. "\n" .. item.Rarity .. " - 1 in " .. item.Chance
-				resultText.TextColor3 = rarity.Color
-				popup.Size = if rarity.Order >= 4 then UDim2.fromScale(0.52, 0.26) else UDim2.fromScale(0.43, 0.2)
-				if rarity.Order >= 4 and not skipAnimation then
-					TweenService:Create(popup, TweenInfo.new(0.3, Enum.EasingStyle.Back), { Rotation = 3 }):Play()
-				else
-					popup.Rotation = 0
-				end
-			end
+end
+local function open(name)
+	if name == "Home" then
+		closeAll()
+		travelHome()
+	elseif name == "Hub" or name == "TravelShop" then
+		closeAll()
+		local hub = workspace:FindFirstChild("Hub", true)
+		local spawn = hub and hub:FindFirstChild(if name == "TravelShop" then "ShowcaseStand" else "SpawnPad")
+		if spawn and player.Character then
+			local offset = if name == "TravelShop" then Vector3.new(0, 4, -8) else Vector3.new(0, 4, 0)
+			player.Character:PivotTo(CFrame.lookAt(spawn.Position + offset, spawn.Position + Vector3.new(0, 4, 1)))
 		end
-	elseif payload.Success == false then
-		resultText.Text = "Request unavailable. Check coins, items or display slots."
-		resultText.TextColor3 = Color3.fromRGB(255, 180, 100)
+		if name == "TravelShop" then
+			show(upgrades.Panel)
+		end
+	elseif name == "Collection" then
+		show(collection.Panel)
+	elseif name == "Daily" then
+		show(rewards.Panel)
+	elseif name == "Passes" then
+		show(passes.Panel)
+	elseif name == "Settings" then
+		show(settings)
 	else
-		return
+		show(upgrades.Panel)
 	end
-	popup.Visible = true
-	task.delay(3, function()
-		if generation == token then
-			popup.Visible = false
+end
+hud = require(script.UI.HUD).Create(root, remotes, open, prompts)
+local function syncModal()
+	local any = false
+	for _, panel in ipairs(panels) do
+		if panel.Visible then
+			any = true
 		end
-	end)
+	end
+	backdrop.Visible, hud.Frame.Visible = any, not any
+end
+for _, panel in ipairs(panels) do
+	panel:GetPropertyChangedSignal("Visible"):Connect(syncModal)
+end
+backdrop.Activated:Connect(closeAll)
+ContextActionService:BindAction("CloseToiletPanel", function(_, state)
+	if state == Enum.UserInputState.Begin and backdrop.Visible then
+		closeAll()
+		return Enum.ContextActionResult.Sink
+	end
+	return Enum.ContextActionResult.Pass
+end, false, Enum.KeyCode.ButtonB)
+require(script.UI.Tutorial).Create(player, remotes, hud, prompts)
+local effects = require(script.Effects).Create(hud.Frame, soundGroup, hud)
+local reveal = require(script.UI.Reveal).Create(hud.Frame, hud)
+local showServiceCoins = require(script.UI.CoinPopup).Create(hud.Frame)
+local toast = C.Toast(root)
+local byId = {}
+for _, item in ipairs(Items) do
+	byId[item.Id] = item
+end
+remotes.Event.OnClientEvent:Connect(function(payload)
+	effects.Event(payload)
+	local item = byId[payload.ItemId]
+	if item then
+		hud.Best(payload.PlayerName, item)
+	end
+end)
+remotes.ServerLuck.OnClientEvent:Connect(hud.Luck)
+remotes.Result.OnClientEvent:Connect(function(action, payload)
+	if action == "Flush" then
+		local item = byId[payload.ItemId]
+		if not item then
+			return
+		end
+		hud.Flushed(payload)
+		hud.Best(player.DisplayName, item)
+		showServiceCoins(payload.ServiceCoins)
+		effects.Drop(item)
+		reveal(item, skipAnimation)
+	elseif action == "Sell" or action == "BuyToilet" or action == "Display" or action == "AutoFlush" then
+		if payload.Success == false then
+			toast(payload.Message or "Not available yet. Check your coins, items or distance.", C.Gold)
+		elseif action == "BuyToilet" then
+			toast("Upgrade unlocked! Your next great flush awaits.", C.Green)
+		end
+	end
 end)
 remotes.State.OnClientEvent:Connect(function(state)
-	soundOn = state.Settings.Sound
-	toggle.Text = if soundOn then "Sound: ON" else "Sound: OFF"
-	updateSounds()
-	skipAnimation = state.Settings.SkipAnimation == true
-	skipToggle.Text = if skipAnimation then "Animation skip: ON" else "Animation skip: OFF"
+	soundOn, skipAnimation = state.Settings.Sound, state.Settings.SkipAnimation == true
+	toggle.Text, skipToggle.Text =
+		if soundOn then "Sound: ON" else "Sound: OFF",
+		if skipAnimation then "Quick reveals: ON" else "Quick reveals: OFF"
+	soundGroup.Volume = if soundOn then 1 else 0
 	effects.SetSkip(skipAnimation)
-	autoUnlocked, autoEnabled = (state.LifetimeFlushes or 0) >= autoUnlock, state.AutoFlush
-	autoButton.Interactable = autoUnlocked
-	autoButton.Text = if autoUnlocked
-		then (if autoEnabled then "Auto Flush: ON" else "Auto Flush: OFF")
-		else "Auto Flush: " .. tostring(state.LifetimeFlushes or 0) .. "/" .. autoUnlock
-	effects.Luck(state.ServerLuckExpires)
-	coins.Text = C.Commas(state.Coins)
+	hud.Update(state)
 	collection.Update(state)
 	upgrades.Update(state)
 	rewards.Update(state)

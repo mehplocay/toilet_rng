@@ -1,5 +1,7 @@
 # Security and exploit audit
 
+UI-overhaul follow-up (2026-10-05): **M3 client work is fixed** by cached/lazy collection cards, discovery-only preview changes and one-time/event-driven sound registration. The new `scripts/check-ui.ps1` executes the client UI with regression assertions for repeated State updates and sound traversal. Server refresh work and real-device profiling remain outside this UI patch. **M2 is already fixed in this branch** through `MonetizationRules.InRange` and the living-character check in `MonetizationService.Distance`; no server file was modified by the UI task. See [UI review and limitations](design/ui-overhaul.md). The historical baseline findings below remain unchanged.
+
 2026-10-05; branch `feature/audit`; read-only baseline `b08b852`. Read AGENTS.md, GDD, the reference mockup, monetization design, and every file under `src/` before editing source. Research: [Roblox security and persistence](research/security-persistence-audit.md). Locations in the findings table refer to the baseline, so they remain useful after fixes move lines.
 
 ## Findings, ranked by severity

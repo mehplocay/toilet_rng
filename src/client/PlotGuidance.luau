@@ -3,6 +3,7 @@ local RunService = game:GetService("RunService")
 local Shared = game.ReplicatedStorage.Shared
 local Config = require(Shared.Config.PlotGuidance)
 local Chooser = require(Shared.PlotChooser)
+local C = require(script.Parent.UI.Components)
 local Guidance = {}
 
 function Guidance.Start()
@@ -33,11 +34,10 @@ function Guidance.Start()
 	billboard.Size = UDim2.fromOffset(Config.SignSize.X, Config.SignSize.Y)
 	billboard.AlwaysOnTop, billboard.MaxDistance, billboard.Enabled = true, Config.SignDistance, false
 	billboard.Parent = folder
-	local label = Instance.new("TextLabel")
-	label.Size, label.BackgroundColor3, label.BackgroundTransparency =
-		UDim2.fromScale(1, 1), Color3.fromRGB(20, 28, 50), 0.15
-	label.Font, label.TextScaled, label.TextColor3 = Enum.Font.GothamBold, true, Config.Color
-	label.Text, label.Parent = player.DisplayName .. "'s Plot", billboard
+	local card = C.New("Frame", billboard, { Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1 })
+	C.Chrome(card, C.Navy)
+	C.Text(card, player.DisplayName .. "'s Plot", UDim2.fromScale(0.94, 0.86), UDim2.fromScale(0.03, 0.07)).TextColor3 =
+		Config.Color
 	local source
 	RunService.Heartbeat:Connect(function()
 		local center = player:GetAttribute("PlotCenter")

@@ -4,40 +4,50 @@ local Style = require(game.ReplicatedStorage.Shared.Config.World)
 local Preview = require(script.Parent.Preview)
 local Upgrades = {}
 function Upgrades.Create(gui, remotes)
-	local panel = C.Panel(gui, "Toilet Upgrades")
-	C.Text(panel, "Better toilets = new drops + higher odds!", UDim2.fromScale(0.94, 0.1), UDim2.fromScale(0.03, 0.85)).TextColor3 =
-		Color3.fromRGB(90, 255, 115)
-	local row = C.New("ScrollingFrame", panel, {
-		Size = UDim2.fromScale(0.94, 0.66),
-		Position = UDim2.fromScale(0.03, 0.16),
-		BackgroundTransparency = 1,
-		AutomaticCanvasSize = Enum.AutomaticSize.X,
-		CanvasSize = UDim2.new(),
-		ScrollingDirection = Enum.ScrollingDirection.X,
-		ScrollBarThickness = 6,
-	})
-	C.New("UIListLayout", row, { FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0, 12) })
-	local buttons = {}
+	local panel = C.Panel(gui, "Toilet Upgrades", C.Green)
+	local body = panel.ContentScroll.Body
+	local wallet = C.Text(body, "Better toilets. Bigger possibilities!", UDim2.new(1, 0, 0, 32), nil, 24)
+	wallet.TextColor3 = Color3.fromRGB(153, 255, 143)
+	local row = C.Scroll(body, UDim2.new(1, 0, 1, -72), UDim2.fromOffset(0, 38))
+	C.Grid(row, 144, 310)
+	C.BodyText(body, "Better toilets = new drops + higher odds!", UDim2.new(1, 0, 0, 26), UDim2.new(0, 0, 1, -26))
+	local buttons, bars = {}, {}
 	for tier, toilet in ipairs(Toilets) do
-		local card = C.New("Frame", row, { Size = UDim2.new(0, 155, 0.93, 0), BackgroundColor3 = C.Navy })
-		C.Chrome(card, C.Navy)
-		C.Round(card, Style.ToiletColors[tier])
-		Preview.Create(card, UDim2.fromScale(0.94, 0.5), UDim2.fromScale(0.03, 0.02), nil, tier)
-		C.Text(card, toilet.Id .. " Toilet", UDim2.fromScale(0.94, 0.14), UDim2.fromScale(0.03, 0.55))
-		C.Text(card, tostring(toilet.Price) .. " Coins", UDim2.fromScale(0.94, 0.1), UDim2.fromScale(0.03, 0.71))
-		buttons[tier] = C.Button(card, "Buy", UDim2.fromScale(0.9, 0.12), UDim2.fromScale(0.05, 0.84), function()
+		local color = Style.ToiletColors[tier]
+		local card = C.Card(row, color, tier >= 3)
+		card.LayoutOrder = tier
+		local _, tierLabel =
+			C.Pill(card, "TIER " .. tier, color:Lerp(C.Navy, 0.5), UDim2.fromOffset(72, 23), UDim2.fromOffset(8, 8))
+		tierLabel.TextColor3 = Color3.new(1, 1, 1)
+		Preview.Create(card, UDim2.new(1, -24, 0, 106), UDim2.fromOffset(12, 33), nil, tier)
+		C.Text(card, toilet.Name, UDim2.new(1, -12, 0, 30), UDim2.fromOffset(6, 140), 22)
+		C.BodyText(
+			card,
+			tostring(toilet.Cooldown) .. "s flush  /  " .. toilet.Luck .. "x luck",
+			UDim2.new(1, -12, 0, 25),
+			UDim2.fromOffset(6, 174)
+		)
+		C.Text(card, C.Commas(toilet.Price) .. " Coins", UDim2.new(1, -12, 0, 30), UDim2.fromOffset(6, 202), 21).TextColor3 =
+			C.Gold
+		bars[tier] = C.ProgressBar(card, UDim2.new(1, -20, 0, 7), UDim2.fromOffset(10, 239), C.Green)
+		buttons[tier] = C.Button(card, "Locked", UDim2.new(1, -18, 0, 44), UDim2.fromOffset(9, 255), function()
 			remotes.BuyToilet:FireServer(toilet.Id)
-		end)
+		end, C.Green, { TextSize = 20 })
+		buttons[tier].Interactable = false
 	end
 	return {
 		Panel = panel,
 		Update = function(state)
+			wallet.Text = C.Commas(state.Coins) .. " Coins  |  Tier " .. state.ToiletTier .. "/" .. #Toilets
 			for tier, button in ipairs(buttons) do
 				button.Text = if tier <= state.ToiletTier
 					then "Owned"
-					elseif tier == state.ToiletTier + 1 then "Buy"
+					elseif tier == state.ToiletTier + 1 then (if state.Coins >= Toilets[tier].Price
+						then "Upgrade!"
+						else "Save up")
 					else "Locked"
 				button.Interactable = tier == state.ToiletTier + 1 and state.Coins >= Toilets[tier].Price
+				bars[tier].Set(if tier <= state.ToiletTier then 1 else state.Coins / math.max(1, Toilets[tier].Price))
 			end
 		end,
 	}

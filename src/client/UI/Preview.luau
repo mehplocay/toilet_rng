@@ -1,34 +1,19 @@
 local C = require(script.Parent.Components)
 local Shared = game.ReplicatedStorage.Shared
-local Items, Toilets = require(Shared.Visuals.Items), require(Shared.Visuals.Toilets)
+local Assets, Style, Toilets =
+	require(Shared.Config.Assets), require(Shared.Config.World), require(Shared.Config.Toilets)
 local Preview = {}
 function Preview.Create(parent, size, position, item, tier, silhouette)
-	local viewport = C.New("ViewportFrame", parent, {
-		Size = size,
-		Position = position,
-		BackgroundTransparency = 1,
-		Ambient = Color3.fromRGB(180, 191, 230),
-		LightColor = Color3.fromRGB(255, 240, 210),
-		LightDirection = Vector3.new(-1, -1, -2),
-	})
-	local world = C.New("WorldModel", viewport)
-	local model = if item
-		then Items.Build(world, CFrame.new(), item, true)
-		else Toilets.Build(world, CFrame.new(), tier, true)
-	if silhouette then
-		for _, part in ipairs(model:GetDescendants()) do
-			if part:IsA("BasePart") then
-				part.Color, part.Material, part.Transparency = Color3.fromRGB(6, 10, 20), Enum.Material.SmoothPlastic, 0
-			end
-		end
-	end
-	local camera = C.New("Camera", viewport, {
-		FieldOfView = 35,
-		CFrame = if item
-			then CFrame.lookAt(Vector3.new(4.8, 3.2, -7.4), Vector3.new(0, 0.65, 0))
-			else CFrame.lookAt(Vector3.new(9, 7, -14), Vector3.new(0, 3, 0)),
-	})
-	viewport.CurrentCamera = camera
-	return viewport
+	local frame =
+		C.New("Frame", parent, { Name = "Preview", Size = size, Position = position, BackgroundTransparency = 1 })
+	local kind = if silhouette then "Locked" elseif item then item.Id else "Flush"
+	local id = if silhouette
+		then nil
+		elseif item then (Assets.ItemIcons or {})[item.Id]
+		else (Assets.ToiletIcons or {})[Toilets[tier].Id]
+	local tint = if item then Style.ItemColors[item.Id] else Style.ToiletColors[tier or 1]
+	local icon = C.Icon(frame, kind, UDim2.fromScale(1, 1), UDim2.fromScale(0.5, 0.5), id, tint)
+	icon.AnchorPoint = Vector2.new(0.5, 0.5)
+	return frame
 end
 return Preview
