@@ -11,7 +11,7 @@ function SafeInventory.Sellable(profile, id)
 	return math.max(0, (profile.Inventory[id] or 0) - math.max(1, displayed))
 end
 
-function SafeInventory.Sell(profile, items, id, count)
+function SafeInventory.Sell(profile, items, id, count, cashMultiplier)
 	if
 		type(id) ~= "string"
 		or type(count) ~= "number"
@@ -32,7 +32,12 @@ function SafeInventory.Sell(profile, items, id, count)
 	if not item or SafeInventory.Sellable(profile, id) < count then
 		return false
 	end
-	local value = item.Value * count
+	local multiplier = cashMultiplier or 1
+	if type(multiplier) ~= "number" or multiplier ~= multiplier or multiplier < 1 or multiplier > 2 then
+		return false
+	end
+	-- Round per copy, so batching or splitting sales cannot change their value.
+	local value = math.floor(item.Value * multiplier + 1e-9) * count
 	if profile.Coins + value > 9e15 or profile.Stats.Earned + value > 9e15 then
 		return false
 	end

@@ -80,7 +80,8 @@ function World:Refresh(player, profile)
 			end
 		end)
 	end
-	local entries = { tostring(profile.DisplaySlots), tostring(profile.ToiletTier) }
+	local entries =
+		{ tostring(profile.DisplaySlots), tostring(profile.ToiletTier), tostring((profile.Upgrades or {}).CashBoost) }
 	for slot = 1, profile.DisplaySlots do
 		table.insert(entries, profile.Displays[tostring(slot)] or "-")
 	end
@@ -171,7 +172,8 @@ function World:Assign(player)
 	end
 	player:Kick("All plots are occupied. Please join another server.")
 end
-function World:Animate(player, item, skipAnimation)
+function World:Animate(player, item, skipAnimation, duration)
+	duration = duration or 0.32
 	-- Called only after the server has awarded a validated flush result.
 	self:RecordFlush(player, item)
 	local plot = self.Assigned[player]
@@ -180,7 +182,7 @@ function World:Animate(player, item, skipAnimation)
 	end
 	if skipAnimation then
 		local drop = Models.Item(plot.Model, plot.CFrame * CFrame.new(0, 6, 0), item)
-		Debris:AddItem(drop, 0.75)
+		Debris:AddItem(drop, duration)
 		return
 	end
 	local toilet = plot.Toilet
@@ -195,7 +197,7 @@ function World:Animate(player, item, skipAnimation)
 	end)
 	local tween = TweenService:Create(
 		value,
-		TweenInfo.new(0.08, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, 5, true),
+		TweenInfo.new(duration / 12, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, 5, true),
 		{ Value = pivot * CFrame.Angles(0, 0, 0.08) }
 	)
 	tween:Play()
@@ -215,7 +217,7 @@ function World:Animate(player, item, skipAnimation)
 		{ Speed = NumberRange.new(4, 7), SpreadAngle = Vector2.new(160, 160) }
 	)
 	particles:Emit(Visuals.Budget.Burst)
-	Debris:AddItem(particles, 2)
+	Debris:AddItem(particles, duration)
 	local soundId = Assets.Sounds.Flush
 	if type(soundId) == "string" and soundId ~= "" then
 		local sound = Instance.new("Sound")
@@ -234,7 +236,7 @@ function World:Animate(player, item, skipAnimation)
 	end)
 	local flight = TweenService:Create(
 		float,
-		TweenInfo.new(1.5, Enum.EasingStyle.Sine),
+		TweenInfo.new(duration, Enum.EasingStyle.Sine),
 		{ Value = plot.CFrame * CFrame.new(0, 9, -3) }
 	)
 	flight:Play()

@@ -4,7 +4,8 @@ local V = require(Shared.Config.Visuals)
 local Rarities = require(Shared.Config.Rarities)
 local Income = require(Shared.Config.Income)
 local Items = require(Shared.Config.Items)
-local accounting = require(Shared.IncomeAccrual).new(Income, Items)
+local accounting =
+	require(Shared.IncomeAccrual).new(Income, Items, require(Shared.UpgradeRules).new(require(Shared.Config.Upgrades)))
 local Kit = require(script.Parent.Kit)
 local Models = require(script.Parent.Models)
 local Rows = {}

@@ -24,18 +24,18 @@ local function units(p)
 end
 local p = profile(1, 3, "Poop")
 Income:Settle(p, 1060, false)
-assert(units(p) == 900 and Income:PendingCoins(p) == 0)
+assert(units(p) == 360 and Income:PendingCoins(p) == 0)
 for now = 1061, 7000 do
 	Income:Settle(p, now, false)
 end
-assert(units(p) == 15 * Config.UnitsPerCoin, "Frequent settlement lost fractions")
-assert(Income:Collect(p) == 15 and p.Coins == 15 and p.Stats.Earned == 15)
+assert(units(p) == 6 * Config.UnitsPerCoin, "Frequent settlement lost fractions")
+assert(Income:Collect(p) == 6 and p.Coins == 6 and p.Stats.Earned == 6)
 assert(Income:Collect(p) == 0, "Repeated collect duplicated coins")
 Income:Settle(p, 6000, false)
 Income:Settle(p, 7000, false)
 assert(units(p) == 0 and p.Income.UpdatedAt == 7000, "Clock rollback replayed income")
 
-p = profile(1, 3, "Fish")
+p = profile(1, 3, "Duck")
 Income:Settle(p, 1060, false)
 assert(units(p) == 18000)
 assert(Display.Set(p, nil, 1))
@@ -43,8 +43,8 @@ assert(Display.Set(p, "Poop", 1) == false)
 p.Inventory.Poop = 1
 assert(Display.Set(p, "Poop", 1))
 Income:Settle(p, 1120, false)
-assert(units(p) == 30300 and p.Income.Pending["1"] == 6300, "Change lost/repriced old income")
-assert(Income:Collect(p) == 5 and units(p) == 300, "Pooled fractions were lost")
+assert(units(p) == 30120 and p.Income.Pending["1"] == 6120, "Change lost/repriced old income")
+assert(Income:Collect(p) == 5 and units(p) == 120, "Pooled fractions were lost")
 
 p = profile(7, 10, "Mystery")
 local rates, rate = Income:Rates(p), 0
@@ -66,7 +66,7 @@ assert(Income:Collect(p) == Config.PlayerPendingCap)
 Income:Settle(p, fullTime, false)
 assert(units(p) == 0, "Collect recovered time discarded at cap")
 
-p = profile(1, 1, "Fish")
+p = profile(1, 1, "Duck")
 Income:Settle(p, 1060, false)
 p.Coins = Config.MaxBalance
 assert(Income:Collect(p) == 0 and units(p) == Config.UnitsPerCoin)

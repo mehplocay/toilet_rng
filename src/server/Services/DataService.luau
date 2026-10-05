@@ -6,9 +6,12 @@ local Items = require(game.ReplicatedStorage.Shared.Config.Items)
 local leaderboardStats = require(game.ReplicatedStorage.Shared.LeaderboardStats).new(Items)
 local Toilets = require(game.ReplicatedStorage.Shared.Config.Toilets)
 local Rewards = require(game.ReplicatedStorage.Shared.Config.Rewards)
+local upgrades =
+	require(game.ReplicatedStorage.Shared.UpgradeRules).new(require(game.ReplicatedStorage.Shared.Config.Upgrades))
 local index = require(game.ReplicatedStorage.Shared.IndexProgress).new(
 	Items,
-	require(game.ReplicatedStorage.Shared.Config.IndexRewards)
+	require(game.ReplicatedStorage.Shared.Config.IndexRewards),
+	upgrades
 )
 local Monetization = require(game.ReplicatedStorage.Shared.Config.Monetization)
 local MonetizationRules = require(game.ReplicatedStorage.Shared.MonetizationRules)
@@ -16,7 +19,8 @@ local AudioSettings = require(game.ReplicatedStorage.Shared.AudioSettings)
 local Audio = require(game.ReplicatedStorage.Shared.Config.Audio)
 local income = require(game.ReplicatedStorage.Shared.IncomeAccrual).new(
 	require(game.ReplicatedStorage.Shared.Config.Income),
-	Items
+	Items,
+	upgrades
 )
 
 local DataService = {
@@ -50,6 +54,7 @@ function DataService.DefaultProfile()
 	settings.Sound, settings.SkipAnimation, settings.PlotColor = true, false, "Default"
 	return {
 		Version = 1,
+		Upgrades = upgrades:Sanitize(nil),
 		TutorialDone = false,
 		Settings = settings,
 		Coins = 0,
@@ -75,7 +80,6 @@ local function sanitize(raw)
 		return profile
 	end
 	profile.TutorialDone = raw.TutorialDone == true
-	profile.Income = income:Sanitize(raw.Income)
 	MonetizationRules.RestoreSettings(profile.Settings, raw.Settings, Monetization)
 	AudioSettings.Apply(profile.Settings, AudioSettings.Sanitize(raw.Settings, Audio.Defaults))
 	profile.Coins = integer(raw.Coins, 0)
@@ -87,7 +91,9 @@ local function sanitize(raw)
 	profile.RewardLuckExpires = integer(raw.RewardLuckExpires, 0)
 	profile.ToiletTier = math.clamp(integer(raw.ToiletTier, 1), 1, #Toilets)
 	profile.DisplaySlots = math.clamp(integer(raw.DisplaySlots, 3), 1, 100)
+	upgrades:Restore(profile, raw.Upgrades)
 	index:Sanitize(profile, raw)
+	profile.Income = income:Sanitize(raw.Income, profile)
 	for _, item in ipairs(Items) do
 		profile.Inventory[item.Id] = integer(if type(raw.Inventory) == "table" then raw.Inventory[item.Id] else nil, 0)
 		profile.Collection[item.Id] =

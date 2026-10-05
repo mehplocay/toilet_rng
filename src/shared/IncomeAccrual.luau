@@ -1,7 +1,7 @@
 -- Pure fixed-point accounting; callers own the session lease and never yield during mutation.
 local Income = {}
-function Income.new(config, items)
-	local self = { Config = config, Items = {} }
+function Income.new(config, items, upgrades)
+	local self = { Config = config, Items = {}, Upgrades = upgrades }
 	for _, item in ipairs(items) do
 		self.Items[item.Id] = item
 	end
@@ -13,8 +13,16 @@ local function bounded(value, maximum)
 	end
 	return math.min(math.floor(value), maximum)
 end
-function Income:Sanitize(raw)
+function Income:CapacityMultiplier(profile)
+	return if self.Upgrades and profile
+		then self.Upgrades:Cash(profile)
+			* self.Upgrades:OfflineMinutes(profile, self.Config.OfflineMinutes)
+			/ self.Config.OfflineMinutes
+		else 1
+end
+function Income:Sanitize(raw, profile)
 	local c = self.Config
+	local capacity = self:CapacityMultiplier(profile)
 	local result = { UpdatedAt = 0, Pending = {} }
 	if type(raw) ~= "table" then
 		return result
@@ -22,11 +30,11 @@ function Income:Sanitize(raw)
 	if type(raw.UpdatedAt) == "number" and raw.UpdatedAt <= c.MaxTimestamp then
 		result.UpdatedAt = bounded(raw.UpdatedAt, c.MaxTimestamp)
 	end
-	local remaining = c.PlayerPendingCap * c.UnitsPerCoin
+	local remaining = math.floor(c.PlayerPendingCap * capacity * c.UnitsPerCoin)
 	for slot = 1, c.MaxSlots do
 		local key = tostring(slot)
 		local value = if type(raw.Pending) == "table" then raw.Pending[key] else nil
-		local units = math.min(bounded(value, c.SlotPendingCap * c.UnitsPerCoin), remaining)
+		local units = math.min(bounded(value, math.floor(c.SlotPendingCap * capacity * c.UnitsPerCoin)), remaining)
 		if units > 0 then
 			result.Pending[key] = units
 			remaining -= units
@@ -46,16 +54,17 @@ function Income:PendingCoins(profile)
 end
 function Income:Rates(profile)
 	local c, rates, total = self.Config, {}, 0
+	local cash = if self.Upgrades then self.Upgrades:Cash(profile) else 1
 	local slotCap = c.SlotRateCaps[profile.ToiletTier] or 0
 	for slot = 1, math.min(profile.DisplaySlots, c.MaxSlots) do
 		local key = tostring(slot)
 		local item = self.Items[profile.Displays[key]]
 		if item then
-			local units = math.floor(math.min(item.Value * c.PassiveRate, slotCap) * c.UnitsPerCoin / 60 + 1e-9)
+			local units = math.floor(math.min(item.Value * c.PassiveRate, slotCap) * cash * c.UnitsPerCoin / 60 + 1e-9)
 			rates[key], total = units, total + units
 		end
 	end
-	local cap = math.floor((c.PlayerRateCaps[profile.ToiletTier] or 0) * c.UnitsPerCoin / 60)
+	local cap = math.floor((c.PlayerRateCaps[profile.ToiletTier] or 0) * cash * c.UnitsPerCoin / 60)
 	if total > cap then
 		-- Cumulative rounding preserves the total cap without losing units for larger displays.
 		local numerator, allocated = 0, 0
@@ -79,15 +88,23 @@ function Income:Settle(profile, now, offline)
 	end
 	local elapsed = now - ledger.UpdatedAt
 	if offline then
-		elapsed = math.min(elapsed, c.OfflineMinutes * 60)
+		local minutes = if self.Upgrades
+			then self.Upgrades:OfflineMinutes(profile, c.OfflineMinutes)
+			else c.OfflineMinutes
+		elapsed = math.min(elapsed, minutes * 60)
 	end
 	ledger.UpdatedAt = now -- Consume capped time too; reconnecting cannot reclaim it.
 	local rates = self:Rates(profile)
-	local room = c.PlayerPendingCap * c.UnitsPerCoin - self:TotalUnits(profile)
+	local capacity = self:CapacityMultiplier(profile)
+	local room = math.floor(c.PlayerPendingCap * capacity * c.UnitsPerCoin) - self:TotalUnits(profile)
 	for slot = 1, c.MaxSlots do
 		local key = tostring(slot)
 		local pending = ledger.Pending[key] or 0
-		local grant = math.min((rates[key] or 0) * elapsed, c.SlotPendingCap * c.UnitsPerCoin - pending, room)
+		local grant = math.min(
+			(rates[key] or 0) * elapsed,
+			math.floor(c.SlotPendingCap * capacity * c.UnitsPerCoin) - pending,
+			room
+		)
 		if grant > 0 then
 			ledger.Pending[key] = pending + grant
 			room -= grant

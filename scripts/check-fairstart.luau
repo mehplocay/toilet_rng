@@ -3,7 +3,7 @@ local Roll = require("../src/server/Services/RollService")
 local Items = require("../src/shared/Config/Items")
 local Toilets = require("../src/shared/Config/Toilets")
 
-local expectedAwards = { 1, 3, 7, 15, 30, 65, 140 }
+local expectedAwards = { 1, 2, 4, 8, 15, 33, 70 }
 for tier, toilet in ipairs(Toilets) do
 	assert(toilet.ServiceCoins == expectedAwards[tier], "Service award differs from the progression design")
 	local profile = { Coins = 10, Stats = { Earned = 20 }, Inventory = { Poop = 1 } }

@@ -12,6 +12,7 @@ for _, name in ipairs({
 	"Result",
 	"Sell",
 	"BuyToilet",
+	"BuyUpgrade",
 	"Display",
 	"CollectIncome",
 	"IncomePending",
@@ -224,8 +225,8 @@ remotes.Result.OnClientEvent:Connect(function(action, payload)
 		hud.Flushed(payload)
 		hud.Best(player.DisplayName, item)
 		showServiceCoins(payload.ServiceCoins)
-		effects.Drop(item)
-		reveal(item, skipAnimation)
+		effects.Drop(item, payload.Cooldown)
+		reveal(item, skipAnimation, payload.Cooldown)
 	elseif action == "CollectIncome" then
 		toast(
 			if payload.Success then "+" .. C.Commas(payload.Coins) .. " display coins collected!" else payload.Message,

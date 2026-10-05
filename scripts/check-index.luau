@@ -97,7 +97,12 @@ inv.Inventory.Poop, inv.Collection.Poop = 4, 200
 assert(Safe.Sellable(inv, "Poop") == 3)
 assert(not Safe.Sell(inv, Items, "Poop", 4))
 assert(Safe.Sell(inv, Items, "Poop", Safe.Sellable(inv, "Poop")))
-assert(inv.Inventory.Poop == 1 and inv.Collection.Poop == 200 and inv.Coins == 35 and inv.Stats.Earned == 45)
+assert(
+	inv.Inventory.Poop == 1
+		and inv.Collection.Poop == 200
+		and inv.Coins == 20 + 3 * Items[1].Value
+		and inv.Stats.Earned == 30 + 3 * Items[1].Value
+)
 assert(not Safe.Sell(inv, Items, "Poop", 1))
 inv.Inventory.Poop = 5
 assert(Display.Set(inv, "Poop", 1) and Display.Set(inv, "Poop", 2))

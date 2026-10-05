@@ -10,6 +10,7 @@ for _, key in ipairs({
 	"Flush",
 	"Sell",
 	"BuyToilet",
+	"BuyUpgrade",
 	"Display",
 	"CollectIncome",
 	"IncomePending",
@@ -34,13 +35,18 @@ for _, key in ipairs({
 	remotes[key] = remote
 end
 local data = require(script.Services.DataService)
+local upgrades = require(ReplicatedStorage.Shared.UpgradeRules).new(require(ReplicatedStorage.Shared.Config.Upgrades))
+local Toilets = require(ReplicatedStorage.Shared.Config.Toilets)
+local IncomeConfig = require(ReplicatedStorage.Shared.Config.Income)
 local income = require(ReplicatedStorage.Shared.IncomeAccrual).new(
 	require(ReplicatedStorage.Shared.Config.Income),
-	require(ReplicatedStorage.Shared.Config.Items)
+	require(ReplicatedStorage.Shared.Config.Items),
+	upgrades
 )
 local index = require(ReplicatedStorage.Shared.IndexProgress).new(
 	require(ReplicatedStorage.Shared.Config.Items),
-	require(ReplicatedStorage.Shared.Config.IndexRewards)
+	require(ReplicatedStorage.Shared.Config.IndexRewards),
+	upgrades
 )
 local limiter = require(script.Services.RateLimiter).new(definitions.Limits)
 local world = require(script.World.WorldService)
@@ -64,6 +70,19 @@ local function sync(player)
 		world:RefreshIncome(player, income:PendingCoins(profile))
 		monetization:Apply(player)
 		remotes.State:FireClient(player, {
+			Upgrades = profile.Upgrades,
+			UpgradeStats = upgrades:Snapshot(
+				profile,
+				upgrades:Cooldown(profile, monetization:Cooldown(player, Toilets[profile.ToiletTier].Cooldown)),
+				upgrades:Luck(
+					profile,
+					Toilets[profile.ToiletTier].Luck,
+					events:Multiplier(),
+					monetization:Luck(player),
+					rewards:Luck(profile)
+				),
+				IncomeConfig.OfflineMinutes
+			),
 			Coins = profile.Coins,
 			PendingCoins = income:PendingCoins(profile),
 			TutorialDone = profile.TutorialDone,
@@ -91,6 +110,7 @@ require(script.Services.FlushService).Start(data, limiter, remotes, sync, world,
 rewards:Start(data, limiter, remotes, sync)
 require(script.Services.IndexService).Start(index, data, limiter, remotes, sync)
 require(script.Services.EconomyService).Start(data, limiter, remotes, sync)
+require(script.Services.UpgradeService).Start(data, limiter, remotes, sync)
 require(script.Services.DisplayService).Start(data, limiter, remotes, sync)
 require(script.Services.DevGrantService).Start(data, limiter, remotes, sync)
 remotes.State.OnServerEvent:Connect(function(player, ...)
