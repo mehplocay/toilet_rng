@@ -1,4 +1,5 @@
 local SafeInventory = {}
+local Rebirth = require(if script then script.Parent.Config.Rebirth else "./Config/Rebirth")
 
 function SafeInventory.Sellable(profile, id)
 	local displayed = 0
@@ -8,7 +9,10 @@ function SafeInventory.Sellable(profile, id)
 		end
 	end
 	-- A displayed copy may also be the protected first copy; never double-reserve it.
-	return math.max(0, (profile.Inventory[id] or 0) - math.max(1, displayed))
+	return math.max(
+		0,
+		(profile.Inventory[id] or 0) - math.max(1, displayed, (profile.ProtectedInventory or {})[id] or 0)
+	)
 end
 
 function SafeInventory.Sell(profile, items, id, count, cashMultiplier)
@@ -33,7 +37,12 @@ function SafeInventory.Sell(profile, items, id, count, cashMultiplier)
 		return false
 	end
 	local multiplier = cashMultiplier or 1
-	if type(multiplier) ~= "number" or multiplier ~= multiplier or multiplier < 1 or multiplier > 2 then
+	if
+		type(multiplier) ~= "number"
+		or multiplier ~= multiplier
+		or multiplier < 1
+		or multiplier > 2 + Rebirth.CashCap
+	then
 		return false
 	end
 	-- Round per copy, so batching or splitting sales cannot change their value.

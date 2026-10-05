@@ -3,6 +3,7 @@ local Items = require("../src/shared/Config/Items")
 local Toilets = require("../src/shared/Config/Toilets")
 local Upgrades = require("../src/shared/UpgradeRules").new(require("../src/shared/Config/Upgrades"))
 local Cohort = require("./upgrade-cohort")
+require("./rebirth-balance").Print()
 local Rewards = require("../src/shared/Config/Rewards")
 local Index = require("../src/shared/IndexProgress").new(Items, require("../src/shared/Config/IndexRewards"))
 local uptime, cohortSize = 0.75, 2000

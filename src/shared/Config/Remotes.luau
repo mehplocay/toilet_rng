@@ -6,6 +6,7 @@ return {
 	Sell = "Sell",
 	BuyToilet = "BuyToilet",
 	BuyUpgrade = "BuyUpgrade",
+	Rebirth = "Rebirth",
 	Result = "Result",
 	Display = "Display",
 	CollectIncome = "CollectIncome",
@@ -24,6 +25,7 @@ return {
 	ClaimReward = "ClaimReward",
 	ClaimIndexReward = "ClaimIndexReward",
 	Limits = {
+		Rebirth = { Capacity = 1, Refill = 0.2 },
 		PresentationSettings = { Capacity = 3, Refill = 1 },
 		BuyUpgrade = { Capacity = 3, Refill = 1 },
 		CollectIncome = { Capacity = 1, Refill = 0.2 },

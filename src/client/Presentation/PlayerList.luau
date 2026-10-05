@@ -48,6 +48,7 @@ function PlayerList.Create(root)
 					BackgroundTransparency = 0.12,
 				})
 				local name = C.Text(row, player.Name, UDim2.fromScale(0.43, 1), UDim2.fromScale(0.02, 0), 16)
+				name.Name = "PlayerName"
 				name.TextTruncate, name.TextWrapped, name.RichText = Enum.TextTruncate.AtEnd, false, false
 				name.TextXAlignment = Enum.TextXAlignment.Left
 				C.Text(row, "", UDim2.fromScale(0.24, 1), UDim2.fromScale(0.45, 0), 17).Name = "Coins"
@@ -55,6 +56,12 @@ function PlayerList.Create(root)
 				rows[player] = row
 			end
 			row.LayoutOrder = rank
+			local stats = player:FindFirstChild("leaderstats")
+			local rebirth = stats and stats:FindFirstChild("Rebirth")
+			row.PlayerName.Text = "[R"
+				.. tostring(if rebirth then Rules.Integer(rebirth.Value) else 0)
+				.. "] "
+				.. player.Name
 			row.Coins.Text, row.Rarest.Text = Rules.Abbreviate(entry.Coins), entry.Rarest
 			row.Rarest.TextColor3 = if entry.Rarest == "Secret"
 				then C.Purple

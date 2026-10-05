@@ -12,8 +12,8 @@ $harness += Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'world-harnes
 $modulePaths = @(
     'src/shared/Config/MapLayout.luau', 'src/server/World/Kit.luau', 'src/server/World/DisplayRows.luau',
     'src/shared/IncomeAccrual.luau', 'src/shared/LeaderboardStats.luau',
-    'src/shared/UpgradeRules.luau', 'src/shared/Config/Upgrades.luau',
-    'src/shared/Config/Income.luau', 'src/server/World/IncomeDisplay.luau',
+    'src/shared/UpgradeRules.luau', 'src/shared/Config/Upgrades.luau', 'src/shared/Config/Rebirth.luau',
+    'src/shared/Config/Income.luau', 'src/server/World/IncomeDisplay.luau', 'src/server/World/RebirthHook.luau',
     'src/shared/Config/Assets.luau', 'src/shared/Config/MeshCatalog.luau', 'src/shared/Config/WorldModels.luau',
     'src/shared/Config/Visuals.luau', 'src/shared/Config/World.luau',
     'src/shared/Config/Items.luau', 'src/shared/Config/Toilets.luau', 'src/shared/Config/Rarities.luau',

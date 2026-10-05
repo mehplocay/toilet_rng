@@ -3,6 +3,7 @@ local Shared = game.ReplicatedStorage.Shared
 local Rules = require(Shared.PresentationRules)
 local Rarities = require(Shared.Config.Rarities)
 local Items = require(Shared.Config.Items)
+local Rebirth = require(Shared.Config.Rebirth)
 local C = require(script.Parent.Parent.UI.Components)
 local Announcements = {}
 function Announcements.Start(remote)
@@ -15,6 +16,28 @@ function Announcements.Start(remote)
 			return
 		end
 		local item = byId[payload.ItemId]
+		if payload.Kind == "Rebirth" then
+			local level = payload.Level
+			if type(level) ~= "number" or not Rebirth.Levels[level] or level < Rebirth.FriendAnnouncementLevel then
+				return
+			end
+			local channels = Chat:FindFirstChild("TextChannels")
+			local channel = channels and channels:FindFirstChild("RBXGeneral")
+			if channel then
+				pcall(function()
+					channel:DisplaySystemMessage(
+						string.format(
+							'<font color="#FFD369">%s reached Rebirth %d: %s!</font>',
+							Rules.Escape(Rules.Name(payload.PlayerName)),
+							level,
+							Rules.Escape(Rebirth.Levels[level].Title)
+						),
+						"ToiletRebirth"
+					)
+				end)
+			end
+			return
+		end
 		if not item or not Rules.Audience(item.Rarity) then
 			return
 		end

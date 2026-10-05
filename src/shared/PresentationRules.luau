@@ -81,12 +81,13 @@ function Rules.Audience(rarity)
 		else nil
 end
 function Rules.Announcements(config, clock)
-	local self = { Pending = {}, Seen = {}, Accepted = {}, Sent = {}, Busy = {} }
+	local self = { Pending = {}, Seen = {}, RebirthSeen = {}, Accepted = {}, Sent = {}, Busy = {} }
 	function self:Push(player, item, id, payload)
-		if not Rules.Audience(item.Rarity) or Rules.Integer(id) ~= id or id <= (self.Seen[player] or 0) then
+		local seen = if payload.Kind == "Rebirth" then self.RebirthSeen else self.Seen
+		if not Rules.Audience(item.Rarity) or Rules.Integer(id) ~= id or id <= (seen[player] or 0) then
 			return false
 		end
-		self.Seen[player] = id -- Even suppressed finds cannot be replayed after the cooldown.
+		seen[player] = id -- Even suppressed milestones cannot be replayed after the cooldown.
 		local now = clock()
 		if
 			self.Busy[player]
@@ -113,6 +114,7 @@ function Rules.Announcements(config, clock)
 		end
 	end
 	function self:Remove(player)
+		self.RebirthSeen[player] = nil
 		self.Seen[player], self.Accepted[player], self.Sent[player], self.Busy[player] = nil, nil, nil, nil
 		for i = #self.Pending, 1, -1 do
 			if self.Pending[i].Player == player then

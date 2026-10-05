@@ -6,12 +6,13 @@ local Monetization = require(Shared.Config.Monetization)
 local Toilets = require(Shared.Config.Toilets)
 local Rewards = require(Shared.Config.Rewards)
 local Schedule = require(Shared.RewardSchedule)
+local rebirth = require(Shared.RebirthRules).new(require(Shared.Config.Rebirth))
 local HUD = {}
 function HUD.Create(root, remotes, open, prompts)
 	local gui = C.New("Frame", root, { Name = "HUD", Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1 })
 	local navigation, buttons = {}, {}
-	local names = { "Shop", "Collection", "Upgrades", "Passes", "Daily" }
-	local colors = { Color3.fromRGB(239, 77, 103), C.Blue, C.Green, C.Purple, C.Gold }
+	local names = { "Shop", "Rebirth", "Collection", "Upgrades", "Passes", "Daily" }
+	local colors = { Color3.fromRGB(239, 77, 103), C.Purple, C.Blue, C.Green, C.Purple, C.Gold }
 	for i, name in ipairs(names) do
 		local button = C.Button(
 			gui,
@@ -25,10 +26,17 @@ function HUD.Create(root, remotes, open, prompts)
 			{ TextSize = 22 }
 		)
 		button.Label.Position, button.Label.Size = UDim2.fromScale(0.02, 0.7), UDim2.fromScale(0.96, 0.25)
-		C.Icon(button, name, UDim2.fromScale(0.67, 0.65), UDim2.fromScale(0.165, 0.035))
+		C.Icon(
+			button,
+			if name == "Rebirth" then "Crown" else name,
+			UDim2.fromScale(0.67, 0.65),
+			UDim2.fromScale(0.165, 0.035)
+		)
 		navigation[name], buttons[i] = button, button
 	end
 	local dailyBadge = C.Badge(navigation.Daily, 0)
+	local rebirthBadge = C.Badge(navigation.Rebirth, 0)
+	rebirthBadge.Set(0)
 	dailyBadge.Set(0)
 	local travel = C.New("Frame", gui, { Name = "Travel", BackgroundTransparency = 1 })
 	for i, name in ipairs({ "Hub", "Home", "Shop" }) do
@@ -248,6 +256,7 @@ function HUD.Create(root, remotes, open, prompts)
 		end,
 		Update = function(snapshot)
 			state = snapshot
+			rebirthBadge.Set(if rebirth:Eligible(state, rebirth:Level(state)) then 1 else 0)
 			if coinTarget ~= state.Coins then
 				coinTarget = state.Coins
 				C.Tween(value, 0.55, { Value = state.Coins })

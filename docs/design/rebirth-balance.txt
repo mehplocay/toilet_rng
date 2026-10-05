@@ -1,0 +1,70 @@
+Rebirth: seeded 500-player cohort; 75% manual uptime, duplicate sales, active tracks through L4; no daily/offline/pass income
+  3600 flushes + tier 4: first p50 71.06 / p90 71.66 min; second p50 62.29 / p90 62.83 min; 12.3% faster
+Minutes per next toilet; 75% manual cooldown uptime, sequential tiers, carryover, protected first copies.
+Buy one level of Cash/Luck/Flush Speed per tier through level 4; buy each as affordable before the toilet.
+Auto speed, display slots and tank are optional utility purchases, excluded from this active cohort.
+No daily/index/tutorial/offline starting income or timed boosts. Legacy targets are pre-change stage medians.
+Toilet        Price  Target  Stage p50  Stage p90  Cumulative p50/p90  No-track p50
+Dirty            70    1.40       1.41       1.63       1.41 / 1.63           0.73
+Golden          850    4.48       4.47       5.12       5.81 / 6.57           4.39
+Diamond        3800    9.36       9.38      10.49      15.13 / 16.52         12.08
+Radioactive   15500   17.87      17.94      19.46      32.87 / 35.21         28.47
+Demon         67300   37.11      37.08      39.04      69.79 / 73.01         68.98
+Galaxy       172000   47.29      47.12      48.74     116.65 / 120.65        85.28
+Conservative no-upgrade route: every item retained or only Poop duplicates sold; zero luck required.
+  Dirty        service-only 2.33 min; Poop-only 0.83 min
+  Golden       service-only 13.22 min; Poop-only 6.66 min
+  Diamond      service-only 27.44 min; Poop-only 18.34 min
+  Radioactive  service-only 49.53 min; Poop-only 39.64 min
+First four cumulative bounds: service-only 92.53 min; Poop-only 65.47 min
+Daily rewards: unchanged fixed grants (Cash Boost does not multiply them); day-one / day-seven Coins:
+  Basic        25 / 250
+  Dirty        50 / 500
+  Golden       100 / 1000
+  Diamond      200 / 2000
+  Radioactive  400 / 4000
+  Demon        800 / 8000
+  Galaxy       1600 / 16000
+Index: once-only fourth slot retained; no Coins or luck minted. Fair start and stage medians passed.
+
+Display income: 1% sell value/minute, tier rate caps, no boosts/rewards/offline starting wallet.
+Realistic upper showcase: best copies from floor(expected drops in 60 min at this tier, 75% uptime).
+Copies are reserved, not sold; construction cost is ignored, so this overstates immediate benefit.
+Tier        Slots  Display coins/min  Active coins/min  Ratio   Next upgrade min (base / +display)  Best realistic copies
+Basic         3              1.86            157.53   1.18%  0.44 / 0.44                       3x Fish
+Basic        10              3.00            157.53   1.90%  0.44 / 0.44                       10x Fish
+  Absolute cap: 3.00/min = 10.00% of service-only active income; full offline tank <= 720 coins.
+Dirty         3              6.00            230.88   2.60%  3.68 / 3.59                       3x Duck
+Dirty        10              9.00            230.88   3.90%  3.68 / 3.54                       8x Duck, 2x Fish
+  Absolute cap: 9.00/min = 14.00% of service-only active income; full offline tank <= 2160 coins.
+Golden        3             16.00            351.37   4.55%  10.81 / 10.34                     2x GoldenPoop, 1x Duck
+Golden       10             21.00            351.37   5.98%  10.81 / 10.20                     2x GoldenPoop, 8x Duck
+  Absolute cap: 21.00/min = 15.17% of service-only active income; full offline tank <= 5040 coins.
+Diamond       3             17.00            594.68   2.86%  26.06 / 25.34                     2x GoldenPoop, 1x Duck
+Diamond      10             31.00            594.68   5.21%  26.06 / 24.77                     2x GoldenPoop, 8x Duck
+  Absolute cap: 45.00/min = 14.37% of service-only active income; full offline tank <= 10800 coins.
+Radioactive   3             22.50           1119.57   2.01%  60.11 / 58.93                     3x GoldenPoop
+Radioactive  10             36.50           1119.57   3.26%  60.11 / 58.21                     3x GoldenPoop, 7x Duck
+  Absolute cap: 90.00/min = 13.33% of service-only active income; full offline tank <= 21600 coins.
+Demon         3             22.50           2222.71   1.01%  77.38 / 76.61                     3x GoldenPoop
+Demon        10             36.50           2222.71   1.64%  77.38 / 76.13                     3x GoldenPoop, 7x Duck
+  Absolute cap: 195.00/min = 11.82% of service-only active income; full offline tank <= 46800 coins.
+Galaxy        3             22.50           4694.27   0.48%  final tier                        3x GoldenPoop
+Galaxy       10             42.00           4694.27   0.89%  final tier                        4x GoldenPoop, 6x Duck
+  Absolute cap: 420.00/min = 10.67% of service-only active income; full offline tank <= 100800 coins.
+Income balance passed: 3/10-slot ratios, all-inventory cap <=20% of guaranteed active income, passive caps re-verified with faster cooldowns.
+Upgraded income bounds (all tiers, each Cash/Speed level 0..10):
+  Basic        level 4: cap 4.20/min, 11.20% service-only active; 480-minute tank <= 2016 Coins
+  Basic        level 10: cap 6.00/min, 5.00% service-only active; 480-minute tank <= 2880 Coins
+  Dirty        level 4: cap 12.60/min, 15.68% service-only active; 480-minute tank <= 6048 Coins
+  Dirty        level 10: cap 18.00/min, 7.00% service-only active; 480-minute tank <= 8640 Coins
+  Golden       level 4: cap 29.40/min, 13.59% service-only active; 480-minute tank <= 14112 Coins
+  Golden       level 10: cap 42.00/min, 7.58% service-only active; 480-minute tank <= 20160 Coins
+  Diamond      level 4: cap 63.00/min, 11.71% service-only active; 480-minute tank <= 30240 Coins
+  Diamond      level 10: cap 90.00/min, 7.19% service-only active; 480-minute tank <= 43200 Coins
+  Radioactive  level 4: cap 126.00/min, 10.67% service-only active; 480-minute tank <= 60480 Coins
+  Radioactive  level 10: cap 180.00/min, 6.67% service-only active; 480-minute tank <= 86400 Coins
+  Demon        level 4: cap 273.00/min, 9.50% service-only active; 480-minute tank <= 131040 Coins
+  Demon        level 10: cap 390.00/min, 5.91% service-only active; 480-minute tank <= 187200 Coins
+  Galaxy       level 4: cap 588.00/min, 8.53% service-only active; 480-minute tank <= 282240 Coins
+  Galaxy       level 10: cap 840.00/min, 5.33% service-only active; 480-minute tank <= 403200 Coins

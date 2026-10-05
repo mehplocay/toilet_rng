@@ -429,7 +429,7 @@ function C.TabBar(parent, names, callback, colors)
 		end,
 	}
 end
-function C.Panel(parent, title, color)
+function C.Panel(parent, title, color, minimumHeight)
 	local panel = C.New(
 		"Frame",
 		parent,
@@ -463,7 +463,7 @@ function C.Panel(parent, title, color)
 	local function resize()
 		local bounds = Layout.Modal(math.max(240, parent.AbsoluteSize.X), math.max(220, parent.AbsoluteSize.Y))
 		C.Place(panel, bounds)
-		body.Size = UDim2.new(1, -8, 0, math.max(540, bounds.H - 88))
+		body.Size = UDim2.new(1, -8, 0, math.max(minimumHeight or 540, bounds.H - 88))
 	end
 	parent:GetPropertyChangedSignal("AbsoluteSize"):Connect(resize)
 	panel:GetPropertyChangedSignal("Visible"):Connect(function()

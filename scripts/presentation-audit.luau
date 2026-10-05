@@ -184,11 +184,11 @@ local function runPresentationAudit(test, environment, server)
 				end
 			end
 			assert(folder.Parent == player and coins.Value == 1234 and rarest.Value == "Mythic")
-			assert(#e.Objects == 4)
+			assert(#e.Objects == 5)
 			profile.Coins = 1e6
 			assert(coins.Value == 1234)
 			service.Refresh()
-			assert(coins.Value == 1e6 and #e.Objects == 4)
+			assert(coins.Value == 1e6 and #e.Objects == 5)
 			profile.Coins, profile.Stats.RarestItemId = math.huge, "forged"
 			service.Refresh()
 			assert(coins.Value == 0 and rarest.Value == "None")
