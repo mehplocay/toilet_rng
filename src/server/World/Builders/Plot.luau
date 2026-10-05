@@ -13,9 +13,18 @@ function Plot.Build(root, cf, index)
 		Vector3.new(Layout.PlotWidth, Layout.PlotRise, Layout.PlotDepth),
 		true
 	)
-	local glowRing = {}
+	local glowRing, rebirthSteps = {}, {}
+	for step = 1, Layout.Rebirth.Steps do
+		rebirthSteps[step] = { Surfaces = {} }
+	end
 	for _, entry in ipairs(Layout.PlotPieces) do
 		local piece = Kit.Place(model, entry, cf)
+		if entry.Asset == "GrassSlab" and entry.Position.X == Layout.Rebirth.X then
+			local step = math.floor((entry.Position.Z - Layout.Rebirth.StartZ) / Layout.Rebirth.Pitch + 0.5) + 1
+			if rebirthSteps[step] then
+				table.insert(rebirthSteps[step].Surfaces, { Part = piece.PrimaryPart, Color = piece.PrimaryPart.Color })
+			end
+		end
 		if entry.Asset == "PlotPlatform" then
 			piece.PrimaryPart:SetAttribute("PlotTint", true)
 		end
@@ -46,7 +55,7 @@ function Plot.Build(root, cf, index)
 		Layout.FlushLabel.Distance
 	)
 	for step = 1, Layout.Rebirth.Steps do
-		Kit.Label(
+		rebirthSteps[step].Label = Kit.Label(
 			model,
 			"RebirthLocked",
 			cf
@@ -88,8 +97,10 @@ function Plot.Build(root, cf, index)
 		PromptAnchor = promptAnchor,
 		FlushMarker = flushAnchor,
 		GlowRing = glowRing,
+		RebirthSteps = rebirthSteps,
 		Displays = displays,
 	}
+	require(script.Parent.Parent.RebirthStairs).Refresh(plot, nil, nil)
 	require(script.Parent.Parent.DisplayRows).Build(plot, { ToiletTier = 1, DisplaySlots = 0, Displays = {} })
 	return plot
 end

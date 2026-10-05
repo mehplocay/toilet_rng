@@ -16,6 +16,7 @@ local Items, Rarities, Assets = require(Config.Items), require(Config.Rarities),
 local rankings = require(game.ReplicatedStorage.Shared.LeaderboardStats).new(Items)
 local World = { Plots = {}, Assigned = {} }
 local IncomeDisplay = require(script.Parent.IncomeDisplay)
+local RebirthStairs = require(script.Parent.RebirthStairs)
 function World:RefreshIncome(player, pending)
 	local plot = self.Assigned[player]
 	if plot and plot.Owner == player then
@@ -60,7 +61,8 @@ function World:Refresh(player, profile)
 	if not plot then
 		return
 	end
-	plot.Sign.Text = player.DisplayName .. "'s Plot"
+	plot.Sign.Text = player.DisplayName .. "'s Plot\nRebirth " .. (profile.RebirthLevel or 0)
+	RebirthStairs.Refresh(plot, player, profile)
 	if plot.Tier ~= profile.ToiletTier then
 		local upgraded = plot.Tier and profile.ToiletTier > plot.Tier
 		if plot.Toilet then
@@ -301,6 +303,7 @@ function World:Start(data)
 		local plot = self.Assigned[player]
 		if plot then
 			plot.Owner = nil
+			RebirthStairs.Refresh(plot, nil, nil)
 			plot.Model:SetAttribute("OwnerUserId", nil)
 			plot.Tier = nil
 			if plot.FlushPrompt then
