@@ -1,0 +1,603 @@
+{
+  "schema_version": 1,
+  "generator": "Blender 4.5 / assets/blender/build.py",
+  "coordinate_system": "Export Y-up / Z-forward; author Z-up; dimension order Roblox X,Y,Z",
+  "units": "stud (1 stud = 0.28 m)",
+  "import_settings": {
+    "scale_unit": "Stud",
+    "scale_factor": 1,
+    "world_forward": "Front",
+    "world_up": "Top"
+  },
+  "assets": [
+    {
+      "name": "Poop",
+      "display_name": "Poop",
+      "category": "items",
+      "tris": 1744,
+      "budget": 2500,
+      "size_studs": [
+        2.2473,
+        2.1735,
+        2.45
+      ],
+      "file": "assets/models/items/Poop.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/Poop.png",
+      "front_preview": "assets/previews/Poop_front.png",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1
+    },
+    {
+      "name": "ToiletPaper",
+      "display_name": "Toilet Paper",
+      "category": "items",
+      "tris": 1472,
+      "budget": 2500,
+      "size_studs": [
+        2.4,
+        1.8174,
+        2.0275
+      ],
+      "file": "assets/models/items/ToiletPaper.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/ToiletPaper.png",
+      "front_preview": "assets/previews/ToiletPaper_front.png",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1
+    },
+    {
+      "name": "Rat",
+      "display_name": "Rat",
+      "category": "items",
+      "tris": 1980,
+      "budget": 2500,
+      "size_studs": [
+        2.2823,
+        1.8291,
+        2.7
+      ],
+      "file": "assets/models/items/Rat.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/Rat.png",
+      "front_preview": "assets/previews/Rat_front.png",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1
+    },
+    {
+      "name": "Fish",
+      "display_name": "Fish",
+      "category": "items",
+      "tris": 1220,
+      "budget": 2500,
+      "size_studs": [
+        2.7,
+        1.5257,
+        1.0862
+      ],
+      "file": "assets/models/items/Fish.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/Fish.png",
+      "front_preview": "assets/previews/Fish_front.png",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1
+    },
+    {
+      "name": "RubberDuck",
+      "display_name": "Rubber Duck",
+      "category": "items",
+      "tris": 1508,
+      "budget": 2500,
+      "size_studs": [
+        1.6158,
+        1.6158,
+        2.5
+      ],
+      "file": "assets/models/items/RubberDuck.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/RubberDuck.png",
+      "front_preview": "assets/previews/RubberDuck_front.png",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1
+    },
+    {
+      "name": "GoldenPoop",
+      "display_name": "Golden Poop",
+      "category": "items",
+      "tris": 1744,
+      "budget": 2500,
+      "size_studs": [
+        2.2473,
+        2.1735,
+        2.45
+      ],
+      "file": "assets/models/items/GoldenPoop.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/GoldenPoop.png",
+      "front_preview": "assets/previews/GoldenPoop_front.png",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1
+    },
+    {
+      "name": "ToiletBaby",
+      "display_name": "Toilet Baby",
+      "category": "items",
+      "tris": 2380,
+      "budget": 2500,
+      "size_studs": [
+        1.67,
+        2.7,
+        1.6775
+      ],
+      "file": "assets/models/items/ToiletBaby.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/ToiletBaby.png",
+      "front_preview": "assets/previews/ToiletBaby_front.png",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1
+    },
+    {
+      "name": "SewerShark",
+      "display_name": "Sewer Shark",
+      "category": "items",
+      "tris": 1384,
+      "budget": 2500,
+      "size_studs": [
+        3.0,
+        2.0333,
+        1.1889
+      ],
+      "file": "assets/models/items/SewerShark.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/SewerShark.png",
+      "front_preview": "assets/previews/SewerShark_front.png",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1
+    },
+    {
+      "name": "KingPoop",
+      "display_name": "King Poop",
+      "category": "items",
+      "tris": 2460,
+      "budget": 2500,
+      "size_studs": [
+        3.0,
+        2.7054,
+        2.3219
+      ],
+      "file": "assets/models/items/KingPoop.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/KingPoop.png",
+      "front_preview": "assets/previews/KingPoop_front.png",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1
+    },
+    {
+      "name": "AlienToilet",
+      "display_name": "Alien Toilet",
+      "category": "items",
+      "tris": 2432,
+      "budget": 2500,
+      "size_studs": [
+        1.707,
+        3.0,
+        1.9962
+      ],
+      "file": "assets/models/items/AlienToilet.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/AlienToilet.png",
+      "front_preview": "assets/previews/AlienToilet_front.png",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1
+    },
+    {
+      "name": "Mystery",
+      "display_name": "???",
+      "category": "items",
+      "tris": 1124,
+      "budget": 2500,
+      "size_studs": [
+        2.8,
+        2.7449,
+        2.3806
+      ],
+      "file": "assets/models/items/Mystery.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/Mystery.png",
+      "front_preview": "assets/previews/Mystery_front.png",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1
+    },
+    {
+      "name": "BasicToilet",
+      "display_name": "Basic Toilet",
+      "category": "toilets",
+      "tris": 2512,
+      "budget": 5000,
+      "size_studs": [
+        2.34,
+        4.79,
+        2.9122
+      ],
+      "file": "assets/models/toilets/BasicToilet.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/BasicToilet.png",
+      "front_preview": "assets/previews/BasicToilet_front.png",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1
+    },
+    {
+      "name": "DirtyToilet",
+      "display_name": "Dirty Toilet",
+      "category": "toilets",
+      "tris": 3560,
+      "budget": 5000,
+      "size_studs": [
+        2.9241,
+        4.79,
+        2.9122
+      ],
+      "file": "assets/models/toilets/DirtyToilet.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/DirtyToilet.png",
+      "front_preview": "assets/previews/DirtyToilet_front.png",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1
+    },
+    {
+      "name": "GoldenToilet",
+      "display_name": "Golden Toilet",
+      "category": "toilets",
+      "tris": 3220,
+      "budget": 5000,
+      "size_studs": [
+        3.08,
+        4.79,
+        2.9122
+      ],
+      "file": "assets/models/toilets/GoldenToilet.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/GoldenToilet.png",
+      "front_preview": "assets/previews/GoldenToilet_front.png",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1
+    },
+    {
+      "name": "DiamondToilet",
+      "display_name": "Diamond Toilet",
+      "category": "toilets",
+      "tris": 2700,
+      "budget": 5000,
+      "size_studs": [
+        2.64,
+        4.79,
+        2.9122
+      ],
+      "file": "assets/models/toilets/DiamondToilet.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/DiamondToilet.png",
+      "front_preview": "assets/previews/DiamondToilet_front.png",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1
+    },
+    {
+      "name": "RadioactiveToilet",
+      "display_name": "Radioactive Toilet",
+      "category": "toilets",
+      "tris": 4880,
+      "budget": 5000,
+      "size_studs": [
+        3.34,
+        4.79,
+        2.9122
+      ],
+      "file": "assets/models/toilets/RadioactiveToilet.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/RadioactiveToilet.png",
+      "front_preview": "assets/previews/RadioactiveToilet_front.png",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1
+    },
+    {
+      "name": "DemonToilet",
+      "display_name": "Demon Toilet",
+      "category": "toilets",
+      "tris": 2904,
+      "budget": 5000,
+      "size_studs": [
+        3.5,
+        5.1802,
+        2.9122
+      ],
+      "file": "assets/models/toilets/DemonToilet.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/DemonToilet.png",
+      "front_preview": "assets/previews/DemonToilet_front.png",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1
+    },
+    {
+      "name": "GalaxyToilet",
+      "display_name": "Galaxy Toilet",
+      "category": "toilets",
+      "tris": 3496,
+      "budget": 5000,
+      "size_studs": [
+        3.1254,
+        4.8969,
+        2.9122
+      ],
+      "file": "assets/models/toilets/GalaxyToilet.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/GalaxyToilet.png",
+      "front_preview": "assets/previews/GalaxyToilet_front.png",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1
+    },
+    {
+      "name": "PalmTree",
+      "display_name": "Palm Tree",
+      "category": "props",
+      "tris": 1580,
+      "budget": 4000,
+      "size_studs": [
+        6.0,
+        6.1348,
+        6.0
+      ],
+      "file": "assets/models/props/PalmTree.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/PalmTree.png",
+      "front_preview": "assets/previews/PalmTree_front.png",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1
+    },
+    {
+      "name": "RoundBush",
+      "display_name": "Round Bush",
+      "category": "props",
+      "tris": 1080,
+      "budget": 4000,
+      "size_studs": [
+        2.71,
+        1.6236,
+        1.8116
+      ],
+      "file": "assets/models/props/RoundBush.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/RoundBush.png",
+      "front_preview": "assets/previews/RoundBush_front.png",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1
+    },
+    {
+      "name": "FlowerPack",
+      "display_name": "Flower Pack",
+      "category": "props",
+      "tris": 2064,
+      "budget": 4000,
+      "size_studs": [
+        2.4259,
+        1.9693,
+        0.7614
+      ],
+      "file": "assets/models/props/FlowerPack.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/FlowerPack.png",
+      "front_preview": "assets/previews/FlowerPack_front.png",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1
+    },
+    {
+      "name": "Bench",
+      "display_name": "Bench",
+      "category": "props",
+      "tris": 1812,
+      "budget": 4000,
+      "size_studs": [
+        3.84,
+        2.675,
+        1.55
+      ],
+      "file": "assets/models/props/Bench.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/Bench.png",
+      "front_preview": "assets/previews/Bench_front.png",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1
+    },
+    {
+      "name": "LampPost",
+      "display_name": "Lamp Post",
+      "category": "props",
+      "tris": 1152,
+      "budget": 4000,
+      "size_studs": [
+        1.14,
+        5.95,
+        1.14
+      ],
+      "file": "assets/models/props/LampPost.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/LampPost.png",
+      "front_preview": "assets/previews/LampPost_front.png",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1
+    },
+    {
+      "name": "WoodenFence",
+      "display_name": "Wooden Fence",
+      "category": "props",
+      "tris": 1192,
+      "budget": 4000,
+      "size_studs": [
+        4.1136,
+        2.46,
+        0.588
+      ],
+      "file": "assets/models/props/WoodenFence.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/WoodenFence.png",
+      "front_preview": "assets/previews/WoodenFence_front.png",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1
+    },
+    {
+      "name": "GoldenTrophy",
+      "display_name": "Golden Trophy",
+      "category": "props",
+      "tris": 3972,
+      "budget": 4000,
+      "size_studs": [
+        4.4893,
+        9.0,
+        4.5282
+      ],
+      "file": "assets/models/props/GoldenTrophy.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/GoldenTrophy.png",
+      "front_preview": "assets/previews/GoldenTrophy_front.png",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1
+    },
+    {
+      "name": "PlotSignboard",
+      "display_name": "Plot Signboard",
+      "category": "props",
+      "tris": 704,
+      "budget": 4000,
+      "size_studs": [
+        3.91,
+        2.96,
+        0.6144
+      ],
+      "file": "assets/models/props/PlotSignboard.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/PlotSignboard.png",
+      "front_preview": "assets/previews/PlotSignboard_front.png",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1
+    },
+    {
+      "name": "DisplayPedestal",
+      "display_name": "Display Pedestal",
+      "category": "props",
+      "tris": 796,
+      "budget": 4000,
+      "size_studs": [
+        2.24,
+        1.2623,
+        2.24
+      ],
+      "file": "assets/models/props/DisplayPedestal.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/DisplayPedestal.png",
+      "front_preview": "assets/previews/DisplayPedestal_front.png",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1
+    },
+    {
+      "name": "CloudPuffs",
+      "display_name": "Cloud Puffs",
+      "category": "props",
+      "tris": 784,
+      "budget": 4000,
+      "size_studs": [
+        4.3116,
+        1.76,
+        1.56
+      ],
+      "file": "assets/models/props/CloudPuffs.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/CloudPuffs.png",
+      "front_preview": "assets/previews/CloudPuffs_front.png",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1
+    },
+    {
+      "name": "PortalGate",
+      "display_name": "Portal Gate",
+      "category": "props",
+      "tris": 616,
+      "budget": 4000,
+      "size_studs": [
+        5.65,
+        6.26,
+        1.3
+      ],
+      "file": "assets/models/props/PortalGate.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/PortalGate.png",
+      "front_preview": "assets/previews/PortalGate_front.png",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1
+    },
+    {
+      "name": "RocksCrystals",
+      "display_name": "Rocks Crystals",
+      "category": "props",
+      "tris": 288,
+      "budget": 4000,
+      "size_studs": [
+        3.2815,
+        1.88,
+        1.7537
+      ],
+      "file": "assets/models/props/RocksCrystals.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/RocksCrystals.png",
+      "front_preview": "assets/previews/RocksCrystals_front.png",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1
+    },
+    {
+      "name": "ForegroundFoliage",
+      "display_name": "Foreground Foliage",
+      "category": "props",
+      "tris": 440,
+      "budget": 4000,
+      "size_studs": [
+        5.8474,
+        1.9171,
+        4.1882
+      ],
+      "file": "assets/models/props/ForegroundFoliage.fbx",
+      "texture": "assets/textures/ToyPalette.png",
+      "preview": "assets/previews/ForegroundFoliage.png",
+      "front_preview": "assets/previews/ForegroundFoliage_front.png",
+      "pivot": "base-center",
+      "material_count": 1,
+      "mesh_count": 1
+    }
+  ]
+}

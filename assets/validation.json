@@ -1,0 +1,284 @@
+{
+  "scope": "Blender FBX round trip, not Roblox Studio upload",
+  "assets": [
+    {
+      "name": "Poop",
+      "tris": 1744,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "ToiletPaper",
+      "tris": 1472,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "Rat",
+      "tris": 1980,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "Fish",
+      "tris": 1220,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "RubberDuck",
+      "tris": 1508,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "GoldenPoop",
+      "tris": 1744,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "ToiletBaby",
+      "tris": 2380,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "SewerShark",
+      "tris": 1384,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "KingPoop",
+      "tris": 2460,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "AlienToilet",
+      "tris": 2432,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "Mystery",
+      "tris": 1124,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "BasicToilet",
+      "tris": 2512,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "DirtyToilet",
+      "tris": 3560,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "GoldenToilet",
+      "tris": 3220,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "DiamondToilet",
+      "tris": 2700,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "RadioactiveToilet",
+      "tris": 4880,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "DemonToilet",
+      "tris": 2904,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "GalaxyToilet",
+      "tris": 3496,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "PalmTree",
+      "tris": 1580,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "RoundBush",
+      "tris": 1080,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "FlowerPack",
+      "tris": 2064,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "Bench",
+      "tris": 1812,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "LampPost",
+      "tris": 1152,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "WoodenFence",
+      "tris": 1192,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "GoldenTrophy",
+      "tris": 3972,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "PlotSignboard",
+      "tris": 704,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "DisplayPedestal",
+      "tris": 796,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "CloudPuffs",
+      "tris": 784,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "PortalGate",
+      "tris": 616,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "RocksCrystals",
+      "tris": 288,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "name": "ForegroundFoliage",
+      "tris": 440,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "embedded_png": true,
+      "texture": "256x256",
+      "dimensions": "matched within 0.001 stud"
+    }
+  ]
+}
