@@ -69,6 +69,11 @@ end
 
 function Service:Start(limiter, remotes, sync, data, world)
 	self.Data, self.World, self.Sync = data, world, sync
+	-- No products are implemented. Keep unexpected receipts recoverable; never
+	-- acknowledge a purchase until a future handler durably grants and deduplicates it.
+	MarketplaceService.ProcessReceipt = function()
+		return Enum.ProductPurchaseDecision.NotProcessedYet
+	end
 	local function trackCharacter(player)
 		player.CharacterRemoving:Connect(function()
 			self:StopAuto(player)
@@ -174,8 +179,14 @@ function Service:Start(limiter, remotes, sync, data, world)
 		if not key or player.Parent ~= Players then
 			return
 		end
-		if self.Pending[player] and self.Pending[player].Id == id then
+		local pending = self.Pending[player] and self.Pending[player].Id == id
+		if pending then
 			self.Pending[player] = nil
+		end
+		-- Roblox can repeat completion for an already-owned pass. Entitlements
+		-- are idempotent; replays must not repeatedly sync the world or toast.
+		if (self.Owned[player] or {})[key] == true or (purchased ~= true and not pending) then
+			return
 		end
 		if purchased == true then
 			-- This is Roblox's server event, never a client purchase-complete remote.

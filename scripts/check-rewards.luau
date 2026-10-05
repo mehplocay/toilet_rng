@@ -55,6 +55,7 @@ assert(not service:Claim(profile).Success and profile.LastClaimDay == lastDay)
 local callback, saves, syncs, results = nil, 0, 0, 0
 local player = {}
 local data = {
+	Saving = {},
 	Get = function()
 		return profile
 	end,

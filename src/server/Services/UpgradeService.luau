@@ -8,7 +8,7 @@ function Service.Start(data, limiter, remotes, sync)
 		end
 		-- Get settles passive earnings at the old multiplier before this non-yielding transaction.
 		local profile = data:Get(player)
-		if not profile then
+		if not profile or data.Saving[player] then
 			return
 		end
 		local success = upgrades:Buy(profile, id, expectedLevel)

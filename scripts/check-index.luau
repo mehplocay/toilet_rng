@@ -127,6 +127,7 @@ local handler, saves, syncs, results = nil, 0, 0, {}
 local remoteProfile, player = profile(), {}
 remoteProfile.Collection = { Poop = 1, Rat = 1, Fish = 1 }
 local data = {
+	Saving = {},
 	Get = function()
 		return remoteProfile
 	end,

@@ -10,6 +10,7 @@ function Idle.Start()
 		end
 		if entry.Tween then
 			entry.Tween:Cancel()
+			entry.Tween:Destroy()
 		end
 		if entry.Link then
 			entry.Link:Disconnect()
@@ -68,6 +69,9 @@ function Idle.Start()
 		end)
 	end
 	workspace.DescendantAdded:Connect(add)
+	-- Streaming reparents replicas to nil without Destroying. Release references
+	-- and restart from their replicated transform if they stream back in.
+	workspace.DescendantRemoving:Connect(remove)
 	for _, object in ipairs(workspace:GetDescendants()) do
 		add(object)
 	end
@@ -78,7 +82,7 @@ function Idle.Start()
 				local part = if object:IsA("BasePart")
 					then object
 					elseif object:IsA("Model") then object:FindFirstChildWhichIsA("BasePart")
-					elseif object:IsA("Highlight") then object.Parent.PrimaryPart
+					elseif object:IsA("Highlight") then object.Parent and object.Parent.PrimaryPart
 					else object.Parent
 				local toilet = object:FindFirstAncestor("Toilet")
 				local flushing = toilet and toilet:GetAttribute("Flushing")

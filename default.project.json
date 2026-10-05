@@ -4,7 +4,7 @@
     "$className": "DataModel",
     "Workspace": {
       "$className": "Workspace",
-      "$properties": { "StreamingEnabled": true, "StreamingMinRadius": 128, "StreamingTargetRadius": 512, "StreamingIntegrityMode": "PauseOutsideLoadedArea" }
+      "$properties": { "StreamingEnabled": true, "StreamingMinRadius": 128, "StreamingTargetRadius": 512, "StreamingIntegrityMode": "PauseOutsideLoadedArea", "StreamOutBehavior": "Opportunistic" }
     },
     "Lighting": {
       "$className": "Lighting",

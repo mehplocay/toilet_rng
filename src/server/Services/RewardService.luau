@@ -43,11 +43,14 @@ function RewardService:Start(data, limiter, remotes, sync)
 			return
 		end
 		local profile = data:Get(player)
-		if not profile then
+		if not profile or data.Saving[player] then
 			return
 		end
 		local result = self:Claim(profile)
 		if result.Success and not data:Save(player, false) then
+			return
+		end
+		if data:Get(player) ~= profile then
 			return
 		end
 		sync(player)

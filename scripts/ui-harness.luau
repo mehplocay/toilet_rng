@@ -67,6 +67,14 @@ end
 function vector3MT.__add(a, b)
 	return Vector3.new(a.X + b.X, a.Y + b.Y, a.Z + b.Z)
 end
+function vector3MT.__sub(a, b)
+	return Vector3.new(a.X - b.X, a.Y - b.Y, a.Z - b.Z)
+end
+function vector3MT.__index(a, key)
+	if key == "Magnitude" then
+		return math.sqrt(a.X * a.X + a.Y * a.Y + a.Z * a.Z)
+	end
+end
 local frameMT = {}
 local CFrame = {}
 function CFrame.new(x, y, z)
@@ -150,6 +158,7 @@ local defaults = {
 local methods, Instance = {}, {}
 function methods:IsA(class)
 	return self.ClassName == class
+		or (class == "BasePart" and (self.ClassName == "Part" or self.ClassName == "MeshPart"))
 		or (class == "GuiObject" and guiClasses[self.ClassName])
 		or (class == "GuiButton" and self.ClassName == "TextButton")
 end
