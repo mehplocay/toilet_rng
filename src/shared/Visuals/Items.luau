@@ -2,7 +2,7 @@ local P = require(script.Parent.Primitives)
 local Config = game.ReplicatedStorage.Shared.Config
 local Style, Visuals, Rarities = require(Config.World), require(Config.Visuals), require(Config.Rarities)
 local Items = {}
-function Items.Build(parent, cf, item, preview)
+function Items.BuildPrimitive(parent, cf, item, preview)
 	local model = Instance.new("Model")
 	model.Name = item.Id
 	local color = Style.ItemColors[item.Id]
@@ -239,4 +239,20 @@ function Items.Build(parent, cf, item, preview)
 	model.Parent = parent
 	return model
 end
+function Items.Build(parent, cf, item, preview)
+	local template = require(script.Parent.TemplateLoader).Clone(
+		require(Config.WorldModels).ItemNames[item.Id] or item.Id,
+		parent,
+		cf * CFrame.new(0, -0.8, 0)
+	)
+	if template then
+		template.Name = item.Id
+		if not preview then
+			require(script.Parent.TemplateAccents).Apply(template)
+		end
+		return template
+	end
+	return Items.BuildPrimitive(parent, cf, item, preview)
+end
+
 return Items

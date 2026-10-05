@@ -2,7 +2,7 @@ local P = require(script.Parent.Primitives)
 local Config = game.ReplicatedStorage.Shared.Config
 local Style, Visuals = require(Config.World), require(Config.Visuals)
 local Toilets = {}
-function Toilets.Build(parent, cf, tier, preview)
+function Toilets.BuildPrimitive(parent, cf, tier, preview)
 	local model = Instance.new("Model")
 	model.Name = "Toilet"
 	local color, material = Style.ToiletColors[tier], Visuals.ToiletMaterials[tier]
@@ -190,4 +190,17 @@ function Toilets.Build(parent, cf, tier, preview)
 	model.Parent = parent
 	return model
 end
+function Toilets.Build(parent, cf, tier, preview)
+	local template =
+		require(script.Parent.TemplateLoader).Clone(require(Config.WorldModels).ToiletNames[tier], parent, cf)
+	if template then
+		template.Name = "Toilet"
+		if not preview then
+			require(script.Parent.TemplateAccents).Apply(template)
+		end
+		return template
+	end
+	return Toilets.BuildPrimitive(parent, cf, tier, preview)
+end
+
 return Toilets

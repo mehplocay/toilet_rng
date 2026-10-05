@@ -10,7 +10,10 @@
       "$className": "Lighting",
       "$properties": { "LightingStyle": "Soft", "PrioritizeLightingQuality": true }
     },
-    "ReplicatedStorage": { "Shared": { "$path": "src/shared" } },
+    "ReplicatedStorage": {
+      "Shared": { "$path": "src/shared" },
+      "ModelTemplates": { "$path": "assets/rbxm/ModelTemplates.rbxm" }
+    },
     "ServerScriptService": { "Server": { "$path": "src/server" } },
     "StarterPlayer": { "StarterPlayerScripts": { "Client": { "$path": "src/client" } } }
   }

@@ -21,11 +21,11 @@ vm.__index = function(a, key)
 	end
 end
 local CFrame, cm = {}, {}
-function CFrame.new(x, y, z)
-	return setmetatable(
-		{ Position = if type(x) == "table" then x else Vector3.new(x, y, z), R = { 1, 0, 0, 0, 1, 0, 0, 0, 1 } },
-		cm
-	)
+function CFrame.new(x, y, z, ...)
+	return setmetatable({
+		Position = if type(x) == "table" then x else Vector3.new(x, y, z),
+		R = if select("#", ...) == 9 then { ... } else { 1, 0, 0, 0, 1, 0, 0, 0, 1 },
+	}, cm)
 end
 local function rotate(a, v)
 	local r = a.R
@@ -71,7 +71,15 @@ end
 cm.__sub = function(a, b)
 	return a + b * -1
 end
-cm.__index = { VectorToWorldSpace = rotate }
+cm.__index = {
+	VectorToWorldSpace = rotate,
+	Inverse = function(a)
+		local c = CFrame.new()
+		c.R = { a.R[1], a.R[4], a.R[7], a.R[2], a.R[5], a.R[8], a.R[3], a.R[6], a.R[9] }
+		c.Position = rotate(c, a.Position * -1)
+		return c
+	end,
+}
 local Color3 = {}
 function Color3.new(r, g, b)
 	return {
@@ -146,7 +154,38 @@ function methods:GetPivot()
 		or self.WorldPivot
 		or CFrame.new()
 end
-function methods:ScaleTo() end
+function methods:GetBoundingBox()
+	-- Imported fixtures contain exactly one mesh. Other builder bounds are not mocked.
+	local part = self.PrimaryPart
+	assert(part and part:IsA("MeshPart"))
+	return part.CFrame, part.Size
+end
+function methods:GetScale()
+	return self._scale or 1
+end
+function methods:ScaleTo(scale)
+	local ratio = scale / self:GetScale()
+	local pivot = self:GetPivot()
+	for _, part in ipairs(self:GetDescendants()) do
+		if isPart(part) then
+			local relative = pivot:Inverse() * part.CFrame
+			part.CFrame = pivot * ((relative - relative.Position) + relative.Position * ratio)
+			part.Size = part.Size * ratio
+			local offset = part.PivotOffset or CFrame.new()
+			part.PivotOffset = (offset - offset.Position) + offset.Position * ratio
+		end
+	end
+	self._scale = scale
+end
+function methods:PivotTo(cf)
+	local delta = cf * self:GetPivot():Inverse()
+	for _, part in ipairs(self:GetDescendants()) do
+		if isPart(part) then
+			part.CFrame = delta * part.CFrame
+		end
+	end
+	self.WorldPivot = cf
+end
 function methods:FindFirstChild(name)
 	for _, child in ipairs(self._children) do
 		if child.Name == name then
@@ -155,7 +194,11 @@ function methods:FindFirstChild(name)
 	end
 end
 local Instance = {}
+local templateClones = 0
 function methods:Clone()
+	if self.Parent and self.Parent.Name == "ModelTemplates" then
+		templateClones += 1
+	end
 	local result = Instance.new(self.ClassName)
 	for key, value in pairs(self._props) do
 		if key ~= "Parent" then
@@ -168,6 +211,9 @@ function methods:Clone()
 	for _, child in ipairs(self:GetChildren()) do
 		local copy = child:Clone()
 		copy.Parent = result
+		if self.PrimaryPart == child then
+			result.PrimaryPart = copy
+		end
 	end
 	return result
 end
@@ -188,6 +234,13 @@ function Instance.new(class)
 			return methods[key] or self._props[key] or (if key == "Triggered" or key == "Changed" then signal else nil)
 		end,
 		__newindex = function(self, key, value)
+			if
+				self._props[key] ~= nil
+				and self.ClassName == "MeshPart"
+				and (key == "RenderFidelity" or key == "CollisionFidelity" or key == "MeshContent")
+			then
+				error("Protected MeshPart property write: " .. key)
+			end
 			if key == "Parent" then
 				local old = self._props.Parent
 				if old then
@@ -246,33 +299,21 @@ end
 local calls, preloads, warnings = 0, 0, 0
 local services = { Lighting = Instance.new("Lighting"), ServerStorage = Instance.new("ServerStorage") }
 services.InsertService = {
-	CreateMeshPartAsync = function(_, id, collision, render)
+	CreateMeshPartAsync = function()
 		calls += 1
-		assert(collision == Enum.CollisionFidelity.Box and render == Enum.RenderFidelity.Automatic)
-		if testMode == "Denied" or (testMode == "Mixed" and id == "rbxassetid://4") then
-			error("Simulated permission failure")
-		end
-		if testMode == "Timeout" then
-			coroutine.yield()
-		end
-		local mesh = Instance.new("MeshPart")
-		mesh.MeshId = id
-		return mesh
+		error("Template builders must not request mesh assets")
 	end,
 }
 services.ContentProvider = {
-	PreloadAsync = function(_, objects, callback)
+	PreloadAsync = function()
 		preloads += 1
-		for _, object in ipairs(objects) do
-			callback(object.MeshId, Enum.AssetFetchStatus.Success)
-			callback(
-				object.TextureID,
-				if testMode == "TextureFailure" then Enum.AssetFetchStatus.Failure else Enum.AssetFetchStatus.Success
-			)
-		end
+		error("Template builders must not preload over the network")
 	end,
 }
-local game = { ReplicatedStorage = { Shared = node("src/shared") } }
+local storage = Instance.new("ReplicatedStorage")
+storage.Shared = node("src/shared")
+services.ReplicatedStorage = storage
+local game = { ReplicatedStorage = storage }
 function game:GetService(name)
 	return services[name] or { Name = name }
 end

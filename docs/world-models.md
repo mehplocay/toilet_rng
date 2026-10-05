@@ -1,98 +1,73 @@
-# World models and island handoff
+# World models and Studio template handoff
 
-Implemented on `feature/world-models`, without committing or pushing. Client UI and client initialization files are untouched. All 31 mesh/texture ID pairs remain empty; the playable world currently uses primitive fallbacks. [Research and current API sources](research/world-models.md).
+Implemented in the `feature/templates` worktree, uncommitted. `assets/rbxm/ModelTemplates.rbxm` is mapped directly to `ReplicatedStorage.ModelTemplates` in `default.project.json`. Its single root contains all 31 named Models, each with one MeshPart and uploaded mesh/palette references. The binary import is unchanged. [Current API research and evidence](research/model-templates.md).
 
-## Fill the upload IDs
+## Loading and normalization
 
-1. Follow [the asset pipeline](asset-pipeline.md), starting with **BasicToilet** in the intended published experience. Import the FBX files using **Stud**, factor **1**, **Front/Top**, under the experience's owning user/group. Do not change individual toilet scales or substitute model/container IDs.
-2. After uploading and moderation, select the actual imported **MeshPart** and copy its **MeshId** property. This is the geometry content ID, not a Creator Store model ID, place ID, package ID or asset-version ID.
-3. Upload `assets/textures/ToyPalette.png` once under the same owner. Copy the image content ID from the imported part's **TextureID**, or its SurfaceAppearance **ColorMap** if the importer used one. Use the underlying image ID, not a Decal container ID. Check the preview shows the shared colored palette.
-4. In `src/shared/Config/Assets.luau`, fill **both** string fields for that exact manifest asset name. The existing entry starts as:
+`src/server/World/MeshLoader.luau` delegates to `src/shared/Visuals/TemplateLoader.luau`. The shared loader clones local templates; it does not use InsertService, Assets.Meshes, preload workers, network calls or startup waits. The old empty Assets.Meshes slots are unused and do not need filling.
 
-   ```luau
-   BasicToilet = { MeshId = "", TextureId = "" },
-   ```
+Normalization happens once per asset per Luau VM, in a detached cache. Every placement receives an independent clone. The loader:
 
-   Replace each empty string with the copied `rbxassetid://...` content value. Numeric ID strings are also accepted. Keep IDs as strings. Repeat the same uploaded palette image ID in every entry's `TextureId`. Do not put IDs in builders, catalog entries or scripts. Leave unuploaded pairs empty.
-5. Repeat for all 31 entries, preserving their exact names. Items use their gameplay IDs except **Duck → RubberDuck**. Toilet tiers map to **BasicToilet, DirtyToilet, GoldenToilet, DiamondToilet, RadioactiveToilet, DemonToilet, GalaxyToilet**. The other 13 keys match the prop filenames, including **PlotSignboard**, **DisplayPedestal**, **GoldenTrophy**, **PortalGate**, **CloudPuffs**, **RocksCrystals** and **ForegroundFoliage**.
-6. Grant the **experience** permission to use both restricted mesh and image assets. Creator access in an unrelated Studio place is insufficient evidence. Test a fresh server in the intended published experience, with a second account/mobile client. No EditableMesh opt-in or third-party model loading is needed.
-7. Restart Play/the server after editing IDs. Inspect `ServerStorage.WorldMeshTemplates` for cached MeshParts and Workspace models' `MeshAsset`, `MeshFallback`, `MeshStatus` attributes. An unconfigured or failed pair keeps its primitive model. A permission/download failure warns once per asset per server. Check the Studio output and asset permissions if the status is `Unavailable`.
+1. Requires the imported one-MeshPart Model contract; unexpected descendants or invalid dimensions use the existing primitive builder.
+2. Removes Studio staging transforms and applies the front correction from the imported PivotOffset. The verified batch is Y-up with a 180-degree Y correction.
+3. Measures the imported bounding box, uniformly scales its largest dimension to `MeshCatalog` (checked against `assets/manifest.json`), and rejects an incompatible aspect ratio. It does not stretch individual axes.
+4. Places the horizontal bounds center at the origin and the bottom at Y=0. Toilets additionally preserve their authored horizontal foot offsets, so the offset Dirty plunger and Galaxy ornament do not shift the body during tier swaps. Every tier retains its authored 2.08-stud seat height; horns are not compressed to Basic's height.
+5. Sets the primary part's PivotOffset so Model:GetPivot is the base datum; subsequent ScaleTo/PivotTo calls preserve it. Sets anchored, non-colliding, non-queryable, non-touching, white SmoothPlastic mesh surfaces. Clouds do not cast shadows. Uploaded mesh and texture content are never reassigned.
 
-Start with a single pair; confirm color, front direction, stud dimensions, ground contact and prompt activation before filling the batch. Uploaded MeshParts are white to avoid tinting the atlas. Material is SmoothPlastic; gold/green/purple colors come from the atlas. Glow is separate Neon geometry/lights, not an assumed Blender emission transfer.
+Missing source models can arrive later and recover on a later build. Invalid sources warn once for an unchanged source/descendant count. A partially replicated Model is retried when its mesh arrives. Existing placed fallbacks are not asynchronously replaced. Cache refresh after editing existing mesh properties requires restarting Play; replacing the source instance also refreshes it.
 
-## Placement and loader behavior
+`MeshAsset`, `MeshFallback`, `MeshStatus`, and `NormalizationScale` describe placed models. Ready means a local template normalized successfully, not proof of asset delivery to every client. Permission/download failures are not detected by this loader.
 
-`src/server/World/MeshLoader.luau` is the shared **server-only** loader used by the world adapters and decor builders. It warms four workers, attempts each configured asset once, creates with `InsertService:CreateMeshPartAsync` inside `pcall`, checks mesh/texture preload status, caches in ServerStorage, and clones per placement. Creation uses **Box** collision fidelity and **Automatic** render fidelity. Decoration is anchored, non-colliding, non-touching and non-queryable. Gameplay floors/spawns and Terrain provide walkable geometry.
+## Visual coverage
 
-Startup waits at most eight seconds for warming. In-flight calls cannot be cancelled; at most four can be outstanding. Slow successful loads become available for later placements. Already-built fallback scenery stays in place until the next server, avoiding surprise replacement and loss of sign/prompt references. Errors and failed textures destroy incomplete templates and never retry on a flush. `Build` does not yield or make network requests. Both empty/invalid IDs and absent texture IDs fall back. Server preloading cannot guarantee every client's content delivery succeeds.
+World item drops, display items, plot/hub toilet tiers and all 13 prop types use templates. Duck maps to RubberDuck. PlotSignboard retains a separate SurfaceGui text face; display pedestals retain labels and rarity rings. Lamps keep a real Neon light source; portal gates now have Neon segments following their imported arch trim. Palms, bushes, flowers, benches, fences, trophy, rocks/crystals, foliage and clouds all use the same loader.
 
-`src/shared/Config/MeshCatalog.luau` mirrors the manifest sizes/triangle counts. Items and toilets use the manifest's stud size; intentional uniform prop scales are in `WorldModels.luau` or the relevant decor placement. MeshParts use bounds centers, with an explicit base pivot. The seven toilet bounds-center offsets were measured from the generated Blender meshes to preserve their common foot datum, including the Dirty tier's offset plunger. This still needs Studio import acceptance: Roblox axis/pivot behavior has not been validated with uploaded assets.
+Shared `Visuals.Items.Build` and `Visuals.Toilets.Build` also support templates in client viewport contexts, with effect-free `preview=true`. `BuildPrimitive` preserves explicit server fallbacks. The current Collection/Upgrade UI uses `UI/Preview.luau` icon Frames, not viewport models or these shared builders; its appearance is unchanged under the prohibition on UI edits. No client UI or audio files were edited.
 
-If the authored assets change, regenerate this catalog from the existing manifest and generated `.blend` files (does not change asset IDs or save the Blender scenes):
+`TemplateEffects.luau` and `TemplateAccents.luau` provide Golden sparkles, Diamond glints, green Radioactive light and three small bobbing bubbles, Demon ember glow, Galaxy star particles, Golden Poop sparkle, King Poop crown sparkle and purple Mystery light. Special assets use one shadowless 7-stud PointLight and at most one 2/sec emitter with 0.6-1.2-second lifetime. Radioactive bubbles use three tiny Neon Parts and the existing idle controller. Existing distance culling and flush suppression apply; no new update loop or texture IDs were added. Preview clones have no idle effects.
 
-```powershell
-& 'C:\Users\mehme\tools\blender\blender-4.5.10-windows-x64\blender.exe' --background --factory-startup --python-exit-code 1 --python scripts/sync-world-catalog.py
-stylua src/shared/Config/MeshCatalog.luau
-```
+Walking collision uses invisible Box Parts on pedestals, the trophy base and fence sections; their rendered MeshParts remain non-colliding. Benches remain decorative. These boxes have CanTouch/CanQuery false. All 31 imported meshes already author RenderFidelity Automatic.
 
-Client viewport previews retain the existing shared primitive builders; this task changes server world placements and does not modify the parallel UI work.
+**Remaining fidelity requirement:** CollisionFidelity cannot safely be set by the runtime loader. This export stores opaque PhysicalConfigData, without an explicit CollisionFidelity token. Mesh CollisionFidelity=Box has not been verified or changed; Box proxy parts provide walking collision meanwhile. In Studio edit mode, set all 31 MeshParts' CollisionFidelity to Box and RenderFidelity to Automatic, save the single ModelTemplates root back to the same rbxm, then rebuild/reopen. Do not change pivots, names or uploaded content. No Studio instance was connected during this task.
 
 ## World and record board
 
-- A finite 640 × 640-stud Terrain region supplies a flat playable island core, scalloped sand shore, turquoise ocean, grassy headlands, cliffs and distant mountain ridges. Startup writes 100 grid-aligned chunks at 4-stud resolution, 819,200 voxel entries including air, yielding between chunks. No whole-Terrain clear, per-cell API calls or ongoing terrain loop. Only this documented region is overwritten.
-- Ten plots remain on the existing 85-stud ring, with the existing spawn, reservation, display pagination and flush rules. Colored approach strips, checkerboard plaza, compass inlays, palms, coastal gardens, benches, lamps and foreground foliage use a fixed seed. Joined plot-sign meshes retain separate SurfaceGui text faces; display pedestals retain names/odds and rarity rings.
-- GoldenTrophy anchors the hub fountain. Three inactive Sewer/Space/Hell gates show **Coming soon**, with colored aura rings and bounded idle effects. They grant no access or gameplay rewards.
-- Warm afternoon lighting, blue Atmosphere, engine-default Sky textures, one Terrain Clouds layer, static cloud props, mild bloom/color correction and shadowless local lights provide depth. No external skybox IDs or new per-frame callbacks.
-- `Workspace.StreamingEnabled` is authored in Rojo (minimum 128, target 384). Individual assets are Atomic; the whole hub/plot is not Persistent or Atomic. Distant geometry can stream out; the sky/cloud atmosphere remains. Verify live streaming and Home teleport behavior on mobile.
+Existing gameplay is unchanged: ten plots on the 85-stud ring, five visible display stands with pagination, and the finite 640-by-640 Terrain island. Island startup writes 100 chunks at 4-stud resolution (819,200 voxel entries). Lighting/sky, three inactive Coming soon portals and the hub trophy remain. Workspace streaming stays minimum 128 / target 384; individual placed assets are Atomic.
 
-The **BEST FLUSH EVER** board records only server-awarded flushes through the existing `World:Animate` path, including animation-skipped/automatic flushes. “Best” means the largest configured **1/X denominator** (rarest base odds), not sale value or current luck-adjusted odds. Equal odds retain the first winner. This is a session record, not a DataStore/global leaderboard, and survives the winner leaving.
-
-Client-readable Workspace attributes:
-
-| Attribute | Value |
-| --- | --- |
-| `BestFlushChance` | Base odds denominator; initially 0 |
-| `BestFlushRarity` / `BestFlushItemId` | Config rarity / item ID; initially empty |
-| `BestFlushPlayer` / `BestFlushUserId` | Winner display name / user ID; initially empty / 0 |
-| `BestFlushEver` | English board text, including the initial invitation |
-
-No new remotes, RNG changes, currency changes or client authority were introduced.
+BEST FLUSH EVER records server-awarded flushes only, including animation-skipped flushes. It compares base 1/X denominator, retains the first winner on ties, and survives that player leaving. It is a session record. Workspace attributes remain BestFlushChance, BestFlushRarity, BestFlushItemId, BestFlushPlayer, BestFlushUserId and BestFlushEver. No RNG, economy, remotes or authority changes.
 
 ## Checks and budgets
 
+Run from the repository root (use a process-scoped `powershell -NoProfile -ExecutionPolicy Bypass -File` invocation where local script execution is disabled):
+
 ```powershell
+stylua --check --line-endings Windows src scripts
 rojo build -o build.rbxl
 ./scripts/check-world.ps1
 ./scripts/check-visuals.ps1
 ./scripts/check-audit.ps1
-# Run each remaining scripts/check-*.luau with luau.
-# check-audit.luau is bundled by check-audit.ps1, not run bare.
+./scripts/check-ui.ps1
+# Run all standalone scripts/check-*.luau with luau.
+# check-audit.luau and check-ui-runtime.luau run through their PS1 bundlers.
 ```
 
-The headless harness executes the production builders. `check-world.ps1` exercises empty IDs, all successful loads, mixed success, denied meshes, failed textures, and startup timeouts/late completion. Synthetic IDs are confined to mocks; it never contacts Roblox. It verifies catalog/manifest parity, all 31 placement paths, clone isolation, pivots, request caching, failure cleanup, every toilet/item, all 100 display slots, terrain array/material validity, lighting idempotence, record updates/ties/spoof rejection, flags and budgets.
+`read-model-templates.ps1` builds the actual binary import to temporary rbxlx and verifies its hierarchy, exact manifest coverage, dimensions, pivot convention, 31 MeshParts, 62 content references and Automatic rendering. It feeds real serialized Size/CFrame/PivotOffset/content properties to the headless harness. No fake upload IDs are substituted.
 
-| Mode | Hub parts | Hub MeshParts / fallback models | Worst plot + one transient drop |
-| --- | ---: | ---: | ---: |
-| Empty IDs / all failures | 1,535 | 0 / 185 | 348 |
-| Simulated uploaded meshes | 594 | 185 / 0 | 147 |
-| Budget from Visuals config | 2,499 | — | 399 |
+Six world scenarios cover missing templates, all ready, one missing asset, malformed bounds, 37x scaled/displaced/rotated imports and late replication. Tests verify all 31 normalization/placement paths, shared toilet foot/seat datums, arbitrary placement yaw and uniform prop scale, clone/cache isolation, source preservation, protected-property write avoidance, partial replication recovery, preview clones, effect budgets/idempotence, all 100 paginated displays, terrain, lighting and record-board regressions. Network services are traps.
 
-The checks also reserve two overlapping drop visuals for FastFlush: at most 378 fallback parts or 156 simulated-mesh parts per plot, still below 399. The simulated uploaded hub contains 225,340 authored mesh triangles; the largest populated plot contains 57,536, excluding primitives, terrain, particles and the transient drop. Part counts do not certify GPU cost. Streaming/LOD and shared mesh/texture reuse help, but mobile profiling is still required. These figures include the five-stand maximum; saved capacities above five retain existing pagination.
+| Mode | Hub parts | Hub meshes / fallbacks | Worst plot + one drop | With two overlapping drops |
+| --- | ---: | ---: | ---: | ---: |
+| Missing / invalid | 1,536 | 0 / 185 | 356 | 386 |
+| Imported templates | 627 | 185 / 0 | 184 | 194 |
+| Missing palms | 787 | 165 / 20 | 200 | 210 |
+| Budget | 2,499 | - | 399 | 399 |
 
-Rojo build, StyLua checks for owned Luau changes, compilation, all standalone `check-*.luau`, all six world scenarios, visual checks and all 28 audit regressions pass. Selene was attempted but cannot run because the repository's `roblox` standard library is missing.
+The imported hub contains 225,340 mesh triangles; the largest populated plot contains 57,536, excluding terrain, primitives, particles and transient drops. Part counts do not establish GPU/memory performance.
 
-## Visual review and remaining Studio acceptance
+Rojo binary build, StyLua, all six world scenarios, visual checks, all standalone Luau checks, UI checks and all 28 audit regressions pass. Selene cannot start because the repository's configured roblox standard library is missing.
 
-Offline composition views were rendered from the headless builders in Blender and reviewed twice, improving mountain ridges, ground alignment, palm scale, sign proportions and plaza detail. [Overview](world-previews/overview.png), [spawn](world-previews/spawn.png), [own plot](world-previews/plot.png) show **simulated successful meshes using local Blender sources**, not actual Roblox uploads. Fallback views have `-fallback` filenames in the same folder. The preview uses an approximate heightfield, different renderer/sky/text, and a deterministic mock RNG; it does not reproduce Roblox voxels, lighting, streaming, particles or UI.
+## Remaining acceptance and weaknesses
 
-Regenerate previews (optional, requires the local Blender installation):
+Open the rebuilt place in the intended experience and verify uploaded content permissions/moderation, all seven tiers' front direction/seat/ground contact, long sign names, prompts, walking collisions, flush animation, effects at low/high graphics, streaming and mobile performance. Serialized transforms and mathematical tests do not replace a rendered engine review. Mesh-level Box fidelity needs the Studio resave above. Client download failure does not trigger a primitive replacement. The existing Blender world-preview images predate this integration and are not evidence of the imported assets rendering in Roblox.
 
-```powershell
-./scripts/check-visuals.ps1 -MeshMode Ready -Snapshot
-& 'C:\Users\mehme\tools\blender\blender-4.5.10-windows-x64\blender.exe' --background --factory-startup --python scripts/preview-world.py
-# For primitive views: use -MeshMode Empty above, then append -- --fallback to Blender.
-```
-
-No Studio instance was connected. Still untested: real uploaded mesh/image permissions and moderation, front/pivot preservation, client content failures, Terrain shore seams/contact/collision, spawn and prompt feel, flushing upgraded meshes, sign readability with long names, low/high graphics effects, streaming transitions/teleports, multiplayer and mobile frame/memory/startup time. Fallbacks intentionally look simpler than uploaded art. Finite ocean/mountain edges may need adjustment after the Studio camera/streaming review. The uploaded success test is a mock, not an asset-delivery test.
-
-Primary changed files: `src/server/World/{MeshLoader,Models,WorldService}.luau`, its `Builders/{Island,Hub,Plot,Decor,Lighting}.luau`, `src/shared/Config/{Assets,MeshCatalog,WorldModels}.luau`, `default.project.json`, the headless checks/preview helpers and these documents. Nothing is committed or pushed.
+Main changes: Rojo mapping; server MeshLoader/Models/Decor; shared TemplateLoader/TemplateAccents, Items/Toilets, WorldModels/TemplateEffects; world check scripts/harness; this document and research notes. Nothing committed or pushed.

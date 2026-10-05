@@ -1,6 +1,6 @@
 ﻿# Run production builders with engine-boundary mocks; never contacts Roblox.
 param(
-    [ValidateSet('Empty','Ready','Mixed','Denied','TextureFailure','Timeout')][string]$MeshMode = 'Empty',
+    [ValidateSet('Empty','Ready','Mixed','Invalid','Scaled','Late')][string]$MeshMode = 'Ready',
     [switch]$World,
     [switch]$Snapshot
 )
@@ -15,6 +15,7 @@ $modulePaths = @(
     'src/shared/Config/Items.luau', 'src/shared/Config/Toilets.luau', 'src/shared/Config/Rarities.luau',
     'src/shared/Config/PlotGuidance.luau', 'src/shared/PlotChooser.luau', 'src/server/World/PlotSpawn.luau',
     'src/shared/Visuals/Primitives.luau', 'src/shared/Visuals/Items.luau', 'src/shared/Visuals/Toilets.luau',
+    'src/shared/Visuals/TemplateLoader.luau', 'src/shared/Visuals/TemplateAccents.luau', 'src/shared/Config/TemplateEffects.luau',
     'src/server/World/MeshLoader.luau', 'src/server/World/Models.luau', 'src/server/World/Builders/Decor.luau',
     'src/server/World/Builders/Island.luau', 'src/server/World/Builders/Lighting.luau',
     'src/server/World/Builders/Hub.luau', 'src/server/World/Builders/Plot.luau',
@@ -33,6 +34,7 @@ foreach ($asset in $manifest.assets) {
     $harness += "['$($asset.name)'] = { Size = Vector3.new($size), Triangles = $($asset.tris) },`n"
 }
 $harness += "}`n"
+$harness += & (Join-Path $PSScriptRoot 'read-model-templates.ps1')
 $harness += Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'world-checks.luau')
 try {
     [IO.File]::WriteAllText($generatedPath, $harness, [Text.UTF8Encoding]::new($false))
