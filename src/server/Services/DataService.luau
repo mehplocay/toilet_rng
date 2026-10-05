@@ -6,13 +6,21 @@ local Items = require(game.ReplicatedStorage.Shared.Config.Items)
 local Toilets = require(game.ReplicatedStorage.Shared.Config.Toilets)
 local Rewards = require(game.ReplicatedStorage.Shared.Config.Rewards)
 
-local DataService = { Profiles = {}, Saving = {}, Closing = {}, NoPersistence = {}, Stopping = false }
+local DataService = {
+	Profiles = {},
+	Saving = {},
+	Closing = {},
+	NoPersistence = {},
+	Loading = {},
+	Sessions = {},
+	LeaseExpires = {},
+	Stopping = false,
+}
 local storeOk, store = pcall(DataStoreService.GetDataStore, DataStoreService, "ToiletRNG_v1")
 if not storeOk then
 	store = nil
 	warn("DataStore unavailable; Studio players will use in-memory profiles.")
 end
-local session = game.JobId .. ":" .. HttpService:GenerateGUID(false)
 local LOCK_SECONDS = 180
 
 local function integer(value, default)
@@ -109,22 +117,49 @@ function DataService:Get(player)
 	if self.Stopping or self.Closing[player] then
 		return nil
 	end
+	if self.Profiles[player] and not self.NoPersistence[player] and os.time() >= (self.LeaseExpires[player] or 0) then
+		self.Closing[player] = true
+		player:Kick("Your data session expired. Please rejoin.")
+		return nil
+	end
 	return self.Profiles[player]
 end
 
+local function finishLoad(self, player)
+	self.Loading[player] = nil
+	if self.Stopping or self.Closing[player] or player.Parent ~= Players then
+		self:Close(player)
+		return
+	end
+	if self.Loaded and self:Get(player) then
+		self.Loaded(player)
+	end
+	if self.Stopping or self.Closing[player] or player.Parent ~= Players then
+		self:Close(player)
+	end
+end
+
 function DataService:Load(player)
+	if
+		self.Stopping
+		or player.Parent ~= Players
+		or self.Loading[player]
+		or self.Profiles[player]
+		or self.Closing[player]
+	then
+		return
+	end
+	self.Loading[player] = true
+	-- A rejoin in this server must not share the departing Player's ownership token.
+	local session = game.JobId .. ":" .. HttpService:GenerateGUID(false)
 	if not store then
 		if RunService:IsStudio() then
 			self.Profiles[player] = DataService.DefaultProfile()
 			self.NoPersistence[player] = true
-			if self.Loaded and player.Parent == Players and not self.Stopping then
-				self.Loaded(player)
-			end
-			if self.Stopping or player.Parent ~= Players then
-				self:Close(player)
-			end
+			finishLoad(self, player)
 			return
 		end
+		self.Loading[player], self.Closing[player] = nil, nil
 		player:Kick("Your data could not be loaded safely. Please rejoin shortly.")
 		return
 	end
@@ -150,24 +185,17 @@ function DataService:Load(player)
 			self.Profiles[player] = DataService.DefaultProfile()
 			self.NoPersistence[player] = true
 			warn("DataStore unavailable or session lock held; using an in-memory Studio profile for " .. player.Name)
-			if self.Loaded and player.Parent == Players and not self.Stopping then
-				self.Loaded(player)
-			end
-			if self.Stopping or player.Parent ~= Players then
-				self:Close(player)
-			end
+			finishLoad(self, player)
 			return
 		end
+		self.Loading[player], self.Closing[player] = nil, nil
 		player:Kick("Your data could not be loaded safely. Please rejoin shortly.")
 		return
 	end
 	self.Profiles[player] = sanitize(record.Data)
-	if self.Loaded and player.Parent == Players and not self.Stopping then
-		self.Loaded(player)
-	end
-	if self.Stopping or player.Parent ~= Players then
-		self:Close(player)
-	end
+	self.Sessions[player] = session
+	self.LeaseExpires[player] = record.Lock.Expires
+	finishLoad(self, player)
 end
 
 function DataService:Save(player, release)
@@ -190,9 +218,16 @@ function DataService:Save(player, release)
 	self.Saving[player] = true
 	-- Copy before UpdateAsync yields, so concurrent gameplay cannot mutate the snapshot.
 	local snapshot = sanitize(profile)
+	local session = self.Sessions[player]
 	local ok, record = retry(function()
 		return store:UpdateAsync("Player_" .. player.UserId, function(old)
-			if type(old) ~= "table" or type(old.Lock) ~= "table" or old.Lock.Session ~= session then
+			if
+				not session
+				or type(old) ~= "table"
+				or type(old.Lock) ~= "table"
+				or old.Lock.Session ~= session
+				or integer(old.Lock.Expires, 0) <= os.time()
+			then
 				return nil
 			end
 			return {
@@ -208,14 +243,22 @@ function DataService:Save(player, release)
 		player:Kick("Your data could not be saved safely. Please rejoin.")
 		return false
 	end
+	if not release then
+		self.LeaseExpires[player] = record.Lock.Expires
+	end
 	return true
 end
 
 function DataService:Close(player)
 	self.Closing[player] = true
+	-- The load owns cleanup until its yielding acquisition has completed.
+	if self.Loading[player] then
+		return
+	end
 	self:Save(player, true)
 	self.Profiles[player] = nil
 	self.NoPersistence[player] = nil
+	self.Sessions[player], self.LeaseExpires[player] = nil, nil
 	self.Closing[player] = nil
 end
 
@@ -235,7 +278,7 @@ function DataService:Start()
 		while not self.Stopping do
 			task.wait(60)
 			for player in pairs(self.Profiles) do
-				if not self.Stopping and not self.Closing[player] then
+				if not self.Stopping and not self.Closing[player] and not self.Saving[player] then
 					task.spawn(function()
 						self:Save(player, false)
 					end)
@@ -254,7 +297,7 @@ function DataService:Start()
 			end)
 		end
 		local deadline = os.clock() + 25
-		while pending > 0 and os.clock() < deadline do
+		while (pending > 0 or next(self.Loading) ~= nil or next(self.Saving) ~= nil) and os.clock() < deadline do
 			task.wait(0.1)
 		end
 	end)
