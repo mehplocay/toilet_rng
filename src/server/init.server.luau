@@ -15,6 +15,7 @@ for _, key in ipairs({
 	"ServerLuck",
 	"Settings",
 	"AutoFlush",
+	"DevGrant",
 }) do
 	local remote = Instance.new("RemoteEvent")
 	remote.Name = definitions[key]
@@ -54,6 +55,7 @@ world:Start(data)
 require(script.Services.FlushService).Start(data, limiter, remotes, sync, world, events, monetization)
 require(script.Services.EconomyService).Start(data, limiter, remotes, sync)
 require(script.Services.DisplayService).Start(data, limiter, remotes, sync)
+require(script.Services.DevGrantService).Start(data, limiter, remotes, sync)
 remotes.State.OnServerEvent:Connect(function(player, ...)
 	if select("#", ...) == 0 and limiter:Allow(player, "State") then
 		sync(player)

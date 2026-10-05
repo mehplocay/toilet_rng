@@ -1,6 +1,7 @@
 local Players = game:GetService("Players")
 local SoundService = game:GetService("SoundService")
 local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
 local player = Players.LocalPlayer
 local function configurePrompt(object)
 	if object:IsA("ProximityPrompt") then
@@ -32,6 +33,7 @@ for _, name in ipairs({
 	"ServerLuck",
 	"Settings",
 	"AutoFlush",
+	"DevGrant",
 }) do
 	remotes[name] = folder:WaitForChild(definitions[name])
 end
@@ -61,6 +63,28 @@ coins.BackgroundColor3 = C.Navy
 C.Round(coins)
 local collection = require(script.UI.Collection).Create(gui, remotes)
 local upgrades = require(script.UI.Upgrades).Create(gui, remotes)
+if RunService:IsStudio() then
+	local panel = C.New("Frame", gui, {
+		Size = UDim2.fromScale(0.28, 0.16),
+		Position = UDim2.fromScale(0.02, 0.81),
+		BackgroundColor3 = C.Navy,
+	})
+	C.Round(panel, Color3.fromRGB(220, 80, 80))
+	C.Text(panel, "DEV", UDim2.fromScale(0.18, 0.28), UDim2.fromScale(0.02, 0.02))
+	for index, grantKey in ipairs({ "1000", "100000", "10000000" }) do
+		local labels = { "+1,000", "+100,000", "+10,000,000" }
+		C.Button(
+			panel,
+			labels[index],
+			UDim2.fromScale(0.3, 0.55),
+			UDim2.fromScale(0.03 + (index - 1) * 0.32, 0.38),
+			function()
+				remotes.DevGrant:FireServer(grantKey)
+			end,
+			Color3.fromRGB(160, 55, 65)
+		)
+	end
+end
 local settings = C.Panel(gui, "Settings")
 local soundOn = true
 local soundGroup = C.New("SoundGroup", SoundService, { Name = "ToiletSounds" })
