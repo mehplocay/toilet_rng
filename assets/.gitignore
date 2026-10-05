@@ -1,0 +1,5 @@
+# Reproducible scratch files and Blender FBX importer texture extraction.
+blender/*.log
+blender/__pycache__/
+blender/generated/*.blend1
+models/**/*.fbm/
