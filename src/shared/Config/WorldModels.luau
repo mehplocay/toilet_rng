@@ -1,0 +1,45 @@
+-- Placement, runtime budgets and island art direction; no gameplay probabilities.
+return {
+	Seed = 73129,
+	PlazaTiles = { Color3.fromRGB(164, 195, 228), Color3.fromRGB(209, 228, 249) },
+	ItemNames = { Duck = "RubberDuck" },
+	ToiletNames = {
+		"BasicToilet",
+		"DirtyToilet",
+		"GoldenToilet",
+		"DiamondToilet",
+		"RadioactiveToilet",
+		"DemonToilet",
+		"GalaxyToilet",
+	},
+	Terrain = {
+		Extent = 320,
+		Bottom = -32,
+		Top = 96,
+		Chunk = 64,
+		Resolution = 4,
+		WaterLevel = -8,
+		PlateauRadius = 106,
+		ShoreRadius = 146,
+	},
+	PathColors = {
+		Color3.fromRGB(71, 218, 255),
+		Color3.fromRGB(182, 117, 255),
+		Color3.fromRGB(255, 121, 172),
+		Color3.fromRGB(255, 192, 71),
+		Color3.fromRGB(105, 235, 150),
+	},
+	Portals = {
+		{ Name = "Sewer", Angle = 0.31, Color = Color3.fromRGB(117, 255, 95) },
+		{ Name = "Space", Angle = 2.83, Color = Color3.fromRGB(173, 119, 255) },
+		{ Name = "Hell", Angle = 4.08, Color = Color3.fromRGB(255, 103, 80) },
+	},
+	PropScales = {
+		PalmTree = 2.4,
+		RoundBush = 1.3,
+		FlowerPack = 0.7,
+		Bench = 1.5,
+		LampPost = 1.35,
+		DisplayPedestal = 1.5,
+	},
+}

@@ -2,6 +2,8 @@ local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local Debris = game:GetService("Debris")
 local Models = require(script.Parent.Models)
+local MeshLoader = require(script.Parent.MeshLoader)
+local Decor = require(script.Parent.Builders.Decor)
 local P = require(game.ReplicatedStorage.Shared.Visuals.Primitives)
 local Visuals = require(game.ReplicatedStorage.Shared.Config.Visuals)
 local Hub = require(script.Parent.Builders.Hub)
@@ -15,6 +17,34 @@ local World = { Plots = {}, Assigned = {} }
 local byId = {}
 for _, item in ipairs(Items) do
 	byId[item.Id] = item
+end
+function World:RecordFlush(player, item)
+	local definition = byId[item.Id]
+	if definition ~= item or item.Chance <= (self.BestChance or 0) then
+		return
+	end
+	self.BestChance = item.Chance
+	local odds = tostring(item.Chance):reverse():gsub("(%d%d%d)", "%1,"):reverse():gsub("^,", "")
+	local text = "BEST FLUSH EVER\n"
+		.. player.DisplayName
+		.. "  •  "
+		.. item.Name
+		.. "\n"
+		.. item.Rarity
+		.. "  |  1 in "
+		.. odds
+	workspace:SetAttribute("BestFlushChance", item.Chance)
+	workspace:SetAttribute("BestFlushRarity", item.Rarity)
+	workspace:SetAttribute("BestFlushItemId", item.Id)
+	workspace:SetAttribute("BestFlushPlayer", player.DisplayName)
+	workspace:SetAttribute("BestFlushUserId", player.UserId)
+	workspace:SetAttribute("BestFlushEver", text)
+	if self.BestBoard then
+		self.BestBoard.Text = text
+		self.BestBoard.TextColor3 = if item.Rarity == "Secret"
+			then Visuals.Palette.Cyan
+			else Rarities[item.Rarity].Color
+	end
 end
 function World:Refresh(player, profile)
 	local plot = self.Assigned[player]
@@ -67,21 +97,18 @@ function World:RenderDisplays(plot)
 	local count = last - first + 1
 	for slot = first, last do
 		local cf = plot.CFrame * CFrame.new((slot - first - (count - 1) / 2) * 5.2, 0, -8)
-		local pedestal = P.Part(
-			plot.Displays,
-			"Slot" .. slot,
-			Vector3.new(3.9, 1.8, 3.9),
-			cf * CFrame.new(0, 0.9, 0),
-			Visuals.Palette.Navy
-		)
-		pedestal:SetAttribute("DisplaySlot", slot)
 		local item = byId[profile.Displays[tostring(slot)]]
 		local color = if item then Rarities[item.Rarity].Color else Visuals.Palette.Cyan
 		if item and item.Rarity == "Secret" then
 			color = Visuals.Palette.Cyan
 		end
-		P.Ring(plot.Displays, "PedestalGlow", cf * CFrame.new(0, 1.86, 0), 1.9, 1.9, 0.13, color, Enum.Material.Neon, 8)
-		Models.Label(pedestal, if item then item.Name .. "\n1/" .. item.Chance else "Display " .. slot, color, true)
+		Decor.Pedestal(
+			plot.Displays,
+			cf,
+			slot,
+			if item then item.Name .. "\n1/" .. item.Chance else "Display " .. slot,
+			color
+		)
 		if item then
 			Models.Item(plot.Displays, cf * CFrame.new(0, 2.8, 0), item)
 		end
@@ -152,6 +179,8 @@ function World:Assign(player)
 	player:Kick("All plots are occupied. Please join another server.")
 end
 function World:Animate(player, item, skipAnimation)
+	-- Called only after the server has awarded a validated flush result.
+	self:RecordFlush(player, item)
 	local plot = self.Assigned[player]
 	if not plot or not plot.Toilet then
 		return
@@ -227,8 +256,17 @@ function World:Start(data)
 	local root = Instance.new("Folder")
 	root.Name = "ToiletWorld"
 	root.Parent = workspace
+	MeshLoader.Preload()
+	require(script.Parent.Builders.Island).Build(workspace.Terrain)
 	require(script.Parent.Builders.Lighting).Build()
-	self.Board = Hub.Build(root)
+	self.Board, self.BestBoard = Hub.Build(root)
+	self.BestChance = 0
+	workspace:SetAttribute("BestFlushChance", 0)
+	workspace:SetAttribute("BestFlushRarity", "")
+	workspace:SetAttribute("BestFlushItemId", "")
+	workspace:SetAttribute("BestFlushPlayer", "")
+	workspace:SetAttribute("BestFlushUserId", 0)
+	workspace:SetAttribute("BestFlushEver", self.BestBoard.Text)
 	for index = 1, Style.PlotCount do
 		local angle = index * math.pi * 2 / Style.PlotCount
 		local position = Vector3.new(math.sin(angle) * Style.Radius, 0, math.cos(angle) * Style.Radius)

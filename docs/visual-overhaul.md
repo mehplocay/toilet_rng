@@ -1,5 +1,7 @@
 # Visual overhaul
 
+Historical primitive baseline. The world/model implementation is now described in [World models](world-models.md), which supersedes this page's geometry and count notes. The existing 2,499-part hub and 399-part plot budgets remain enforced.
+
 The hub uses lavender checkerboard paving, radial plot paths, a gold crowned King Poop trophy/fountain, toy trees, flowers, bushes, benches, lamps, fences and cloud puffs. A cyan pad marks spawn. Ten fenced lawns have wood-framed name boards, central paths, greenery and navy display stands with rarity rings.
 
 Seven toilet tiers share detailed bowl, open seat, lid, tank, base and flush handle geometry. Their materials are white plastic, stained cream plastic, gold metal, blue glass/ice, green Neon, black plastic/red Neon, and purple Neon. Diamond sparkles, reactor bubbles, Demon embers and Galaxy orbiting stars distinguish the later tiers. All eleven drops have recognizable geometry, eyes where appropriate, and rarity rings; Legendary+ add particles.

@@ -1,0 +1,63 @@
+-- Sizes copied from assets/manifest.json (Roblox X/Y/Z studs).
+-- Toilet centers preserve the common foot datum; measured from the generated Blender meshes.
+return {
+	Poop = { Size = Vector3.new(2.2473, 2.1735, 2.45), Triangles = 1744 },
+	ToiletPaper = { Size = Vector3.new(2.4, 1.8174, 2.0275), Triangles = 1472 },
+	Rat = { Size = Vector3.new(2.2823, 1.8291, 2.7), Triangles = 1980 },
+	Fish = { Size = Vector3.new(2.7, 1.5257, 1.0862), Triangles = 1220 },
+	RubberDuck = { Size = Vector3.new(1.6158, 1.6158, 2.5), Triangles = 1508 },
+	GoldenPoop = { Size = Vector3.new(2.2473, 2.1735, 2.45), Triangles = 1744 },
+	ToiletBaby = { Size = Vector3.new(1.67, 2.7, 1.6775), Triangles = 2380 },
+	SewerShark = { Size = Vector3.new(3.0, 2.0333, 1.1889), Triangles = 1384 },
+	KingPoop = { Size = Vector3.new(3.0, 2.7054, 2.3219), Triangles = 2460 },
+	AlienToilet = { Size = Vector3.new(1.707, 3.0, 1.9962), Triangles = 2432 },
+	Mystery = { Size = Vector3.new(2.8, 2.7449, 2.3806), Triangles = 1124 },
+	BasicToilet = {
+		Size = Vector3.new(2.34, 4.79, 2.9122),
+		Triangles = 2512,
+		Center = Vector3.new(0.000000, 2.395000, -0.181100),
+	},
+	DirtyToilet = {
+		Size = Vector3.new(2.9241, 4.79, 2.9122),
+		Triangles = 3560,
+		Center = Vector3.new(0.287963, 2.395000, -0.181100),
+	},
+	GoldenToilet = {
+		Size = Vector3.new(3.08, 4.79, 2.9122),
+		Triangles = 3220,
+		Center = Vector3.new(0.000000, 2.395000, -0.181100),
+	},
+	DiamondToilet = {
+		Size = Vector3.new(2.64, 4.79, 2.9122),
+		Triangles = 2700,
+		Center = Vector3.new(0.000000, 2.395000, -0.181100),
+	},
+	RadioactiveToilet = {
+		Size = Vector3.new(3.34, 4.79, 2.9122),
+		Triangles = 4880,
+		Center = Vector3.new(0.000000, 2.395000, -0.181100),
+	},
+	DemonToilet = {
+		Size = Vector3.new(3.5, 5.1802, 2.9122),
+		Triangles = 2904,
+		Center = Vector3.new(0.000000, 2.590094, -0.181100),
+	},
+	GalaxyToilet = {
+		Size = Vector3.new(3.1254, 4.8969, 2.9122),
+		Triangles = 3496,
+		Center = Vector3.new(0.017279, 2.448446, -0.181100),
+	},
+	PalmTree = { Size = Vector3.new(6.0, 6.1348, 6.0), Triangles = 1580 },
+	RoundBush = { Size = Vector3.new(2.71, 1.6236, 1.8116), Triangles = 1080 },
+	FlowerPack = { Size = Vector3.new(2.4259, 1.9693, 0.7614), Triangles = 2064 },
+	Bench = { Size = Vector3.new(3.84, 2.675, 1.55), Triangles = 1812 },
+	LampPost = { Size = Vector3.new(1.14, 5.95, 1.14), Triangles = 1152 },
+	WoodenFence = { Size = Vector3.new(4.1136, 2.46, 0.588), Triangles = 1192 },
+	GoldenTrophy = { Size = Vector3.new(4.4893, 9.0, 4.5282), Triangles = 3972 },
+	PlotSignboard = { Size = Vector3.new(3.91, 2.96, 0.6144), Triangles = 704 },
+	DisplayPedestal = { Size = Vector3.new(2.24, 1.2623, 2.24), Triangles = 796 },
+	CloudPuffs = { Size = Vector3.new(4.3116, 1.76, 1.56), Triangles = 784 },
+	PortalGate = { Size = Vector3.new(5.65, 6.26, 1.3), Triangles = 616 },
+	RocksCrystals = { Size = Vector3.new(3.2815, 1.88, 1.7537), Triangles = 288 },
+	ForegroundFoliage = { Size = Vector3.new(5.8474, 1.9171, 4.1882), Triangles = 440 },
+}

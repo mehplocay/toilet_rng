@@ -2,6 +2,7 @@ local P = require(game.ReplicatedStorage.Shared.Visuals.Primitives)
 local V = require(game.ReplicatedStorage.Shared.Config.Visuals).Palette
 local Decor = require(script.Parent.Decor)
 local Guidance = require(game.ReplicatedStorage.Shared.Config.PlotGuidance)
+local Settings = require(game.ReplicatedStorage.Shared.Config.WorldModels)
 local Plot = {}
 function Plot.Build(root, cf, index)
 	local model = Instance.new("Model")
@@ -25,10 +26,19 @@ function Plot.Build(root, cf, index)
 			if i % 2 == 0 then V.TileA else V.TileB
 		)
 	end
-	for _, x in ipairs({ -10, 10 }) do
-		P.Part(model, "SignPost", Vector3.new(0.7, 8, 0.7), cf * CFrame.new(x, 4, 11), V.Wood, nil, Enum.Material.Wood)
+	local color = Settings.PathColors[(index - 1) % #Settings.PathColors + 1]
+	for _, x in ipairs({ -3.2, 3.2 }) do
+		P.Part(
+			model,
+			"HomePathStrip",
+			Vector3.new(0.22, 0.1, 13),
+			cf * CFrame.new(x, 0.39, -6),
+			color,
+			nil,
+			Enum.Material.Neon
+		)
 	end
-	local sign = Decor.Sign(model, cf * CFrame.new(0, 8, 11), 24, 4.5, "Available Plot", Color3.new(1, 1, 1))
+	local sign = Decor.PlotSign(model, cf * CFrame.new(0, 0.2, 11))
 	sign.Parent.MaxDistance = Guidance.SignDistance
 	local toiletCF = cf * CFrame.new(0, 0.3, 0)
 	local position = (toiletCF * CFrame.new(Guidance.SpawnOffset)).Position
