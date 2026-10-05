@@ -26,9 +26,16 @@ function FlushService.Start(data, limiter, remotes, sync, world, events, monetiz
 		if not Rules.TryFlush(nextFlush, player, now, distance, cooldown, Monetization) then
 			return
 		end
-		local item = RollService.Roll(Items, Toilets, profile.ToiletTier, function()
+		local item, probability = RollService.Roll(Items, Toilets, profile.ToiletTier, function()
 			return random:NextNumber()
 		end, toilet.Luck * events:Multiplier() * monetization:Luck(player) * rewards:Luck(profile))
+		if
+			profile.Stats.Flushes >= 9e15
+			or (profile.Inventory[item.Id] or 0) >= 9e15
+			or (profile.Collection[item.Id] or 0) >= 9e15
+		then
+			return
+		end
 		local serviceCoins = ServiceCoins.Grant(profile, toilet)
 		if not serviceCoins then
 			return
@@ -38,11 +45,15 @@ function FlushService.Start(data, limiter, remotes, sync, world, events, monetiz
 		profile.Collection[item.Id] = (profile.Collection[item.Id] or 0) + 1
 		events:Trigger(player, item, profile.Stats.Flushes)
 		world:Animate(player, item, profile.Settings.SkipAnimation)
-		remotes.Result:FireClient(
-			player,
-			"Flush",
-			{ ItemId = item.Id, Cooldown = cooldown, ServiceCoins = serviceCoins }
-		)
+		remotes.Result:FireClient(player, "Flush", {
+			ItemId = item.Id,
+			Rarity = item.Rarity,
+			Chance = item.Chance,
+			Probability = probability,
+			FlushId = profile.Stats.Flushes,
+			Cooldown = cooldown,
+			ServiceCoins = serviceCoins,
+		})
 		sync(player)
 	end
 	task.spawn(function()

@@ -15,14 +15,28 @@ function EventService.new(config, clock, broadcast, luckChanged)
 	end
 
 	function self:Trigger(player, item, flushId)
-		if not item.Event or item.Chance < 100000 or flushId <= (self.Seen[player] or 0) then
+		if
+			type(flushId) ~= "number"
+			or flushId ~= flushId
+			or flushId % 1 ~= 0
+			or flushId > 9e15
+			or flushId <= (self.Seen[player] or 0)
+		then
 			return false
 		end
 		self.Seen[player] = flushId
+		if self.Observe then
+			self.Observe(player, item, flushId)
+		end
+		if not item.Event or item.Chance < 100000 then
+			return false
+		end
 		self.Expires = math.max(self.Expires, clock() + config.Duration)
 		luckChanged(self.Expires)
 		-- Luck refreshes immediately; each announcement waits for the global cooldown.
-		table.insert(self.Pending, { ItemId = item.Id, PlayerName = player.DisplayName })
+		if #self.Pending < config.QueueCap then
+			table.insert(self.Pending, { ItemId = item.Id, PlayerName = player.DisplayName })
+		end
 		self:Drain()
 		return true
 	end

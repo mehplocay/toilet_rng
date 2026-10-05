@@ -8,6 +8,8 @@ local folder = game.ReplicatedStorage:WaitForChild(definitions.Folder)
 local remotes = {}
 for _, name in ipairs({
 	"Flush",
+	"PresentationSettings",
+	"DropAnnouncement",
 	"State",
 	"Result",
 	"Sell",
@@ -191,7 +193,7 @@ ContextActionService:BindAction("CloseToiletPanel", function(_, state)
 end, false, Enum.KeyCode.ButtonB)
 require(script.UI.Tutorial).Create(player, remotes, hud, prompts)
 local effects = require(script.Effects).Create(hud.Frame, audio.SFX, hud)
-local reveal = require(script.UI.Reveal).Create(hud.Frame, hud)
+local presentation = require(script.Presentation.Controller).Start(root, hud, remotes, audio, settingsList)
 local showServiceCoins = require(script.UI.CoinPopup).Create(hud.Frame)
 local toast = C.Toast(root)
 local incomeChip = require(script.UI.IncomeChip).Create(hud.Frame)
@@ -224,8 +226,7 @@ remotes.Result.OnClientEvent:Connect(function(action, payload)
 		hud.Flushed(payload)
 		hud.Best(player.DisplayName, item)
 		showServiceCoins(payload.ServiceCoins)
-		effects.Drop(item)
-		reveal(item, skipAnimation)
+		presentation.Reveal(item, payload)
 	elseif action == "CollectIncome" then
 		toast(
 			if payload.Success then "+" .. C.Commas(payload.Coins) .. " display coins collected!" else payload.Message,
@@ -249,8 +250,11 @@ end)
 remotes.State.OnClientEvent:Connect(function(state)
 	skipAnimation, autoFlush = state.Settings.SkipAnimation == true, state.AutoFlush == true
 	audioSettings.Update(state.Settings)
+	presentation.Update(state.Settings)
 	skipToggle.Text = if skipAnimation then "Quick reveals: ON" else "Quick reveals: OFF"
-	effects.SetSkip(skipAnimation)
+	effects.SetSkip(
+		skipAnimation or state.Settings.RevealIntensity == "Reduced" or state.Settings.RevealIntensity == "Off"
+	)
 	hud.Update(state)
 	incomeChip.Update(state.PendingCoins or 0)
 	collection.Update(state)

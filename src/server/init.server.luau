@@ -8,6 +8,8 @@ folder.Name = definitions.Folder
 local remotes = {}
 for _, key in ipairs({
 	"Flush",
+	"PresentationSettings",
+	"DropAnnouncement",
 	"Sell",
 	"BuyToilet",
 	"Display",
@@ -88,6 +90,7 @@ local function sync(player)
 end
 world:Start(data)
 require(script.Services.FlushService).Start(data, limiter, remotes, sync, world, events, monetization, rewards)
+require(script.Services.PresentationService).Start(data, limiter, remotes, sync, events)
 rewards:Start(data, limiter, remotes, sync)
 require(script.Services.IndexService).Start(index, data, limiter, remotes, sync)
 require(script.Services.EconomyService).Start(data, limiter, remotes, sync)

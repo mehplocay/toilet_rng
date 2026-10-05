@@ -59,6 +59,30 @@ local Vector2 = {
 		return { X = x or 0, Y = y or 0 }
 	end,
 }
+local vector3MT = {}
+local Vector3 = {}
+function Vector3.new(x, y, z)
+	return setmetatable({ X = x or 0, Y = y or 0, Z = z or 0 }, vector3MT)
+end
+function vector3MT.__add(a, b)
+	return Vector3.new(a.X + b.X, a.Y + b.Y, a.Z + b.Z)
+end
+local frameMT = {}
+local CFrame = {}
+function CFrame.new(x, y, z)
+	return setmetatable({ Position = Vector3.new(x, y, z) }, frameMT)
+end
+function CFrame.Angles()
+	return CFrame.new()
+end
+function CFrame.lookAt(position)
+	local cf = CFrame.new()
+	cf.Position = position
+	return cf
+end
+function frameMT.__mul(a, b)
+	return CFrame.lookAt(a.Position + b.Position)
+end
 local UDim = {
 	new = function(s, o)
 		return { Scale = s or 0, Offset = o or 0 }
@@ -286,7 +310,7 @@ end
 local services = {
 	ProximityPromptService = { PromptTriggered = signal(), PromptShown = signal(), PromptHidden = signal() },
 	RunService = { Heartbeat = signal() },
-	UserInputService = { TouchEnabled = false, InputChanged = signal(), InputEnded = signal() },
+	UserInputService = { TouchEnabled = false, InputBegan = signal(), InputChanged = signal(), InputEnded = signal() },
 	TweenService = {},
 	ContentProvider = {},
 	Players = {},
@@ -294,6 +318,16 @@ local services = {
 }
 function services.RunService:IsStudio()
 	return true
+end
+H.RenderBindings = {}
+function services.RunService:BindToRenderStep(name, _, fn)
+	H.RenderBindings[name] = fn
+end
+function services.RunService:UnbindFromRenderStep(name)
+	H.RenderBindings[name] = nil
+end
+function services.Players:GetPlayers()
+	return H.PlayerList or { self.LocalPlayer }
 end
 function services.ContentProvider:PreloadAsync(values, callback)
 	table.insert(H.Preloads, values)
@@ -355,6 +389,8 @@ function game:GetService(name)
 	return services[name]
 end
 local workspace = Instance.new("Workspace")
+workspace.CurrentCamera = Instance.new("Camera")
+workspace.CurrentCamera.CFrame = CFrame.new()
 function workspace:GetServerTimeNow()
 	return 1800000000
 end
@@ -380,6 +416,8 @@ local globals = {
 	Instance = Instance,
 	Color3 = Color3,
 	Vector2 = Vector2,
+	Vector3 = Vector3,
+	CFrame = CFrame,
 	UDim = UDim,
 	UDim2 = UDim2,
 	ColorSequence = sequence,
@@ -427,6 +465,8 @@ function H.Remotes()
 	local remotes = {}
 	for _, name in ipairs({
 		"Flush",
+		"PresentationSettings",
+		"DropAnnouncement",
 		"State",
 		"Result",
 		"Sell",
@@ -695,6 +735,23 @@ function H.BootClient(remotes)
 	cache["src/shared/Visuals/Primitives"] = {
 		Particles = function()
 			return { Emit = function() end }
+		end,
+	}
+	cache["src/shared/Visuals/Items"] = {
+		Build = function(parent, _, item)
+			H.PreviewBuilds = (H.PreviewBuilds or 0) + 1
+			local model = Instance.new("Model")
+			model.Name, model.Parent = item.Id, parent
+			function model:GetBoundingBox()
+				return CFrame.new(), Vector3.new(4, 5, 3)
+			end
+			function model:GetPivot()
+				return CFrame.new()
+			end
+			function model:PivotTo(cf)
+				self.Pivot = cf
+			end
+			return model
 		end,
 	}
 	game.ReplicatedStorage.WaitForChild = function(_, name)

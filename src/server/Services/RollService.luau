@@ -50,6 +50,12 @@ function RollService.Sample(entries, sample)
 end
 function RollService.Roll(items, toilets, tier, sample, luckOverride)
 	local entries = RollService.Distribution(items, toilets, tier, luckOverride)
-	return RollService.Sample(entries, sample)
+	local item = RollService.Sample(entries, sample)
+	for _, entry in ipairs(entries) do
+		if entry.Item == item then
+			return item, entry.Probability
+		end
+	end
+	return item
 end
 return RollService
