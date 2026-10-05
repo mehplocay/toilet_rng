@@ -67,6 +67,58 @@ controller:Show(item("Mystery"), { FlushId = 8 })
 controller:Destroy()
 assert(not H.RenderBindings.FlushRevealShake and not controller.Queue.Active)
 
+-- Upgrade cadence exercises the production controller, including queued rare finds.
+for _, viewport in ipairs(H.Viewports) do
+	local fastRoot = H.Root(viewport[1], viewport[2])
+	local fast = H.Load("src/client/Presentation/RevealController").Create(fastRoot, {
+		Frame = fastRoot,
+		SetHintVisible = function() end,
+	}, { Play = function() end, Duck = function() end })
+	local id = 0
+	local function show(name, cooldown)
+		id += 1
+		fast:Show(item(name), { FlushId = id, Cooldown = cooldown })
+	end
+	show("Duck", 1.5)
+	assert(fast.Queue.Active.Tier == "Sparkle", "Base speed lost its tiered reveal")
+	H.Advance(1.21)
+	assert(not fast.Queue.Active)
+	for _, name in ipairs({ "Poop", "ToiletPaper", "Rat", "Duck" }) do
+		show(name, 0.4)
+		assert(not fast.Queue.Active and #fast.Queue.Pending == 0)
+		assert(fastRoot.RareReveal.CompactDrop.Visible, "Fast ordinary drop needs a compact toast")
+		H.Advance(0.401)
+	end
+	show("Mystery", 0.4)
+	for _ = 1, 20 do
+		show("GoldenPoop", 0.4)
+		show("Poop", 0.4)
+		show("Duck", 0.4)
+		assert(#fast.Queue.Pending <= 2 and fast.Queue.Active.Tier == "Cinematic")
+	end
+	assert(#fast.Queue.Pending == 2)
+	H.Layout(fastRoot)
+	local content = fastRoot.RareReveal.RevealContent
+	assert(content.Skip.AbsoluteSize.Y >= 44 and content.ItemViewport.AbsoluteSize.Y > 0)
+	assert(content.Skip.AbsolutePosition.X >= 0)
+	assert(content.Skip.AbsolutePosition.X + content.Skip.AbsoluteSize.X <= viewport[1])
+	assert(content.Skip.AbsolutePosition.Y + content.Skip.AbsoluteSize.Y <= viewport[2])
+	H.Snapshot(fastRoot, "fast-reveal-" .. viewport[1] .. "x" .. viewport[2])
+	H.Advance(3.01)
+	assert(fast.Queue.Active.Tier == "Banner" and #fast.Queue.Pending == 1)
+	H.Advance(2.01)
+	H.Advance(2.01)
+	assert(not fast.Queue.Active and #fast.Queue.Pending == 0)
+	fast:SetIntensity("Reduced")
+	show("Mystery", 0.4)
+	assert(not fast.Queue.Active and fastRoot.RareReveal.CompactDrop.Visible)
+	fast:SetIntensity("Off")
+	show("Mystery", 1.5)
+	assert(not fast.Queue.Active)
+	fast:Destroy()
+	fastRoot:Destroy()
+end
+
 local chatService = H.Services.TextChatService
 local channels = H.Instance.new("Folder")
 channels.Name, channels.Parent = "TextChannels", chatService

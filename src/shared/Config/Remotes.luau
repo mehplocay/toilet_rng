@@ -5,6 +5,7 @@ return {
 	Flush = "Flush",
 	Sell = "Sell",
 	BuyToilet = "BuyToilet",
+	BuyUpgrade = "BuyUpgrade",
 	Result = "Result",
 	Display = "Display",
 	CollectIncome = "CollectIncome",
@@ -24,6 +25,7 @@ return {
 	ClaimIndexReward = "ClaimIndexReward",
 	Limits = {
 		PresentationSettings = { Capacity = 3, Refill = 1 },
+		BuyUpgrade = { Capacity = 3, Refill = 1 },
 		CollectIncome = { Capacity = 1, Refill = 0.2 },
 		ClaimIndexReward = { Capacity = 3, Refill = 0.5 },
 		AnimationSkip = { Capacity = 3, Refill = 1 },
@@ -36,7 +38,7 @@ return {
 		AutoFlush = { Capacity = 3, Refill = 1 },
 		Display = { Capacity = 4, Refill = 2 },
 		State = { Capacity = 2, Refill = 0.5 },
-		Flush = { Capacity = 2, Refill = 1 },
+		Flush = { Capacity = 2, Refill = 3 }, -- Supports 0.4s cooldown; cooldown still gates every award.
 		Sell = { Capacity = 5, Refill = 2 },
 		BuyToilet = { Capacity = 3, Refill = 1 },
 		DevGrant = { Capacity = 2, Refill = 0.2 },

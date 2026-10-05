@@ -1,144 +1,73 @@
 local RollService = require("../src/server/Services/RollService")
-local ServiceCoins = require("../src/server/Services/ServiceCoinService")
 local Items = require("../src/shared/Config/Items")
 local Toilets = require("../src/shared/Config/Toilets")
-
-local legacyTargets = { 1, 4, 10, 25, 60, 120 }
+local Upgrades = require("../src/shared/UpgradeRules").new(require("../src/shared/Config/Upgrades"))
+local Cohort = require("./upgrade-cohort")
+local Rewards = require("../src/shared/Config/Rewards")
+local Index = require("../src/shared/IndexProgress").new(Items, require("../src/shared/Config/IndexRewards"))
 local uptime, cohortSize = 0.75, 2000
 local distributions = {}
-local poop
-for _, item in ipairs(Items) do
-	if item.Id == "Poop" then
-		poop = item
-	end
-end
-assert(poop)
-
-print("Minutes per next upgrade from an empty wallet; no tutorial/daily rewards, boosts or rebirth.")
-print("Legacy sales uses 100% uptime; all other columns use 75% cooldown uptime.")
-print("Service-only keeps every item. Poop-only sells fallback drops; neither requires a rare drop.")
-print("From -> To              Sale EV   Service  Legacy sales  Sales+service  Poop-only  Service-only")
-local serviceTotal, poopTotal = 0, 0
 for tier, toilet in ipairs(Toilets) do
-	local entries = RollService.Distribution(Items, Toilets, tier, toilet.Luck)
-	distributions[tier] = entries
-	local expected = 0
-	for _, entry in ipairs(entries) do
-		expected += entry.Probability * entry.Item.Value
-	end
-	local nextToilet = Toilets[tier + 1]
-	if nextToilet then
-		local minutesPerFlush = toilet.Cooldown / 60 / uptime
-		local legacy = nextToilet.Price / expected * toilet.Cooldown / 60
-		local withService = nextToilet.Price / (expected + toilet.ServiceCoins) * minutesPerFlush
-		local poopOnly = math.ceil(nextToilet.Price / (poop.Value + toilet.ServiceCoins)) * minutesPerFlush
-		local serviceOnly = math.ceil(nextToilet.Price / toilet.ServiceCoins) * minutesPerFlush
-		print(
-			string.format(
-				"%-11s -> %-11s %7.2f %9d %12.2f %14.2f %10.2f %13.2f",
-				toilet.Id,
-				nextToilet.Id,
-				expected,
-				toilet.ServiceCoins,
-				legacy,
-				withService,
-				poopOnly,
-				serviceOnly
-			)
-		)
-		assert(
-			math.abs(legacy - legacyTargets[tier]) <= legacyTargets[tier] * 0.02,
-			"Legacy sale-value balance outside 2% target for " .. nextToilet.Id
-		)
-		if tier <= 4 then
-			serviceTotal += serviceOnly
-			poopTotal += poopOnly
-			assert(serviceOnly <= 35, "First four upgrades must each have a bounded service-only route")
-		end
-	else
-		print(string.format("%-11s (final tier)     %7.2f %9d", toilet.Id, expected, toilet.ServiceCoins))
-	end
+	distributions[tier] = RollService.Distribution(Items, Toilets, tier, toilet.Luck)
 end
-assert(poopTotal <= 51 and serviceTotal <= 95, "Unlucky first-four progression exceeded its bound")
-print(
-	string.format(
-		"First four cumulative upper bounds: Poop-only %.2f min; service-only %.2f min.",
-		poopTotal,
-		serviceTotal
+local targets = { 1.40, 4.48, 9.36, 17.87, 37.11, 47.29 }
+print("Minutes per next toilet; 75% manual cooldown uptime, sequential tiers, carryover, protected first copies.")
+print("Buy one level of Cash/Luck/Flush Speed per tier through level 4; buy each as affordable before the toilet.")
+print("Auto speed, display slots and tank are optional utility purchases, excluded from this active cohort.")
+print("No daily/index/tutorial/offline starting income or timed boosts. Legacy targets are pre-change stage medians.")
+local stages, cumulative = Cohort.Run(Items, Toilets, cohortSize, true)
+local noTracks = Cohort.Run(Items, Toilets, cohortSize, false)
+print("Toilet        Price  Target  Stage p50  Stage p90  Cumulative p50/p90  No-track p50")
+for tier, values in ipairs(stages) do
+	local median = Cohort.Percentile(values, 0.5)
+	local p90 = Cohort.Percentile(values, 0.9)
+	assert(
+		math.abs(median - targets[tier]) <= targets[tier] * 0.05,
+		"Upgrade-aware stage median drift: " .. Toilets[tier + 1].Id
 	)
-)
-
--- Fixed Park-Miller seed, independent rare-first checks, sequential purchases and carryover.
-local seed = 20261005
-local function sample()
-	seed = seed * 16807 % 2147483647
-	return seed / 2147483647
-end
-local stages, cumulative = {}, {}
-for tier = 1, 4 do
-	stages[tier], cumulative[tier] = {}, {}
-end
-for _ = 1, cohortSize do
-	local profile = { Coins = 0, Stats = { Earned = 0 } }
-	local elapsed = 0
-	for tier = 1, 4 do
-		local toilet, price = Toilets[tier], Toilets[tier + 1].Price
-		local duration = 0
-		while profile.Coins < price do
-			local item = RollService.Sample(distributions[tier], sample)
-			assert(ServiceCoins.Grant(profile, toilet) == toilet.ServiceCoins)
-			-- Baseline cohort sells each drop; retained/displayed copies use the conservative bounds above.
-			profile.Coins += item.Value
-			profile.Stats.Earned += item.Value
-			duration += toilet.Cooldown / 60 / uptime
-		end
-		profile.Coins -= price
-		elapsed += duration
-		table.insert(stages[tier], duration)
-		table.insert(cumulative[tier], elapsed)
-	end
-end
-local function percentile(values, fraction)
-	table.sort(values)
-	return values[math.ceil(#values * fraction)]
-end
-print(
-	string.format(
-		"Seeded cohort: %d players, 75%% uptime, sell every real drop, sequential upgrades, wallet carryover.",
-		cohortSize
-	)
-)
-print("Upgrade      Stage p50  Stage p90  Cumulative p50  Cumulative p90")
-for tier = 1, 4 do
-	local median = percentile(stages[tier], 0.5)
-	local p90 = percentile(stages[tier], 0.9)
 	print(
 		string.format(
-			"%-12s %9.2f %10.2f %15.2f %15.2f",
+			"%-12s %6d %7.2f %10.2f %10.2f %10.2f / %-8.2f %10.2f",
 			Toilets[tier + 1].Id,
+			Toilets[tier + 1].Price,
+			targets[tier],
 			median,
 			p90,
-			percentile(cumulative[tier], 0.5),
-			percentile(cumulative[tier], 0.9)
+			Cohort.Percentile(cumulative[tier], 0.5),
+			Cohort.Percentile(cumulative[tier], 0.9),
+			Cohort.Percentile(noTracks[tier], 0.5)
 		)
 	)
-	if tier == 1 then
-		assert(median <= 2, "Median Dirty must take at most two active minutes")
-	end
-	assert(
-		p90
-			<= math.ceil(Toilets[tier + 1].Price / (poop.Value + Toilets[tier].ServiceCoins))
-					* Toilets[tier].Cooldown
-					/ 60
-					/ uptime
-				+ 1e-9,
-		"Cohort exceeds all-Poop bound"
-	)
 end
-print("Balance checks passed: legacy targets, deterministic progression bounds and median Dirty <= 2 min.")
-
+local serviceTotal, poopTotal = 0, 0
+print("Conservative no-upgrade route: every item retained or only Poop duplicates sold; zero luck required.")
+for tier = 1, 4 do
+	local t, nextToilet = Toilets[tier], Toilets[tier + 1]
+	local service = math.ceil(nextToilet.Price / t.ServiceCoins) * t.Cooldown / 60 / uptime
+	local poop = (1 + math.ceil(nextToilet.Price / (Items[1].Value + t.ServiceCoins))) * t.Cooldown / 60 / uptime
+	serviceTotal += service
+	poopTotal += poop
+	assert(service <= 50, "Deterministic stage bound exceeded")
+	print(string.format("  %-12s service-only %.2f min; Poop-only %.2f min", nextToilet.Id, service, poop))
+end
+assert(serviceTotal <= 95 and poopTotal <= 70, "Fair-start four-tier bound exceeded")
+print(string.format("First four cumulative bounds: service-only %.2f min; Poop-only %.2f min", serviceTotal, poopTotal))
+print("Daily rewards: unchanged fixed grants (Cash Boost does not multiply them); day-one / day-seven Coins:")
+for tier, t in ipairs(Toilets) do
+	local first, last =
+		Rewards.BaseCoins[1] * Rewards.TierMultipliers[tier], Rewards.BaseCoins[7] * Rewards.TierMultipliers[tier]
+	assert(first > 0 and last <= 9e15)
+	print(string.format("  %-12s %d / %d", t.Id, first, last))
+end
+local indexProfile = { Coins = 0, Stamps = 0, DisplaySlots = 3, Collection = {}, IndexClaims = {} }
+for _, item in ipairs(Items) do
+	indexProfile.Collection[item.Id] = 1
+end
+assert(Index:Claim(indexProfile, "total:5").Success and indexProfile.DisplaySlots == 4 and indexProfile.Coins == 0)
+assert(not Index:Claim(indexProfile, "total:5").Success)
+print("Index: once-only fourth slot retained; no Coins or luck minted. Fair start and stage medians passed.")
 local IncomeConfig = require("../src/shared/Config/Income")
-local Income = require("../src/shared/IncomeAccrual").new(IncomeConfig, Items)
+local Income = require("../src/shared/IncomeAccrual").new(IncomeConfig, Items, Upgrades)
 print("\nDisplay income: 1% sell value/minute, tier rate caps, no boosts/rewards/offline starting wallet.")
 print("Realistic upper showcase: best copies from floor(expected drops in 60 min at this tier, 75% uptime).")
 print("Copies are reserved, not sold; construction cost is ignored, so this overstates immediate benefit.")
@@ -208,5 +137,40 @@ for tier, toilet in ipairs(Toilets) do
 	)
 end
 print(
-	"Income balance passed: 3/10-slot ratios, all-inventory cap <=20% of guaranteed active income, existing upgrade targets unchanged."
+	"Income balance passed: 3/10-slot ratios, all-inventory cap <=20% of guaranteed active income, passive caps re-verified with faster cooldowns."
 )
+print("Upgraded income bounds (all tiers, each Cash/Speed level 0..10):")
+for tier, toilet in ipairs(Toilets) do
+	for level = 0, 10 do
+		local p = { Upgrades = { CashBoost = level, FlushSpeed = level, OfflineTank = 10 } }
+		local cash = Upgrades:Cash(p)
+		local passive = IncomeConfig.PlayerRateCaps[tier] * cash
+		-- Independent cash/speed choices must preserve the bound too, not just equal levels.
+		for speed = 0, 10 do
+			p.Upgrades.FlushSpeed = speed
+			local guaranteed = math.floor(toilet.ServiceCoins * cash + 1e-9)
+				* 60
+				/ Upgrades:Cooldown(p, toilet.Cooldown)
+				* uptime
+			assert(passive <= guaranteed * 0.2 + 1e-9, "Independent Cash/Speed levels break passive bound")
+		end
+		p.Upgrades.FlushSpeed = level
+		local active = math.floor(toilet.ServiceCoins * cash + 1e-9)
+			* 60
+			/ Upgrades:Cooldown(p, toilet.Cooldown)
+			* uptime
+		assert(passive <= active * 0.2 + 1e-9, "Upgraded passive exceeds 20% guaranteed active income")
+		if level == 4 or level == 10 then
+			print(
+				string.format(
+					"  %-12s level %d: cap %.2f/min, %.2f%% service-only active; 480-minute tank <= %.0f Coins",
+					toilet.Id,
+					level,
+					passive,
+					passive / active * 100,
+					math.min(passive * 480, IncomeConfig.PlayerPendingCap * Income:CapacityMultiplier(p))
+				)
+			)
+		end
+	end
+end

@@ -2,6 +2,10 @@
 local Layout = loadModule(node("src/shared/Config/MapLayout"))
 local Chooser = loadModule(node("src/shared/PlotChooser"))
 assert(#Layout.Plots == 12 and #Layout.Slots == 10)
+assert(
+	loadModule(node("src/shared/Config/Upgrades")).DisplayCapacity == #Layout.Slots,
+	"Coin upgrades exceed physical plot capacity"
+)
 assert(Layout.PlotWidth * Layout.PlotDepth == 2.5 * 32 * 36)
 assert(Layout.PromenadeWidth >= 24 and Layout.HubRadius >= 90)
 local function distance(a, b)

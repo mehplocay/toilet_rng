@@ -3,6 +3,21 @@ local C = H.Load("src/client/UI/Components")
 local Assets = H.Load("src/shared/Config/Assets")
 local Items = H.Load("src/shared/Config/Items")
 local root, remotes = H.Root(1280, 684), H.Remotes()
+-- Shared by the shop, upgrade and presentation suites bundled by check-ui.ps1.
+H.Viewports = {
+	{ 1920, 1044 },
+	{ 1280, 684 },
+	{ 375, 690 },
+	{ 724, 318 },
+	{ 1024, 712 },
+	{ 768, 968 },
+	{ 1116, 483 },
+	{ 711, 751 },
+	{ 711, 731 },
+	{ 360, 518 },
+	{ 390, 722 },
+	{ 640, 303 },
+}
 assert(#expectedIcons == 37, "Incomplete icon manifest")
 for _, icon in ipairs(expectedIcons) do
 	assert(Assets[icon.Group][icon.Key] == icon.Id, "Wrong upload mapping: " .. icon.Group .. "." .. icon.Key)
@@ -185,18 +200,7 @@ local shopConfig = H.Load("src/shared/Config/Shop")
 local passConfig = H.Load("src/shared/Config/Monetization")
 local offerGrid = passes.Panel:FindFirstChild("OfferGrid", true)
 passes.Panel.Visible = true
-for _, viewport in ipairs({
-	{ 1920, 1044 },
-	{ 1280, 684 },
-	{ 375, 690 },
-	{ 724, 318 },
-	{ 1024, 712 },
-	{ 768, 968 },
-	{
-		1116,
-		483,
-	},
-}) do
+for _, viewport in ipairs(H.Viewports) do
 	root._fixed, root._abs = { X = viewport[1], Y = viewport[2] }, nil
 	root:GetPropertyChangedSignal("AbsoluteSize"):Fire()
 	H.Layout(root)

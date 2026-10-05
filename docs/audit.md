@@ -1,5 +1,13 @@
 # Security and exploit audit
 
+Upgrade-tracks follow-up (2026-10-05, `feature/upgrades`): `BuyUpgrade(trackId, expectedLevel)`
+uses a 3-token / 1-per-second bucket, server pricing and a non-yielding level/coin transaction.
+Stale levels cannot buy twice. Save and lease checks precede success; levels, expanded offline
+capacity and index/display order are covered by the extended **48-case** audit harness.
+Flush now refills 3 tokens/second, keeps capacity 2, caps total luck at 5x and enforces a shared
+0.4s cooldown floor. All affected item/stat ceilings reject before a partial flush award.
+Contracts, balance assumptions and durability limits: [upgrade review](design/upgrades.md).
+
 Passive-income follow-up (2026-10-05, `feature/income`): adds no-argument `CollectIncome`
 (capacity 1, refill 0.2/s), validating own plot, living character, finite proximity and
 the existing session lease. `IncomePending` is outbound-only. Whole-coin collection

@@ -1,10 +1,12 @@
 local Items = require(game.ReplicatedStorage.Shared.Config.Items)
 local Toilets = require(game.ReplicatedStorage.Shared.Config.Toilets)
 local SafeInventory = require(game.ReplicatedStorage.Shared.SafeInventory)
+local upgrades =
+	require(game.ReplicatedStorage.Shared.UpgradeRules).new(require(game.ReplicatedStorage.Shared.Config.Upgrades))
 local EconomyService = {}
 
 function EconomyService.Sell(profile, id, count)
-	return SafeInventory.Sell(profile, Items, id, count)
+	return SafeInventory.Sell(profile, Items, id, count, upgrades:Cash(profile))
 end
 
 function EconomyService.BuyToilet(profile, id)

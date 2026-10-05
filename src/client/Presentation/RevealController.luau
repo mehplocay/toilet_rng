@@ -238,6 +238,18 @@ function Controller.Create(root, hud, audio)
 		if not tier then
 			return
 		end
+		local cooldown = payload and payload.Cooldown
+		-- Fast flushes stay readable without accumulating ordinary reveal animations.
+		-- Rare moments retain their full duration and the bounded big-reveal queue.
+		if
+			not Rules.Big(tier)
+			and type(cooldown) == "number"
+			and cooldown > 0
+			and cooldown < math.huge
+			and Config.Duration[tier] >= cooldown
+		then
+			tier = "Toast"
+		end
 		local probability = payload and payload.Probability
 		local entry = {
 			Item = item,

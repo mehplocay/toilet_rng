@@ -7,6 +7,11 @@ All gameplay text is English. Placeholder geometry and colors are configured in
 
 ## Remote contract
 
+Permanent upgrades add `BuyUpgrade(trackId, expectedLevel)` (coins only, server price,
+stale-level replay rejection) and State fields `Upgrades` / `UpgradeStats`. Current cooldowns,
+total luck cap, save migration and rebalanced prices supersede the provisional values below;
+see [upgrade tracks](design/upgrades.md).
+
 Client requests: `Flush()`, `Sell(itemId, integerCount)`, `BuyToilet(toiletId)`,
 `Display(itemIdOrNil, integerSlot)`, and `State()` for an initial snapshot.
 `Display(nil, slot)` removes a display. Each displayed copy reserves one owned

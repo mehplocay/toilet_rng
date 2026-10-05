@@ -1,4 +1,4 @@
-﻿# Run production builders with engine-boundary mocks; never contacts Roblox.
+# Run production builders with engine-boundary mocks; never contacts Roblox.
 param(
     [ValidateSet('Empty','Ready','Mixed','Invalid','Scaled','Late')][string]$MeshMode = 'Ready',
     [switch]$World,
@@ -12,6 +12,7 @@ $harness += Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'world-harnes
 $modulePaths = @(
     'src/shared/Config/MapLayout.luau', 'src/server/World/Kit.luau', 'src/server/World/DisplayRows.luau',
     'src/shared/IncomeAccrual.luau', 'src/shared/LeaderboardStats.luau',
+    'src/shared/UpgradeRules.luau', 'src/shared/Config/Upgrades.luau',
     'src/shared/Config/Income.luau', 'src/server/World/IncomeDisplay.luau',
     'src/shared/Config/Assets.luau', 'src/shared/Config/MeshCatalog.luau', 'src/shared/Config/WorldModels.luau',
     'src/shared/Config/Visuals.luau', 'src/shared/Config/World.luau',

@@ -14,6 +14,7 @@ for _, name in ipairs({
 	"Result",
 	"Sell",
 	"BuyToilet",
+	"BuyUpgrade",
 	"Display",
 	"CollectIncome",
 	"IncomePending",
@@ -242,7 +243,7 @@ remotes.Result.OnClientEvent:Connect(function(action, payload)
 	end
 	if payload.Success == false then
 		audio:Play("Error")
-	elseif payload.Success == true and (action == "BuyToilet" or action == "BuyPass") then
+	elseif payload.Success == true and (action == "BuyToilet" or action == "BuyPass" or action == "BuyUpgrade") then
 		audio:Play("PurchaseSuccess")
 	elseif payload.Success == true and action == "Sell" then
 		audio:Play("CoinCollect")

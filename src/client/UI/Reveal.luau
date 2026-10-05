@@ -3,6 +3,8 @@ local Layout = require(script.Parent.Layout)
 local Preview = require(script.Parent.Preview)
 local Rarities = require(game.ReplicatedStorage.Shared.Config.Rarities)
 local UserInputService = game:GetService("UserInputService")
+local upgrades =
+	require(game.ReplicatedStorage.Shared.UpgradeRules).new(require(game.ReplicatedStorage.Shared.Config.Upgrades))
 local Reveal = {}
 function Reveal.Create(parent, hud)
 	local frame = C.Card(parent, C.Gold, true)
@@ -21,7 +23,7 @@ function Reveal.Create(parent, hud)
 	parent:GetPropertyChangedSignal("AbsoluteSize"):Connect(resize)
 	resize()
 	local generation = 0
-	return function(item, skip)
+	return function(item, skip, cooldown)
 		generation += 1
 		local token = generation
 		local color = if item.Rarity == "Secret" then C.Purple else Rarities[item.Rarity].Color
@@ -33,7 +35,8 @@ function Reveal.Create(parent, hud)
 		end
 		icon = Preview.Create(frame, UDim2.fromScale(0.25, 0.75), UDim2.fromScale(0.025, 0.12), item)
 		frame.Visible = true
-		local duration = if skip then 1 else 2.4
+		local duration =
+			math.min(if skip then 0.15 else math.huge, upgrades:Animation(cooldown or upgrades.Config.CooldownFloor))
 		if Rarities[item.Rarity].Order >= 4 then
 			if C.SoundHook then
 				C.SoundHook(item.Rarity)

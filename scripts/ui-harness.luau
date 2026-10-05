@@ -479,6 +479,7 @@ function H.Remotes()
 		"Result",
 		"Sell",
 		"BuyToilet",
+		"BuyUpgrade",
 		"Display",
 		"CollectIncome",
 		"IncomePending",

@@ -20,6 +20,8 @@ foreach ($file in (Get-ChildItem -LiteralPath (Join-Path $workspaceRoot 'src') -
 $parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'audit-harness.luau')))
 $parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'presentation-audit.luau')))
 $parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'check-audit.luau')))
+$parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'audit-upgrades.luau')))
+$parts.Add('print(string.format("Audit regressions: %d passed, %d failed", passed, #failures)); assert(#failures == 0, table.concat(failures, "\n"))')
 try {
     [System.IO.File]::WriteAllText($generatedPath, ($parts -join "`n"), [System.Text.UTF8Encoding]::new($false))
     & luau $generatedPath

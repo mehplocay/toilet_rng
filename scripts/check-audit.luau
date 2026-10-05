@@ -440,6 +440,7 @@ test("all actual inbound handlers reject extra arguments and outbound remotes do
 		Flush = {},
 		Sell = { "Poop", 1 },
 		BuyToilet = { "Dirty" },
+		BuyUpgrade = { "CashBoost", 0 },
 		Display = { "Poop", 1 },
 		CollectIncome = {},
 		ClaimReward = {},
@@ -489,8 +490,9 @@ test("economic argument fuzzing cannot change balances or reserved copies", func
 	assert(economy.Sell(profile, "Poop", 1))
 	assert(not economy.Sell(profile, "Poop", 1))
 	assert(display.Set(profile, nil, 1) and economy.Sell(profile, "Poop", 1))
-	assert(profile.Inventory.Poop == 1 and profile.Coins == 10 and profile.Stats.Earned == 10)
-	profile.Coins = 190
+	local poopValue = e:Load("src/shared/Config/Items")[1].Value
+	assert(profile.Inventory.Poop == 1 and profile.Coins == 2 * poopValue and profile.Stats.Earned == 2 * poopValue)
+	profile.Coins = e:Load("src/shared/Config/Toilets")[2].Price
 	assert(not economy.BuyToilet(profile, "Golden") and economy.BuyToilet(profile, "Dirty"))
 	assert(not economy.BuyToilet(profile, "Dirty") and profile.Coins == 0 and profile.ToiletTier == 2)
 end)
@@ -502,7 +504,8 @@ test("server handlers enforce token limits and preference types", function()
 	for _ = 1, 100 do
 		e:Fire("Sell", player, "Poop", 1)
 	end
-	assert(profile.Inventory.Poop == 15 and profile.Coins == 25)
+	local soldValue = 5 * e:Load("src/shared/Config/Items")[1].Value
+	assert(profile.Inventory.Poop == 15 and profile.Coins == soldValue)
 	local count = #e.Results
 	for _ = 1, 100 do
 		e:Fire("State", player)
@@ -515,7 +518,7 @@ test("server handlers enforce token limits and preference types", function()
 	assert(profile.Settings.Sound)
 	e:Fire("Settings", player, false)
 	e:Fire("TutorialDone", player)
-	assert(not profile.Settings.Sound and profile.TutorialDone and profile.Coins == 25)
+	assert(not profile.Settings.Sound and profile.TutorialDone and profile.Coins == soldValue)
 	e:Fire("AutoFlush", player, true)
 	assert(not e:Load("src/server/Services/MonetizationService").Auto[player])
 end)
@@ -565,6 +568,7 @@ test("manual, prompt and auto flush share cooldown and server-owned RNG", functi
 	local player, profile = e:Join(22)
 	local monetization = e:Load("src/server/Services/MonetizationService")
 	profile.Stats.Flushes = 100 -- Free unlock uses successful lifetime flushes, not a pass.
+	profile.Upgrades.AutoFlushSpeed = 10 -- Full track ticks at the shared cooldown.
 	monetization.Owned[player] = { FastFlush = true }
 	local cooldown = e:Load("src/shared/Config/Toilets")[1].Cooldown * 0.8
 	e:Fire("AutoFlush", player, true)
@@ -728,7 +732,7 @@ test("income migration, offline cap and ambiguous acquisition consume time once"
 	local e = environment()
 	local data, player = e:Load(dataPath), e:Player(50)
 	local start = e.Now
-	e.Store.Records.Player_50 = { Data = { Inventory = { Fish = 1 }, Displays = { ["1"] = "Fish" } } }
+	e.Store.Records.Player_50 = { Data = { Inventory = { Duck = 1 }, Displays = { ["1"] = "Duck" } } }
 	data:Load(player)
 	local p = data:Get(player)
 	assert(p.Income.UpdatedAt == start and next(p.Income.Pending) == nil, "Migration granted retroactive income")
@@ -754,15 +758,15 @@ end)
 test("income settles before display removal, replacement and tier change; reservations remain", function()
 	local e = server()
 	local player, p = e:Join(51)
-	p.Inventory.Fish, p.Inventory.Poop = 1, 2
-	e:Fire("Display", player, "Fish", 1)
+	p.Inventory.Duck, p.Inventory.Poop = 1, 2
+	e:Fire("Display", player, "Duck", 1)
 	e.Now += 60
 	e:Fire("Display", player, nil, 1)
 	assert(p.Income.Pending["1"] == 6000)
 	e:Fire("Display", player, "Poop", 1)
 	e.Now += 60
 	e:Fire("State", player)
-	assert(p.Income.Pending["1"] == 6300)
+	assert(p.Income.Pending["1"] == 6120)
 	e:Fire("Sell", player, "Poop", 2)
 	assert(p.Inventory.Poop == 2, "Sale consumed reserved/first copy")
 	e:Fire("Sell", player, "Poop", 1)
@@ -770,17 +774,17 @@ test("income settles before display removal, replacement and tier change; reserv
 	e:Fire("Display", player, nil, 1)
 	e.Now += 10
 	e:Fire("State", player)
-	assert(p.Income.Pending["1"] == 6300, "Empty slot earned income")
+	assert(p.Income.Pending["1"] == 6120, "Empty slot earned income")
 	e:Fire("Sell", player, "Poop", 1)
 	assert(p.Inventory.Poop == 1, "First-copy protection changed")
-	e:Fire("Display", player, "Fish", 1)
+	e:Fire("Display", player, "Duck", 1)
 	p.Coins = 1000
 	e.Now += 10
 	e:Fire("BuyToilet", player, "Dirty")
-	assert(p.ToiletTier == 2 and p.Income.Pending["1"] == 7300)
+	assert(p.ToiletTier == 2 and p.Income.Pending["1"] == 7120)
 	e.Now += 20
 	e:Fire("State", player)
-	assert(p.Income.Pending["1"] == 9800, "New tier cap applied retroactively")
+	assert(p.Income.Pending["1"] == 11120, "New tier cap applied retroactively")
 end)
 
 test("income collect validates geometry, ownership, life, arguments and shared rate limit", function()
@@ -924,7 +928,7 @@ test("income departure timestamp freezes before a queued final save yields", fun
 	local data, player = e:Load(dataPath), e:Player(56)
 	data:Load(player)
 	local p = data:Get(player)
-	p.Inventory.Fish, p.Displays["1"] = 1, "Fish"
+	p.Inventory.Duck, p.Displays["1"] = 1, "Duck"
 	e.Store.Before = function()
 		coroutine.yield("autosave held")
 	end
@@ -949,5 +953,3 @@ test("income departure timestamp freezes before a queued final save yields", fun
 end)
 
 runPresentationAudit(test, environment, server)
-print(string.format("Audit regressions: %d passed, %d failed", passed, #failures))
-assert(#failures == 0, table.concat(failures, "\n"))

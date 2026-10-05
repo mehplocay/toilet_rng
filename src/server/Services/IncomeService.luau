@@ -1,6 +1,10 @@
 local Shared = game.ReplicatedStorage.Shared
 local Config = require(Shared.Config.Income)
-local accounting = require(Shared.IncomeAccrual).new(Config, require(Shared.Config.Items))
+local accounting = require(Shared.IncomeAccrual).new(
+	Config,
+	require(Shared.Config.Items),
+	require(Shared.UpgradeRules).new(require(Shared.Config.Upgrades))
+)
 local IncomeService = {}
 function IncomeService.Start(data, limiter, remotes, sync, world)
 	remotes.CollectIncome.OnServerEvent:Connect(function(player, ...)

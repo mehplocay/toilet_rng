@@ -8,9 +8,18 @@ function Upgrades.Create(gui, remotes)
 	local body = panel.ContentScroll.Body
 	local wallet = C.Text(body, "Better toilets. Bigger possibilities!", UDim2.new(1, 0, 0, 32), nil, 24)
 	wallet.TextColor3 = Color3.fromRGB(153, 255, 143)
-	local row = C.Scroll(body, UDim2.new(1, 0, 1, -72), UDim2.fromOffset(0, 38))
+	local footer =
+		C.BodyText(body, "Better toilets = new drops + higher odds!", UDim2.new(1, 0, 0, 26), UDim2.new(0, 0, 1, -26))
+	local row = C.Scroll(body, UDim2.new(1, 0, 1, -146), UDim2.fromOffset(0, 110))
+	local tracks = require(script.Parent.UpgradeTracks).Create(body, remotes)
+	local tabs = C.TabBar(body, { "Toilets", "Coin Upgrades" }, function(name)
+		row.Visible, tracks.Frame.Visible = name == "Toilets", name == "Coin Upgrades"
+		footer.Text = if name == "Toilets"
+			then "Better toilets = new drops + higher odds!"
+			else "Permanent upgrades. Coins only!"
+	end)
+	tabs.Frame.Position = UDim2.fromOffset(0, 38)
 	C.Grid(row, 144, 310)
-	C.BodyText(body, "Better toilets = new drops + higher odds!", UDim2.new(1, 0, 0, 26), UDim2.new(0, 0, 1, -26))
 	local buttons, bars, marks = {}, {}, {}
 	for tier, toilet in ipairs(Toilets) do
 		local color = Style.ToiletColors[tier]
@@ -39,6 +48,7 @@ function Upgrades.Create(gui, remotes)
 	return {
 		Panel = panel,
 		Update = function(state)
+			tracks.Update(state)
 			wallet.Text = C.Commas(state.Coins) .. " Coins  |  Tier " .. state.ToiletTier .. "/" .. #Toilets
 			for tier, button in ipairs(buttons) do
 				button.Text = if tier <= state.ToiletTier

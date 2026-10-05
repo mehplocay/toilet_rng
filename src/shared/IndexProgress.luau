@@ -12,8 +12,8 @@ local function integer(value)
 		else 0
 end
 
-function Index.new(items, config)
-	local self = setmetatable({ Items = items, Config = config, Rewards = {}, ById = {} }, Index)
+function Index.new(items, config, upgrades)
+	local self = setmetatable({ Items = items, Config = config, Upgrades = upgrades, Rewards = {}, ById = {} }, Index)
 	local totals, known = {}, {}
 	for _, item in ipairs(items) do
 		totals[item.Rarity] = (totals[item.Rarity] or 0) + 1
@@ -105,7 +105,10 @@ function Index:Sanitize(profile, raw)
 				profile.IndexCosmetics[reward.Cosmetic] = true
 			end
 			if reward.DisplaySlots then
-				profile.DisplaySlots = math.max(profile.DisplaySlots, reward.DisplaySlots)
+				local slots = if self.Upgrades
+					then self.Upgrades:IndexSlots(profile, reward.DisplaySlots)
+					else reward.DisplaySlots
+				profile.DisplaySlots = math.max(profile.DisplaySlots, slots)
 			end
 		end
 	end
@@ -127,7 +130,10 @@ function Index:Claim(profile, id)
 	profile.IndexClaims[id] = true
 	profile.Stamps = stamps + (reward.Stamps or 0)
 	if reward.DisplaySlots then
-		profile.DisplaySlots = math.max(profile.DisplaySlots, reward.DisplaySlots)
+		local slots = if self.Upgrades
+			then self.Upgrades:IndexSlots(profile, reward.DisplaySlots)
+			else reward.DisplaySlots
+		profile.DisplaySlots = math.max(profile.DisplaySlots, slots)
 	end
 	if reward.Cosmetic then
 		profile.IndexCosmetics[reward.Cosmetic] = true

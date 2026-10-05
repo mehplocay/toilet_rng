@@ -6,6 +6,7 @@ local C = require(script.Parent.UI.Components)
 local Layout = require(script.Parent.UI.Layout)
 local P = require(game.ReplicatedStorage.Shared.Visuals.Primitives)
 local Visuals = require(Config.Visuals)
+local upgrades = require(game.ReplicatedStorage.Shared.UpgradeRules).new(require(Config.Upgrades))
 local Effects = {}
 function Effects.Create(gui, _soundGroup, hud)
 	local generation, skipAnimation = 0, false
@@ -18,7 +19,7 @@ function Effects.Create(gui, _soundGroup, hud)
 	gui:GetPropertyChangedSignal("AbsoluteSize"):Connect(resize)
 	resize()
 	local tint = C.New("ColorCorrectionEffect", Lighting, { Name = "RareDropTint" })
-	local function drop(item)
+	local function drop(item, cooldown)
 		if skipAnimation then
 			return
 		end
@@ -36,7 +37,7 @@ function Effects.Create(gui, _soundGroup, hud)
 				Acceleration = Vector3.new(0, -10, 0),
 			})
 			particles:Emit(Visuals.Budget.Burst)
-			Debris:AddItem(attachment, 3)
+			Debris:AddItem(attachment, upgrades:Animation(cooldown or upgrades.Config.CooldownFloor))
 		end
 	end
 	return {
