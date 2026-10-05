@@ -6,7 +6,7 @@ local Preview = {}
 function Preview.Create(parent, size, position, item, tier, silhouette)
 	local frame =
 		C.New("Frame", parent, { Name = "Preview", Size = size, Position = position, BackgroundTransparency = 1 })
-	local kind = if silhouette then "Locked" elseif item then item.Id else "Flush"
+	local kind = if silhouette then "Lock" elseif item then item.Id else "Flush"
 	local id = if silhouette
 		then nil
 		elseif item then (Assets.ItemIcons or {})[item.Id]

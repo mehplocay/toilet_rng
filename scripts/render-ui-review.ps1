@@ -2,6 +2,16 @@
 param([string]$SnapshotDirectory = '.ui-review', [string]$FontDirectory)
 $ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName System.Drawing
+$workspaceRoot = Split-Path $PSScriptRoot -Parent
+$manifest = Get-Content -Raw -LiteralPath (Join-Path $workspaceRoot 'assets/icons/manifest.json') | ConvertFrom-Json
+$uploads = Get-Content -Raw -LiteralPath (Join-Path $workspaceRoot 'assets/icons/uploaded-ids.json') | ConvertFrom-Json
+$iconImages = @{}
+foreach ($asset in $manifest.assets) {
+    if ($asset.config_key -and $asset.size[0] -eq 512) {
+        $id = $uploads.($asset.category).($asset.name)
+        $iconImages["rbxassetid://$id"] = [Drawing.Image]::FromFile((Join-Path $workspaceRoot $asset.file))
+    }
+}
 $fontCollection = [Drawing.Text.PrivateFontCollection]::new()
 if ($FontDirectory) {
     $fontCollection.AddFontFile((Join-Path $FontDirectory 'FredokaOne-Regular.ttf'))
@@ -33,13 +43,24 @@ function Draw-Node($g, $n) {
     $path = New-RoundedPath $r $n.corner
     if ($n.alpha -gt 0 -and $n.color) {
         if ($n.gradient -and $n.gradient.Count -eq 2) {
-            $brush = [Drawing.Drawing2D.LinearGradientBrush]::new($r, (Get-Color $n.gradient[0] $n.alpha), (Get-Color $n.gradient[1] $n.alpha), [single]90)
+            $brush = [Drawing.Drawing2D.LinearGradientBrush]::new($r, (Get-Color $n.gradient[0] $n.alpha), (Get-Color $n.gradient[1] $n.alpha), [single]$n.gradientRotation)
+        } elseif ($n.gradient -and $n.gradient[0].Count -gt 2) {
+            $stops = $n.gradient[0]
+            $brush = [Drawing.Drawing2D.LinearGradientBrush]::new($r, [Drawing.Color]::White, [Drawing.Color]::White, [single]$n.gradientRotation)
+            $blend = [Drawing.Drawing2D.ColorBlend]::new($stops.Count)
+            $blend.Colors = [Drawing.Color[]]@($stops | ForEach-Object { Get-Color $_[1] $n.alpha })
+            $blend.Positions = [single[]]@($stops | ForEach-Object { $_[0] })
+            $brush.InterpolationColors = $blend
         } else { $brush = [Drawing.SolidBrush]::new((Get-Color $n.color $n.alpha)) }
         $g.FillPath($brush, $path); $brush.Dispose()
     }
     if ($n.stroke -and $n.stroke.mode -ne 'ApplyStrokeMode.Contextual') {
         $pen = [Drawing.Pen]::new((Get-Color $n.stroke.color $n.stroke.alpha), [single]$n.stroke.width)
         $g.DrawPath($pen, $path); $pen.Dispose()
+    }
+    if ($n.image -and $iconImages.ContainsKey($n.image)) {
+        $g.InterpolationMode = [Drawing.Drawing2D.InterpolationMode]::HighQualityBicubic
+        $g.DrawImage($iconImages[$n.image], $r)
     }
     if ($n.text -and $n.textAlpha -gt 0) {
         $family = [Drawing.FontFamily]::GenericSansSerif
@@ -88,3 +109,4 @@ foreach ($file in (Get-ChildItem -LiteralPath $SnapshotDirectory -Filter '*.json
     Write-Output ('Rendered ' + $file.BaseName)
 }
 $fontCollection.Dispose()
+foreach ($icon in $iconImages.Values) { $icon.Dispose() }

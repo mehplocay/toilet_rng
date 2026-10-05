@@ -1,0 +1,39 @@
+# Uploaded icon wiring — 2026-10-05
+
+## Image IDs and rendering
+
+[ImageLabel API](https://create.roblox.com/docs/reference/engine/classes/ImageLabel) and its [official source](https://raw.githubusercontent.com/Roblox/creator-docs/main/content/en-us/reference/engine/classes/ImageLabel.yaml) describe Image/ImageContent as accepting decal or image URIs. However, [DevForum's conversion report](https://devforum.roblox.com/t/converting-decal-ids-to-image-ids/2640232) distinguishes Studio Properties conversion from scripted runtime assignment. Do not assume every legacy decal wrapper resolves in a live ImageLabel. Use the supplied IDs unchanged as requested (the handoff calls them image IDs); their actual type/loading still needs target-experience verification. If a supplied ID is a wrapper that fails, obtain its underlying Image ID through Studio's property conversion/inserted Decal content and update the handoff and Assets together. Never guess by subtracting from an ID; no runtime InsertService or third-party conversion service is needed.
+
+ImageRectOffset is the pixel origin of a cropped region; ImageRectSize is its pixel size. Zero size displays the whole image. These separate 512px PNGs use zero offset/size, Fit scaling, white tint, and Default resampling (smooth scaling). Pixelated is intended for hard pixel edges. IsLoaded gates replacement of the vector fallback; moderation-rejected images never load.
+
+## Startup loading
+
+[ContentProvider:PreloadAsync](https://create.roblox.com/docs/reference/engine/classes/ContentProvider) yields while processing content references and reports final fetch status in its callback. A failed fetch does not itself throw; pcall alone cannot prove success. Preload only the deduplicated icon set in a spawned client task, using temporary ImageLabels, and clean those labels up afterward. Log failed requests; never block boot or hide fallbacks based solely on preload completion. Disk caching does not guarantee permanent GPU residency, so each visible label must still check IsLoaded. Keep existing icon instances across state updates.
+
+The [ImageLabel preload engine report](https://devforum.roblox.com/t/contentprovider-doesnt-preload-imagelabels/4039525) and [IsLoaded visibility report](https://devforum.roblox.com/t/isloaded-dont-works-with-visible-false/2060313) explain a critical trap: hidden labels can remain unloaded even after a successful preload. Keep each real label render-eligible at 0.999 transparency while its vector fallback is visible, then switch to opacity 1 when IsLoaded changes. Do not gate ImageLabel.Visible on IsLoaded. This follows the [render-eligibility workaround](https://devforum.roblox.com/t/preloading-images-and-keeping-them-loaded/2998098); it still needs engine/device verification. Preloading reduces fetch delay, but cannot promise zero texture rehydration time.
+
+## Personal uploads in Dreadlight Studio's experience
+
+[Asset privacy](https://create.roblox.com/docs/projects/assets/privacy) documents Open Use versus Restricted images/decals. Open Use assets work across creators. Restricted assets require an experience grant; personal ownership or group membership alone is not sufficient for scripted runtime use in a group experience. Decals also depend on an Image whose permissions matter.
+
+The uploader should inspect Images/Decals > asset > Permissions > Experiences and grant the **Dreadlight Studio experience universe ID** when restricted. Group collaborator access is useful for editing but does not replace that experience grant. Verify the image dependency too. Open Use is irreversible, and experience grants are permanent; this task does not change permissions. Test in the published group experience with an account other than the uploader. The JSON contains no privacy, moderation, underlying-image mapping, or experience-grant evidence, so successful live loading is unverified.
+
+The [full-release privacy announcement](https://devforum.roblox.com/t/full-release-privacy-for-newly-created-image-mesh-and-decal-assets/4620416) and [Creator Updates](https://create.roblox.com/updates) confirm that privacy now covers newly created images, meshes, and decals. Older advice that arbitrary uploaded images are always public is unsafe. The announcement's direct page presented an anti-bot gate; its indexed announcement and current Creator Docs were used.
+
+## Shop presentation and tools
+
+[BlurEffect](https://create.roblox.com/docs/reference/engine/classes/BlurEffect) supports a client-owned effect under Lighting; it blurs the 3D scene, while the modal's existing dim backdrop blocks world interaction. Enable only while the passes window is visible and destroy with the UI. Low graphics settings may render blur differently. [UIGradient](https://create.roblox.com/docs/reference/engine/classes/UIGradient) provides the rainbow header; text has a separate outline so the gradient does not obscure it.
+
+Tool references checked: [Rojo](https://rojo.space/docs/v7/getting-started/installation/), [StyLua usage](https://github.com/JohnnyMorganz/StyLua#usage), [Selene](https://github.com/Kampfkarren/selene). Use the installed tools; no tool upgrades or server changes are part of this task.
+
+[CanvasGroup](https://create.roblox.com/docs/reference/engine/classes/CanvasGroup) lets the small coin popup fade its image and fallback together through GroupTransparency. The existing Sibling ZIndexBehavior is retained. [UIGridLayout](https://create.roblox.com/docs/reference/engine/classes/UIGridLayout) controls offer-cell bounds, so each cell reserves 48px above its card for the 128px sculpture. [GetProductInfoAsync](https://create.roblox.com/docs/reference/engine/classes/MarketplaceService#GetProductInfoAsync) supplies live price/sale metadata; static configured prices are never shown as purchasable offers.
+
+## Verification and remaining risks
+
+All 37 supplied uploads are mapped via the manifest (Duck = RubberDuck, toilet tier suffixes removed); Coin and the existing Coins key share one ID. The campaign art has no supplied upload IDs or manifest Config keys and is not wired. The premium Passes window receives the reference-10 redesign; the existing Shop travel/Upgrades route and all purchase remotes remain unchanged. Gift and Robux marks are original vector shapes because no such uploads were supplied.
+
+Validation covers all manifest mappings, stalled/failed preload and cleanup, zero/empty fallbacks, all item/toilet previews, discovered/locked previews, seven offer-card viewport layouts, metadata/ownership/purchase gating, and disabled gifting. The offline renderer now uses the local uploaded PNG sources and rainbow gradients for review; these are approximations, not Studio screenshots or proof of permissions. No Studio instances were connected. Public Coin metadata/delivery endpoints were also inaccessible through the web tool, so the actual asset type, moderation state and runtime resolution were not independently verified.
+
+Passed: StyLua on every changed Luau file, luau-compile on those files, `rojo build -o build.rbxl`, all `scripts/check-*.luau` (audit/runtime via their bundling runners), `check-audit.ps1` (36 regressions), `check-ui.ps1`, `check-visuals.ps1`, and `git diff --check`. Selene was attempted but cannot find its configured Roblox standard library. Offline PNG review covered the shop at desktop/portrait/short-landscape sizes, live-price simulation, HUD, collection, upgrades, index and daily rewards; an Auto-Flush text wrap was corrected. Reproduce with `scripts/check-ui.ps1 -SnapshotDirectory .ui-review` and `scripts/render-ui-review.ps1`; generated previews are ignored by Git.
+
+Changes are limited to client UI, Assets/Shop presentation config, UI checks/preview tooling, this research note and the preview ignore entry. No server files, product IDs, economic values or upload permissions changed. Work remains uncommitted on `feature/icon-wiring` as requested.

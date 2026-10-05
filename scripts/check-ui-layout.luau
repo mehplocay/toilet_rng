@@ -86,6 +86,18 @@ for _, case in ipairs(cases) do
 	assert(bodyH - 196 >= 300, "Collection viewport collapses")
 	local columns, cellW = Layout.Grid(modal.W - 60, 132, 14, 5)
 	assert(cellW >= 132 and columns * cellW + (columns - 1) * 14 <= modal.W - 60)
+	local card = Layout.PassCard
+	local offerColumns, offerWidth = Layout.Grid(modal.W - 70, card.MinimumWidth, 14, 4)
+	assert(offerWidth >= card.MinimumWidth and offerColumns <= 4)
+	assert(card.Top + card.IconY >= 0, "Offer art clips above its grid cell")
+	assert(card.IconY < 0 and card.IconY + card.IconSize <= card.TitleY, "Offer art/title overlap")
+	assert(card.TitleY + card.TitleHeight <= card.DescriptionY)
+	assert(card.DescriptionY + card.DescriptionHeight <= card.StatusY)
+	assert(card.StatusY + card.StatusHeight <= card.ButtonY)
+	assert(card.ButtonY + card.ButtonHeight + card.Inset <= card.Height)
+	assert(card.Top + card.Height <= card.CellHeight)
+	assert(offerWidth - card.Inset * 2 - card.Gap - card.GiftWidth >= 100, "Buy button too narrow")
+	assert(card.GiftWidth >= 44 and card.ButtonHeight >= 44)
 	print(
 		string.format(
 			"PASS UI %dx%d -> safe %dx%d; %s; %d collection columns",

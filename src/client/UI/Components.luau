@@ -244,10 +244,44 @@ function C.AssetId(value)
 	if type(value) == "number" and value > 0 and value < math.huge then
 		return "rbxassetid://" .. tostring(value)
 	end
-	if type(value) == "string" and value ~= "" and value ~= "0" then
+	if type(value) == "string" and value ~= "" and value ~= "0" and value ~= "rbxassetid://0" then
 		return value
 	end
 	return nil
+end
+local preloadStarted = false
+function C.PreloadIcons()
+	if preloadStarted then
+		return
+	end
+	preloadStarted = true
+	task.spawn(function()
+		local labels, seen = {}, {}
+		for _, group in ipairs({ Assets.Icons, Assets.ItemIcons, Assets.ToiletIcons }) do
+			for _, value in pairs(group) do
+				local id = C.AssetId(value)
+				if id and not seen[id] then
+					seen[id] = true
+					local label = Instance.new("ImageLabel")
+					label.Image = id
+					table.insert(labels, label)
+				end
+			end
+		end
+		local ok, message = pcall(function()
+			game:GetService("ContentProvider"):PreloadAsync(labels, function(id, status)
+				if status ~= Enum.AssetFetchStatus.Success then
+					warn("Icon preload failed: " .. id .. " (" .. tostring(status) .. "); keeping fallback")
+				end
+			end)
+		end)
+		for _, label in ipairs(labels) do
+			label:Destroy()
+		end
+		if not ok then
+			warn("Icon preload unavailable; keeping fallbacks: " .. tostring(message))
+		end
+	end)
 end
 function C.Icon(parent, kind, size, position, assetId, tint)
 	local icon = C.New(
@@ -267,15 +301,30 @@ function C.Icon(parent, kind, size, position, assetId, tint)
 			BackgroundTransparency = 1,
 			Image = id,
 			ScaleType = Enum.ScaleType.Fit,
+			ImageRectOffset = Vector2.new(0, 0),
+			ImageRectSize = Vector2.new(0, 0),
+			ResampleMode = Enum.ResamplerMode.Default,
+			ImageColor3 = white,
+			-- Stay render-eligible: invisible labels can keep IsLoaded false after preloading.
+			ImageTransparency = 0.999,
 			ZIndex = fallback.ZIndex + 10,
 		})
 		local function loaded()
+			image.ImageTransparency = if image.IsLoaded then 0 else 0.999
 			fallback.Visible = not image.IsLoaded
 		end
 		image:GetPropertyChangedSignal("IsLoaded"):Connect(loaded)
 		loaded()
 	end
 	return icon
+end
+function C.StatusIcons(parent, size, position)
+	local lock = C.Icon(parent, "Lock", size, position)
+	local check = C.Icon(parent, "Check", size, position)
+	check.Visible = false
+	return function(locked, checked)
+		lock.Visible, check.Visible = locked, checked
+	end
 end
 function C.Card(parent, color, rare)
 	local card = C.New("Frame", parent, { BackgroundTransparency = 1 })

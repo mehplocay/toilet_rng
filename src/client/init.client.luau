@@ -31,6 +31,7 @@ for _, name in ipairs({
 	remotes[name] = folder:WaitForChild(definitions[name])
 end
 local C = require(script.UI.Components)
+C.PreloadIcons()
 local audio = require(script.Audio.AudioService).Start()
 C.SoundHook = function(key)
 	audio:Play(key)

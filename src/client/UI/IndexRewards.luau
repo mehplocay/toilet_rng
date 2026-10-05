@@ -11,7 +11,8 @@ function Rewards.Create(body, remotes)
 		Size = UDim2.new(1, 0, 1, -54),
 		Position = UDim2.fromOffset(0, 54),
 	})
-	local balance = C.Text(frame, "Stamps: 0", UDim2.new(1, 0, 0, 30), nil, 22)
+	C.Icon(frame, "Gem", UDim2.fromOffset(30, 30))
+	local balance = C.Text(frame, "Stamps: 0", UDim2.new(1, -36, 0, 30), UDim2.fromOffset(36, 0), 22)
 	balance.TextColor3 = C.Gold
 	local status =
 		C.BodyText(frame, "Discover items. Claim permanent rewards.", UDim2.new(1, 0, 0, 36), UDim2.fromOffset(0, 32))
@@ -45,6 +46,7 @@ function Rewards.Create(body, remotes)
 				elseif count >= reward.Required then "Claim"
 				else "Locked"
 			row.Button.Interactable = not claimed and not pending[reward.Id] and count >= reward.Required
+			row.Marks(not claimed and count < reward.Required, claimed)
 		end
 	end
 	for order, reward in ipairs(index.Rewards) do
@@ -54,8 +56,10 @@ function Rewards.Create(body, remotes)
 			else C.Gold
 		local row = C.Card(list, color, true)
 		row.LayoutOrder = order
-		C.Text(row, reward.Label, UDim2.new(1, -16, 0, 46), UDim2.fromOffset(8, 6), 21)
-		local progress = C.BodyText(row, "", UDim2.new(1, -120, 0, 38), UDim2.fromOffset(10, 60))
+		C.Icon(row, "Gem", UDim2.fromOffset(32, 32), UDim2.fromOffset(8, 10))
+		C.Text(row, reward.Label, UDim2.new(1, -52, 0, 46), UDim2.fromOffset(44, 6), 21)
+		local marks = C.StatusIcons(row, UDim2.fromOffset(24, 24), UDim2.fromOffset(10, 65))
+		local progress = C.BodyText(row, "", UDim2.new(1, -146, 0, 38), UDim2.fromOffset(36, 60))
 		local bar = C.ProgressBar(row, UDim2.new(1, -20, 0, 10), UDim2.fromOffset(10, 119), color)
 		local button = C.Button(row, "Locked", UDim2.fromOffset(94, 44), UDim2.new(1, -104, 0, 61), function()
 			if not state or not rows[reward.Id].Button.Interactable then
@@ -70,7 +74,7 @@ function Rewards.Create(body, remotes)
 			end)
 		end, C.Green, { TextSize = 19 })
 		button.Interactable = false
-		rows[reward.Id] = { Progress = progress, Bar = bar, Button = button }
+		rows[reward.Id] = { Progress = progress, Bar = bar, Button = button, Marks = marks }
 	end
 	remotes.Result.OnClientEvent:Connect(function(action, result)
 		if action ~= "ClaimIndexReward" then
