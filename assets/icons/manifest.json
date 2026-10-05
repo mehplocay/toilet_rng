@@ -1,0 +1,994 @@
+{
+  "version": 1,
+  "renderer": "Blender 4.5 / Cycles",
+  "generator": "scripts/build-icons.ps1",
+  "asset_count": 42,
+  "png_count": 81,
+  "notes": [
+    "No uploaded IDs. src/ was not modified.",
+    "Gem is the requested Gem/Stamp symbol.",
+    "New keys are marked config_key_exists=false.",
+    "Only 512px UI/item/toilet variants normally need upload."
+  ],
+  "assets": [
+    {
+      "name": "Poop",
+      "file": "assets/icons/items/Poop_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "items",
+      "config_key": "ItemIcons.Poop",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "Poop",
+      "file": "assets/icons/items/Poop_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "items",
+      "config_key": "ItemIcons.Poop",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "ToiletPaper",
+      "file": "assets/icons/items/ToiletPaper_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "items",
+      "config_key": "ItemIcons.ToiletPaper",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "ToiletPaper",
+      "file": "assets/icons/items/ToiletPaper_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "items",
+      "config_key": "ItemIcons.ToiletPaper",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "Rat",
+      "file": "assets/icons/items/Rat_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "items",
+      "config_key": "ItemIcons.Rat",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "Rat",
+      "file": "assets/icons/items/Rat_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "items",
+      "config_key": "ItemIcons.Rat",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "Fish",
+      "file": "assets/icons/items/Fish_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "items",
+      "config_key": "ItemIcons.Fish",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "Fish",
+      "file": "assets/icons/items/Fish_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "items",
+      "config_key": "ItemIcons.Fish",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "RubberDuck",
+      "file": "assets/icons/items/RubberDuck_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "items",
+      "config_key": "ItemIcons.Duck",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "RubberDuck",
+      "file": "assets/icons/items/RubberDuck_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "items",
+      "config_key": "ItemIcons.Duck",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "GoldenPoop",
+      "file": "assets/icons/items/GoldenPoop_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "items",
+      "config_key": "ItemIcons.GoldenPoop",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "GoldenPoop",
+      "file": "assets/icons/items/GoldenPoop_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "items",
+      "config_key": "ItemIcons.GoldenPoop",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "ToiletBaby",
+      "file": "assets/icons/items/ToiletBaby_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "items",
+      "config_key": "ItemIcons.ToiletBaby",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "ToiletBaby",
+      "file": "assets/icons/items/ToiletBaby_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "items",
+      "config_key": "ItemIcons.ToiletBaby",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "SewerShark",
+      "file": "assets/icons/items/SewerShark_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "items",
+      "config_key": "ItemIcons.SewerShark",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "SewerShark",
+      "file": "assets/icons/items/SewerShark_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "items",
+      "config_key": "ItemIcons.SewerShark",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "KingPoop",
+      "file": "assets/icons/items/KingPoop_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "items",
+      "config_key": "ItemIcons.KingPoop",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "KingPoop",
+      "file": "assets/icons/items/KingPoop_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "items",
+      "config_key": "ItemIcons.KingPoop",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "AlienToilet",
+      "file": "assets/icons/items/AlienToilet_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "items",
+      "config_key": "ItemIcons.AlienToilet",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "AlienToilet",
+      "file": "assets/icons/items/AlienToilet_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "items",
+      "config_key": "ItemIcons.AlienToilet",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "Mystery",
+      "file": "assets/icons/items/Mystery_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "items",
+      "config_key": "ItemIcons.Mystery",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "Mystery",
+      "file": "assets/icons/items/Mystery_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "items",
+      "config_key": "ItemIcons.Mystery",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "BasicToilet",
+      "file": "assets/icons/toilets/BasicToilet_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "toilets",
+      "config_key": "ToiletIcons.Basic",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "BasicToilet",
+      "file": "assets/icons/toilets/BasicToilet_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "toilets",
+      "config_key": "ToiletIcons.Basic",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "DirtyToilet",
+      "file": "assets/icons/toilets/DirtyToilet_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "toilets",
+      "config_key": "ToiletIcons.Dirty",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "DirtyToilet",
+      "file": "assets/icons/toilets/DirtyToilet_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "toilets",
+      "config_key": "ToiletIcons.Dirty",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "GoldenToilet",
+      "file": "assets/icons/toilets/GoldenToilet_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "toilets",
+      "config_key": "ToiletIcons.Golden",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "GoldenToilet",
+      "file": "assets/icons/toilets/GoldenToilet_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "toilets",
+      "config_key": "ToiletIcons.Golden",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "DiamondToilet",
+      "file": "assets/icons/toilets/DiamondToilet_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "toilets",
+      "config_key": "ToiletIcons.Diamond",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "DiamondToilet",
+      "file": "assets/icons/toilets/DiamondToilet_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "toilets",
+      "config_key": "ToiletIcons.Diamond",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "RadioactiveToilet",
+      "file": "assets/icons/toilets/RadioactiveToilet_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "toilets",
+      "config_key": "ToiletIcons.Radioactive",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "RadioactiveToilet",
+      "file": "assets/icons/toilets/RadioactiveToilet_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "toilets",
+      "config_key": "ToiletIcons.Radioactive",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "DemonToilet",
+      "file": "assets/icons/toilets/DemonToilet_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "toilets",
+      "config_key": "ToiletIcons.Demon",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "DemonToilet",
+      "file": "assets/icons/toilets/DemonToilet_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "toilets",
+      "config_key": "ToiletIcons.Demon",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "GalaxyToilet",
+      "file": "assets/icons/toilets/GalaxyToilet_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "toilets",
+      "config_key": "ToiletIcons.Galaxy",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "GalaxyToilet",
+      "file": "assets/icons/toilets/GalaxyToilet_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "toilets",
+      "config_key": "ToiletIcons.Galaxy",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "Coin",
+      "file": "assets/icons/ui/Coin_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "ui",
+      "config_key": "Icons.Coins",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "Coin",
+      "file": "assets/icons/ui/Coin_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "ui",
+      "config_key": "Icons.Coins",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "Shop",
+      "file": "assets/icons/ui/Shop_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "ui",
+      "config_key": "Icons.Shop",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "Shop",
+      "file": "assets/icons/ui/Shop_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "ui",
+      "config_key": "Icons.Shop",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "Collection",
+      "file": "assets/icons/ui/Collection_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "ui",
+      "config_key": "Icons.Collection",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "Collection",
+      "file": "assets/icons/ui/Collection_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "ui",
+      "config_key": "Icons.Collection",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "Upgrades",
+      "file": "assets/icons/ui/Upgrades_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "ui",
+      "config_key": "Icons.Upgrades",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "Upgrades",
+      "file": "assets/icons/ui/Upgrades_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "ui",
+      "config_key": "Icons.Upgrades",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "Daily",
+      "file": "assets/icons/ui/Daily_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "ui",
+      "config_key": "Icons.Daily",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "Daily",
+      "file": "assets/icons/ui/Daily_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "ui",
+      "config_key": "Icons.Daily",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "Home",
+      "file": "assets/icons/ui/Home_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "ui",
+      "config_key": "Icons.Home",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "Home",
+      "file": "assets/icons/ui/Home_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "ui",
+      "config_key": "Icons.Home",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "Hub",
+      "file": "assets/icons/ui/Hub_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "ui",
+      "config_key": "Icons.Hub",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "Hub",
+      "file": "assets/icons/ui/Hub_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "ui",
+      "config_key": "Icons.Hub",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "Teleport",
+      "file": "assets/icons/ui/Teleport_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "ui",
+      "config_key": "Icons.Teleport",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "Teleport",
+      "file": "assets/icons/ui/Teleport_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "ui",
+      "config_key": "Icons.Teleport",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "Settings",
+      "file": "assets/icons/ui/Settings_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "ui",
+      "config_key": "Icons.Settings",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "Settings",
+      "file": "assets/icons/ui/Settings_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "ui",
+      "config_key": "Icons.Settings",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "Flush",
+      "file": "assets/icons/ui/Flush_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "ui",
+      "config_key": "Icons.Flush",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "Flush",
+      "file": "assets/icons/ui/Flush_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "ui",
+      "config_key": "Icons.Flush",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "Luck",
+      "file": "assets/icons/ui/Luck_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "ui",
+      "config_key": "Icons.Luck",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "Luck",
+      "file": "assets/icons/ui/Luck_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "ui",
+      "config_key": "Icons.Luck",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "Crown",
+      "file": "assets/icons/ui/Crown_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "ui",
+      "config_key": "Icons.Crown",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "Crown",
+      "file": "assets/icons/ui/Crown_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "ui",
+      "config_key": "Icons.Crown",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "Passes",
+      "file": "assets/icons/ui/Passes_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "ui",
+      "config_key": "Icons.Passes",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "Passes",
+      "file": "assets/icons/ui/Passes_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "ui",
+      "config_key": "Icons.Passes",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "Pointer",
+      "file": "assets/icons/ui/Pointer_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "ui",
+      "config_key": "Icons.Pointer",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "Pointer",
+      "file": "assets/icons/ui/Pointer_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "ui",
+      "config_key": "Icons.Pointer",
+      "config_key_exists": true,
+      "transparent": true
+    },
+    {
+      "name": "Lock",
+      "file": "assets/icons/ui/Lock_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "ui",
+      "config_key": "Icons.Lock",
+      "config_key_exists": false,
+      "transparent": true
+    },
+    {
+      "name": "Lock",
+      "file": "assets/icons/ui/Lock_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "ui",
+      "config_key": "Icons.Lock",
+      "config_key_exists": false,
+      "transparent": true
+    },
+    {
+      "name": "Check",
+      "file": "assets/icons/ui/Check_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "ui",
+      "config_key": "Icons.Check",
+      "config_key_exists": false,
+      "transparent": true
+    },
+    {
+      "name": "Check",
+      "file": "assets/icons/ui/Check_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "ui",
+      "config_key": "Icons.Check",
+      "config_key_exists": false,
+      "transparent": true
+    },
+    {
+      "name": "Gem",
+      "file": "assets/icons/ui/Gem_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "ui",
+      "config_key": "Icons.Gem",
+      "config_key_exists": false,
+      "transparent": true
+    },
+    {
+      "name": "Gem",
+      "file": "assets/icons/ui/Gem_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "ui",
+      "config_key": "Icons.Gem",
+      "config_key_exists": false,
+      "transparent": true
+    },
+    {
+      "name": "AutoFlush",
+      "file": "assets/icons/ui/AutoFlush_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "ui",
+      "config_key": "Icons.AutoFlush",
+      "config_key_exists": false,
+      "transparent": true
+    },
+    {
+      "name": "AutoFlush",
+      "file": "assets/icons/ui/AutoFlush_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "ui",
+      "config_key": "Icons.AutoFlush",
+      "config_key_exists": false,
+      "transparent": true
+    },
+    {
+      "name": "OfferBurst",
+      "file": "assets/icons/ui/OfferBurst_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "ui",
+      "config_key": "Icons.OfferBurst",
+      "config_key_exists": false,
+      "transparent": true
+    },
+    {
+      "name": "OfferBurst",
+      "file": "assets/icons/ui/OfferBurst_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "ui",
+      "config_key": "Icons.OfferBurst",
+      "config_key_exists": false,
+      "transparent": true
+    },
+    {
+      "name": "GameIcon",
+      "file": "assets/icons/art/GameIcon_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "art",
+      "config_key": null,
+      "config_key_exists": false,
+      "transparent": false,
+      "destination": "Creator Hub game icon"
+    },
+    {
+      "name": "GameIcon",
+      "file": "assets/icons/art/GameIcon_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "art",
+      "config_key": null,
+      "config_key_exists": false,
+      "transparent": false,
+      "destination": "Creator Hub game icon"
+    },
+    {
+      "name": "HubScene",
+      "file": "assets/icons/art/HubScene_1920x1080.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "category": "art",
+      "config_key": null,
+      "config_key_exists": false,
+      "transparent": false,
+      "destination": "Creator Hub thumbnails"
+    },
+    {
+      "name": "RareDrop",
+      "file": "assets/icons/art/RareDrop_1920x1080.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "category": "art",
+      "config_key": null,
+      "config_key_exists": false,
+      "transparent": false,
+      "destination": "Creator Hub thumbnails"
+    },
+    {
+      "name": "ToiletLineup",
+      "file": "assets/icons/art/ToiletLineup_1920x1080.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "category": "art",
+      "config_key": null,
+      "config_key_exists": false,
+      "transparent": false,
+      "destination": "Creator Hub thumbnails"
+    },
+    {
+      "name": "Logo",
+      "file": "assets/icons/art/Logo_2048x1024.png",
+      "size": [
+        2048,
+        1024
+      ],
+      "category": "art",
+      "config_key": null,
+      "config_key_exists": false,
+      "transparent": true,
+      "destination": "Brand/UI image; integration key to be chosen by manager"
+    },
+    {
+      "name": "Logo",
+      "file": "assets/icons/art/Logo_1024x512.png",
+      "size": [
+        1024,
+        512
+      ],
+      "category": "art",
+      "config_key": null,
+      "config_key_exists": false,
+      "transparent": true,
+      "destination": "Brand/UI image; integration key to be chosen by manager"
+    }
+  ]
+}

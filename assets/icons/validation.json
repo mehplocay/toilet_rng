@@ -1,0 +1,817 @@
+{
+  "complete": true,
+  "expected": 81,
+  "validated": 81,
+  "checks": [
+    {
+      "file": "assets/icons/items/Poop_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 105396,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/items/Poop_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 12200,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/items/ToiletPaper_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 91099,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/items/ToiletPaper_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 10291,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/items/Rat_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 108037,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/items/Rat_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 12778,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/items/Fish_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 84839,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/items/Fish_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 10427,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/items/RubberDuck_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 106859,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/items/RubberDuck_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 12530,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/items/GoldenPoop_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 109569,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/items/GoldenPoop_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 12773,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/items/ToiletBaby_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 114049,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/items/ToiletBaby_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 13083,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/items/SewerShark_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 92055,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/items/SewerShark_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 11112,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/items/KingPoop_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 139799,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/items/KingPoop_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 16180,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/items/AlienToilet_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 111402,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/items/AlienToilet_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 12648,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/items/Mystery_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 162430,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/items/Mystery_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 19250,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/toilets/BasicToilet_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 86364,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/toilets/BasicToilet_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 10163,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/toilets/DirtyToilet_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 116239,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/toilets/DirtyToilet_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 13185,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/toilets/GoldenToilet_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 121345,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/toilets/GoldenToilet_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 13063,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/toilets/DiamondToilet_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 107275,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/toilets/DiamondToilet_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 12522,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/toilets/RadioactiveToilet_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 130950,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/toilets/RadioactiveToilet_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 13889,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/toilets/DemonToilet_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 107009,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/toilets/DemonToilet_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 11899,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/toilets/GalaxyToilet_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 116783,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/toilets/GalaxyToilet_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 12476,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/ui/Coin_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 202498,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/ui/Coin_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 20472,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/ui/Shop_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 139544,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/ui/Shop_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 13969,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/ui/Collection_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 119965,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/ui/Collection_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 10946,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/ui/Upgrades_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 93819,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/ui/Upgrades_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 9169,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/ui/Daily_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 155446,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/ui/Daily_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 15633,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/ui/Home_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 124103,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/ui/Home_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 12509,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/ui/Hub_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 158903,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/ui/Hub_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 18133,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/ui/Teleport_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 212679,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/ui/Teleport_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 23487,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/ui/Settings_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 147927,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/ui/Settings_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 17332,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/ui/Flush_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 136702,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/ui/Flush_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 14956,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/ui/Luck_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 95621,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/ui/Luck_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 10294,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/ui/Crown_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 114196,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/ui/Crown_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 13146,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/ui/Passes_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 139499,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/ui/Passes_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 12806,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/ui/Pointer_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 87527,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/ui/Pointer_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 9362,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/ui/Lock_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 111298,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/ui/Lock_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 11685,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/ui/Check_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 75706,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/ui/Check_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 8212,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/ui/Gem_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 93329,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/ui/Gem_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 9774,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/ui/AutoFlush_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 130648,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/ui/AutoFlush_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 15171,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/ui/OfferBurst_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 133958,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/ui/OfferBurst_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 13550,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/art/GameIcon_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 161827,
+      "alpha": "opaque RGB",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/art/GameIcon_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 20542,
+      "alpha": "opaque RGB",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/art/HubScene_1920x1080.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "bytes": 2178906,
+      "alpha": "opaque RGB",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/art/RareDrop_1920x1080.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "bytes": 1704076,
+      "alpha": "opaque RGB",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/art/ToiletLineup_1920x1080.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "bytes": 1601666,
+      "alpha": "opaque RGB",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/art/Logo_2048x1024.png",
+      "size": [
+        2048,
+        1024
+      ],
+      "bytes": 884777,
+      "alpha": "straight RGBA",
+      "passed": true
+    },
+    {
+      "file": "assets/icons/art/Logo_1024x512.png",
+      "size": [
+        1024,
+        512
+      ],
+      "bytes": 266701,
+      "alpha": "straight RGBA",
+      "passed": true
+    }
+  ]
+}
