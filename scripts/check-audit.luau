@@ -357,7 +357,13 @@ end)
 
 local function server(options)
 	local e = environment(options)
-	local world = { Assigned = {}, Start = function() end, Refresh = function() end, Animate = function() end }
+	local world = {
+		Assigned = {},
+		Start = function() end,
+		Refresh = function() end,
+		RefreshIncome = function() end,
+		Animate = function() end,
+	}
 	e:Override("src/server/World/WorldService", world)
 	-- Geometry is outside this security harness; retain the actual cosmetic/ownership service.
 	e:Override("src/shared/Visuals/Primitives", {})
@@ -385,6 +391,7 @@ local function server(options)
 		}
 		world.Assigned[player] = {
 			Owner = player,
+			IncomePoint = { Position = position },
 			CFrame = { Position = position },
 			Model = {
 				GetChildren = function()
@@ -410,6 +417,7 @@ test("all actual inbound handlers reject extra arguments and outbound remotes do
 		Sell = { "Poop", 1 },
 		BuyToilet = { "Dirty" },
 		Display = { "Poop", 1 },
+		CollectIncome = {},
 		ClaimReward = {},
 		ClaimIndexReward = { "rarity:Common" },
 		AutoFlush = { true },
@@ -427,7 +435,7 @@ test("all actual inbound handlers reject extra arguments and outbound remotes do
 		table.insert(args, "unexpected")
 		e:Fire(name, player, table.unpack(args))
 	end
-	for _, name in ipairs({ "Result", "Event", "ServerLuck" }) do
+	for _, name in ipairs({ "Result", "Event", "ServerLuck", "IncomePending" }) do
 		e:Fire(name, player, { Coins = 9e15, Luck = 1e9 })
 	end
 	assert(#e.Results == results and profile.Coins == 0 and profile.Stats.Flushes == 0 and not profile.TutorialDone)
@@ -649,6 +657,202 @@ test("PlayerRemoving cleans service tables and late entitlement lookup", functio
 	for _, name in ipairs({ "Profiles", "Saving", "Closing", "Loading", "Sessions", "LeaseExpires", "NoPersistence" }) do
 		assert(e.Data[name][player] == nil, name .. " retained player")
 	end
+end)
+
+test("income migration, offline cap and ambiguous acquisition consume time once", function()
+	local e = environment()
+	local data, player = e:Load(dataPath), e:Player(50)
+	local start = e.Now
+	e.Store.Records.Player_50 = { Data = { Inventory = { Fish = 1 }, Displays = { ["1"] = "Fish" } } }
+	data:Load(player)
+	local p = data:Get(player)
+	assert(p.Income.UpdatedAt == start and next(p.Income.Pending) == nil, "Migration granted retroactive income")
+	data:Close(player)
+	e.Now += 86400 * 30
+	local joined = e:Player(50)
+	e.Store.After = function()
+		error("committed load response lost")
+	end
+	local load = e:Spawn(function()
+		data:Load(joined)
+	end)
+	e.Store.After = nil
+	e:Resume(load)
+	p = data:Get(joined)
+	assert(p.Income.Pending["1"] == 240 * 6000 and p.Income.UpdatedAt == e.Now)
+	data:Close(joined)
+	local third = e:Player(50)
+	data:Load(third)
+	assert(data:Get(third).Income.Pending["1"] == 240 * 6000, "Reconnect duplicated offline credit")
+end)
+
+test("income settles before display removal, replacement and tier change; reservations remain", function()
+	local e = server()
+	local player, p = e:Join(51)
+	p.Inventory.Fish, p.Inventory.Poop = 1, 2
+	e:Fire("Display", player, "Fish", 1)
+	e.Now += 60
+	e:Fire("Display", player, nil, 1)
+	assert(p.Income.Pending["1"] == 6000)
+	e:Fire("Display", player, "Poop", 1)
+	e.Now += 60
+	e:Fire("State", player)
+	assert(p.Income.Pending["1"] == 6300)
+	e:Fire("Sell", player, "Poop", 2)
+	assert(p.Inventory.Poop == 2, "Sale consumed reserved/first copy")
+	e:Fire("Sell", player, "Poop", 1)
+	assert(p.Inventory.Poop == 1)
+	e:Fire("Display", player, nil, 1)
+	e.Now += 10
+	e:Fire("State", player)
+	assert(p.Income.Pending["1"] == 6300, "Empty slot earned income")
+	e:Fire("Sell", player, "Poop", 1)
+	assert(p.Inventory.Poop == 1, "First-copy protection changed")
+	e:Fire("Display", player, "Fish", 1)
+	p.Coins = 1000
+	e.Now += 10
+	e:Fire("BuyToilet", player, "Dirty")
+	assert(p.ToiletTier == 2 and p.Income.Pending["1"] == 7300)
+	e.Now += 20
+	e:Fire("State", player)
+	assert(p.Income.Pending["1"] == 9800, "New tier cap applied retroactively")
+end)
+
+test("income collect validates geometry, ownership, life, arguments and shared rate limit", function()
+	local e = server()
+	local player, p = e:Join(52)
+	p.Income.Pending["1"] = 60000
+	local calls = e.Store.Calls
+	for _, distance in ipairs({ -1, 11, 0 / 0, math.huge, -math.huge }) do
+		player.Distance = distance
+		e.Now += 5
+		e:Fire("CollectIncome", player)
+	end
+	player.Distance, player.Health = 0, 0
+	e.Now += 5
+	e:Fire("CollectIncome", player)
+	player.Health = 100
+	local plot = e.World.Assigned[player]
+	plot.Owner = e:Player(999)
+	e.Now += 5
+	e:Fire("CollectIncome", player)
+	plot.Owner = player
+	e.Now += 5
+	e:Fire("CollectIncome", player, 99999)
+	e:Fire("CollectIncome", player) -- Invalid request consumed the token.
+	assert(p.Coins == 0 and e.Store.Calls == calls)
+	e.Now += 5
+	e:Fire("CollectIncome", player)
+	assert(p.Coins == 10 and next(p.Income.Pending) == nil and e.Store.Calls == calls + 1)
+	p.Income.Pending["1"] = 6000
+	e:Fire("CollectIncome", player)
+	assert(p.Coins == 10 and p.Income.Pending["1"] == 6000)
+	e.Now += 5
+	e:Fire("CollectIncome", player)
+	assert(p.Coins == 11 and e.Store.Records.Player_52.Data.Coins == 11)
+end)
+
+test("income delayed collect save, duplicate requests and overlapping rejoin cannot duplicate", function()
+	local e = server()
+	local player, p = e:Join(53)
+	p.Income.Pending["1"] = 60000
+	e.Store.Before = function()
+		coroutine.yield("collect held")
+	end
+	local collect = e:Spawn(function()
+		e:Fire("CollectIncome", player)
+	end)
+	assert(p.Coins == 10 and next(p.Income.Pending) == nil)
+	e.Now += 5
+	e:Fire("CollectIncome", player)
+	assert(p.Coins == 10 and e.Store.Calls == 2)
+	e.Store.Before = nil
+	local replacement = e:Player(53)
+	e.Data:Load(replacement)
+	assert(e.Data:Get(replacement) == nil)
+	e:Resume(collect)
+	e.Data:Close(player)
+	local nextPlayer = e:Join(53)
+	local nextProfile = e.Data:Get(nextPlayer)
+	e:Fire("CollectIncome", nextPlayer)
+	assert(nextProfile.Coins == 10 and next(nextProfile.Income.Pending) == nil)
+end)
+
+test("income load/save callback replay and takeover preserve atomic wallet/pending", function()
+	local e = server()
+	local player, p = e:Join(54)
+	p.Income.Pending["1"] = 60000
+	assert(e.Data:Save(player, false))
+	e.Store.Before = function()
+		coroutine.yield("collect held")
+	end
+	local collect = e:Spawn(function()
+		e:Fire("CollectIncome", player)
+	end)
+	e.Store.Before = nil
+	e.Now += 180
+	assert(e.Data:Get(player) == nil)
+	local joined = e:Join(54)
+	e:Fire("CollectIncome", joined)
+	e:Resume(collect)
+	assert(e.Store.Records.Player_54.Data.Coins == 10)
+	assert(next(e.Store.Records.Player_54.Data.Income.Pending) == nil)
+	local success = 0
+	for _, result in ipairs(e.Results) do
+		if result.Payload[1] == "CollectIncome" and result.Payload[2].Success then
+			success += 1
+		end
+	end
+	assert(success == 1, "Old session announced success after losing its lease")
+end)
+
+test("income collect retry after committed response loss cannot credit twice", function()
+	local e = server()
+	local player, p = e:Join(55)
+	p.Income.Pending["1"] = 60000
+	e.Store.After = function()
+		error("collect committed response lost")
+	end
+	local collect = e:Spawn(function()
+		e:Fire("CollectIncome", player)
+	end)
+	assert(e.Store.Records.Player_55.Data.Coins == 10)
+	e.Store.After = nil
+	e.Store.Replay = function() end
+	e:Resume(collect)
+	e.Now += 5
+	e:Fire("CollectIncome", player)
+	assert(p.Coins == 10 and e.Store.Records.Player_55.Data.Coins == 10)
+	assert(next(e.Store.Records.Player_55.Data.Income.Pending) == nil)
+end)
+
+test("income departure timestamp freezes before a queued final save yields", function()
+	local e = environment()
+	local data, player = e:Load(dataPath), e:Player(56)
+	data:Load(player)
+	local p = data:Get(player)
+	p.Inventory.Fish, p.Displays["1"] = 1, "Fish"
+	e.Store.Before = function()
+		coroutine.yield("autosave held")
+	end
+	local save = e:Spawn(function()
+		data:Save(player, false)
+	end)
+	e.Now += 30
+	local departure = e.Now
+	local close = e:Spawn(function()
+		data:Close(player)
+	end)
+	e.Now += 60
+	e.Store.Before = nil
+	e:Resume(save)
+	e:Resume(close)
+	local saved = e.Store.Records.Player_56.Data.Income
+	assert(saved.UpdatedAt == departure and saved.Pending["1"] == 3000)
+	e.Now += 86400
+	local joined = e:Player(56)
+	data:Load(joined)
+	assert(data:Get(joined).Income.Pending["1"] == 3000 + 240 * 6000)
 end)
 
 print(string.format("Audit regressions: %d passed, %d failed", passed, #failures))

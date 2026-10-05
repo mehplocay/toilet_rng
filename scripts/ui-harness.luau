@@ -261,6 +261,7 @@ function Instance.new(class)
 	return object
 end
 local services = {
+	ProximityPromptService = { PromptTriggered = signal(), PromptShown = signal(), PromptHidden = signal() },
 	RunService = { Heartbeat = signal() },
 	UserInputService = { TouchEnabled = false },
 	TweenService = {},
@@ -379,6 +380,8 @@ function H.Remotes()
 		"Sell",
 		"BuyToilet",
 		"Display",
+		"CollectIncome",
+		"IncomePending",
 		"Event",
 		"ServerLuck",
 		"Settings",

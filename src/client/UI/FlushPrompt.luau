@@ -37,7 +37,7 @@ function Prompt.Start()
 	end
 	local function own()
 		for object in pairs(tracked) do
-			if object:GetAttribute("OwnerUserId") == player.UserId then
+			if object.ActionText == "FLUSH" and object:GetAttribute("OwnerUserId") == player.UserId then
 				return object
 			end
 		end

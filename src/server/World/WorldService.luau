@@ -14,6 +14,14 @@ local Config = game.ReplicatedStorage.Shared.Config
 local Style, Items, Rarities, Assets =
 	require(Config.World), require(Config.Items), require(Config.Rarities), require(Config.Assets)
 local World = { Plots = {}, Assigned = {} }
+local IncomeDisplay = require(script.Parent.IncomeDisplay)
+function World:RefreshIncome(player, pending)
+	local plot = self.Assigned[player]
+	if plot and plot.Owner == player then
+		plot.PendingCoins = pending
+		IncomeDisplay.Refresh(plot, player, pending)
+	end
+end
 local byId = {}
 for _, item in ipairs(Items) do
 	byId[item.Id] = item
@@ -129,6 +137,10 @@ function World:RenderDisplays(plot)
 		)
 	end
 	local countParts = P.Count(plot.Model)
+	if plot.Owner then
+		IncomeDisplay.Refresh(plot, plot.Owner, plot.PendingCoins or 0)
+		countParts = P.Count(plot.Model)
+	end
 	plot.Model:SetAttribute("PartCount", countParts)
 	assert(countParts <= Visuals.Budget.Plot, "Plot exceeds its visual part budget")
 end
@@ -284,6 +296,7 @@ function World:Start(data)
 			plot.Model:SetAttribute("OwnerUserId", nil)
 			plot.Tier = nil
 			plot.Profile, plot.DisplaySignature, plot.Page = nil, nil, nil
+			plot.PendingCoins, plot.IncomePoint, plot.IncomePrompt, plot.IncomeCoins = nil, nil, nil, nil
 			plot.Sign.Text = "Available Plot"
 			plot.Displays:ClearAllChildren()
 			if plot.Toilet then

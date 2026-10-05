@@ -1,5 +1,14 @@
 # Security and exploit audit
 
+Passive-income follow-up (2026-10-05, `feature/income`): adds no-argument `CollectIncome`
+(capacity 1, refill 0.2/s), validating own plot, living character, finite proximity and
+the existing session lease. `IncomePending` is outbound-only. Whole-coin collection
+debits pending and credits the wallet before Save yields; offline awards are part of
+lease acquisition. Departure timestamps freeze before queued final saves. The audit
+harness now passes 35 cases, including ambiguous commits, rejoin, lease takeover,
+display/tier settlement, reservations and repeated collection. Details and remaining
+durability limits: [passive income review](design/passive-income.md).
+
 UI-overhaul follow-up (2026-10-05): **M3 client work is fixed** by cached/lazy collection cards, discovery-only preview changes and one-time/event-driven sound registration. The new `scripts/check-ui.ps1` executes the client UI with regression assertions for repeated State updates and sound traversal. Server refresh work and real-device profiling remain outside this UI patch. **M2 is already fixed in this branch** through `MonetizationRules.InRange` and the living-character check in `MonetizationService.Distance`; no server file was modified by the UI task. See [UI review and limitations](design/ui-overhaul.md). The historical baseline findings below remain unchanged.
 
 2026-10-05; branch `feature/audit`; read-only baseline `b08b852`. Read AGENTS.md, GDD, the reference mockup, monetization design, and every file under `src/` before editing source. Research: [Roblox security and persistence](research/security-persistence-audit.md). Locations in the findings table refer to the baseline, so they remain useful after fixes move lines.
