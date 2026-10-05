@@ -14,6 +14,7 @@ for _, key in ipairs({
 	"Sell",
 	"BuyToilet",
 	"BuyUpgrade",
+	"Rebirth",
 	"Display",
 	"CollectIncome",
 	"IncomePending",
@@ -73,6 +74,9 @@ local function sync(player)
 		world:RefreshIncome(player, income:PendingCoins(profile))
 		monetization:Apply(player)
 		remotes.State:FireClient(player, {
+			RebirthLevel = profile.RebirthLevel,
+			RunFlushes = profile.RunFlushes,
+			ProtectedInventory = profile.ProtectedInventory,
 			Upgrades = profile.Upgrades,
 			UpgradeStats = upgrades:Snapshot(
 				profile,
@@ -115,6 +119,7 @@ rewards:Start(data, limiter, remotes, sync)
 require(script.Services.IndexService).Start(index, data, limiter, remotes, sync)
 require(script.Services.EconomyService).Start(data, limiter, remotes, sync)
 require(script.Services.UpgradeService).Start(data, limiter, remotes, sync)
+require(script.Services.RebirthService).Start(data, limiter, remotes, sync, events)
 require(script.Services.DisplayService).Start(data, limiter, remotes, sync)
 require(script.Services.DevGrantService).Start(data, limiter, remotes, sync)
 remotes.State.OnServerEvent:Connect(function(player, ...)

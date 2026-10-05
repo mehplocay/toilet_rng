@@ -3,6 +3,7 @@ local Shared = game.ReplicatedStorage.Shared
 local Rules = require(Shared.PresentationRules)
 local Config = require(Shared.Config.Presentation)
 local Items = require(Shared.Config.Items)
+local Rebirth = require(Shared.Config.Rebirth)
 local Service = {}
 function Service.Start(data, remotes, events)
 	local queue = Rules.Announcements(Config, os.clock)
@@ -43,6 +44,23 @@ function Service.Start(data, remotes, events)
 				remotes.DropAnnouncement:FireClient(recipient, payload)
 			end
 		end
+	end
+	events.Rebirth = function(player, level)
+		local profile = data:Get(player)
+		if
+			not profile
+			or profile.RebirthLevel ~= level
+			or not Rebirth.Levels[level]
+			or level < Rebirth.FriendAnnouncementLevel
+		then
+			return
+		end
+		queue:Push(
+			player,
+			{ Rarity = if level >= Rebirth.ServerAnnouncementLevel then "Mythic" else "Legendary" },
+			level,
+			{ Kind = "Rebirth", Level = level, PlayerName = Rules.Name(player.Name) }
+		)
 	end
 	Players.PlayerRemoving:Connect(function(player)
 		queue:Remove(player)

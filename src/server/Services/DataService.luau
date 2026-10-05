@@ -3,6 +3,8 @@ local HttpService = game:GetService("HttpService")
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local Items = require(game.ReplicatedStorage.Shared.Config.Items)
+local rebirth =
+	require(game.ReplicatedStorage.Shared.RebirthRules).new(require(game.ReplicatedStorage.Shared.Config.Rebirth))
 local leaderboardStats = require(game.ReplicatedStorage.Shared.LeaderboardStats).new(Items)
 local Toilets = require(game.ReplicatedStorage.Shared.Config.Toilets)
 local Rewards = require(game.ReplicatedStorage.Shared.Config.Rewards)
@@ -32,6 +34,7 @@ local DataService = {
 	Loading = {},
 	Sessions = {},
 	LeaseExpires = {},
+	Replacing = {},
 	Stopping = false,
 }
 local storeOk, store = pcall(DataStoreService.GetDataStore, DataStoreService, "ToiletRNG_v1")
@@ -56,6 +59,9 @@ function DataService.DefaultProfile()
 	PresentationSettings.Apply(settings, PresentationSettings.Sanitize(nil))
 	return {
 		Version = 1,
+		RebirthLevel = 0,
+		RunFlushes = 0,
+		ProtectedInventory = {},
 		Upgrades = upgrades:Sanitize(nil),
 		TutorialDone = false,
 		Settings = settings,
@@ -94,6 +100,7 @@ local function sanitize(raw)
 	profile.RewardLuckExpires = integer(raw.RewardLuckExpires, 0)
 	profile.ToiletTier = math.clamp(integer(raw.ToiletTier, 1), 1, #Toilets)
 	profile.DisplaySlots = math.clamp(integer(raw.DisplaySlots, 3), 1, 100)
+	profile.RebirthLevel = rebirth:Level(raw)
 	upgrades:Restore(profile, raw.Upgrades)
 	index:Sanitize(profile, raw)
 	profile.Income = income:Sanitize(raw.Income, profile)
@@ -103,6 +110,7 @@ local function sanitize(raw)
 			integer(if type(raw.Collection) == "table" then raw.Collection[item.Id] else nil, 0)
 	end
 	profile.Stats = leaderboardStats:Sanitize(raw.Stats)
+	rebirth:Restore(profile, raw)
 	-- Preserve display assignments only for known, owned items.
 	local reserved = {}
 	if type(raw.Displays) == "table" then
@@ -140,7 +148,7 @@ local function retry(callback)
 end
 
 function DataService:Get(player)
-	if self.Stopping or self.Closing[player] then
+	if self.Stopping or self.Closing[player] or self.Replacing[player] then
 		return nil
 	end
 	if self.Profiles[player] and not self.NoPersistence[player] and os.time() >= (self.LeaseExpires[player] or 0) then
@@ -154,6 +162,20 @@ function DataService:Get(player)
 		income:Settle(profile, os.time(), false)
 	end
 	return profile
+end
+
+function DataService:ReplaceAndSave(player, expected, replacement)
+	if self.Saving[player] or self:Get(player) ~= expected then
+		return false
+	end
+	-- The replacement and its exclusive guard become visible before Save can yield.
+	self.Replacing[player] = true
+	self.Profiles[player] = replacement
+	local saved = self:Save(player, false)
+	self.Replacing[player] = nil
+	-- Never roll back an ambiguous write: it may already have committed remotely.
+	-- Save fails closed and Close retries this same complete replacement under its lease.
+	return saved and self:Get(player) == replacement
 end
 
 local function finishLoad(self, player)
@@ -306,6 +328,7 @@ function DataService:Close(player)
 	self.NoPersistence[player] = nil
 	self.Sessions[player], self.LeaseExpires[player] = nil, nil
 	self.Closing[player] = nil
+	self.Replacing[player] = nil
 end
 
 function DataService:Start()

@@ -35,6 +35,7 @@ function FlushService.Start(data, limiter, remotes, sync, world, events, monetiz
 		end, luck)
 		if
 			profile.Stats.Flushes >= 9e15
+			or (profile.RunFlushes or 0) >= 9e15
 			or (profile.Inventory[item.Id] or 0) >= 9e15
 			or (profile.Collection[item.Id] or 0) >= 9e15
 		then
@@ -48,6 +49,7 @@ function FlushService.Start(data, limiter, remotes, sync, world, events, monetiz
 		nextFlush[player] = now + cooldown
 		nextAuto[player] = now + upgrades:AutoInterval(profile, cooldown)
 		leaderboardStats:Record(profile, item)
+		profile.RunFlushes = (profile.RunFlushes or 0) + 1
 		profile.Inventory[item.Id] = (profile.Inventory[item.Id] or 0) + 1
 		profile.Collection[item.Id] = (profile.Collection[item.Id] or 0) + 1
 		events:Trigger(player, item, profile.Stats.Flushes)

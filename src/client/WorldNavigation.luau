@@ -17,6 +17,10 @@ function Navigation.Travel(name)
 end
 function Navigation.Start(open)
 	PromptService.PromptTriggered:Connect(function(prompt)
+		if prompt:GetAttribute("RebirthOwnerUserId") == Players.LocalPlayer.UserId then
+			open("Rebirth")
+			return
+		end
 		local panel = prompt:GetAttribute("StationPanel")
 		if panel == "Shop" or panel == "Upgrades" or panel == "Collection" or panel == "Daily" or panel == "Passes" then
 			open(panel)

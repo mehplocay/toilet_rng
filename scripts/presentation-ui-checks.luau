@@ -135,6 +135,13 @@ assert(#messages == 1 and messages[1][1]:find("bTester flushed", 1, true) and no
 chat.Enabled = false
 chatRemote.OnClientEvent:Fire({ ItemId = "KingPoop", PlayerName = "Tester" })
 assert(#messages == 1)
+chat.Enabled = true
+chatRemote.OnClientEvent:Fire({ Kind = "Rebirth", Level = 5, PlayerName = "<b>Tester" })
+assert(
+	#messages == 2 and messages[2][1]:find("bTester reached Rebirth 5", 1, true) and messages[2][2] == "ToiletRebirth"
+)
+chatRemote.OnClientEvent:Fire({ Kind = "Rebirth", Level = 500, PlayerName = "Tester" })
+assert(#messages == 2)
 chat:Destroy()
 
 local listRoot = H.Root(724, 318)
@@ -148,6 +155,8 @@ for i, coins in ipairs({ 900, 1200, 1000000 }) do
 	money.Name, money.Value, money.Parent = "Coins", coins, stats
 	local rarest = H.Instance.new("StringValue")
 	rarest.Name, rarest.Value, rarest.Parent = "Rarest", "Mythic", stats
+	local rebirth = H.Instance.new("IntValue")
+	rebirth.Name, rebirth.Value, rebirth.Parent = "Rebirth", i, stats
 	table.insert(players, player)
 end
 H.PlayerList = players
@@ -155,6 +164,7 @@ local list = H.Load("src/client/Presentation/PlayerList").Create(listRoot)
 list.Toggle()
 local rows = listRoot.ServerPlayers.ScrollingFrame
 assert(rows["3"].LayoutOrder == 1 and rows["1"].LayoutOrder == 3 and rows["3"].Coins.Text == "1M")
+assert(rows["3"].PlayerName.Text == "[R3] Player3")
 players[1].leaderstats.Coins.Value = 2e6
 H.Advance(1.1)
 assert(rows["1"].LayoutOrder == 1 and rows["1"].Coins.Text == "2M")

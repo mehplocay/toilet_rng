@@ -1,5 +1,11 @@
 # Foundation and UI/world
 
+Rebirth adds `Rebirth(expectedLevel)` and State fields `RebirthLevel`, `RunFlushes`,
+and `ProtectedInventory`. A reset exclusively replaces and immediately saves one
+complete profile under the existing lease. Coin upgrade tracks now reset on rebirth;
+permanent rebirth bonuses compose within the existing luck/speed caps.
+See [rebirth contract, tuning and recovery limits](design/rebirth.md).
+
 The server builds the plaza and ten plots on startup. Slots are assigned on join
 and released on leave. More than ten players are asked to join another server.
 All gameplay text is English. Placeholder geometry and colors are configured in

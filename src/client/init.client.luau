@@ -15,6 +15,7 @@ for _, name in ipairs({
 	"Sell",
 	"BuyToilet",
 	"BuyUpgrade",
+	"Rebirth",
 	"Display",
 	"CollectIncome",
 	"IncomePending",
@@ -63,6 +64,7 @@ local collection = require(script.UI.Collection).Create(root, remotes)
 local upgrades = require(script.UI.Upgrades).Create(root, remotes)
 local rewards = require(script.UI.Rewards).Create(root, remotes)
 local passes = require(script.UI.Passes).Create(root, remotes)
+local rebirth = require(script.UI.Rebirth).Create(root, remotes)
 local settings = C.Panel(root, "Settings", C.Blue)
 local skipAnimation, autoFlush = false, false
 local settingsList = C.Scroll(settings.ContentScroll.Body, UDim2.fromScale(1, 1))
@@ -86,7 +88,7 @@ local skipToggle = settingsRow(
 		remotes.AnimationSkip:FireServer(not skipAnimation)
 	end
 )
-local panels = { collection.Panel, upgrades.Panel, rewards.Panel, passes.Panel, settings }
+local panels = { collection.Panel, upgrades.Panel, rewards.Panel, passes.Panel, rebirth.Panel, settings }
 local dev
 if RunService:IsStudio() then
 	dev = C.Panel(root, "Developer Tools", Color3.fromRGB(219, 78, 105))
@@ -160,6 +162,8 @@ local function open(name)
 		end
 	elseif name == "Collection" then
 		show(collection.Panel)
+	elseif name == "Rebirth" then
+		show(rebirth.Panel)
 	elseif name == "Daily" then
 		show(rewards.Panel)
 	elseif name == "Passes" then
@@ -263,5 +267,6 @@ remotes.State.OnClientEvent:Connect(function(state)
 	upgrades.Update(state)
 	rewards.Update(state)
 	passes.Update(state)
+	rebirth.Update(state)
 end)
 remotes.State:FireServer()

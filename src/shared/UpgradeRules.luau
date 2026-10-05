@@ -43,11 +43,17 @@ function Rules:Price(id, level)
 	return math.ceil(track.BaseCost * track.Growth ^ level)
 end
 function Rules:Cash(profile)
-	return 1 + self:Level(profile, "CashBoost") * self.ById.CashBoost.Step
+	return 1 + self:Level(profile, "CashBoost") * self.ById.CashBoost.Step + self:RebirthBonus(profile, "Cash")
+end
+function Rules:RebirthBonus(profile, key)
+	local level = profile and profile.RebirthLevel
+	local bonus = if integer(level, #self.Config.Rebirth.Levels) then self.Config.Rebirth.Levels[level] else nil
+	return if bonus then bonus[key] else 0
 end
 function Rules:Luck(profile, tier, ...)
 	local cap = self.Config.LuckCap
-	local luck = tier * (1 + self:Level(profile, "LuckBoost") * self.ById.LuckBoost.Step)
+	local luck = tier
+		* (1 + self:Level(profile, "LuckBoost") * self.ById.LuckBoost.Step + self:RebirthBonus(profile, "Luck"))
 	assert(luck >= 1 and luck < math.huge)
 	luck = math.min(cap, luck)
 	for i = 1, select("#", ...) do
@@ -61,7 +67,7 @@ end
 function Rules:Cooldown(profile, base)
 	return math.max(
 		self.Config.CooldownFloor,
-		base * (1 - self:Level(profile, "FlushSpeed") * self.ById.FlushSpeed.Step)
+		base * (1 - self:Level(profile, "FlushSpeed") * self.ById.FlushSpeed.Step - self:RebirthBonus(profile, "Speed"))
 	)
 end
 function Rules:AutoInterval(profile, cooldown)

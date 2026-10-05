@@ -1,4 +1,6 @@
+local rebirth = require(if script then script.Parent.Rebirth else "./Rebirth")
 return {
+	Rebirth = rebirth,
 	MaxBalance = 9e15,
 	LuckCap = 5,
 	CooldownFloor = 0.4,

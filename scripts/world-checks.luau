@@ -513,6 +513,16 @@ if snapshot then
 		end
 	end
 end
+do
+	local hook = loadModule(node("src/server/World/RebirthHook"))
+	local anchor = Instance.new("Part")
+	local prompt = hook.Attach(anchor, { UserId = 123 })
+	assert(prompt:GetAttribute("RebirthOwnerUserId") == 123 and prompt.Enabled)
+	assert(hook.Attach(anchor, { UserId = 456 }) == prompt and prompt:GetAttribute("RebirthOwnerUserId") == 456)
+	hook.Attach(anchor, nil)
+	assert(not prompt.Enabled and prompt:GetAttribute("OwnerUserId") == 0)
+	anchor:Destroy()
+end
 print(
 	string.format(
 		"Headless %s checks passed: hub %d parts; worst plot + drop %d; largest toilet %d, item %d; all 75 asset paths covered; %d normalized templates. Startup calls: %d.",

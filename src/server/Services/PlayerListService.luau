@@ -3,6 +3,7 @@ local Shared = game.ReplicatedStorage.Shared
 local Rules = require(Shared.PresentationRules)
 local Items = require(Shared.Config.Items)
 local Config = require(Shared.Config.Presentation)
+local rebirth = require(Shared.RebirthRules).new(require(Shared.Config.Rebirth))
 local Service = {}
 function Service.Start(data)
 	local stats, byId = {}, {}
@@ -20,12 +21,15 @@ function Service.Start(data)
 					local coins, rarest = Instance.new("NumberValue"), Instance.new("StringValue")
 					coins.Name, rarest.Name = "Coins", "Rarest"
 					coins.Parent, rarest.Parent = folder, folder
+					local rebirth = Instance.new("IntValue")
+					rebirth.Name, rebirth.Parent = "Rebirth", folder
 					local primary = Instance.new("BoolValue")
 					primary.Name, primary.Value, primary.Parent = "IsPrimary", true, coins
-					row = { Folder = folder, Coins = coins, Rarest = rarest }
+					row = { Folder = folder, Coins = coins, Rarest = rarest, Rebirth = rebirth }
 					stats[player] = row
 				end
 				local item = byId[profile.Stats.RarestItemId]
+				row.Rebirth.Value = rebirth:Level(profile)
 				local coins, rarest = Rules.Integer(profile.Coins), if item then item.Rarity else "None"
 				if row.Coins.Value ~= coins then
 					row.Coins.Value = coins

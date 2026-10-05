@@ -1,5 +1,13 @@
 # Security and exploit audit
 
+Rebirth follow-up (2026-10-05, `feature/rebirth`): **68 scenarios pass** in the
+extended harness. The new one-token / 0.2-per-second remote uses expected-level
+replay rejection and one complete profile swap with exclusive mutation blocking
+through the immediate lease-checked save. No rollback on ambiguous commits.
+Coverage includes interrupted/replayed saves, rejoin, lease loss, spam, offline
+accrual, protected inventory and index/display capacity. Existing L3 durability
+limits remain. [Full reset contract and limitations](design/rebirth.md).
+
 Upgrade-tracks follow-up (2026-10-05, `feature/upgrades`): `BuyUpgrade(trackId, expectedLevel)`
 uses a 3-token / 1-per-second bucket, server pricing and a non-yielding level/coin transaction.
 Stale levels cannot buy twice. Save and lease checks precede success; levels, expanded offline

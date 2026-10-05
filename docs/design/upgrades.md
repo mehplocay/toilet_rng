@@ -1,5 +1,11 @@
 # Permanent upgrades and faster flushes
 
+Rebirth follow-up: coin tracks now last for the current run and reset on rebirth.
+Cash/luck/speed also receive additive, capped permanent rebirth bonuses. Carried
+inventory becomes permanently protected instead of receiving a higher resale
+multiplier. [Current behavior and reset contract](rebirth.md) supersede the
+pre-rebirth lifetime-track statements below.
+
 Implemented on `feature/upgrades`, 2026-10-05; no commit or push. This task supersedes the older cooldown, price and 50x luck proposals. [API research](../research/upgrade-tracks.md).
 
 ## Upgrade contract

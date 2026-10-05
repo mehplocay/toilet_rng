@@ -300,6 +300,7 @@ function Instance.new(class)
 		"InputEnded",
 		"MouseEnter",
 		"MouseLeave",
+		"SelectionLost",
 		"Destroying",
 		"Changed",
 		"DescendantAdded",
@@ -316,7 +317,14 @@ end
 local services = {
 	ProximityPromptService = { PromptTriggered = signal(), PromptShown = signal(), PromptHidden = signal() },
 	RunService = { Heartbeat = signal(), RenderStepped = signal() },
-	UserInputService = { TouchEnabled = false, InputBegan = signal(), InputChanged = signal(), InputEnded = signal() },
+	UserInputService = {
+		TouchEnabled = false,
+		InputBegan = signal(),
+		InputChanged = signal(),
+		InputEnded = signal(),
+		WindowFocusReleased = signal(),
+	},
+	GuiService = {},
 	TweenService = {},
 	ContentProvider = {},
 	Players = {},
@@ -480,6 +488,7 @@ function H.Remotes()
 		"Sell",
 		"BuyToilet",
 		"BuyUpgrade",
+		"Rebirth",
 		"Display",
 		"CollectIncome",
 		"IncomePending",
@@ -589,7 +598,15 @@ function H.Layout(root)
 			object._signals.AbsoluteSize:Fire()
 		end
 		for _, child in ipairs(object._children) do
-			visit(child, x, y, w, h, placements[child])
+			local scroll = if object.ClassName == "ScrollingFrame" then object.CanvasPosition else nil
+			visit(
+				child,
+				x - (if scroll then scroll.X else 0),
+				y - (if scroll then scroll.Y else 0),
+				w,
+				h,
+				placements[child]
+			)
 		end
 	end
 	for _ = 1, 5 do

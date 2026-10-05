@@ -29,6 +29,7 @@ for caseIndex, case in ipairs(cases) do
 	local width, height, touch, left, top, right, bottom = table.unpack(case)
 	local w, h = width - left - right, height - top - bottom
 	local layout = Layout.Compute(w, h, touch)
+	assert(#layout.Nav == 6, "Rebirth navigation entry missing")
 	local revealLayout = PresentationLayout.Compute(w, h)
 	for name, bounds in pairs(revealLayout) do
 		assert(
