@@ -1,33 +1,23 @@
 local C = require(script.Parent.Components)
 local Shared = game.ReplicatedStorage.Shared
 local index = require(Shared.IndexProgress).new(require(Shared.Config.Items), require(Shared.Config.IndexRewards))
+local Rarities = require(Shared.Config.Rarities)
 local Rewards = {}
-
-function Rewards.Create(panel, remotes)
-	local frame = C.New("Frame", panel, {
+function Rewards.Create(body, remotes)
+	local frame = C.New("Frame", body, {
+		Name = "IndexRewards",
 		Visible = false,
 		BackgroundTransparency = 1,
-		Size = UDim2.fromScale(0.94, 0.74),
-		Position = UDim2.fromScale(0.03, 0.22),
+		Size = UDim2.new(1, 0, 1, -54),
+		Position = UDim2.fromOffset(0, 54),
 	})
-	local balance = C.Text(frame, "Stamps: 0 | Permanent, one-time rewards", UDim2.fromScale(1, 0.08))
-	local status = C.Text(
-		frame,
-		"Discover items, then claim each reward once.",
-		UDim2.fromScale(1, 0.07),
-		UDim2.fromScale(0, 0.09)
-	)
-	local list = C.New("ScrollingFrame", frame, {
-		Size = UDim2.fromScale(1, 0.82),
-		Position = UDim2.fromScale(0, 0.18),
-		BackgroundTransparency = 1,
-		AutomaticCanvasSize = Enum.AutomaticSize.Y,
-		CanvasSize = UDim2.new(),
-		ScrollBarThickness = 5,
-	})
-	C.New("UIListLayout", list, { Padding = UDim.new(0, 8), SortOrder = Enum.SortOrder.LayoutOrder })
-	local state, pending = nil, {}
-	local buttons, progress = {}, {}
+	local balance = C.Text(frame, "Stamps: 0", UDim2.new(1, 0, 0, 30), nil, 22)
+	balance.TextColor3 = C.Gold
+	local status =
+		C.BodyText(frame, "Discover items. Claim permanent rewards.", UDim2.new(1, 0, 0, 36), UDim2.fromOffset(0, 32))
+	local list = C.Scroll(frame, UDim2.new(1, 0, 1, -76), UDim2.fromOffset(0, 76))
+	C.Grid(list, 240, 146)
+	local state, pending, rows = nil, {}, {}
 	local function update()
 		if not state then
 			return
@@ -38,46 +28,49 @@ function Rewards.Create(panel, remotes)
 				cosmeticCount += 1
 			end
 		end
-		balance.Text = "Stamps: " .. C.Commas(state.Stamps or 0) .. " | Cosmetic unlocks: " .. cosmeticCount
+		balance.Text = C.Commas(state.Stamps or 0) .. " Stamps  /  " .. cosmeticCount .. " Cosmetics"
 		for _, reward in ipairs(index.Rewards) do
 			local count = index:Count(state, reward)
 			local claimed = (state.IndexClaims or {})[reward.Id] == true
-			progress[reward.Id].Text = (if reward.Rarity then reward.Rarity else "Discoveries")
-				.. ": "
-				.. count
+			local row = rows[reward.Id]
+			row.Progress.Text = (reward.Rarity or "Discoveries")
+				.. "  "
+				.. math.min(count, reward.Required)
 				.. "/"
 				.. reward.Required
-			local button = buttons[reward.Id]
-			button.Text = if claimed
+			row.Bar.Set(count / reward.Required)
+			row.Button.Text = if claimed
 				then "Claimed"
 				elseif pending[reward.Id] then "Saving..."
 				elseif count >= reward.Required then "Claim"
 				else "Locked"
-			button.Interactable = not claimed and not pending[reward.Id] and count >= reward.Required
+			row.Button.Interactable = not claimed and not pending[reward.Id] and count >= reward.Required
 		end
 	end
 	for order, reward in ipairs(index.Rewards) do
-		local row = C.New("Frame", list, {
-			Size = UDim2.new(1, -12, 0, 76),
-			BackgroundColor3 = C.Navy,
-			LayoutOrder = order,
-		})
-		C.Chrome(row, C.Navy)
-		C.Text(row, reward.Label, UDim2.fromScale(0.75, 0.4), UDim2.fromScale(0.02, 0.07))
-		progress[reward.Id] = C.Text(row, "", UDim2.fromScale(0.75, 0.32), UDim2.fromScale(0.02, 0.55))
-		buttons[reward.Id] = C.Button(row, "Locked", UDim2.fromScale(0.2, 0.65), UDim2.fromScale(0.78, 0.18), function()
-			if not state or not buttons[reward.Id].Interactable then
+		local color = if reward.Rarity == "Secret"
+			then C.Purple
+			elseif reward.Rarity and Rarities[reward.Rarity] then Rarities[reward.Rarity].Color
+			else C.Gold
+		local row = C.Card(list, color, true)
+		row.LayoutOrder = order
+		C.Text(row, reward.Label, UDim2.new(1, -16, 0, 46), UDim2.fromOffset(8, 6), 21)
+		local progress = C.BodyText(row, "", UDim2.new(1, -120, 0, 38), UDim2.fromOffset(10, 60))
+		local bar = C.ProgressBar(row, UDim2.new(1, -20, 0, 10), UDim2.fromOffset(10, 119), color)
+		local button = C.Button(row, "Locked", UDim2.fromOffset(94, 44), UDim2.new(1, -104, 0, 61), function()
+			if not state or not rows[reward.Id].Button.Interactable then
 				return
 			end
 			pending[reward.Id] = true
 			update()
 			remotes.ClaimIndexReward:FireServer(reward.Id)
-			-- A dropped/rate-limited request may be retried; the server enforces one-time grants.
 			task.delay(10, function()
 				pending[reward.Id] = nil
 				update()
 			end)
-		end)
+		end, C.Green, { TextSize = 19 })
+		button.Interactable = false
+		rows[reward.Id] = { Progress = progress, Bar = bar, Button = button }
 	end
 	remotes.Result.OnClientEvent:Connect(function(action, result)
 		if action ~= "ClaimIndexReward" then
@@ -91,8 +84,8 @@ function Rewards.Create(panel, remotes)
 	end)
 	return {
 		Frame = frame,
-		Update = function(newState)
-			state = newState
+		Update = function(snapshot)
+			state = snapshot
 			for id in pairs(pending) do
 				if (state.IndexClaims or {})[id] then
 					pending[id] = nil
@@ -102,5 +95,4 @@ function Rewards.Create(panel, remotes)
 		end,
 	}
 end
-
 return Rewards

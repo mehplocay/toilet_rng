@@ -1,52 +1,34 @@
 local Lighting = game:GetService("Lighting")
-local TweenService = game:GetService("TweenService")
 local Debris = game:GetService("Debris")
 local SoundService = game:GetService("SoundService")
 local Config = game.ReplicatedStorage.Shared.Config
 local Items, Rarities, Events, Assets =
 	require(Config.Items), require(Config.Rarities), require(Config.Events), require(Config.Assets)
 local C = require(script.Parent.UI.Components)
+local Layout = require(script.Parent.UI.Layout)
 local P = require(game.ReplicatedStorage.Shared.Visuals.Primitives)
 local Visuals = require(Config.Visuals)
 local Effects = {}
-local function commas(value)
-	local text = tostring(value)
-	return text:reverse():gsub("(%d%d%d)", "%1,"):reverse():gsub("^,", "")
-end
-function Effects.Create(gui, soundGroup)
-	local expires, generation = 0, 0
-	local skipAnimation = false
-	local luck = C.Text(gui, "", UDim2.fromScale(0.26, 0.05), UDim2.fromScale(0.71, 0.18))
-	luck.TextColor3 = Color3.fromRGB(255, 225, 80)
-	local banner = C.Text(gui, "", UDim2.fromScale(0.65, 0.12), UDim2.fromScale(0.02, 0.02))
-	banner.Visible = false
-	banner.BackgroundColor3 = C.Navy
-	banner.BackgroundTransparency = 0.15
-	C.Round(banner, Visuals.Palette.Gold)
-	local popup = C.New("Frame", gui, {
-		Visible = false,
-		Size = UDim2.fromScale(1, 1),
-		BackgroundColor3 = Color3.fromRGB(255, 195, 35),
-		BackgroundTransparency = 0.65,
-		ZIndex = 20,
-	})
-	local title = C.Text(popup, "", UDim2.fromScale(0.65, 0.5), UDim2.fromScale(0.2, 0.22))
-	title.ZIndex = 21
-	title.TextColor3 = Color3.fromRGB(255, 235, 90)
-	local tint = Instance.new("ColorCorrectionEffect")
-	tint.Name = "RareDropTint"
-	tint.Parent = Lighting
+function Effects.Create(gui, soundGroup, hud)
+	local generation, skipAnimation = 0, false
+	local banner = C.Card(gui, C.Gold, true)
+	banner.Name, banner.Visible = "ServerEventBanner", false
+	local text = C.Text(banner, "", UDim2.new(1, -16, 1, -8), UDim2.fromOffset(8, 4), 25)
+	local function resize()
+		C.Place(banner, Layout.Compute(gui.AbsoluteSize.X, gui.AbsoluteSize.Y, false).Event)
+	end
+	gui:GetPropertyChangedSignal("AbsoluteSize"):Connect(resize)
+	resize()
+	local tint = C.New("ColorCorrectionEffect", Lighting, { Name = "RareDropTint" })
 	local function sound(key)
-		local id = Assets.Sounds[key]
-		if type(id) ~= "string" or id == "" then
+		local id = C.AssetId(Assets.Sounds[key])
+		if not id then
 			return
 		end
-		local cue = Instance.new("Sound")
-		cue.SoundId, cue.SoundGroup, cue.Parent = id, soundGroup, SoundService
+		local cue = C.New("Sound", SoundService, { SoundId = id, SoundGroup = soundGroup })
 		cue:Play()
 		Debris:AddItem(cue, 15)
 	end
-	local pulseTween
 	local function drop(item)
 		if skipAnimation then
 			return
@@ -58,22 +40,10 @@ function Effects.Create(gui, soundGroup)
 		if rarity.Order < 5 then
 			return
 		end
-		if pulseTween then
-			pulseTween:Cancel()
-		end
-		local titleScale = title:FindFirstChildWhichIsA("UIScale") or C.New("UIScale", title, { Scale = 1 })
-		titleScale.Scale = 1
-		pulseTween = TweenService:Create(
-			titleScale,
-			TweenInfo.new(0.13, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, 2, true),
-			{ Scale = 1.05 }
-		)
-		pulseTween:Play()
 		local character = game.Players.LocalPlayer.Character
 		local root = character and character:FindFirstChild("HumanoidRootPart")
 		if root then
-			local attachment = Instance.new("Attachment")
-			attachment.Parent = root
+			local attachment = C.New("Attachment", root)
 			local particles = P.Particles(attachment, "RareDropBurst", rarity.Color, 0, {
 				Speed = NumberRange.new(6, 10),
 				SpreadAngle = Vector2.new(180, 180),
@@ -83,34 +53,12 @@ function Effects.Create(gui, soundGroup)
 			Debris:AddItem(attachment, 3)
 		end
 	end
-	task.spawn(function()
-		while gui.Parent do
-			local remaining = math.max(0, math.ceil(expires - workspace:GetServerTimeNow()))
-			luck.Visible = remaining > 0
-			luck.Text = string.format("Server Luck x2 - %02d:%02d", math.floor(remaining / 60), remaining % 60)
-			task.wait(0.25)
-		end
-	end)
-	local activeTween
 	return {
 		SetSkip = function(enabled)
-			if enabled == skipAnimation then
-				return
-			end
 			skipAnimation = enabled
 			if enabled then
-				if activeTween then
-					activeTween:Cancel()
-				end
-				if pulseTween then
-					pulseTween:Cancel()
-				end
-				popup.Visible = false
-				tint.TintColor, tint.Brightness = Color3.new(1, 1, 1), 0
+				C.Tween(tint, 0.1, { TintColor = Color3.new(1, 1, 1), Brightness = 0 })
 			end
-		end,
-		Luck = function(value)
-			expires = value
 		end,
 		Drop = drop,
 		Event = function(payload)
@@ -126,48 +74,34 @@ function Effects.Create(gui, soundGroup)
 			end
 			generation += 1
 			local token = generation
-			banner.Text = payload.PlayerName
-				.. " just flushed a 1 in "
-				.. commas(item.Chance)
-				.. " "
-				.. string.upper(item.Name)
-				.. "!\nServer Luck increased for 5 minutes!"
-			banner.TextColor3 = Rarities[item.Rarity].Color
-			if skipAnimation then
-				banner.Visible = true
-				task.delay(3, function()
-					if generation == token then
-						banner.Visible = false
-					end
-				end)
-				return
+			text.Text = payload.PlayerName
+				.. " found "
+				.. item.Name
+				.. "!\n1 in "
+				.. C.Commas(item.Chance)
+				.. " • Server Luck x2!"
+			text.TextColor3 = if item.Rarity == "Secret"
+				then Color3.fromRGB(228, 172, 255)
+				else Rarities[item.Rarity].Color:Lerp(Color3.new(1, 1, 1), 0.3)
+			banner.Visible = true
+			hud.EventActive(true)
+			if not skipAnimation then
+				C.Pop(banner)
+				C.Shine(banner)
+				sound("ServerEvent")
+				local rgb = Events.Tints[item.Id] or Events.Tints.KingPoop
+				C.Tween(tint, 0.2, {
+					TintColor = Color3.new(1, 1, 1):Lerp(Color3.fromRGB(rgb[1], rgb[2], rgb[3]), 0.3),
+					Brightness = 0.025,
+				})
 			end
-			banner.Visible, popup.Visible = true, true
-			title.Text = string.upper(item.Name) .. "\n1/" .. commas(item.Chance) .. "\n" .. string.upper(item.Rarity)
-			if activeTween then
-				activeTween:Cancel()
-			end
-			local rgb = Events.Tints[item.Id] or Events.Tints.KingPoop
-			tint.TintColor = Color3.fromRGB(rgb[1], rgb[2], rgb[3])
-			tint.Brightness = if item.Id == "Mystery" then -0.2 else 0.05
-			sound("ServerEvent")
-			task.delay(3, function()
-				if generation == token then
-					popup.Visible = false
-				end
-			end)
-			task.delay(Events.EffectDuration - 2, function()
-				if generation ~= token then
+			task.delay(5, function()
+				if token ~= generation then
 					return
 				end
-				activeTween =
-					TweenService:Create(tint, TweenInfo.new(2), { TintColor = Color3.new(1, 1, 1), Brightness = 0 })
-				activeTween:Play()
-			end)
-			task.delay(Events.EffectDuration, function()
-				if generation == token then
-					banner.Visible = false
-				end
+				banner.Visible = false
+				hud.EventActive(false)
+				C.Tween(tint, 1.2, { TintColor = Color3.new(1, 1, 1), Brightness = 0 })
 			end)
 		end,
 	}
