@@ -1,6 +1,7 @@
 local Players = game:GetService("Players")
 local SoundService = game:GetService("SoundService")
 local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
 local player = Players.LocalPlayer
 local function configurePrompt(object)
 	if object:IsA("ProximityPrompt") then
@@ -32,6 +33,9 @@ for _, name in ipairs({
 	"ServerLuck",
 	"Settings",
 	"AutoFlush",
+	"DevGrant",
+	"TutorialDone",
+	"ClaimReward",
 }) do
 	remotes[name] = folder:WaitForChild(definitions[name])
 end
@@ -67,6 +71,29 @@ C.Icon(coinBox, "Coins", UDim2.fromScale(0.2, 0.86), UDim2.fromScale(0.025, 0.07
 local coins = C.Text(coinBox, "Loading...", UDim2.fromScale(0.72, 0.85), UDim2.fromScale(0.25, 0.075))
 local collection = require(script.UI.Collection).Create(gui, remotes)
 local upgrades = require(script.UI.Upgrades).Create(gui, remotes)
+local rewards = require(script.UI.Rewards).Create(gui, remotes)
+if RunService:IsStudio() then
+	local panel = C.New("Frame", gui, {
+		Size = UDim2.fromScale(0.28, 0.16),
+		Position = UDim2.fromScale(0.02, 0.81),
+		BackgroundColor3 = C.Navy,
+	})
+	C.Round(panel, Color3.fromRGB(220, 80, 80))
+	C.Text(panel, "DEV", UDim2.fromScale(0.18, 0.28), UDim2.fromScale(0.02, 0.02))
+	for index, grantKey in ipairs({ "1000", "100000", "10000000" }) do
+		local labels = { "+1,000", "+100,000", "+10,000,000" }
+		C.Button(
+			panel,
+			labels[index],
+			UDim2.fromScale(0.3, 0.55),
+			UDim2.fromScale(0.03 + (index - 1) * 0.32, 0.38),
+			function()
+				remotes.DevGrant:FireServer(grantKey)
+			end,
+			Color3.fromRGB(160, 55, 65)
+		)
+	end
+end
 local settings = C.Panel(gui, "Settings")
 local soundOn = true
 local soundGroup = C.New("SoundGroup", SoundService, { Name = "ToiletSounds" })
@@ -92,7 +119,7 @@ toggle = C.Button(settings, "Sound: ON", UDim2.fromScale(0.6, 0.16), UDim2.fromS
 end)
 C.Text(settings, "Sound settings are saved.", UDim2.fromScale(0.9, 0.12), UDim2.fromScale(0.05, 0.6))
 local function open(panel)
-	for _, other in ipairs({ collection.Panel, upgrades.Panel, settings }) do
+	for _, other in ipairs({ collection.Panel, upgrades.Panel, settings, rewards.Panel }) do
 		other.Visible = other == panel and not other.Visible
 	end
 end
@@ -102,18 +129,22 @@ local colors = {
 	Color3.fromRGB(40, 175, 110),
 	Color3.fromRGB(160, 65, 225),
 	Color3.fromRGB(65, 85, 105),
+	Color3.fromRGB(195, 140, 35),
 }
-for index, name in ipairs({ "Shop", "Collection", "Upgrades", "Teleport", "Settings" }) do
+local navigation = {}
+for index, name in ipairs({ "Shop", "Collection", "Upgrades", "Teleport", "Settings", "Daily" }) do
 	local button = C.Button(
 		gui,
 		name,
-		UDim2.fromScale(0.16, 0.075),
-		UDim2.fromScale(0.025, 0.24 + (index - 1) * 0.09),
+		UDim2.fromScale(0.16, 0.068),
+		UDim2.fromScale(0.025, 0.19 + (index - 1) * 0.09),
 		function()
 			if name == "Collection" then
 				open(collection.Panel)
 			elseif name == "Settings" then
 				open(settings)
+			elseif name == "Daily" then
+				open(rewards.Panel)
 			elseif name == "Teleport" then
 				local position = player:GetAttribute("PlotPosition")
 				if typeof(position) == "Vector3" and player.Character then
@@ -128,7 +159,9 @@ for index, name in ipairs({ "Shop", "Collection", "Upgrades", "Teleport", "Setti
 	local label = button:FindFirstChildWhichIsA("TextLabel")
 	label.Size, label.Position = UDim2.fromScale(0.73, 0.78), UDim2.fromScale(0.25, 0.11)
 	C.Icon(button, name, UDim2.fromScale(0.19, 0.7), UDim2.fromScale(0.04, 0.15))
+	navigation[name] = button
 end
+require(script.UI.Tutorial).Create(player, remotes, navigation)
 local popup = C.New("Frame", gui, {
 	Visible = false,
 	Size = UDim2.fromScale(0.43, 0.2),
@@ -155,6 +188,9 @@ remotes.Event.OnClientEvent:Connect(effects.Event)
 remotes.ServerLuck.OnClientEvent:Connect(effects.Luck)
 local generation = 0
 remotes.Result.OnClientEvent:Connect(function(action, payload)
+	if action == "ClaimReward" then
+		return
+	end
 	generation += 1
 	local token = generation
 	if action == "Flush" then
@@ -197,5 +233,6 @@ remotes.State.OnClientEvent:Connect(function(state)
 	coins.Text = C.Commas(state.Coins)
 	collection.Update(state)
 	upgrades.Update(state)
+	rewards.Update(state)
 end)
 remotes.State:FireServer()

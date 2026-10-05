@@ -10,7 +10,12 @@ return {
 	ServerLuck = "ServerLuck",
 	Settings = "Settings",
 	AutoFlush = "AutoFlush",
+	DevGrant = "DevGrant",
+	TutorialDone = "TutorialDone",
+	ClaimReward = "ClaimReward",
 	Limits = {
+		TutorialDone = { Capacity = 2, Refill = 0.5 },
+		ClaimReward = { Capacity = 2, Refill = 0.2 },
 		Settings = { Capacity = 3, Refill = 1 },
 		AutoFlush = { Capacity = 3, Refill = 1 },
 		Display = { Capacity = 4, Refill = 2 },
@@ -18,5 +23,6 @@ return {
 		Flush = { Capacity = 2, Refill = 1 },
 		Sell = { Capacity = 5, Refill = 2 },
 		BuyToilet = { Capacity = 3, Refill = 1 },
+		DevGrant = { Capacity = 2, Refill = 0.2 },
 	},
 }
