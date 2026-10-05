@@ -306,10 +306,61 @@ test("shutdown deadline stays bounded when the backend never returns", function(
 	assert(coroutine.status(shutdown) == "dead")
 end)
 
+test("merged profile fields survive sanitize, save and rejoin", function()
+	local e = environment()
+	local data, player = e:Load(dataPath), e:Player(16)
+	e.Store.Records.Player_16 = {
+		Data = {
+			TutorialDone = true,
+			Settings = { Sound = false, SkipAnimation = true, PlotColor = "Mint", AutoFlush = true },
+			Coins = 321,
+			LastClaimDay = 20000,
+			Streak = 2,
+			RewardLuckExpires = e.Now + 60,
+			Inventory = { Poop = 2, Unknown = 99 },
+			Collection = { Poop = 10, Rat = 4 },
+			Stamps = 12,
+			IndexClaims = { ["total:5"] = true, ["total:8"] = true, founding = true, Unknown = true },
+			IndexCosmetics = { Unverified = true },
+			ToiletTier = 3,
+			DisplaySlots = 3,
+			Displays = { ["1"] = "Poop", ["2"] = "Poop", ["3"] = "Poop", ["4"] = "Unknown" },
+			Stats = { Flushes = 150, Earned = 600 },
+		},
+	}
+	local function verify(profile)
+		assert(profile.TutorialDone and not profile.Settings.Sound and profile.Settings.SkipAnimation)
+		assert(profile.Settings.PlotColor == "Mint" and profile.Settings.AutoFlush == nil)
+		assert(profile.Coins == 321 and profile.LastClaimDay == 20000 and profile.Streak == 2)
+		assert(profile.RewardLuckExpires == e.Now + 60 and profile.ToiletTier == 3)
+		assert(profile.Inventory.Poop == 2 and profile.Inventory.Unknown == nil)
+		assert(profile.Collection.Poop == 10 and profile.Collection.Rat == 4)
+		assert(profile.Stamps == 12 and profile.IndexClaims["total:5"] and profile.IndexClaims["total:8"])
+		assert(profile.IndexClaims.founding and profile.IndexClaims.Unknown == nil)
+		assert(profile.IndexCosmetics.PipeApprentice and profile.IndexCosmetics.FoundingFlush)
+		assert(profile.IndexCosmetics.Unverified == nil and profile.DisplaySlots == 4)
+		local displayed = 0
+		for slot, id in pairs(profile.Displays) do
+			assert(tonumber(slot) <= 3 and id == "Poop")
+			displayed += 1
+		end
+		assert(displayed == 2 and profile.Displays["4"] == nil)
+		assert(profile.Stats.Flushes == 150 and profile.Stats.Earned == 600)
+	end
+	data:Load(player)
+	verify(data:Get(player))
+	data:Close(player)
+	local rejoined = e:Player(16)
+	data:Load(rejoined)
+	verify(data:Get(rejoined))
+end)
+
 local function server(options)
 	local e = environment(options)
 	local world = { Assigned = {}, Start = function() end, Refresh = function() end, Animate = function() end }
 	e:Override("src/server/World/WorldService", world)
+	-- Geometry is outside this security harness; retain the actual cosmetic/ownership service.
+	e:Override("src/shared/Visuals/Primitives", {})
 	e:Load("src/server")
 	e.Remotes = {}
 	for _, remote in ipairs(e.CreatedRemotes) do
@@ -325,11 +376,23 @@ local function server(options)
 			end,
 		})
 		player.Character = {
-			FindFirstChild = function()
-				return { Position = position }
+			FindFirstChild = function(_, name)
+				return if name == "HumanoidRootPart" then { Position = position } else nil
+			end,
+			FindFirstChildWhichIsA = function()
+				return { Health = player.Health or 100 }
 			end,
 		}
-		world.Assigned[player] = { CFrame = { Position = position } }
+		world.Assigned[player] = {
+			Owner = player,
+			CFrame = { Position = position },
+			Model = {
+				GetChildren = function()
+					return {}
+				end,
+			},
+		}
+		self.Players.PlayerAdded:Fire(player)
 		self.Data:Load(player)
 		return player, self.Data:Get(player)
 	end
@@ -348,7 +411,12 @@ test("all actual inbound handlers reject extra arguments and outbound remotes do
 		BuyToilet = { "Dirty" },
 		Display = { "Poop", 1 },
 		ClaimReward = {},
+		ClaimIndexReward = { "rarity:Common" },
 		AutoFlush = { true },
+		AnimationSkip = { true },
+		PlotColor = { "Mint" },
+		BuyPass = { "VIPStar" },
+		RefreshPasses = {},
 		DevGrant = { "1000" },
 		State = {},
 		TutorialDone = {},
@@ -423,28 +491,105 @@ test("manual, prompt and auto flush share cooldown and server-owned RNG", functi
 	local e = server()
 	local player, profile = e:Join(22)
 	local monetization = e:Load("src/server/Services/MonetizationService")
-	monetization.Owned[player] = { AutoFlush = true } -- Mock a trusted entitlement for the existing stub.
+	profile.Stats.Flushes = 100 -- Free unlock uses successful lifetime flushes, not a pass.
+	monetization.Owned[player] = { FastFlush = true }
+	local cooldown = e:Load("src/shared/Config/Toilets")[1].Cooldown * 0.8
 	e:Fire("AutoFlush", player, true)
 	e:Fire("Flush", player)
 	e.World.Flush(player)
 	local autoThread = e.Threads[1]
 	e:Resume(autoThread)
-	assert(profile.Stats.Flushes == 1 and profile.Inventory.Poop == 1)
-	e.Now += 3
+	assert(profile.Stats.Flushes == 101 and profile.Inventory.Poop == 1 and profile.Coins == 1)
+	e.Now += cooldown - 0.01
 	e:Resume(autoThread)
-	assert(profile.Stats.Flushes == 2 and profile.Inventory.Poop == 2)
+	assert(profile.Stats.Flushes == 101)
+	e.Now += 0.02
+	e:Resume(autoThread)
+	assert(profile.Stats.Flushes == 102 and profile.Inventory.Poop == 2 and profile.Coins == 2)
+	assert(profile.Stats.Earned == 2 and profile.Collection.Poop == 2)
+	local results = 0
+	for _, result in ipairs(e.Results) do
+		if result.Payload[1] == "Flush" then
+			results += 1
+			assert(result.Payload[2].ServiceCoins == 1 and result.Payload[2].Cooldown == cooldown)
+		end
+	end
+	assert(results == 2)
 	e.Now += 3
 	player.Distance = 100
 	e:Fire("Flush", player)
-	assert(profile.Stats.Flushes == 2)
+	assert(profile.Stats.Flushes == 102)
 	player.Distance = 0
 	e.Now += 3
 	e:Fire("Flush", player, "Mystery", 1e9)
-	assert(profile.Stats.Flushes == 2)
+	assert(profile.Stats.Flushes == 102)
 	e.Data:Close(player)
 	e.Now += 3
 	e:Resume(autoThread)
-	assert(profile.Stats.Flushes == 2)
+	assert(profile.Stats.Flushes == 102)
+end)
+
+test("manual and automatic flush reject foreign plots and non-finite distances", function()
+	local e = server()
+	local player, profile = e:Join(26)
+	profile.Stats.Flushes = 100
+	local plot = e.World.Assigned[player]
+	for _, distance in ipairs({ -1, 15, 0 / 0, math.huge, -math.huge }) do
+		player.Distance = distance
+		e.Now += 3
+		e:Fire("Flush", player)
+		e.World.Flush(player, true)
+	end
+	player.Distance = 0
+	plot.Owner = e:Player(27)
+	e.Now += 3
+	e:Fire("Flush", player)
+	e.World.Flush(player, true)
+	plot.Owner = player
+	player.Health = 0
+	e.Now += 3
+	e:Fire("Flush", player)
+	e.World.Flush(player, true)
+	player.Health = 100
+	local character = player.Character
+	player.Character = nil
+	e.Now += 3
+	e:Fire("Flush", player)
+	e.World.Flush(player, true)
+	player.Character = character
+	e.World.Assigned[player] = nil
+	e.Now += 3
+	e:Fire("Flush", player)
+	e.World.Flush(player, true)
+	assert(profile.Stats.Flushes == 100 and profile.Coins == 0 and profile.Inventory.Poop == 0)
+	e.World.Assigned[player] = plot
+	e.Now += 3
+	e:Fire("Flush", player)
+	assert(profile.Stats.Flushes == 101 and profile.Coins == 1 and profile.Inventory.Poop == 1)
+end)
+
+test("auto flush shares manual rate limits and stops on character removal", function()
+	local e = server()
+	local player, profile = e:Join(28)
+	profile.Stats.Flushes = 100
+	local monetization = e:Load("src/server/Services/MonetizationService")
+	e:Fire("AutoFlush", player, true)
+	assert(monetization.Auto[player])
+	player.Distance = 15
+	e:Fire("Flush", player)
+	e.World.Flush(player) -- Both manual entry points consume the shared bucket.
+	player.Distance = 0
+	local autoThread = e.Threads[1]
+	e:Resume(autoThread)
+	assert(profile.Stats.Flushes == 100 and profile.Coins == 0)
+	e.Now += 1
+	e:Resume(autoThread)
+	assert(profile.Stats.Flushes == 101 and profile.Coins == 1)
+	player.CharacterRemoving:Fire(player.Character)
+	assert(not monetization.Auto[player])
+	e.Now += 3
+	e:Resume(autoThread)
+	assert(profile.Stats.Flushes == 101 and profile.Coins == 1)
 end)
 
 test("duplicate daily claim during a yielding save credits only once", function()
@@ -489,7 +634,7 @@ test("PlayerRemoving cleans service tables and late entitlement lookup", functio
 	e:Fire("Flush", player)
 	local monetization = e:Load("src/server/Services/MonetizationService")
 	local config = e:Load("src/shared/Config/Monetization")
-	config.Gamepasses.AutoFlush.Id = 1 -- Test-only value, never written to production config.
+	config.Gamepasses.VIPStar.Id = 1 -- Test-only value, never written to production config.
 	e.Marketplace.Lookup = function()
 		coroutine.yield("lookup held")
 		return true

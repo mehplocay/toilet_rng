@@ -16,6 +16,10 @@ for _, key in ipairs({
 	"ServerLuck",
 	"Settings",
 	"AutoFlush",
+	"AnimationSkip",
+	"PlotColor",
+	"BuyPass",
+	"RefreshPasses",
 	"DevGrant",
 	"TutorialDone",
 	"ClaimReward",
@@ -50,6 +54,7 @@ local function sync(player)
 	local profile = data:Get(player)
 	if profile then
 		world:Refresh(player, profile)
+		monetization:Apply(player)
 		remotes.State:FireClient(player, {
 			Coins = profile.Coins,
 			TutorialDone = profile.TutorialDone,
@@ -59,6 +64,7 @@ local function sync(player)
 			Settings = profile.Settings,
 			OwnedPasses = monetization.Owned[player] or {},
 			AutoFlush = monetization.Auto[player] == true,
+			LifetimeFlushes = profile.Stats.Flushes,
 			ServerLuckExpires = events.Expires,
 			Inventory = profile.Inventory,
 			Collection = profile.Collection,
@@ -97,7 +103,7 @@ end)
 Players.PlayerRemoving:Connect(function(player)
 	limiter:Remove(player)
 end)
-monetization:Start(limiter, remotes, sync)
+monetization:Start(limiter, remotes, sync, data, world)
 remotes.Settings.OnServerEvent:Connect(function(player, sound, ...)
 	if select("#", ...) ~= 0 or type(sound) ~= "boolean" or not limiter:Allow(player, "Settings") then
 		return

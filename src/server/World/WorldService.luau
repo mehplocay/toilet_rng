@@ -151,9 +151,14 @@ function World:Assign(player)
 	end
 	player:Kick("All plots are occupied. Please join another server.")
 end
-function World:Animate(player, item)
+function World:Animate(player, item, skipAnimation)
 	local plot = self.Assigned[player]
 	if not plot or not plot.Toilet then
+		return
+	end
+	if skipAnimation then
+		local drop = Models.Item(plot.Model, plot.CFrame * CFrame.new(0, 6, 0), item)
+		Debris:AddItem(drop, 0.75)
 		return
 	end
 	local toilet = plot.Toilet

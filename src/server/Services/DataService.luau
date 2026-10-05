@@ -9,6 +9,8 @@ local index = require(game.ReplicatedStorage.Shared.IndexProgress).new(
 	Items,
 	require(game.ReplicatedStorage.Shared.Config.IndexRewards)
 )
+local Monetization = require(game.ReplicatedStorage.Shared.Config.Monetization)
+local MonetizationRules = require(game.ReplicatedStorage.Shared.MonetizationRules)
 
 local DataService = {
 	Profiles = {},
@@ -40,7 +42,7 @@ function DataService.DefaultProfile()
 	return {
 		Version = 1,
 		TutorialDone = false,
-		Settings = { Sound = true },
+		Settings = { Sound = true, SkipAnimation = false, PlotColor = "Default" },
 		Coins = 0,
 		LastClaimDay = 0,
 		Streak = 0,
@@ -63,6 +65,7 @@ local function sanitize(raw)
 		return profile
 	end
 	profile.TutorialDone = raw.TutorialDone == true
+	MonetizationRules.RestoreSettings(profile.Settings, raw.Settings, Monetization)
 	if type(raw.Settings) == "table" and type(raw.Settings.Sound) == "boolean" then
 		profile.Settings.Sound = raw.Settings.Sound
 	end

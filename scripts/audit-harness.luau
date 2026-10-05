@@ -44,7 +44,18 @@ local function environment(options)
 	end
 	env.Players = players
 	function env:Player(id)
-		local player = { UserId = id, Name = "Tester", DisplayName = "Tester", Parent = players }
+		local player = {
+			UserId = id,
+			Name = "Tester",
+			DisplayName = "Tester",
+			Parent = players,
+			CharacterAdded = signal(),
+			CharacterRemoving = signal(),
+			Attributes = {},
+		}
+		function player:SetAttribute(key, value)
+			self.Attributes[key] = value
+		end
 		function player:Kick(reason)
 			self.Kicked = reason
 		end
@@ -131,6 +142,11 @@ local function environment(options)
 	end
 	local globals = {
 		game = game,
+		Color3 = {
+			fromRGB = function(r, g, b)
+				return { R = r / 255, G = g / 255, B = b / 255 }
+			end,
+		},
 		warn = function(...)
 			table.insert(env.Warnings, { ... })
 		end,
