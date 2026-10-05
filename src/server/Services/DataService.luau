@@ -1,10 +1,11 @@
 local DataStoreService = game:GetService("DataStoreService")
 local HttpService = game:GetService("HttpService")
 local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
 local Items = require(game.ReplicatedStorage.Shared.Config.Items)
 local Toilets = require(game.ReplicatedStorage.Shared.Config.Toilets)
 
-local DataService = { Profiles = {}, Saving = {}, Closing = {}, Stopping = false }
+local DataService = { Profiles = {}, Saving = {}, Closing = {}, NoPersistence = {}, Stopping = false }
 local store = DataStoreService:GetDataStore("ToiletRNG_v1")
 local session = game.JobId .. ":" .. HttpService:GenerateGUID(false)
 local LOCK_SECONDS = 180
@@ -114,6 +115,18 @@ function DataService:Load(player)
 		end)
 	end)
 	if not ok or not record then
+		if RunService:IsStudio() then
+			self.Profiles[player] = DataService.DefaultProfile()
+			self.NoPersistence[player] = true
+			warn("DataStore unavailable or session lock held; using an in-memory Studio profile for " .. player.Name)
+			if self.Loaded and player.Parent == Players and not self.Stopping then
+				self.Loaded(player)
+			end
+			if self.Stopping or player.Parent ~= Players then
+				self:Close(player)
+			end
+			return
+		end
 		player:Kick("Your data could not be loaded safely. Please rejoin shortly.")
 		return
 	end
@@ -127,6 +140,9 @@ function DataService:Load(player)
 end
 
 function DataService:Save(player, release)
+	if self.NoPersistence[player] then
+		return true
+	end
 	while self.Saving[player] do
 		task.wait(0.1)
 	end
@@ -162,6 +178,7 @@ function DataService:Close(player)
 	self.Closing[player] = true
 	self:Save(player, true)
 	self.Profiles[player] = nil
+	self.NoPersistence[player] = nil
 	self.Closing[player] = nil
 end
 
