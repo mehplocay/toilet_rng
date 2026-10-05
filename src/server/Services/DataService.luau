@@ -6,7 +6,11 @@ local Items = require(game.ReplicatedStorage.Shared.Config.Items)
 local Toilets = require(game.ReplicatedStorage.Shared.Config.Toilets)
 
 local DataService = { Profiles = {}, Saving = {}, Closing = {}, NoPersistence = {}, Stopping = false }
-local store = DataStoreService:GetDataStore("ToiletRNG_v1")
+local storeOk, store = pcall(DataStoreService.GetDataStore, DataStoreService, "ToiletRNG_v1")
+if not storeOk then
+	store = nil
+	warn("DataStore unavailable; Studio players will use in-memory profiles.")
+end
 local session = game.JobId .. ":" .. HttpService:GenerateGUID(false)
 local LOCK_SECONDS = 180
 
@@ -97,6 +101,21 @@ function DataService:Get(player)
 end
 
 function DataService:Load(player)
+	if not store then
+		if RunService:IsStudio() then
+			self.Profiles[player] = DataService.DefaultProfile()
+			self.NoPersistence[player] = true
+			if self.Loaded and player.Parent == Players and not self.Stopping then
+				self.Loaded(player)
+			end
+			if self.Stopping or player.Parent ~= Players then
+				self:Close(player)
+			end
+			return
+		end
+		player:Kick("Your data could not be loaded safely. Please rejoin shortly.")
+		return
+	end
 	local ok, record = retry(function()
 		return store:UpdateAsync("Player_" .. player.UserId, function(old)
 			if
@@ -140,8 +159,14 @@ function DataService:Load(player)
 end
 
 function DataService:Save(player, release)
-	if self.NoPersistence[player] then
+	if self.NoPersistence[player] or not store and RunService:IsStudio() then
+		self.NoPersistence[player] = true
 		return true
+	end
+	if not store then
+		self.Closing[player] = true
+		player:Kick("Your data could not be saved safely. Please rejoin.")
+		return false
 	end
 	while self.Saving[player] do
 		task.wait(0.1)
