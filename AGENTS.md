@@ -13,5 +13,10 @@ Du bist der Entwickler. Der Manager (Claude) vergibt Aufgaben und reviewt deine 
 9. Nicht pushen – das macht der Manager nach dem Review.
 10. **Sprache: Das gesamte Spiel ist ENGLISCH** (UI-Texte, Item-/Toiletten-Namen, Meldungen, Shop-Texte, Code-Kommentare, Commit-Messages). Die deutschen Texte in der GDD/dem Mockup (z. B. "Bessere Toiletten = neue Drops + hoehere Chancen!") sind nur Doku und muessen im Spiel auf Englisch stehen ("Better toilets = new drops + higher odds!").
 11. Drop-Logik: Jeder Flush liefert IMMER ein Item. Wuerfle von selten nach haeufig (jede Chance 1/X unabhaengig, mit Luck), Poop ist der Fallback. Kein "kein Drop".
-12. **Web research is encouraged and expected.** Actively use the web whenever it helps: Roblox Creator Docs (create.roblox.com/docs), the DevForum (devforum.roblox.com), API references and release notes. Check the docs before using an unfamiliar or recently changed API (DataStore, ProximityPrompt, Lighting, Marketplace, etc.) instead of guessing, and note useful sources in your final report. Never paste secrets into web requests.
+12. **Web research is mandatory for Roblox-related work.** Before using an API, check the current official sources instead of relying on training knowledge, because Roblox changes quickly:
+    - Roblox Creator Docs (create.roblox.com/docs), Engine API reference, Luau reference
+    - Roblox DevForum (devforum.roblox.com) for bugs, workarounds and best practices
+    - Release notes / platform changes before relying on API behavior
+    - Docs and issues of tools we use (Rojo, StyLua, Selene, MCP servers)
+    Write important findings with their source URL to `docs/research/` (one short file per topic) so sessions do not repeat research. Never put secrets into web requests.
 13. Git: work on your own branch per task and commit in small steps with clear English messages. If git is writable in your sandbox, commit; otherwise leave changes uncommitted and say so. The manager reviews, merges and pushes.
