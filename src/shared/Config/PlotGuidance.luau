@@ -1,5 +1,5 @@
 return {
-	SpawnOffset = Vector3.new(0, 4, -5),
+	SpawnOffset = Vector3.new(0, 2.65, -9),
 	BeaconHeight = 100,
 	BeaconWidth = 2.5,
 	Color = Color3.fromRGB(70, 235, 255),

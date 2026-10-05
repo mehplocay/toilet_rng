@@ -174,6 +174,10 @@
 <text x="436" y="366" text-anchor="middle" class="small">DAILY</text>
 <rect x="346.5" y="593.0" width="27" height="18" fill="#ebac44" stroke="none"/>
 <text x="360" y="606" text-anchor="middle" class="small">PASSES</text>
+<rect x="281.5" y="673.0" width="27" height="18" fill="#ebac44" stroke="none"/>
+<text x="295" y="686" text-anchor="middle" class="small">TRADING</text>
+<rect x="411.5" y="673.0" width="27" height="18" fill="#ebac44" stroke="none"/>
+<text x="425" y="686" text-anchor="middle" class="small">QUESTS</text>
 <rect x="265.0" y="266.0" width="46" height="8" fill="#b9fcf6" stroke="none"/>
 <text x="288" y="254" text-anchor="middle" class="small">RAREST</text>
 <rect x="337.0" y="266.0" width="46" height="8" fill="#b9fcf6" stroke="none"/>
@@ -210,7 +214,7 @@
 <text x="724" y="424" class=""></text>
 <text x="724" y="447" class="sub">PLOT LOCAL COORDINATES</text>
 <text x="724" y="470" class="">Entry Z = -30; toilet Z = +20</text>
-<text x="724" y="493" class="">Carpet 13 x 52; spawn Z = +15</text>
+<text x="724" y="493" class="">Carpet 13 x 52; spawn Z = +11</text>
 <text x="724" y="516" class="">Stands X = -14 / +14, 8-stud row pitch</text>
 <text x="724" y="539" class="">Ten visible stands; green collect pads</text>
 <text x="724" y="562" class=""></text>
