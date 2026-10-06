@@ -1,5 +1,7 @@
 # Coin-gated rebirth with permanent progression
 
+> Current validation: [full linear luck and regenerated pacing tables](luck-linear.md). Total luck applies in full to every item check, capped at 10x; this supersedes earlier luck formulas and measured balance snapshots below.
+
 2026-10-06, `feature/rebirth-balance`; supersedes the earlier flush/tier gate and reset-to-Basic contract. [Economy tables and assumptions](economy-v2.md), [cash/source review](../research/rebirth-cash-layers.md). No commit/push.
 
 ## Rebirth balance retune (2026-10-06)
@@ -62,7 +64,7 @@ All gates and rewards live in an explicit 15-row Config/Rebirth table. Cumulativ
 
 Cash stacking is `min(40, (1 + CashBoostEffect + RebirthCash) * displayToiletFactor) * min(3, paidCashFactors)`. The toilet factor is 1 for sales/service and the configured tier factor for displays. Cash Boost and rebirth bonuses add; milestone titles have no hidden numeric reward. Double Cash is 2x and VIP is 1.5x. Both paid passes therefore retain their full 3x effect even when the free layer is capped. Config/Cash owns both caps and the shared UI explanation. Future paid cash pass entries share the paid cap.
 
-R15 with no Cash Boost is really 16x for sales/service; Cash L100 makes it 19.25x free, or 57.75x with both passes. Galaxy display income reaches the free 40x cap; paid factors then lift it to 120x. The cap still applies to combined free display progression. Ordinary daily coins retain their paid-only rule. Starter grants, pending collection, receipt quotes and the VIP chest are never multiplied a second time. Luck retains its 10x cap and diminishing returns beyond 5x for odds strictly rarer than 1/25K; speed retains the 0.4s floor, including Fast Flush. Toilet and upgrade prices/effects are unchanged.
+R15 with no Cash Boost is really 16x for sales/service; Cash L100 makes it 19.25x free, or 57.75x with both passes. Galaxy display income reaches the free 40x cap; paid factors then lift it to 120x. The cap still applies to combined free display progression. Ordinary daily coins retain their paid-only rule. Starter grants, pending collection, receipt quotes and the VIP chest are never multiplied a second time. Luck retains its 10x cap and applies in full to every item check; speed retains the 0.4s floor, including Fast Flush. Toilet and upgrade prices/effects are unchanged.
 
 R5 grants free Auto Collect through the same server method, five-second scheduler, living-owner plot bounds, save guard and fractional ledger used by the pass. It never marks the pass owned or grants coins independently. R10 adds two slots once, up to the ten-slot physical capacity; already-full and legacy larger plots retain capacity without refunds. The saved RebirthAppliedSlots marker prevents repeated grants on rejoin or rebirth. Existing R10+ saves receive the slot allowance on migration while retaining their level.
 

@@ -47,7 +47,7 @@ function Odds.Create(gui, remotes)
 	C.New("UIListLayout", content, { Padding = UDim.new(0, 8), SortOrder = Enum.SortOrder.LayoutOrder })
 	local explanation = C.BodyText(
 		content,
-		"10x luck for one flush, capped at 10x total. Rare diminishing returns still apply. Every flush awards one item. At 10x free luck, a charge cannot improve odds.\nPercentages are rounded; displayed totals may differ from 100%. Odds can change with your tier and free boosts; review again if they change.",
+		"10x luck for one flush, capped at 10x total. Full luck applies to every item check. Every flush awards one item. At 10x free luck, a charge cannot improve odds.\nPercentages are rounded; displayed totals may differ from 100%. Odds can change with your tier and free boosts; review again if they change.",
 		UDim2.new(1, 0, 0, 134)
 	)
 	explanation.LayoutOrder = 1

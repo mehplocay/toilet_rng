@@ -25,10 +25,7 @@ function RollService.Distribution(items, toilets, tier, luckOverride)
 	end)
 	local entries, remaining = {}, 1
 	for _, item in ipairs(sorted) do
-		local effective = if item.Chance > Luck.RareLuckThreshold
-			then math.min(luck, Luck.FullLuck) + math.max(0, luck - Luck.FullLuck) * Luck.RareLuckScale
-			else luck
-		local chance = if item.Id == "Poop" then 1 else math.min(1, effective / item.Chance)
+		local chance = if item.Id == "Poop" then 1 else math.min(1, luck / item.Chance)
 		table.insert(entries, { Item = item, Check = chance, Probability = remaining * chance })
 		remaining *= 1 - chance
 	end

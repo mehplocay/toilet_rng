@@ -1,5 +1,7 @@
 # Permanent upgrade tracks
 
+> Current validation: [full linear luck and regenerated pacing tables](luck-linear.md). Total luck applies in full to every item check, capped at 10x; this supersedes earlier luck formulas and measured balance snapshots below.
+
 2026-10-06, `feature/permanent`. This replaces the old run-reset and ten-level-track design. [Measured economy and all archetype tables](economy-v2.md), [rebirth contract](rebirth.md), [research](../research/permanent-economy.md).
 
 All six coin tracks and toilet tiers **survive every rebirth**. Config/Upgrades owns piecewise exponential cost anchors, level caps, effects, milestone titles, physical capacity, total luck cap and speed floor. Coins only; server-authoritative pricing and no paid luck.
@@ -21,7 +23,7 @@ Purchase number n interpolates exponentially between explicit level/cost anchors
 
 UI cards show N / cap, a progress bar, current effect, abbreviated price, next milestone and its earned title. Titles progress through Apprentice, Adept, Specialist, Expert, Veteran, Elite, Champion, Grandmaster and Legend at ten-level boundaries; max is Master. They are derived from permanent levels and add no undocumented bonus. The capacity-limited display track shows PLOT FULL, a completed bar and Master at physical capacity, rather than charging for unavailable slots.
 
-Confirmed level changes pop the existing card; existing audio feedback plays UpgradeBuy or UpgradeMax, with UpgradeMax reused for milestone crossings. Initial/repeated snapshots are silent. Luck is shown as `Luck +N%`: +900% means 10x/1000% total, and the card explains that extra luck above 5x is halved for odds rarer than 1/25K. Maximum untimed Galaxy luck is 5.98x, within the requested usual late-game band.
+Confirmed level changes pop the existing card; existing audio feedback plays UpgradeBuy or UpgradeMax, with UpgradeMax reused for milestone crossings. Initial/repeated snapshots are silent. Luck is shown as `Luck +N%`: +900% means 10x/1000% total, and the card explains that full luck applies to every item check. Maximum untimed Galaxy luck is 5.98x, within the requested usual late-game band.
 
 Verification: all configured levels/prices/caps, one-coin-short failures, invalid inputs, replay/race safety, old/new save migration, milestone titles, numeric ceilings, exact rare-first odds, cash rounding, offline ledger fractions, responsive UI and persistent rebirth behavior. The audit includes the committed-response-loss purchase at level 100. Studio/native-device and live backend QA remain outside headless evidence. Retire old server binaries before rollout.
 

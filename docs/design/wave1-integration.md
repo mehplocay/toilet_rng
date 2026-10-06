@@ -1,5 +1,7 @@
 # Wave 1 integration
 
+> Current validation: [full linear luck and regenerated pacing tables](luck-linear.md). Total luck applies in full to every item check, capped at 10x; this supersedes earlier luck formulas and measured balance snapshots below.
+
 2026-10-06, `feature/wave1-integration`. Uncommitted worktree delivery. The item IDs, names, odds, rarity bands, values, base income, first unlocks and cumulative pools follow [wave1-data.json](wave1-data.json). The 36 new items and eight new toilets bring the game to 47 items, 15 toilets and nine rarities.
 
 ## Runtime and assets
@@ -19,7 +21,7 @@ Existing index claim IDs stay stable. `total:35` continues to grant the same `Fu
 
 ## Balance decisions and specification differences
 
-The merged cash formula remains `min(40, freeCash * toiletDisplayFactor) * min(3, paidCash)`. Total luck remains capped at 10x; for base odds above 25,000, the portion above 5x is halved. These explicit task requirements supersede the historical Wave 1 proof's 5x production cap, linear 10x stress column and uncapped toilet factors.
+The merged cash formula remains `min(40, freeCash * toiletDisplayFactor) * min(3, paidCash)`. Total luck remains capped at 10x and applies in full to every item check. The current production proof supersedes the historical Wave 1 proof's 5x production cap and uncapped toilet factors.
 
 New tier prices, service awards, cooldowns and luck follow the JSON. Its integration recipe rebases the new display factors from historical Galaxy 12x to the merged 13x: 19.5/29.25/43.3333/65/97.5/146.25/216.6667/325. Slot/player nominal caps follow the same factors, but never bypass the combined 40x/3x cap.
 
@@ -44,7 +46,9 @@ Only four JSON arrival targets fell outside the original +/-20% tolerance under 
 
 The capped fixed-tier showcase has 61.30%, 49.80% and 39.47% passive shares at tiers 13..15. Consequently the old 70–90% showcase assertion applies through tier 12; later tiers assert the actual maximum-rate bound. Ten Secrets at tier 15 produce at most 40M/s free or 120M/s paid. The existing 1.5T pending ledger fills in 625 or 208.33 online minutes respectively. This replaces the historical 300M/s and 3B/s estimates that multiplied outside the cap.
 
-### Rebirth gate decision pending
+### Historical rebirth gate review (superseded)
+
+The proposal below was subsequently applied before the linear-luck task. Current gates and passing measurements are in [linear luck validation](luck-linear.md); no gate decision remains pending for that task.
 
 The original fifteen reward rows and all bonuses remain unchanged. With the expanded actual pools and permanent access to new toilets, unchanged coin gates yield normal p50 R1 20 minutes, R5 2.292 hours, R10 24.825 hours and R15 57.725 hours. `balance.luau` deliberately retains the requested pacing assertions and reports those four failures.
 

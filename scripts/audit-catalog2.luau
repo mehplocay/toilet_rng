@@ -159,9 +159,8 @@ test("extended odds: every tier and multiplier matches roll entries and exact ra
 			end
 			assert(math.abs(rsum - 1) < 1e-12)
 			for _, entry in ipairs(boosted) do
-				if entry.Item.Chance > 25000 then
-					assert(math.abs(entry.Check - 7.5 / entry.Item.Chance) < 1e-14)
-				end
+				local check = if entry.Item.Id == "Poop" then 1 else math.min(1, 10 / entry.Item.Chance)
+				assert(math.abs(entry.Check - check) < 1e-14)
 			end
 		end
 	end

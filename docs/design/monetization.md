@@ -2,6 +2,8 @@
 
 # Fair monetization: implemented catalog
 
+Current Lucky Flush odds use full linear luck on every item check, capped at 10x total and probability 1. The disclosure lists actual rare-first outcome probabilities from the production roll distribution. See [linear luck validation](luck-linear.md); the separate 40x free / 3x paid cash caps remain unchanged.
+
 Current integration: [income-first/catalog merge](merge-economy-catalog.md). Income-first rates and ledger caps apply; owner Reset/Import preserve live commerce history. The current rebirth-balance suite has 245 passing audit scenarios; see [validation](rebirth-values-validation.md) for the 40x free / 3x paid cap and VIP 1.5x retune. Branch-specific validation below records the earlier catalog implementation.
 
 2026-10-06, `feature/path-boost-catalog`. This manager-approved catalog replaces the earlier paid-luck proposal in this document. The older roadmap's Lucky Flush/Server Luck plans are not implemented or authorized by this catalog. **No paid luck, paid odds modifiers or paid random items.** All random outcomes remain free.

@@ -1,0 +1,62 @@
+Rebirth 1 | 4000000 coins + 300 fresh flushes | p50 0.41h / p90 0.51h
+Rebirth 2 | 12000000 coins + 300 fresh flushes | p50 0.54h / p90 0.69h
+Rebirth 3 | 35000000 coins + 300 fresh flushes | p50 0.87h / p90 1.10h
+Rebirth 4 | 100000000 coins + 300 fresh flushes | p50 1.18h / p90 1.52h
+Rebirth 5 | 450000000 coins + 300 fresh flushes | p50 2.17h / p90 2.62h
+Rebirth 6 | 1000000000 coins + 300 fresh flushes | p50 3.52h / p90 4.19h
+Rebirth 7 | 2000000000 coins + 300 fresh flushes | p50 5.22h / p90 6.14h
+Rebirth 8 | 4000000000 coins + 300 fresh flushes | p50 7.18h / p90 8.30h
+Rebirth 9 | 15000000000 coins + 300 fresh flushes | p50 16.20h / p90 19.00h
+Rebirth 10 | 60000000000 coins + 300 fresh flushes | p50 25.26h / p90 31.65h
+Rebirth 11 | 120000000000 coins + 300 fresh flushes | p50 30.55h / p90 38.07h
+Rebirth 12 | 200000000000 coins + 300 fresh flushes | p50 33.32h / p90 41.36h
+Rebirth 13 | 320000000000 coins + 300 fresh flushes | p50 37.36h / p90 46.84h
+Rebirth 14 | 520000000000 coins + 300 fresh flushes | p50 42.47h / p90 52.75h
+Rebirth 15 | 6500000000000 coins + 300 fresh flushes | p50 90.83h / p90 103.59h
+
+Three-archetype rebirth-values-simulations.luau:
+Normal | R1 | 4000000 Coins | p50 0.408h / p90 0.508h
+Normal | R2 | 12000000 Coins | p50 0.542h / p90 0.695h
+Normal | R3 | 35000000 Coins | p50 0.867h / p90 1.100h
+Normal | R4 | 100000000 Coins | p50 1.175h / p90 1.525h
+Normal | R5 | 450000000 Coins | p50 2.167h / p90 2.625h
+Normal | R6 | 1000000000 Coins | p50 3.525h / p90 4.192h
+Normal | R7 | 2000000000 Coins | p50 5.225h / p90 6.142h
+Normal | R8 | 4000000000 Coins | p50 7.183h / p90 8.300h
+Normal | R9 | 15000000000 Coins | p50 16.200h / p90 19.000h
+Normal | R10 | 60000000000 Coins | p50 25.258h / p90 31.650h
+Normal | R11 | 120000000000 Coins | p50 30.550h / p90 38.067h
+Normal | R12 | 200000000000 Coins | p50 33.317h / p90 41.358h
+Normal | R13 | 320000000000 Coins | p50 37.358h / p90 46.842h
+Normal | R14 | 520000000000 Coins | p50 42.467h / p90 52.750h
+Normal | R15 | 6500000000000 Coins | p50 90.833h / p90 103.592h
+Casual | R1 | 4000000 Coins | p50 0.733h / p90 0.900h
+Casual | R2 | 12000000 Coins | p50 0.967h / p90 1.192h
+Casual | R3 | 35000000 Coins | p50 1.500h / p90 1.900h
+Casual | R4 | 100000000 Coins | p50 2.000h / p90 2.567h
+Casual | R5 | 450000000 Coins | p50 3.333h / p90 4.100h
+Casual | R6 | 1000000000 Coins | p50 5.292h / p90 6.217h
+Casual | R7 | 2000000000 Coins | p50 7.967h / p90 9.308h
+Casual | R8 | 4000000000 Coins | p50 10.917h / p90 13.158h
+Casual | R9 | 15000000000 Coins | p50 23.725h / p90 27.842h
+Casual | R10 | 60000000000 Coins | p50 38.758h / p90 46.917h
+Casual | R11 | 120000000000 Coins | p50 47.142h / p90 56.942h
+Casual | R12 | 200000000000 Coins | p50 50.767h / p90 62.158h
+Casual | R13 | 320000000000 Coins | p50 56.750h / p90 69.042h
+Casual | R14 | 520000000000 Coins | p50 64.783h / p90 80.583h
+Casual | R15 | 6500000000000 Coins | p50 133.858h / p90 162.317h
+Grinder | R1 | 4000000 Coins | p50 0.338h / p90 0.427h
+Grinder | R2 | 12000000 Coins | p50 0.457h / p90 0.578h
+Grinder | R3 | 35000000 Coins | p50 0.720h / p90 0.933h
+Grinder | R4 | 100000000 Coins | p50 0.991h / p90 1.283h
+Grinder | R5 | 450000000 Coins | p50 1.883h / p90 2.258h
+Grinder | R6 | 1000000000 Coins | p50 2.992h / p90 3.583h
+Grinder | R7 | 2000000000 Coins | p50 4.408h / p90 5.275h
+Grinder | R8 | 4000000000 Coins | p50 6.042h / p90 7.100h
+Grinder | R9 | 15000000000 Coins | p50 14.300h / p90 16.358h
+Grinder | R10 | 60000000000 Coins | p50 22.483h / p90 27.150h
+Grinder | R11 | 120000000000 Coins | p50 27.467h / p90 33.758h
+Grinder | R12 | 200000000000 Coins | p50 29.842h / p90 36.358h
+Grinder | R13 | 320000000000 Coins | p50 32.892h / p90 39.725h
+Grinder | R14 | 520000000000 Coins | p50 38.058h / p90 44.717h
+Grinder | R15 | 6500000000000 Coins | p50 79.950h / p90 90.667h

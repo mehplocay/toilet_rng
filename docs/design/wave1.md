@@ -1,6 +1,8 @@
 # Wave 1 content specification
 
-Integration update (2026-10-06): [Wave 1 integration](wave1-integration.md) records the actual 47-item/15-toilet implementation, saved-profile behavior and capped balance results. The long proof embedded below is historical: its uncapped cash and linear rare-luck assumptions do not describe the merged economy. Use [the regenerated production-config proof](wave1-balance.txt). Four conditional targets in the JSON now preserve their historical values separately and reflect the 40x free cash cap.
+> Current validation: [full linear luck and regenerated pacing tables](luck-linear.md). Total luck applies in full to every item check, capped at 10x; this supersedes earlier luck formulas and measured balance snapshots below.
+
+Integration update (2026-10-06): [Wave 1 integration](wave1-integration.md) records the actual 47-item/15-toilet implementation, saved-profile behavior and capped balance results. The long proof embedded below is historical: its uncapped cash assumptions do not describe the merged economy. Use [the regenerated production-config proof](wave1-balance.txt). Four conditional targets in the JSON now preserve their historical values separately and reflect the 40x free cash cap.
 
 2026-10-06 · `docs/wave1-spec` · proposal for application **after `feature/permanent` merges**.
 
@@ -16,7 +18,7 @@ Precedence: this task's owner decisions override historical progression/world pr
 
 There is a real timing conflict: economy-v2 measured normal Galaxy at **89.37 minutes** with a 90-minute target; the owner now wants **about 35 minutes**. The parallel branch owns that retune. This proposal neither claims 95M currently buys Galaxy in 35 minutes nor rewrites its price. Tiers 1–7 in JSON are explicitly labeled economy-v2 snapshots for reproducible calculations. Apply their **pool additions only**, retaining the merged price, cooldown, luck and service settings. The proof's post-Galaxy experiment starts at a synthetic minute-35 Galaxy state and therefore cannot validate the first 35 minutes.
 
-The current production luck ceiling is **5x** and cooldown floor is **0.4 seconds**. The requested 10x tables are **uncapped stress cases**, not an increase to the cap or a shop promise. Luck in those tables is total effective luck, not an additional factor multiplied by toilet luck.
+The proposal originally used a **5x** luck ceiling and **0.4-second** cooldown floor. Current production caps total luck at **10x**, applying it in full to every item check; the cooldown floor is still **0.4 seconds**. Luck in the regenerated tables is total luck, not an additional factor multiplied by toilet luck.
 
 ### Data application recipe
 

@@ -23,7 +23,7 @@ end
 local function percentile(values, fraction)
 	return Cohort.Percentile(table.clone(values), fraction)
 end
-print("WAVE 1: INTEGRATED CONFIG; luck cap 10x; excess over 5x halved for base odds >25K.")
+print("WAVE 1: INTEGRATED CONFIG; luck cap 10x; full luck on every item check.")
 print("Cash: toilet factor inside 40x free cap; separate paid cap 3x.")
 print("POOL | item | outcome at total luck 1x / 5x / 10x; Poop is the remainder")
 for tier, toilet in ipairs(Toilets) do

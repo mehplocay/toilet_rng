@@ -51,10 +51,6 @@ for tier, toilet in ipairs(Toilets) do
 				assert(entry.Probability > 0, "Unreachable at base luck: " .. item.Id)
 			end
 			local effective = math.min(Upgrades.LuckCap, luck)
-			if item.Chance > Upgrades.RareLuckThreshold then
-				effective = math.min(effective, Upgrades.FullLuck)
-					+ math.max(0, effective - Upgrades.FullLuck) * Upgrades.RareLuckScale
-			end
 			local check = if item.Id == "Poop" then 1 else math.min(1, effective / item.Chance)
 			assert(math.abs(entry.Probability - product * check) < 1e-14)
 			product *= 1 - check

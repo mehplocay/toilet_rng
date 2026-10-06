@@ -46,7 +46,7 @@ do
 	body.LuckyTab.Activated:Fire()
 	assert(luckyGrid.Visible and body.LuckyTab.Visible)
 	local format = H.Load("src/client/UI/LuckyOdds")
-	assert(format.Percent(0) == "0%" and format.Percent(0.00000075) == "0.000075000%")
+	assert(format.Percent(0) == "0%" and format.Percent(0.000001) == "0.00010000%")
 	assert(string.find(format.RarityText(odds), "Secret: 20.0000% / 50.0000%", 1, true))
 	local card = luckyGrid.LuckyFlush1.OfferCard
 	assert(card.Buy.Text == "Coming soon" and not card.Buy.Interactable)
@@ -104,6 +104,50 @@ do
 	end
 	config.DeveloperProducts.LuckyFlush1.Id = 0
 	H.Services.MarketplaceService.GetProductInfoAsync = original
+	root:Destroy()
+end
+do
+	local root, remotes = H.Root(390, 722), H.Remotes()
+	local format = H.Load("src/client/UI/LuckyOdds")
+	local roll = H.Load("src/server/Services/RollService")
+	local items, toilets = H.Load("src/shared/Config/Items"), H.Load("src/shared/Config/Toilets")
+	local odds = { Token = "15:5:10", Items = {}, Rarities = {} }
+	local normal, boosted = roll.Distribution(items, toilets, 15, 5), roll.Distribution(items, toilets, 15, 10)
+	local expected = {}
+	for i, entry in ipairs(normal) do
+		local item = entry.Item
+		odds.Items[i] = {
+			Id = item.Id,
+			Name = item.Name,
+			Rarity = item.Rarity,
+			BaseChance = item.Chance,
+			Fallback = item.Id == "Poop",
+			Normal = entry.Probability,
+			Boosted = boosted[i].Probability,
+		}
+		local sum = odds.Rarities[item.Rarity] or { Normal = 0, Boosted = 0 }
+		sum.Normal += entry.Probability
+		sum.Boosted += boosted[i].Probability
+		odds.Rarities[item.Rarity] = sum
+		expected[item.Name .. " (" .. item.Rarity .. ")"] = "Current outcome: Normal "
+			.. format.Percent(entry.Probability)
+			.. " / Lucky "
+			.. format.Percent(boosted[i].Probability)
+	end
+	local ui = format.Create(root, remotes)
+	ui.Show({ Allowed = true, Count = 1, Odds = odds })
+	local count = 0
+	for _, label in ipairs(ui.Panel:GetDescendants()) do
+		if label:IsA("TextLabel") then
+			local firstLine = string.match(label.Text, "^[^\n]+")
+			if firstLine and expected[firstLine] then
+				assert(string.find(label.Text, expected[firstLine], 1, true), "Wrong displayed outcome: " .. firstLine)
+				count += 1
+			end
+		end
+	end
+	assert(count == 47, "Lucky review must disclose every unlocked item")
+	assert(string.find(format.RarityText(odds), "Celestial:", 1, true))
 	root:Destroy()
 end
 print(

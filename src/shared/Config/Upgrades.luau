@@ -3,9 +3,6 @@ return {
 	Rebirth = rebirth,
 	MaxBalance = 9e15,
 	LuckCap = 10,
-	RareLuckThreshold = 25000,
-	FullLuck = 5,
-	RareLuckScale = 0.5,
 	Version = 2,
 	MilestoneEvery = 10,
 	MilestoneTitles = {
