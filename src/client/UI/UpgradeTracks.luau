@@ -13,7 +13,7 @@ function Tracks.Create(body, remotes)
 	local colors = { C.Gold, C.Purple, C.Green, C.Blue, C.Purple, C.Gold }
 	local descriptions = {
 		CashBoost = require(Shared.Config.Cash).Explanation,
-		LuckBoost = "Cap: 10x total (+900%). Above 5x, extra luck is halved for rarer than 1 in 25K.",
+		LuckBoost = "Cap: 10x total (+900%). Full luck applies to every item check.",
 		FlushSpeed = "Shorter shared cooldown. Always at least " .. Config.CooldownFloor .. " seconds.",
 		AutoFlushSpeed = "Faster auto interval, never below your flush cooldown. Free at 100 flushes.",
 		DisplaySlots = "+1 display slot per purchase. Ten physical slots; index rewards kept.",

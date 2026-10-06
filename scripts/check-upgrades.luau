@@ -132,11 +132,13 @@ for tier = 1, #Toilets do
 			events += entry.Probability
 		end
 		if entry.Item.Id == "KingPoop" then
-			assert(entry.Probability >= 0.000074 and entry.Probability <= 0.000075)
+			assert(entry.Check == 10 / 100000)
+			assert(entry.Probability >= 0.000099 and entry.Probability <= 0.0001)
 		end
 	end
 	assert(empty == 0 and math.abs(total - 1) < 1e-12)
-	assert(events <= 0.00008325 and (tier < 5 or events >= 0.000074))
+	-- Event items are King Poop, Alien Toilet and Mystery; earlier rolls can only lower this bound.
+	assert(events <= 10 / 100000 + 10 / 1000000 + 10 / 10000000 and (tier < 5 or events >= 0.000099))
 	assert(Roll.Sample(entries, function()
 		return 0.999999999
 	end).Id == "TubTadpole")

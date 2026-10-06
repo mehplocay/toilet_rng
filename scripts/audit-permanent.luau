@@ -128,7 +128,7 @@ test("permanent: new cost boundaries, milestone titles and caps cannot be replay
 	end
 end)
 
-test("permanent: 10x cap and rare diminishing returns apply at the strict 25000 boundary", function()
+test("permanent: full luck applies to every rarity under the 10x cap", function()
 	local e = server()
 	local roll = e:Load("src/server/Services/RollService")
 	local items, toilets = e:Load("src/shared/Config/Items"), e:Load("src/shared/Config/Toilets")
@@ -141,9 +141,6 @@ test("permanent: 10x cap and rare diminishing returns apply at the strict 25000 
 		local total = 0
 		for _, entry in ipairs(entries) do
 			local effective = math.min(luck, 10)
-			if entry.Item.Chance > 25000 then
-				effective = math.min(effective, 5) + math.max(0, effective - 5) / 2
-			end
 			assert(entry.Check == (if entry.Item.Id == "Poop" then 1 else math.min(1, effective / entry.Item.Chance)))
 			total += entry.Probability
 		end

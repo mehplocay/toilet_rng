@@ -1,8 +1,10 @@
 # Economy v2: permanent progression and two-layer cash
 
+> Current validation: [full linear luck and regenerated pacing tables](luck-linear.md). Total luck applies in full to every item check, capped at 10x; this supersedes earlier luck formulas and measured balance snapshots below.
+
 ## Wave 1 integration update (2026-10-06)
 
-The current catalog has nine rarities, 47 items and 15 toilets. Celestial adds 25,000 base coins/s between Godly 6,000 and Secret 100,000. The cash formula below and 10x luck cap with diminishing returns above 5x for odds over 25,000 are retained. New display factors rebase from Galaxy 13x and remain inside the 40x free cap.
+The current catalog has nine rarities, 47 items and 15 toilets. Celestial adds 25,000 base coins/s between Godly 6,000 and Secret 100,000. The cash formula below and 10x luck cap with full luck on every item check are retained. New display factors rebase from Galaxy 13x and remain inside the 40x free cap.
 
 Expanded early pools required toilet prices of 7.5K/16K/90K/420K/3M/16.5M to preserve original pacing. Measured normal fresh-account p50 arrivals are 1.47/3.01/6.12/11.85/20.09/35.47 minutes. All eight new prices and service awards follow the Wave 1 JSON. Capped fresh-account arrivals, conditional arrivals for all three archetypes, the four corrected late-tier targets and the unresolved rebirth-gate conflict are documented in [Wave 1 integration](wave1-integration.md). The unchanged rebirth gates currently reach R15 in 57.725 hours; the older 96.83-hour result below describes the previous seven-toilet catalog and is not a current Wave 1 proof.
 
@@ -94,4 +96,4 @@ Casual/normal/grinder use 30%/75%/100% manual cooldown uptime, collecting every 
 
 Long runs use the exact rare-first distribution with two-second batches during hour one and 30-second batches afterward. Income settles before rate/display changes; new finds earn from the next interval. These are continuously online, no-paid/no-daily/no-server-boost/no-offline cohorts; travel, input gaps, latency, auto-only play and inherited inventories change outcomes. Normal passive share remains 60.95% in the first ten minutes and 62.04% in the ten minutes after Diamond. Steady ten-slot displays lead midgame income.
 
-Luck stays capped at 10x, with extra luck above 5x halved only for base odds strictly rarer than 1/25K; Sewer Shark uses full luck. Untimed maximum Galaxy luck is 5.98x. Speed retains its 0.4s floor. No luck code or parallel Lucky Flush work was changed. UpgradeVersion=2 and saved rebirth-level migrations remain intact; no compensation or wallet wipe is introduced. Retire older binaries before rollout; headless checks do not establish native-device rendering, live billing or DataStore outage durability.
+Luck stays capped at 10x and applies in full to every item check. Untimed maximum Galaxy luck is 5.98x. Speed retains its 0.4s floor. UpgradeVersion=2 and saved rebirth-level migrations remain intact; no compensation or wallet wipe is introduced. Retire older binaries before rollout; headless checks do not establish native-device rendering, live billing or DataStore outage durability.

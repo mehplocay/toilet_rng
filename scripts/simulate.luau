@@ -3,7 +3,7 @@ local Items = require("../src/shared/Config/Items")
 local Toilets = require("../src/shared/Config/Toilets")
 local Config = require("../src/shared/Config/Upgrades")
 assert(Config.LuckCap == 10)
-print("Galaxy effective odds: independent rare-first checks; Poop fallback, no paid luck.")
+print("Galaxy effective odds: full linear luck, capped at 10x; independent rare-first checks; Poop fallback.")
 for _, luck in ipairs({ 1, 5, 10 }) do
 	local entries, empty = Roll.Distribution(Items, Toilets, 7, luck)
 	local total, secrets, events = 0, 0, 0
@@ -53,6 +53,35 @@ for _, luck in ipairs({ 1, 5, 10 }) do
 			events * 30 * 3600
 		)
 	)
-	assert(events <= 0.00008325 and events * 30 < 1 / 8, "Expected arrivals exceed existing event drain")
+	assert(events <= 10 / 100000 + 10 / 1000000 + 10 / 10000000)
+	assert(events * 30 < 1 / 8, "Expected arrivals exceed existing event drain")
 end
 print("Odds simulation passed: all items, 3 million independent rolls, exact sum 1; queue/rate limit unchanged.")
+print("Full tier-15 pool at 10x: item | rarity | check percent | outcome percent | expected flushes")
+local raritySums = { Celestial = 0, Secret = 0 }
+for _, entry in ipairs(Roll.Distribution(Items, Toilets, #Toilets, 10)) do
+	local rarity = entry.Item.Rarity
+	if raritySums[rarity] then
+		raritySums[rarity] += entry.Probability
+		print(
+			string.format(
+				"%s | %s | %.10f%% | %.10f%% | %.3f",
+				entry.Item.Id,
+				rarity,
+				entry.Check * 100,
+				entry.Probability * 100,
+				1 / entry.Probability
+			)
+		)
+	end
+end
+for _, rarity in ipairs({ "Celestial", "Secret" }) do
+	print(
+		string.format(
+			"Any %s | %.10f%% | %.3f expected flushes",
+			rarity,
+			raritySums[rarity] * 100,
+			1 / raritySums[rarity]
+		)
+	)
+end
