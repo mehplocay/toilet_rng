@@ -1,0 +1,351 @@
+{
+  "schema_version": 1,
+  "generator": "assets/blender/build_wave1_c.py / Blender 4.5",
+  "coordinate_system": "Export Y-up / Z-forward; author Z-up; size_studs is Roblox X,Y,Z",
+  "units": "stud",
+  "import_settings": {
+    "scale_unit": "Stud",
+    "scale_factor": 1,
+    "world_forward": "Front",
+    "world_up": "Top"
+  },
+  "atlas_sha256": "4f3b790d02b8b43691ca794767380c0f0ed5208356c010efd337235af08090b5",
+  "assets": [
+    {
+      "id": "DrainKraken",
+      "name": "Drain Kraken",
+      "display_name": "Drain Kraken",
+      "rarity": "Godly",
+      "category": "items",
+      "tris": 2160,
+      "budget": 2500,
+      "size_studs": [
+        3.0,
+        2.2368,
+        1.6025
+      ],
+      "brief_target_studs": [
+        3,
+        2.8,
+        2.5
+      ],
+      "file": "assets/models/wave1/c/DrainKraken.fbx",
+      "source": "assets/blender/generated/wave1/c/DrainKraken.blend",
+      "texture": "assets/textures/Wave1Palette_c.png",
+      "preview": "assets/previews/wave1/c/DrainKraken.png",
+      "front_preview": "assets/previews/wave1/c/DrainKraken_front.png",
+      "pivot": "base-center",
+      "mesh_count": 1,
+      "material_count": 1,
+      "fbx_sha256": "bddbc841cd28ac348ca5d902e20db5bf3d8eb8c3fb49ee6409aff193284eede4"
+    },
+    {
+      "id": "GeyserGorilla",
+      "name": "Geyser Gorilla",
+      "display_name": "Geyser Gorilla",
+      "rarity": "Godly",
+      "category": "items",
+      "tris": 2164,
+      "budget": 2500,
+      "size_studs": [
+        2.8405,
+        3.0,
+        1.1813
+      ],
+      "brief_target_studs": [
+        2.9,
+        3,
+        2
+      ],
+      "file": "assets/models/wave1/c/GeyserGorilla.fbx",
+      "source": "assets/blender/generated/wave1/c/GeyserGorilla.blend",
+      "texture": "assets/textures/Wave1Palette_c.png",
+      "preview": "assets/previews/wave1/c/GeyserGorilla.png",
+      "front_preview": "assets/previews/wave1/c/GeyserGorilla_front.png",
+      "pivot": "base-center",
+      "mesh_count": 1,
+      "material_count": 1,
+      "fbx_sha256": "b620313cd8c5f096b78cf52274077bc82b17e168557c34605dfec7f60f415608"
+    },
+    {
+      "id": "ThroneColossus",
+      "name": "Throne Colossus",
+      "display_name": "Throne Colossus",
+      "rarity": "Godly",
+      "category": "items",
+      "tris": 1608,
+      "budget": 2450,
+      "size_studs": [
+        3.0,
+        2.1972,
+        1.3218
+      ],
+      "brief_target_studs": [
+        2.8,
+        3,
+        2
+      ],
+      "file": "assets/models/wave1/c/ThroneColossus.fbx",
+      "source": "assets/blender/generated/wave1/c/ThroneColossus.blend",
+      "texture": "assets/textures/Wave1Palette_c.png",
+      "preview": "assets/previews/wave1/c/ThroneColossus.png",
+      "front_preview": "assets/previews/wave1/c/ThroneColossus_front.png",
+      "pivot": "base-center",
+      "mesh_count": 1,
+      "material_count": 1,
+      "fbx_sha256": "64c7381b65ae4178d3accbfdd608fc95b7a881ef69181e6cbdbbb2392561f5af"
+    },
+    {
+      "id": "PlungerPaladin",
+      "name": "Plunger Paladin",
+      "display_name": "Plunger Paladin",
+      "rarity": "Godly",
+      "category": "items",
+      "tris": 1760,
+      "budget": 2400,
+      "size_studs": [
+        2.9462,
+        3.0,
+        1.7328
+      ],
+      "brief_target_studs": [
+        2.6,
+        3,
+        1.8
+      ],
+      "file": "assets/models/wave1/c/PlungerPaladin.fbx",
+      "source": "assets/blender/generated/wave1/c/PlungerPaladin.blend",
+      "texture": "assets/textures/Wave1Palette_c.png",
+      "preview": "assets/previews/wave1/c/PlungerPaladin.png",
+      "front_preview": "assets/previews/wave1/c/PlungerPaladin_front.png",
+      "pivot": "base-center",
+      "mesh_count": 1,
+      "material_count": 1,
+      "fbx_sha256": "42a31215737df4b683b290a72dd0638ebb63511db48e11f02b2079354d81816b"
+    },
+    {
+      "id": "HaloHamster",
+      "name": "Halo Hamster",
+      "display_name": "Halo Hamster",
+      "rarity": "Celestial",
+      "category": "items",
+      "tris": 2260,
+      "budget": 2300,
+      "size_studs": [
+        2.1804,
+        2.8,
+        1.7888
+      ],
+      "brief_target_studs": [
+        2.5,
+        2.8,
+        2
+      ],
+      "file": "assets/models/wave1/c/HaloHamster.fbx",
+      "source": "assets/blender/generated/wave1/c/HaloHamster.blend",
+      "texture": "assets/textures/Wave1Palette_c.png",
+      "preview": "assets/previews/wave1/c/HaloHamster.png",
+      "front_preview": "assets/previews/wave1/c/HaloHamster_front.png",
+      "pivot": "base-center",
+      "mesh_count": 1,
+      "material_count": 1,
+      "fbx_sha256": "bc74b4635559c2fec29945702d1902395ebf8a03971f7e5baaf17d949bc7c10d"
+    },
+    {
+      "id": "CometCommode",
+      "name": "Comet Commode",
+      "display_name": "Comet Commode",
+      "rarity": "Celestial",
+      "category": "items",
+      "tris": 2348,
+      "budget": 2400,
+      "size_studs": [
+        2.9,
+        2.6277,
+        2.353
+      ],
+      "brief_target_studs": [
+        2.9,
+        2.6,
+        2
+      ],
+      "file": "assets/models/wave1/c/CometCommode.fbx",
+      "source": "assets/blender/generated/wave1/c/CometCommode.blend",
+      "texture": "assets/textures/Wave1Palette_c.png",
+      "preview": "assets/previews/wave1/c/CometCommode.png",
+      "front_preview": "assets/previews/wave1/c/CometCommode_front.png",
+      "pivot": "base-center",
+      "mesh_count": 1,
+      "material_count": 1,
+      "fbx_sha256": "c859b2ee3ed3f953c67a6cddb2be6a2f3fa079b22b191133a3e7f2f783641a8d"
+    },
+    {
+      "id": "ConstellationClam",
+      "name": "Constellation Clam",
+      "display_name": "Constellation Clam",
+      "rarity": "Celestial",
+      "category": "items",
+      "tris": 1608,
+      "budget": 2400,
+      "size_studs": [
+        2.9,
+        2.0665,
+        2.1399
+      ],
+      "brief_target_studs": [
+        2.9,
+        2.5,
+        2
+      ],
+      "file": "assets/models/wave1/c/ConstellationClam.fbx",
+      "source": "assets/blender/generated/wave1/c/ConstellationClam.blend",
+      "texture": "assets/textures/Wave1Palette_c.png",
+      "preview": "assets/previews/wave1/c/ConstellationClam.png",
+      "front_preview": "assets/previews/wave1/c/ConstellationClam_front.png",
+      "pivot": "base-center",
+      "mesh_count": 1,
+      "material_count": 1,
+      "fbx_sha256": "ad7ea259ff21a51bca85fcf58af87867af6714735df11ae1172147ce22dc8bb9"
+    },
+    {
+      "id": "StarlightSeraph",
+      "name": "Starlight Seraph",
+      "display_name": "Starlight Seraph",
+      "rarity": "Celestial",
+      "category": "items",
+      "tris": 1596,
+      "budget": 2500,
+      "size_studs": [
+        3.0,
+        2.4167,
+        1.2647
+      ],
+      "brief_target_studs": [
+        3,
+        2.9,
+        1.8
+      ],
+      "file": "assets/models/wave1/c/StarlightSeraph.fbx",
+      "source": "assets/blender/generated/wave1/c/StarlightSeraph.blend",
+      "texture": "assets/textures/Wave1Palette_c.png",
+      "preview": "assets/previews/wave1/c/StarlightSeraph.png",
+      "front_preview": "assets/previews/wave1/c/StarlightSeraph_front.png",
+      "pivot": "base-center",
+      "mesh_count": 1,
+      "material_count": 1,
+      "fbx_sha256": "4e47f8a208a989725eb39eb07d8b530d915d790492e6953ed7a94bc5ae9f4c73"
+    },
+    {
+      "id": "TheLastToilet",
+      "name": "The Last Toilet",
+      "display_name": "The Last Toilet",
+      "rarity": "Secret",
+      "category": "items",
+      "tris": 1788,
+      "budget": 2500,
+      "size_studs": [
+        3.0,
+        2.9458,
+        2.0406
+      ],
+      "brief_target_studs": [
+        2.8,
+        3,
+        2.3
+      ],
+      "file": "assets/models/wave1/c/TheLastToilet.fbx",
+      "source": "assets/blender/generated/wave1/c/TheLastToilet.blend",
+      "texture": "assets/textures/Wave1Palette_c.png",
+      "preview": "assets/previews/wave1/c/TheLastToilet.png",
+      "front_preview": "assets/previews/wave1/c/TheLastToilet_front.png",
+      "pivot": "base-center",
+      "mesh_count": 1,
+      "material_count": 1,
+      "fbx_sha256": "471f9fec1c9d2f7f8eab20a2330285b0300144f880959543372174e332185f3c"
+    },
+    {
+      "id": "EmergencyUniverse",
+      "name": "Emergency Universe",
+      "display_name": "Emergency Universe",
+      "rarity": "Secret",
+      "category": "items",
+      "tris": 2292,
+      "budget": 2500,
+      "size_studs": [
+        2.7743,
+        2.9,
+        1.6379
+      ],
+      "brief_target_studs": [
+        2.7,
+        2.9,
+        2
+      ],
+      "file": "assets/models/wave1/c/EmergencyUniverse.fbx",
+      "source": "assets/blender/generated/wave1/c/EmergencyUniverse.blend",
+      "texture": "assets/textures/Wave1Palette_c.png",
+      "preview": "assets/previews/wave1/c/EmergencyUniverse.png",
+      "front_preview": "assets/previews/wave1/c/EmergencyUniverse_front.png",
+      "pivot": "base-center",
+      "mesh_count": 1,
+      "material_count": 1,
+      "fbx_sha256": "8b4647b6411341ed840aec238227262f2cd70d3b79d2a2ea50c38a9884801a54"
+    },
+    {
+      "id": "InfiniteOccupied",
+      "name": "Infinite Occupied",
+      "display_name": "Infinite Occupied",
+      "rarity": "Secret",
+      "category": "items",
+      "tris": 1988,
+      "budget": 2300,
+      "size_studs": [
+        1.983,
+        3.0,
+        1.572
+      ],
+      "brief_target_studs": [
+        2.4,
+        3,
+        1.8
+      ],
+      "file": "assets/models/wave1/c/InfiniteOccupied.fbx",
+      "source": "assets/blender/generated/wave1/c/InfiniteOccupied.blend",
+      "texture": "assets/textures/Wave1Palette_c.png",
+      "preview": "assets/previews/wave1/c/InfiniteOccupied.png",
+      "front_preview": "assets/previews/wave1/c/InfiniteOccupied_front.png",
+      "pivot": "base-center",
+      "mesh_count": 1,
+      "material_count": 1,
+      "fbx_sha256": "abcd9d5dff89064c768475d270d1f86d7dacf27477ab39ea196ea48bb6d3f31d"
+    },
+    {
+      "id": "CosmicCourtesy",
+      "name": "Cosmic Courtesy",
+      "display_name": "Cosmic Courtesy",
+      "rarity": "Secret",
+      "category": "items",
+      "tris": 2092,
+      "budget": 2500,
+      "size_studs": [
+        3.0,
+        2.4537,
+        2.5769
+      ],
+      "brief_target_studs": [
+        3,
+        2.9,
+        2.7
+      ],
+      "file": "assets/models/wave1/c/CosmicCourtesy.fbx",
+      "source": "assets/blender/generated/wave1/c/CosmicCourtesy.blend",
+      "texture": "assets/textures/Wave1Palette_c.png",
+      "preview": "assets/previews/wave1/c/CosmicCourtesy.png",
+      "front_preview": "assets/previews/wave1/c/CosmicCourtesy_front.png",
+      "pivot": "base-center",
+      "mesh_count": 1,
+      "material_count": 1,
+      "fbx_sha256": "6e37ea7da5563b3dd35390d9ca8d6bb87f2f3b8ef635eb1079c5a9242e0e442f"
+    }
+  ]
+}

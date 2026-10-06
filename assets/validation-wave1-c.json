@@ -1,0 +1,126 @@
+{
+  "scope": "Blender FBX round trip; not a Roblox Studio import test",
+  "manifest": "assets/manifest-wave1-c.json",
+  "assets": [
+    {
+      "id": "DrainKraken",
+      "tris": 2160,
+      "fbx_round_trip": "passed",
+      "closed_component_surfaces": true,
+      "single_uv_material_mesh": true,
+      "exact_embedded_atlas": true,
+      "base_center_origin": true,
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "id": "GeyserGorilla",
+      "tris": 2164,
+      "fbx_round_trip": "passed",
+      "closed_component_surfaces": true,
+      "single_uv_material_mesh": true,
+      "exact_embedded_atlas": true,
+      "base_center_origin": true,
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "id": "ThroneColossus",
+      "tris": 1608,
+      "fbx_round_trip": "passed",
+      "closed_component_surfaces": true,
+      "single_uv_material_mesh": true,
+      "exact_embedded_atlas": true,
+      "base_center_origin": true,
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "id": "PlungerPaladin",
+      "tris": 1760,
+      "fbx_round_trip": "passed",
+      "closed_component_surfaces": true,
+      "single_uv_material_mesh": true,
+      "exact_embedded_atlas": true,
+      "base_center_origin": true,
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "id": "HaloHamster",
+      "tris": 2260,
+      "fbx_round_trip": "passed",
+      "closed_component_surfaces": true,
+      "single_uv_material_mesh": true,
+      "exact_embedded_atlas": true,
+      "base_center_origin": true,
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "id": "CometCommode",
+      "tris": 2348,
+      "fbx_round_trip": "passed",
+      "closed_component_surfaces": true,
+      "single_uv_material_mesh": true,
+      "exact_embedded_atlas": true,
+      "base_center_origin": true,
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "id": "ConstellationClam",
+      "tris": 1608,
+      "fbx_round_trip": "passed",
+      "closed_component_surfaces": true,
+      "single_uv_material_mesh": true,
+      "exact_embedded_atlas": true,
+      "base_center_origin": true,
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "id": "StarlightSeraph",
+      "tris": 1596,
+      "fbx_round_trip": "passed",
+      "closed_component_surfaces": true,
+      "single_uv_material_mesh": true,
+      "exact_embedded_atlas": true,
+      "base_center_origin": true,
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "id": "TheLastToilet",
+      "tris": 1788,
+      "fbx_round_trip": "passed",
+      "closed_component_surfaces": true,
+      "single_uv_material_mesh": true,
+      "exact_embedded_atlas": true,
+      "base_center_origin": true,
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "id": "EmergencyUniverse",
+      "tris": 2292,
+      "fbx_round_trip": "passed",
+      "closed_component_surfaces": true,
+      "single_uv_material_mesh": true,
+      "exact_embedded_atlas": true,
+      "base_center_origin": true,
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "id": "InfiniteOccupied",
+      "tris": 1988,
+      "fbx_round_trip": "passed",
+      "closed_component_surfaces": true,
+      "single_uv_material_mesh": true,
+      "exact_embedded_atlas": true,
+      "base_center_origin": true,
+      "dimensions": "matched within 0.001 stud"
+    },
+    {
+      "id": "CosmicCourtesy",
+      "tris": 2092,
+      "fbx_round_trip": "passed",
+      "closed_component_surfaces": true,
+      "single_uv_material_mesh": true,
+      "exact_embedded_atlas": true,
+      "base_center_origin": true,
+      "dimensions": "matched within 0.001 stud"
+    }
+  ]
+}
