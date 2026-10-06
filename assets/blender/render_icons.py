@@ -3,6 +3,7 @@ import argparse
 import json
 import math
 import random
+import shutil
 import sys
 from pathlib import Path
 
@@ -14,7 +15,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import lib
 import builders
 import icon_models as ui
-from icon_pixels import read_png, write_png, over, downsample, sticker, backdrop
+import pass_models as passes
+from icon_pixels import read_png, write_png, over, downsample, sticker, backdrop, blur
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT/'assets/icons'
@@ -113,6 +115,8 @@ def instantiate(name,loc=(0,0,0),scale=1,angle=0):
     previous={o:o.matrix_world.copy() for o in bpy.context.scene.objects}
     if name in SPECS:
         SPECS[name][1]()
+    elif name in passes.MODELS:
+        passes.MODELS[name]()
     else:
         ui.UI[name]()
     created=[o for o in bpy.context.scene.objects if o not in previous]
@@ -121,7 +125,9 @@ def instantiate(name,loc=(0,0,0),scale=1,angle=0):
     parent=bpy.data.objects.new(name+' placement',None)
     bpy.context.collection.objects.link(parent)
     for o in created:
-        o.parent=parent
+        # Preserve nested sculpture transforms (coin stacks, clovers, chest lid).
+        if o.parent not in created:
+            o.parent=parent
     parent.location=loc
     parent.scale=(scale,)*3
     parent.rotation_euler.z=math.radians(angle)
@@ -224,16 +230,29 @@ def render_raw(name):
 def render_icon(name,category,samples):
     setup(1024,1024,samples)
     objects=instantiate(name)
-    azimuth=25 if category!='ui' else 13
-    elevation=17 if category!='ui' else 11
+    azimuth=13 if category in ('ui','passes') else 25
+    elevation=11 if category in ('ui','passes') else 17
     if name in ('Fish','SewerShark'):
         azimuth=15
     if name in ('Coin','Pointer','Luck','OfferBurst','Check','Gem'):
         azimuth,elevation=8,7
     if name=='Collection':
         azimuth,elevation=28,18
-    frame(objects,azimuth,elevation)
-    rgba=sticker(render_raw(name),radius=9)
+    if name in ('Companion','VIPPack','UltimateBundle','Coins10Minutes','Coins1Hour','Coins6Hours','CoinPackHuge','ExtraSlots'):
+        azimuth,elevation=18,20
+    if name in ('RainbowName','GoldenName','OfflinePlus','LuckyFlush1','LuckyFlush5','LuckyFlush20'):
+        azimuth,elevation=6,8
+    padding=1.28 if name=='Companion' else 1.25 if name=='DoubleCash' else 1.19
+    frame(objects,azimuth,elevation,padding=padding)
+    raw=render_raw(name)
+    rgba=sticker(raw,radius=9)
+    if name=='ToiletGlow':
+        # Soft colored halo behind the crisp sculpture, with transparent edges.
+        glow=np.zeros_like(raw)
+        glow[:,:,:3]=(.24,.66,1.0)
+        cyan=(raw[:,:,2] > raw[:,:,0]*1.30) & (raw[:,:,1] > raw[:,:,0]*1.20)
+        glow[:,:,3]=blur(raw[:,:,3]*cyan,16)*.65
+        rgba=over(rgba,glow)
     for size in (512,128):
         write_png(OUT/category/f'{name}_{size}.png',downsample(rgba,1024//size))
 
@@ -423,7 +442,16 @@ def entries():
     for name in ui.UI:
         key='Icons.'+('Coins' if name=='Coin' else name)
         for size in (512,128):
-            records.append(dict(name=name,file=f'assets/icons/ui/{name}_{size}.png',size=[size,size],category='ui',config_key=key,config_key_exists=name not in ('Lock','Check','Gem','AutoFlush','OfferBurst'),transparent=True))
+            records.append(dict(name=name,file=f'assets/icons/ui/{name}_{size}.png',size=[size,size],category='ui',config_key=key,config_key_exists=True,transparent=True))
+    for name,display,key,kind in passes.CATALOG:
+        for size in (512,128):
+            rec=dict(name=name,display_name=display,file=f'assets/icons/passes/{name}_{size}.png',size=[size,size],category='passes',offer_kind=kind,config_key='Icons.'+key,intended_assets_key='Assets.Icons.'+key,config_key_exists=key in passes.EXISTING_KEYS,transparent=True,catalog_status='catalog' if name in passes.EXISTING_OFFERS else 'working-list; pending extended catalog')
+            if name in passes.REUSE:
+                rec['reused_from']=f'assets/icons/ui/{passes.REUSE[name]}_{size}.png'
+            if name in ('Coins1Hour','Coins6Hours'):
+                rec['current_catalog_key']='Icons.CoinPack'
+                rec['integration_note']='Proposed dedicated art key; current catalog shares Icons.CoinPack.'
+            records.append(rec)
     for name,filename,size,transparent in [
         ('GameIcon','GameIcon_512.png',[512,512],False),('GameIcon','GameIcon_128.png',[128,128],False),
         ('HubScene','HubScene_1920x1080.png',[1920,1080],False),('RareDrop','RareDrop_1920x1080.png',[1920,1080],False),
@@ -454,7 +482,18 @@ def validate(records,complete=False):
             assert alpha.min()==1, path
         if w==1920:
             assert path.stat().st_size<3_000_000, f'Thumbnail too large: {path}'
-        checks.append(dict(file=rec['file'],size=[w,h],bytes=path.stat().st_size,alpha='straight RGBA' if rec['transparent'] else 'opaque RGB',passed=True))
+        check=dict(file=rec['file'],size=[w,h],bytes=path.stat().st_size,alpha='straight RGBA' if rec['transparent'] else 'opaque RGB',passed=True)
+        if rec.get('reused_from'):
+            assert path.read_bytes()==(ROOT/rec['reused_from']).read_bytes(), f'Reuse mismatch: {path}'
+            check['reuse_identical']=True
+        if rec['category']=='passes':
+            yy,xx=np.mgrid[:h,:w]
+            solid=alpha>.5
+            assert solid.sum() > w*h*.08, f'Undersized icon: {path}'
+            outside=(xx-(w-1)/2)**2+(yy-(h-1)/2)**2>(min(w,h)/2)**2
+            check['solid_pixels_outside_circle']=int((solid & outside).sum())
+            check['solid_coverage_percent']=round(float(solid.mean()*100),2)
+        checks.append(check)
     (OUT/'validation.json').write_text(json.dumps(dict(complete=len(checks)==len(records),expected=len(records),validated=len(checks),checks=checks),indent=2)+'\n')
     return checks
 
@@ -464,8 +503,12 @@ def main():
     parser.add_argument('--only',nargs='+')
     parser.add_argument('--samples',type=int,default=64)
     parser.add_argument('--validate-only',action='store_true')
+    parser.add_argument('--passes-only',action='store_true')
     args=parser.parse_args(sys.argv[sys.argv.index('--')+1:] if '--' in sys.argv else [])
-    names=[n for n,(cat,_,_) in SPECS.items() if cat in ('items','toilets')]+list(ui.UI)+['GameIcon','HubScene','RareDrop','ToiletLineup','Logo']
+    pass_names=[row[0] for row in passes.CATALOG]
+    names=[n for n,(cat,_,_) in SPECS.items() if cat in ('items','toilets')]+list(ui.UI)+pass_names+['GameIcon','HubScene','RareDrop','ToiletLineup','Logo']
+    if args.passes_only:
+        names=pass_names
     if args.only:
         unknown=set(args.only)-set(names)
         if unknown:
@@ -479,12 +522,16 @@ def main():
         # CPU fallback is deterministic and works on machines without CUDA.
         for name in names:
             print('ICON_BUILD '+name,flush=True)
-            if name in ('GameIcon','HubScene','RareDrop','ToiletLineup','Logo'):
+            if name in passes.REUSE:
+                (OUT/'passes').mkdir(parents=True,exist_ok=True)
+                for size in (512,128):
+                    shutil.copyfile(OUT/'ui'/f'{passes.REUSE[name]}_{size}.png',OUT/'passes'/f'{name}_{size}.png')
+            elif name in ('GameIcon','HubScene','RareDrop','ToiletLineup','Logo'):
                 render_art(name,args.samples)
             else:
-                render_icon(name,SPECS[name][0] if name in SPECS else 'ui',args.samples)
+                render_icon(name,SPECS[name][0] if name in SPECS else 'passes' if name in passes.MODELS else 'ui',args.samples)
     records=entries()
-    manifest=dict(version=1,renderer='Blender 4.5 / Cycles',generator='scripts/build-icons.ps1',asset_count=42,png_count=len(records),notes=['No uploaded IDs. src/ was not modified.','Gem is the requested Gem/Stamp symbol.','New keys are marked config_key_exists=false.','Only 512px UI/item/toilet variants normally need upload.'],assets=records)
+    manifest=dict(version=2,renderer='Blender 4.5 / Cycles',generator='scripts/build-icons.ps1',asset_count=len({r['name'] for r in records}),png_count=len(records),notes=['No uploaded IDs. src/ was not modified.','Gem is the requested Gem/Stamp symbol.','New keys are marked config_key_exists=false.','Only 512px UI/item/toilet/pass variants normally need upload.','Pass/product display names follow the checked-in catalog where present; other entries are working-list artwork only.','Lucky Flush art does not enable paid luck or change the current catalog.','Four existing pass symbols are byte-identical copies; see reused_from.'],assets=records)
     (OUT/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
     checks=validate(records,complete=not args.only)
     print(f'Validated {len(checks)}/{len(records)} PNGs.',flush=True)

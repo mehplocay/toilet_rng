@@ -1,7 +1,7 @@
 {
   "complete": true,
-  "expected": 81,
-  "validated": 81,
+  "expected": 131,
+  "validated": 131,
   "checks": [
     {
       "file": "assets/icons/items/Poop_512.png",
@@ -742,6 +742,614 @@
       "bytes": 13550,
       "alpha": "straight RGBA",
       "passed": true
+    },
+    {
+      "file": "assets/icons/passes/RainbowName_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 104279,
+      "alpha": "straight RGBA",
+      "passed": true,
+      "solid_pixels_outside_circle": 0,
+      "solid_coverage_percent": 33.84
+    },
+    {
+      "file": "assets/icons/passes/RainbowName_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 10451,
+      "alpha": "straight RGBA",
+      "passed": true,
+      "solid_pixels_outside_circle": 0,
+      "solid_coverage_percent": 33.87
+    },
+    {
+      "file": "assets/icons/passes/ConfettiReveal_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 96435,
+      "alpha": "straight RGBA",
+      "passed": true,
+      "solid_pixels_outside_circle": 0,
+      "solid_coverage_percent": 14.92
+    },
+    {
+      "file": "assets/icons/passes/ConfettiReveal_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 11289,
+      "alpha": "straight RGBA",
+      "passed": true,
+      "solid_pixels_outside_circle": 0,
+      "solid_coverage_percent": 15.0
+    },
+    {
+      "file": "assets/icons/passes/GoldenName_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 98018,
+      "alpha": "straight RGBA",
+      "passed": true,
+      "solid_pixels_outside_circle": 0,
+      "solid_coverage_percent": 34.67
+    },
+    {
+      "file": "assets/icons/passes/GoldenName_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 9351,
+      "alpha": "straight RGBA",
+      "passed": true,
+      "solid_pixels_outside_circle": 0,
+      "solid_coverage_percent": 34.63
+    },
+    {
+      "file": "assets/icons/passes/DancePack_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 106640,
+      "alpha": "straight RGBA",
+      "passed": true,
+      "solid_pixels_outside_circle": 0,
+      "solid_coverage_percent": 24.95
+    },
+    {
+      "file": "assets/icons/passes/DancePack_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 12217,
+      "alpha": "straight RGBA",
+      "passed": true,
+      "solid_pixels_outside_circle": 0,
+      "solid_coverage_percent": 24.93
+    },
+    {
+      "file": "assets/icons/passes/ToiletGlow_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 213537,
+      "alpha": "straight RGBA",
+      "passed": true,
+      "solid_pixels_outside_circle": 0,
+      "solid_coverage_percent": 38.64
+    },
+    {
+      "file": "assets/icons/passes/ToiletGlow_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 22970,
+      "alpha": "straight RGBA",
+      "passed": true,
+      "solid_pixels_outside_circle": 0,
+      "solid_coverage_percent": 38.96
+    },
+    {
+      "file": "assets/icons/passes/Companion_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 114874,
+      "alpha": "straight RGBA",
+      "passed": true,
+      "solid_pixels_outside_circle": 0,
+      "solid_coverage_percent": 40.47
+    },
+    {
+      "file": "assets/icons/passes/Companion_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 13552,
+      "alpha": "straight RGBA",
+      "passed": true,
+      "solid_pixels_outside_circle": 0,
+      "solid_coverage_percent": 40.54
+    },
+    {
+      "file": "assets/icons/passes/StarTag_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 146499,
+      "alpha": "straight RGBA",
+      "passed": true,
+      "solid_pixels_outside_circle": 0,
+      "solid_coverage_percent": 39.32
+    },
+    {
+      "file": "assets/icons/passes/StarTag_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 15854,
+      "alpha": "straight RGBA",
+      "passed": true,
+      "solid_pixels_outside_circle": 0,
+      "solid_coverage_percent": 39.45
+    },
+    {
+      "file": "assets/icons/passes/DoubleCash_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 138039,
+      "alpha": "straight RGBA",
+      "passed": true,
+      "solid_pixels_outside_circle": 0,
+      "solid_coverage_percent": 36.28
+    },
+    {
+      "file": "assets/icons/passes/DoubleCash_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 14390,
+      "alpha": "straight RGBA",
+      "passed": true,
+      "solid_pixels_outside_circle": 0,
+      "solid_coverage_percent": 36.41
+    },
+    {
+      "file": "assets/icons/passes/AutoCollect_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 107843,
+      "alpha": "straight RGBA",
+      "passed": true,
+      "solid_pixels_outside_circle": 0,
+      "solid_coverage_percent": 23.82
+    },
+    {
+      "file": "assets/icons/passes/AutoCollect_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 11755,
+      "alpha": "straight RGBA",
+      "passed": true,
+      "solid_pixels_outside_circle": 0,
+      "solid_coverage_percent": 23.94
+    },
+    {
+      "file": "assets/icons/passes/ExtraSlots_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 101955,
+      "alpha": "straight RGBA",
+      "passed": true,
+      "solid_pixels_outside_circle": 0,
+      "solid_coverage_percent": 34.4
+    },
+    {
+      "file": "assets/icons/passes/ExtraSlots_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 10854,
+      "alpha": "straight RGBA",
+      "passed": true,
+      "solid_pixels_outside_circle": 0,
+      "solid_coverage_percent": 34.53
+    },
+    {
+      "file": "assets/icons/passes/OfflinePlus_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 125310,
+      "alpha": "straight RGBA",
+      "passed": true,
+      "solid_pixels_outside_circle": 0,
+      "solid_coverage_percent": 41.19
+    },
+    {
+      "file": "assets/icons/passes/OfflinePlus_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 13488,
+      "alpha": "straight RGBA",
+      "passed": true,
+      "solid_pixels_outside_circle": 0,
+      "solid_coverage_percent": 41.35
+    },
+    {
+      "file": "assets/icons/passes/VIPPack_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 149637,
+      "alpha": "straight RGBA",
+      "passed": true,
+      "solid_pixels_outside_circle": 0,
+      "solid_coverage_percent": 34.57
+    },
+    {
+      "file": "assets/icons/passes/VIPPack_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 16711,
+      "alpha": "straight RGBA",
+      "passed": true,
+      "solid_pixels_outside_circle": 0,
+      "solid_coverage_percent": 34.74
+    },
+    {
+      "file": "assets/icons/passes/UltimateBundle_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 180415,
+      "alpha": "straight RGBA",
+      "passed": true,
+      "solid_pixels_outside_circle": 0,
+      "solid_coverage_percent": 47.68
+    },
+    {
+      "file": "assets/icons/passes/UltimateBundle_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 19344,
+      "alpha": "straight RGBA",
+      "passed": true,
+      "solid_pixels_outside_circle": 0,
+      "solid_coverage_percent": 47.82
+    },
+    {
+      "file": "assets/icons/passes/FastFlush_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 136702,
+      "alpha": "straight RGBA",
+      "passed": true,
+      "reuse_identical": true,
+      "solid_pixels_outside_circle": 0,
+      "solid_coverage_percent": 52.28
+    },
+    {
+      "file": "assets/icons/passes/FastFlush_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 14956,
+      "alpha": "straight RGBA",
+      "passed": true,
+      "reuse_identical": true,
+      "solid_pixels_outside_circle": 0,
+      "solid_coverage_percent": 52.34
+    },
+    {
+      "file": "assets/icons/passes/SparkleTrail_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 93329,
+      "alpha": "straight RGBA",
+      "passed": true,
+      "reuse_identical": true,
+      "solid_pixels_outside_circle": 0,
+      "solid_coverage_percent": 39.0
+    },
+    {
+      "file": "assets/icons/passes/SparkleTrail_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 9774,
+      "alpha": "straight RGBA",
+      "passed": true,
+      "reuse_identical": true,
+      "solid_pixels_outside_circle": 0,
+      "solid_coverage_percent": 39.07
+    },
+    {
+      "file": "assets/icons/passes/VIPStar_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 114196,
+      "alpha": "straight RGBA",
+      "passed": true,
+      "reuse_identical": true,
+      "solid_pixels_outside_circle": 0,
+      "solid_coverage_percent": 32.36
+    },
+    {
+      "file": "assets/icons/passes/VIPStar_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 13146,
+      "alpha": "straight RGBA",
+      "passed": true,
+      "reuse_identical": true,
+      "solid_pixels_outside_circle": 0,
+      "solid_coverage_percent": 32.39
+    },
+    {
+      "file": "assets/icons/passes/CustomPlotColor_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 124103,
+      "alpha": "straight RGBA",
+      "passed": true,
+      "reuse_identical": true,
+      "solid_pixels_outside_circle": 0,
+      "solid_coverage_percent": 43.26
+    },
+    {
+      "file": "assets/icons/passes/CustomPlotColor_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 12509,
+      "alpha": "straight RGBA",
+      "passed": true,
+      "reuse_identical": true,
+      "solid_pixels_outside_circle": 0,
+      "solid_coverage_percent": 43.44
+    },
+    {
+      "file": "assets/icons/passes/Coins10Minutes_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 125045,
+      "alpha": "straight RGBA",
+      "passed": true,
+      "solid_pixels_outside_circle": 0,
+      "solid_coverage_percent": 27.24
+    },
+    {
+      "file": "assets/icons/passes/Coins10Minutes_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 12610,
+      "alpha": "straight RGBA",
+      "passed": true,
+      "solid_pixels_outside_circle": 0,
+      "solid_coverage_percent": 27.43
+    },
+    {
+      "file": "assets/icons/passes/Coins1Hour_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 157947,
+      "alpha": "straight RGBA",
+      "passed": true,
+      "solid_pixels_outside_circle": 0,
+      "solid_coverage_percent": 37.8
+    },
+    {
+      "file": "assets/icons/passes/Coins1Hour_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 16885,
+      "alpha": "straight RGBA",
+      "passed": true,
+      "solid_pixels_outside_circle": 0,
+      "solid_coverage_percent": 37.85
+    },
+    {
+      "file": "assets/icons/passes/Coins6Hours_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 167541,
+      "alpha": "straight RGBA",
+      "passed": true,
+      "solid_pixels_outside_circle": 0,
+      "solid_coverage_percent": 40.28
+    },
+    {
+      "file": "assets/icons/passes/Coins6Hours_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 17358,
+      "alpha": "straight RGBA",
+      "passed": true,
+      "solid_pixels_outside_circle": 0,
+      "solid_coverage_percent": 40.36
+    },
+    {
+      "file": "assets/icons/passes/CoinPackHuge_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 168002,
+      "alpha": "straight RGBA",
+      "passed": true,
+      "solid_pixels_outside_circle": 0,
+      "solid_coverage_percent": 32.0
+    },
+    {
+      "file": "assets/icons/passes/CoinPackHuge_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 16400,
+      "alpha": "straight RGBA",
+      "passed": true,
+      "solid_pixels_outside_circle": 0,
+      "solid_coverage_percent": 32.23
+    },
+    {
+      "file": "assets/icons/passes/LuckyFlush1_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 110415,
+      "alpha": "straight RGBA",
+      "passed": true,
+      "solid_pixels_outside_circle": 72,
+      "solid_coverage_percent": 29.54
+    },
+    {
+      "file": "assets/icons/passes/LuckyFlush1_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 12328,
+      "alpha": "straight RGBA",
+      "passed": true,
+      "solid_pixels_outside_circle": 4,
+      "solid_coverage_percent": 29.69
+    },
+    {
+      "file": "assets/icons/passes/LuckyFlush5_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 139299,
+      "alpha": "straight RGBA",
+      "passed": true,
+      "solid_pixels_outside_circle": 0,
+      "solid_coverage_percent": 39.09
+    },
+    {
+      "file": "assets/icons/passes/LuckyFlush5_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 15490,
+      "alpha": "straight RGBA",
+      "passed": true,
+      "solid_pixels_outside_circle": 0,
+      "solid_coverage_percent": 39.17
+    },
+    {
+      "file": "assets/icons/passes/LuckyFlush20_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 160411,
+      "alpha": "straight RGBA",
+      "passed": true,
+      "solid_pixels_outside_circle": 0,
+      "solid_coverage_percent": 45.76
+    },
+    {
+      "file": "assets/icons/passes/LuckyFlush20_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 17558,
+      "alpha": "straight RGBA",
+      "passed": true,
+      "solid_pixels_outside_circle": 0,
+      "solid_coverage_percent": 45.83
+    },
+    {
+      "file": "assets/icons/passes/PathBoost_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "bytes": 101069,
+      "alpha": "straight RGBA",
+      "passed": true,
+      "solid_pixels_outside_circle": 0,
+      "solid_coverage_percent": 29.64
+    },
+    {
+      "file": "assets/icons/passes/PathBoost_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "bytes": 10967,
+      "alpha": "straight RGBA",
+      "passed": true,
+      "solid_pixels_outside_circle": 0,
+      "solid_coverage_percent": 29.57
     },
     {
       "file": "assets/icons/art/GameIcon_512.png",
