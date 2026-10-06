@@ -265,10 +265,46 @@ do
 		})
 		H.Advance(0.01)
 		assert(calls == 4, "Wheel-only input did not resume activity")
+		H.Advance(1801)
+		assert(calls == 4, "Idle heartbeat repeated the last input report")
+		for _, event in ipairs({
+			{ UserInputType = Enum.UserInputType.MouseMovement, Delta = Vector3.new() },
+			{ UserInputType = Enum.UserInputType.Touch, Delta = Vector3.new() },
+			{ UserInputType = Enum.UserInputType.MouseWheel, Position = Vector3.new() },
+			{ KeyCode = Enum.KeyCode.Thumbstick1, Position = Vector3.new(0.1, 0, 0), Delta = Vector3.new(0.1, 0, 0) },
+			{ KeyCode = Enum.KeyCode.Thumbstick2, Position = Vector3.new(0.5, 0, 0), Delta = Vector3.new() },
+			{ UserInputType = Enum.UserInputType.Accelerometer },
+		}) do
+			input.InputChanged:Fire(event)
+		end
+		H.Advance(0.01)
+		assert(calls == 4, "Stationary input or sensor noise invented activity")
+		input.InputEnded:Fire({ UserInputType = Enum.UserInputType.Keyboard }, true)
+		H.Advance(0.01)
+		assert(calls == 5, "Input release did not resume activity")
+		input.InputBegan:Fire({ UserInputType = Enum.UserInputType.Touch, Position = Vector3.new() }, true)
+		H.Advance(14.99)
+		assert(calls == 5, "Pending input bypassed the activity interval")
+		input.WindowFocusReleased:Fire()
+		input.InputChanged:Fire({ UserInputType = Enum.UserInputType.MouseMovement, Delta = Vector3.new(2, 0, 0) })
+		input.InputEnded:Fire({ UserInputType = Enum.UserInputType.Keyboard }, true)
+		H.Advance(1801)
+		assert(calls == 5, "Unfocused input or a pending report invented activity")
+		input.WindowFocused:Fire()
+		H.Advance(20)
+		assert(calls == 5, "Focus restored a report queued before focus loss")
+		input.InputChanged:Fire({
+			KeyCode = Enum.KeyCode.Thumbstick1,
+			Position = Vector3.new(0.5, 0, 0),
+			Delta = Vector3.new(0.1, 0, 0),
+		})
+		H.Advance(0.01)
+		assert(calls == 6, "Genuine thumbstick movement did not resume activity")
+		input.InputBegan:Fire({ UserInputType = Enum.UserInputType.Keyboard }, true)
 		root:Destroy()
 		input.InputBegan:Fire({})
 		H.Advance(20)
-		assert(calls == 4, "Destroyed input tracker leaked a heartbeat")
+		assert(calls == 6, "Destroyed input tracker leaked a heartbeat")
 	end)
 	check("far audio: actual class mixer scales the stinger without ducking music", function()
 		local config = H.Load("src/shared/Config/Audio")

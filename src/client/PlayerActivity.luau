@@ -3,7 +3,7 @@ local Run = game:GetService("RunService")
 local Config = require(game.ReplicatedStorage.Shared.Config.AutoFlush)
 local Activity = {}
 function Activity.Start(root, remote)
-	local dirty, lastSent, focused = false, -math.huge, true
+	local dirty, nextSendAt, focused = false, -math.huge, true
 	local function input()
 		if focused then
 			dirty = true
@@ -40,8 +40,10 @@ function Activity.Start(root, remote)
 			focused = true
 		end),
 		Run.Heartbeat:Connect(function()
-			if dirty and focused and os.clock() - lastSent >= Config.ActivityInterval then
-				dirty, lastSent = false, os.clock()
+			local now = os.clock()
+			-- Compare the deadline directly to avoid subtraction rounding at the interval boundary.
+			if dirty and focused and now >= nextSendAt then
+				dirty, nextSendAt = false, now + Config.ActivityInterval
 				remote:FireServer()
 			end
 		end),
