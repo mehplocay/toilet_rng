@@ -1,14 +1,17 @@
 {
-  "version": 1,
+  "version": 2,
   "renderer": "Blender 4.5 / Cycles",
   "generator": "scripts/build-icons.ps1",
-  "asset_count": 42,
-  "png_count": 81,
+  "asset_count": 67,
+  "png_count": 131,
   "notes": [
     "No uploaded IDs. src/ was not modified.",
     "Gem is the requested Gem/Stamp symbol.",
     "New keys are marked config_key_exists=false.",
-    "Only 512px UI/item/toilet variants normally need upload."
+    "Only 512px UI/item/toilet/pass variants normally need upload.",
+    "Pass/product display names follow the checked-in catalog where present; other entries are working-list artwork only.",
+    "Lucky Flush art does not enable paid luck or change the current catalog.",
+    "Four existing pass symbols are byte-identical copies; see reused_from."
   ],
   "assets": [
     {
@@ -788,7 +791,7 @@
       ],
       "category": "ui",
       "config_key": "Icons.Lock",
-      "config_key_exists": false,
+      "config_key_exists": true,
       "transparent": true
     },
     {
@@ -800,7 +803,7 @@
       ],
       "category": "ui",
       "config_key": "Icons.Lock",
-      "config_key_exists": false,
+      "config_key_exists": true,
       "transparent": true
     },
     {
@@ -812,7 +815,7 @@
       ],
       "category": "ui",
       "config_key": "Icons.Check",
-      "config_key_exists": false,
+      "config_key_exists": true,
       "transparent": true
     },
     {
@@ -824,7 +827,7 @@
       ],
       "category": "ui",
       "config_key": "Icons.Check",
-      "config_key_exists": false,
+      "config_key_exists": true,
       "transparent": true
     },
     {
@@ -836,7 +839,7 @@
       ],
       "category": "ui",
       "config_key": "Icons.Gem",
-      "config_key_exists": false,
+      "config_key_exists": true,
       "transparent": true
     },
     {
@@ -848,7 +851,7 @@
       ],
       "category": "ui",
       "config_key": "Icons.Gem",
-      "config_key_exists": false,
+      "config_key_exists": true,
       "transparent": true
     },
     {
@@ -860,7 +863,7 @@
       ],
       "category": "ui",
       "config_key": "Icons.AutoFlush",
-      "config_key_exists": false,
+      "config_key_exists": true,
       "transparent": true
     },
     {
@@ -872,7 +875,7 @@
       ],
       "category": "ui",
       "config_key": "Icons.AutoFlush",
-      "config_key_exists": false,
+      "config_key_exists": true,
       "transparent": true
     },
     {
@@ -884,7 +887,7 @@
       ],
       "category": "ui",
       "config_key": "Icons.OfferBurst",
-      "config_key_exists": false,
+      "config_key_exists": true,
       "transparent": true
     },
     {
@@ -896,8 +899,824 @@
       ],
       "category": "ui",
       "config_key": "Icons.OfferBurst",
-      "config_key_exists": false,
+      "config_key_exists": true,
       "transparent": true
+    },
+    {
+      "name": "RainbowName",
+      "display_name": "Rainbow Name",
+      "file": "assets/icons/passes/RainbowName_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "passes",
+      "offer_kind": "pass",
+      "config_key": "Icons.RainbowName",
+      "intended_assets_key": "Assets.Icons.RainbowName",
+      "config_key_exists": false,
+      "transparent": true,
+      "catalog_status": "working-list; pending extended catalog"
+    },
+    {
+      "name": "RainbowName",
+      "display_name": "Rainbow Name",
+      "file": "assets/icons/passes/RainbowName_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "passes",
+      "offer_kind": "pass",
+      "config_key": "Icons.RainbowName",
+      "intended_assets_key": "Assets.Icons.RainbowName",
+      "config_key_exists": false,
+      "transparent": true,
+      "catalog_status": "working-list; pending extended catalog"
+    },
+    {
+      "name": "ConfettiReveal",
+      "display_name": "Confetti Reveal",
+      "file": "assets/icons/passes/ConfettiReveal_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "passes",
+      "offer_kind": "pass",
+      "config_key": "Icons.ConfettiReveal",
+      "intended_assets_key": "Assets.Icons.ConfettiReveal",
+      "config_key_exists": false,
+      "transparent": true,
+      "catalog_status": "working-list; pending extended catalog"
+    },
+    {
+      "name": "ConfettiReveal",
+      "display_name": "Confetti Reveal",
+      "file": "assets/icons/passes/ConfettiReveal_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "passes",
+      "offer_kind": "pass",
+      "config_key": "Icons.ConfettiReveal",
+      "intended_assets_key": "Assets.Icons.ConfettiReveal",
+      "config_key_exists": false,
+      "transparent": true,
+      "catalog_status": "working-list; pending extended catalog"
+    },
+    {
+      "name": "GoldenName",
+      "display_name": "Golden Name",
+      "file": "assets/icons/passes/GoldenName_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "passes",
+      "offer_kind": "pass",
+      "config_key": "Icons.GoldenName",
+      "intended_assets_key": "Assets.Icons.GoldenName",
+      "config_key_exists": false,
+      "transparent": true,
+      "catalog_status": "working-list; pending extended catalog"
+    },
+    {
+      "name": "GoldenName",
+      "display_name": "Golden Name",
+      "file": "assets/icons/passes/GoldenName_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "passes",
+      "offer_kind": "pass",
+      "config_key": "Icons.GoldenName",
+      "intended_assets_key": "Assets.Icons.GoldenName",
+      "config_key_exists": false,
+      "transparent": true,
+      "catalog_status": "working-list; pending extended catalog"
+    },
+    {
+      "name": "DancePack",
+      "display_name": "Dance Pack",
+      "file": "assets/icons/passes/DancePack_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "passes",
+      "offer_kind": "pass",
+      "config_key": "Icons.DancePack",
+      "intended_assets_key": "Assets.Icons.DancePack",
+      "config_key_exists": false,
+      "transparent": true,
+      "catalog_status": "working-list; pending extended catalog"
+    },
+    {
+      "name": "DancePack",
+      "display_name": "Dance Pack",
+      "file": "assets/icons/passes/DancePack_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "passes",
+      "offer_kind": "pass",
+      "config_key": "Icons.DancePack",
+      "intended_assets_key": "Assets.Icons.DancePack",
+      "config_key_exists": false,
+      "transparent": true,
+      "catalog_status": "working-list; pending extended catalog"
+    },
+    {
+      "name": "ToiletGlow",
+      "display_name": "Toilet Glow",
+      "file": "assets/icons/passes/ToiletGlow_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "passes",
+      "offer_kind": "pass",
+      "config_key": "Icons.ToiletGlow",
+      "intended_assets_key": "Assets.Icons.ToiletGlow",
+      "config_key_exists": false,
+      "transparent": true,
+      "catalog_status": "working-list; pending extended catalog"
+    },
+    {
+      "name": "ToiletGlow",
+      "display_name": "Toilet Glow",
+      "file": "assets/icons/passes/ToiletGlow_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "passes",
+      "offer_kind": "pass",
+      "config_key": "Icons.ToiletGlow",
+      "intended_assets_key": "Assets.Icons.ToiletGlow",
+      "config_key_exists": false,
+      "transparent": true,
+      "catalog_status": "working-list; pending extended catalog"
+    },
+    {
+      "name": "Companion",
+      "display_name": "Companion",
+      "file": "assets/icons/passes/Companion_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "passes",
+      "offer_kind": "pass",
+      "config_key": "Icons.Companion",
+      "intended_assets_key": "Assets.Icons.Companion",
+      "config_key_exists": false,
+      "transparent": true,
+      "catalog_status": "working-list; pending extended catalog"
+    },
+    {
+      "name": "Companion",
+      "display_name": "Companion",
+      "file": "assets/icons/passes/Companion_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "passes",
+      "offer_kind": "pass",
+      "config_key": "Icons.Companion",
+      "intended_assets_key": "Assets.Icons.Companion",
+      "config_key_exists": false,
+      "transparent": true,
+      "catalog_status": "working-list; pending extended catalog"
+    },
+    {
+      "name": "StarTag",
+      "display_name": "Star Tag",
+      "file": "assets/icons/passes/StarTag_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "passes",
+      "offer_kind": "pass",
+      "config_key": "Icons.StarTag",
+      "intended_assets_key": "Assets.Icons.StarTag",
+      "config_key_exists": false,
+      "transparent": true,
+      "catalog_status": "working-list; pending extended catalog"
+    },
+    {
+      "name": "StarTag",
+      "display_name": "Star Tag",
+      "file": "assets/icons/passes/StarTag_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "passes",
+      "offer_kind": "pass",
+      "config_key": "Icons.StarTag",
+      "intended_assets_key": "Assets.Icons.StarTag",
+      "config_key_exists": false,
+      "transparent": true,
+      "catalog_status": "working-list; pending extended catalog"
+    },
+    {
+      "name": "DoubleCash",
+      "display_name": "Double Cash",
+      "file": "assets/icons/passes/DoubleCash_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "passes",
+      "offer_kind": "pass",
+      "config_key": "Icons.DoubleCash",
+      "intended_assets_key": "Assets.Icons.DoubleCash",
+      "config_key_exists": true,
+      "transparent": true,
+      "catalog_status": "catalog"
+    },
+    {
+      "name": "DoubleCash",
+      "display_name": "Double Cash",
+      "file": "assets/icons/passes/DoubleCash_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "passes",
+      "offer_kind": "pass",
+      "config_key": "Icons.DoubleCash",
+      "intended_assets_key": "Assets.Icons.DoubleCash",
+      "config_key_exists": true,
+      "transparent": true,
+      "catalog_status": "catalog"
+    },
+    {
+      "name": "AutoCollect",
+      "display_name": "Auto Collect",
+      "file": "assets/icons/passes/AutoCollect_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "passes",
+      "offer_kind": "pass",
+      "config_key": "Icons.AutoCollect",
+      "intended_assets_key": "Assets.Icons.AutoCollect",
+      "config_key_exists": true,
+      "transparent": true,
+      "catalog_status": "catalog"
+    },
+    {
+      "name": "AutoCollect",
+      "display_name": "Auto Collect",
+      "file": "assets/icons/passes/AutoCollect_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "passes",
+      "offer_kind": "pass",
+      "config_key": "Icons.AutoCollect",
+      "intended_assets_key": "Assets.Icons.AutoCollect",
+      "config_key_exists": true,
+      "transparent": true,
+      "catalog_status": "catalog"
+    },
+    {
+      "name": "ExtraSlots",
+      "display_name": "Extra Slots",
+      "file": "assets/icons/passes/ExtraSlots_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "passes",
+      "offer_kind": "pass",
+      "config_key": "Icons.ExtraSlots",
+      "intended_assets_key": "Assets.Icons.ExtraSlots",
+      "config_key_exists": true,
+      "transparent": true,
+      "catalog_status": "catalog"
+    },
+    {
+      "name": "ExtraSlots",
+      "display_name": "Extra Slots",
+      "file": "assets/icons/passes/ExtraSlots_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "passes",
+      "offer_kind": "pass",
+      "config_key": "Icons.ExtraSlots",
+      "intended_assets_key": "Assets.Icons.ExtraSlots",
+      "config_key_exists": true,
+      "transparent": true,
+      "catalog_status": "catalog"
+    },
+    {
+      "name": "OfflinePlus",
+      "display_name": "Offline Plus",
+      "file": "assets/icons/passes/OfflinePlus_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "passes",
+      "offer_kind": "pass",
+      "config_key": "Icons.OfflinePlus",
+      "intended_assets_key": "Assets.Icons.OfflinePlus",
+      "config_key_exists": true,
+      "transparent": true,
+      "catalog_status": "catalog"
+    },
+    {
+      "name": "OfflinePlus",
+      "display_name": "Offline Plus",
+      "file": "assets/icons/passes/OfflinePlus_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "passes",
+      "offer_kind": "pass",
+      "config_key": "Icons.OfflinePlus",
+      "intended_assets_key": "Assets.Icons.OfflinePlus",
+      "config_key_exists": true,
+      "transparent": true,
+      "catalog_status": "catalog"
+    },
+    {
+      "name": "VIPPack",
+      "display_name": "VIP Pack",
+      "file": "assets/icons/passes/VIPPack_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "passes",
+      "offer_kind": "pass",
+      "config_key": "Icons.VIPPack",
+      "intended_assets_key": "Assets.Icons.VIPPack",
+      "config_key_exists": true,
+      "transparent": true,
+      "catalog_status": "catalog"
+    },
+    {
+      "name": "VIPPack",
+      "display_name": "VIP Pack",
+      "file": "assets/icons/passes/VIPPack_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "passes",
+      "offer_kind": "pass",
+      "config_key": "Icons.VIPPack",
+      "intended_assets_key": "Assets.Icons.VIPPack",
+      "config_key_exists": true,
+      "transparent": true,
+      "catalog_status": "catalog"
+    },
+    {
+      "name": "UltimateBundle",
+      "display_name": "Ultimate Bundle",
+      "file": "assets/icons/passes/UltimateBundle_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "passes",
+      "offer_kind": "pass",
+      "config_key": "Icons.UltimateBundle",
+      "intended_assets_key": "Assets.Icons.UltimateBundle",
+      "config_key_exists": false,
+      "transparent": true,
+      "catalog_status": "working-list; pending extended catalog"
+    },
+    {
+      "name": "UltimateBundle",
+      "display_name": "Ultimate Bundle",
+      "file": "assets/icons/passes/UltimateBundle_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "passes",
+      "offer_kind": "pass",
+      "config_key": "Icons.UltimateBundle",
+      "intended_assets_key": "Assets.Icons.UltimateBundle",
+      "config_key_exists": false,
+      "transparent": true,
+      "catalog_status": "working-list; pending extended catalog"
+    },
+    {
+      "name": "FastFlush",
+      "display_name": "Fast Flush",
+      "file": "assets/icons/passes/FastFlush_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "passes",
+      "offer_kind": "pass",
+      "config_key": "Icons.Flush",
+      "intended_assets_key": "Assets.Icons.Flush",
+      "config_key_exists": true,
+      "transparent": true,
+      "catalog_status": "catalog",
+      "reused_from": "assets/icons/ui/Flush_512.png"
+    },
+    {
+      "name": "FastFlush",
+      "display_name": "Fast Flush",
+      "file": "assets/icons/passes/FastFlush_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "passes",
+      "offer_kind": "pass",
+      "config_key": "Icons.Flush",
+      "intended_assets_key": "Assets.Icons.Flush",
+      "config_key_exists": true,
+      "transparent": true,
+      "catalog_status": "catalog",
+      "reused_from": "assets/icons/ui/Flush_128.png"
+    },
+    {
+      "name": "SparkleTrail",
+      "display_name": "Sparkle Trail",
+      "file": "assets/icons/passes/SparkleTrail_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "passes",
+      "offer_kind": "pass",
+      "config_key": "Icons.Gem",
+      "intended_assets_key": "Assets.Icons.Gem",
+      "config_key_exists": true,
+      "transparent": true,
+      "catalog_status": "catalog",
+      "reused_from": "assets/icons/ui/Gem_512.png"
+    },
+    {
+      "name": "SparkleTrail",
+      "display_name": "Sparkle Trail",
+      "file": "assets/icons/passes/SparkleTrail_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "passes",
+      "offer_kind": "pass",
+      "config_key": "Icons.Gem",
+      "intended_assets_key": "Assets.Icons.Gem",
+      "config_key_exists": true,
+      "transparent": true,
+      "catalog_status": "catalog",
+      "reused_from": "assets/icons/ui/Gem_128.png"
+    },
+    {
+      "name": "VIPStar",
+      "display_name": "VIP Star",
+      "file": "assets/icons/passes/VIPStar_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "passes",
+      "offer_kind": "pass",
+      "config_key": "Icons.Crown",
+      "intended_assets_key": "Assets.Icons.Crown",
+      "config_key_exists": true,
+      "transparent": true,
+      "catalog_status": "catalog",
+      "reused_from": "assets/icons/ui/Crown_512.png"
+    },
+    {
+      "name": "VIPStar",
+      "display_name": "VIP Star",
+      "file": "assets/icons/passes/VIPStar_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "passes",
+      "offer_kind": "pass",
+      "config_key": "Icons.Crown",
+      "intended_assets_key": "Assets.Icons.Crown",
+      "config_key_exists": true,
+      "transparent": true,
+      "catalog_status": "catalog",
+      "reused_from": "assets/icons/ui/Crown_128.png"
+    },
+    {
+      "name": "CustomPlotColor",
+      "display_name": "Custom Plot Color",
+      "file": "assets/icons/passes/CustomPlotColor_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "passes",
+      "offer_kind": "pass",
+      "config_key": "Icons.Home",
+      "intended_assets_key": "Assets.Icons.Home",
+      "config_key_exists": true,
+      "transparent": true,
+      "catalog_status": "catalog",
+      "reused_from": "assets/icons/ui/Home_512.png"
+    },
+    {
+      "name": "CustomPlotColor",
+      "display_name": "Custom Plot Color",
+      "file": "assets/icons/passes/CustomPlotColor_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "passes",
+      "offer_kind": "pass",
+      "config_key": "Icons.Home",
+      "intended_assets_key": "Assets.Icons.Home",
+      "config_key_exists": true,
+      "transparent": true,
+      "catalog_status": "catalog",
+      "reused_from": "assets/icons/ui/Home_128.png"
+    },
+    {
+      "name": "Coins10Minutes",
+      "display_name": "Coin Pack: 10 Minutes",
+      "file": "assets/icons/passes/Coins10Minutes_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "passes",
+      "offer_kind": "product",
+      "config_key": "Icons.CoinPack",
+      "intended_assets_key": "Assets.Icons.CoinPack",
+      "config_key_exists": true,
+      "transparent": true,
+      "catalog_status": "catalog"
+    },
+    {
+      "name": "Coins10Minutes",
+      "display_name": "Coin Pack: 10 Minutes",
+      "file": "assets/icons/passes/Coins10Minutes_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "passes",
+      "offer_kind": "product",
+      "config_key": "Icons.CoinPack",
+      "intended_assets_key": "Assets.Icons.CoinPack",
+      "config_key_exists": true,
+      "transparent": true,
+      "catalog_status": "catalog"
+    },
+    {
+      "name": "Coins1Hour",
+      "display_name": "Coin Pack: 1 Hour",
+      "file": "assets/icons/passes/Coins1Hour_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "passes",
+      "offer_kind": "product",
+      "config_key": "Icons.CoinPackSmall",
+      "intended_assets_key": "Assets.Icons.CoinPackSmall",
+      "config_key_exists": false,
+      "transparent": true,
+      "catalog_status": "catalog",
+      "current_catalog_key": "Icons.CoinPack",
+      "integration_note": "Proposed dedicated art key; current catalog shares Icons.CoinPack."
+    },
+    {
+      "name": "Coins1Hour",
+      "display_name": "Coin Pack: 1 Hour",
+      "file": "assets/icons/passes/Coins1Hour_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "passes",
+      "offer_kind": "product",
+      "config_key": "Icons.CoinPackSmall",
+      "intended_assets_key": "Assets.Icons.CoinPackSmall",
+      "config_key_exists": false,
+      "transparent": true,
+      "catalog_status": "catalog",
+      "current_catalog_key": "Icons.CoinPack",
+      "integration_note": "Proposed dedicated art key; current catalog shares Icons.CoinPack."
+    },
+    {
+      "name": "Coins6Hours",
+      "display_name": "Coin Pack: 6 Hours",
+      "file": "assets/icons/passes/Coins6Hours_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "passes",
+      "offer_kind": "product",
+      "config_key": "Icons.CoinPackLarge",
+      "intended_assets_key": "Assets.Icons.CoinPackLarge",
+      "config_key_exists": false,
+      "transparent": true,
+      "catalog_status": "catalog",
+      "current_catalog_key": "Icons.CoinPack",
+      "integration_note": "Proposed dedicated art key; current catalog shares Icons.CoinPack."
+    },
+    {
+      "name": "Coins6Hours",
+      "display_name": "Coin Pack: 6 Hours",
+      "file": "assets/icons/passes/Coins6Hours_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "passes",
+      "offer_kind": "product",
+      "config_key": "Icons.CoinPackLarge",
+      "intended_assets_key": "Assets.Icons.CoinPackLarge",
+      "config_key_exists": false,
+      "transparent": true,
+      "catalog_status": "catalog",
+      "current_catalog_key": "Icons.CoinPack",
+      "integration_note": "Proposed dedicated art key; current catalog shares Icons.CoinPack."
+    },
+    {
+      "name": "CoinPackHuge",
+      "display_name": "Coin Pack Huge",
+      "file": "assets/icons/passes/CoinPackHuge_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "passes",
+      "offer_kind": "product",
+      "config_key": "Icons.CoinPackHuge",
+      "intended_assets_key": "Assets.Icons.CoinPackHuge",
+      "config_key_exists": false,
+      "transparent": true,
+      "catalog_status": "working-list; pending extended catalog"
+    },
+    {
+      "name": "CoinPackHuge",
+      "display_name": "Coin Pack Huge",
+      "file": "assets/icons/passes/CoinPackHuge_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "passes",
+      "offer_kind": "product",
+      "config_key": "Icons.CoinPackHuge",
+      "intended_assets_key": "Assets.Icons.CoinPackHuge",
+      "config_key_exists": false,
+      "transparent": true,
+      "catalog_status": "working-list; pending extended catalog"
+    },
+    {
+      "name": "LuckyFlush1",
+      "display_name": "Lucky Flush x1",
+      "file": "assets/icons/passes/LuckyFlush1_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "passes",
+      "offer_kind": "product",
+      "config_key": "Icons.LuckyFlush1",
+      "intended_assets_key": "Assets.Icons.LuckyFlush1",
+      "config_key_exists": false,
+      "transparent": true,
+      "catalog_status": "working-list; pending extended catalog"
+    },
+    {
+      "name": "LuckyFlush1",
+      "display_name": "Lucky Flush x1",
+      "file": "assets/icons/passes/LuckyFlush1_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "passes",
+      "offer_kind": "product",
+      "config_key": "Icons.LuckyFlush1",
+      "intended_assets_key": "Assets.Icons.LuckyFlush1",
+      "config_key_exists": false,
+      "transparent": true,
+      "catalog_status": "working-list; pending extended catalog"
+    },
+    {
+      "name": "LuckyFlush5",
+      "display_name": "Lucky Flush x5",
+      "file": "assets/icons/passes/LuckyFlush5_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "passes",
+      "offer_kind": "product",
+      "config_key": "Icons.LuckyFlush5",
+      "intended_assets_key": "Assets.Icons.LuckyFlush5",
+      "config_key_exists": false,
+      "transparent": true,
+      "catalog_status": "working-list; pending extended catalog"
+    },
+    {
+      "name": "LuckyFlush5",
+      "display_name": "Lucky Flush x5",
+      "file": "assets/icons/passes/LuckyFlush5_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "passes",
+      "offer_kind": "product",
+      "config_key": "Icons.LuckyFlush5",
+      "intended_assets_key": "Assets.Icons.LuckyFlush5",
+      "config_key_exists": false,
+      "transparent": true,
+      "catalog_status": "working-list; pending extended catalog"
+    },
+    {
+      "name": "LuckyFlush20",
+      "display_name": "Lucky Flush x20",
+      "file": "assets/icons/passes/LuckyFlush20_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "passes",
+      "offer_kind": "product",
+      "config_key": "Icons.LuckyFlush20",
+      "intended_assets_key": "Assets.Icons.LuckyFlush20",
+      "config_key_exists": false,
+      "transparent": true,
+      "catalog_status": "working-list; pending extended catalog"
+    },
+    {
+      "name": "LuckyFlush20",
+      "display_name": "Lucky Flush x20",
+      "file": "assets/icons/passes/LuckyFlush20_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "passes",
+      "offer_kind": "product",
+      "config_key": "Icons.LuckyFlush20",
+      "intended_assets_key": "Assets.Icons.LuckyFlush20",
+      "config_key_exists": false,
+      "transparent": true,
+      "catalog_status": "working-list; pending extended catalog"
+    },
+    {
+      "name": "PathBoost",
+      "display_name": "Path Boost: 10 Minutes",
+      "file": "assets/icons/passes/PathBoost_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "category": "passes",
+      "offer_kind": "product",
+      "config_key": "Icons.PathBoost",
+      "intended_assets_key": "Assets.Icons.PathBoost",
+      "config_key_exists": true,
+      "transparent": true,
+      "catalog_status": "catalog"
+    },
+    {
+      "name": "PathBoost",
+      "display_name": "Path Boost: 10 Minutes",
+      "file": "assets/icons/passes/PathBoost_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "category": "passes",
+      "offer_kind": "product",
+      "config_key": "Icons.PathBoost",
+      "intended_assets_key": "Assets.Icons.PathBoost",
+      "config_key_exists": true,
+      "transparent": true,
+      "catalog_status": "catalog"
     },
     {
       "name": "GameIcon",

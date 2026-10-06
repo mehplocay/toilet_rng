@@ -3,17 +3,20 @@ $ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName System.Drawing
 $iconRoot = Split-Path -Parent $PSScriptRoot
 $manifest = Get-Content -Raw (Join-Path $iconRoot 'assets/icons/manifest.json') | ConvertFrom-Json
-foreach ($category in @('items', 'toilets', 'ui', 'art', 'small')) {
-    $entries = if ($category -eq 'small') {
+foreach ($category in @('items', 'toilets', 'ui', 'art', 'small', 'passes', 'passes_small')) {
+    $entries = if ($category -eq 'passes_small') {
+        @($manifest.assets | Where-Object { $_.size[0] -eq 128 -and $_.category -eq 'passes' })
+    } elseif ($category -eq 'small') {
         @($manifest.assets | Where-Object { $_.size[0] -eq 128 -and $_.category -ne 'art' })
     } elseif ($category -eq 'art') {
         @($manifest.assets | Where-Object { $_.category -eq 'art' -and $_.size[0] -ne 128 -and $_.file -notlike '*Logo_1024*' })
     } else {
         @($manifest.assets | Where-Object { $_.category -eq $category -and $_.size[0] -eq 512 })
     }
-    $columns = if ($category -eq 'art') { 2 } elseif ($category -eq 'small') { 5 } else { 4 }
-    $cell = if ($category -eq 'art') { 640 } elseif ($category -eq 'small') { 256 } else { 320 }
-    $rowHeight = if ($category -eq 'art') { 410 } elseif ($category -eq 'small') { 183 } else { 225 }
+    $isSmall = $category -in @('small', 'passes_small')
+    $columns = if ($category -eq 'art') { 2 } elseif ($isSmall) { 5 } else { 4 }
+    $cell = if ($category -eq 'art') { 640 } elseif ($isSmall) { 256 } else { 320 }
+    $rowHeight = if ($category -eq 'art') { 410 } elseif ($isSmall) { 183 } else { 225 }
     $rows = [int][math]::Ceiling($entries.Count / $columns)
     $bitmap = New-Object System.Drawing.Bitmap ($columns * $cell), ($rows * $rowHeight + 70)
     $g = [System.Drawing.Graphics]::FromImage($bitmap)
@@ -47,7 +50,8 @@ foreach ($category in @('items', 'toilets', 'ui', 'art', 'small')) {
             $img.Dispose()
         }
         $labelY = if ($category -eq 'art') { $y+359 } else { $y+[int]($cell/2)+5 }
-        $g.DrawString($entry.name, $font, $ink, $x + 10, $labelY)
+        $label = if ($entry.display_name) { $entry.display_name } else { $entry.name }
+        $g.DrawString($label, $font, $ink, $x + 10, $labelY)
     }
     $sheet = Join-Path $iconRoot ("assets/icons/_sheet_{0}.png" -f $category)
     $bitmap.Save($sheet, [System.Drawing.Imaging.ImageFormat]::Png)
