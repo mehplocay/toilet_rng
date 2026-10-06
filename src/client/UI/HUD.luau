@@ -4,7 +4,6 @@ local UserInputService = game:GetService("UserInputService")
 local Shared = game.ReplicatedStorage.Shared
 local Monetization = require(Shared.Config.Monetization)
 local AutoConfig = require(Shared.Config.AutoFlush)
-local Toilets = require(Shared.Config.Toilets)
 local Rewards = require(Shared.Config.Rewards)
 local Schedule = require(Shared.RewardSchedule)
 local rebirth = require(Shared.RebirthRules).new(require(Shared.Config.Rebirth))
@@ -62,7 +61,7 @@ function HUD.Create(root, remotes, open, prompts)
 		coins.Text = C.Commas(number)
 	end)
 	local boost = C.New("Frame", gui, { Name = "Boosts", BackgroundTransparency = 1 })
-	local _, serverText = C.Chip(boost, "Luck x1", C.Navy, UDim2.new(0.5, -4, 1, 0))
+	local _, serverText = C.Chip(boost, "Luck +0%", C.Navy, UDim2.new(0.5, -4, 1, 0))
 	local _, personalText = C.Chip(boost, "Daily luck", C.Navy, UDim2.new(0.5, -4, 1, 0), UDim2.fromScale(0.5, 0))
 	serverText.TextColor3, personalText.TextColor3 = Color3.fromRGB(151, 255, 128), Color3.fromRGB(221, 173, 255)
 	local hint = C.New("CanvasGroup", gui, { Name = "CenterHint", BackgroundTransparency = 1, Visible = false })
@@ -135,8 +134,8 @@ function HUD.Create(root, remotes, open, prompts)
 	local idle = C.Button(
 		action,
 		"Still there? Tap to continue",
-		UDim2.new(1, 0, 0, 44),
-		UDim2.fromOffset(0, -50),
+		UDim2.new(1, -96, 1, 0),
+		UDim2.fromOffset(0, 0),
 		function()
 			remotes.PlayerActivity:FireServer()
 		end,
@@ -195,6 +194,7 @@ function HUD.Create(root, remotes, open, prompts)
 		local idleLeft = math.max(0, math.ceil((autoStatus.IdleRemaining or 0) - elapsed))
 		local paused = autoStatus.Paused == true
 		idle.Visible = autoEnabled and paused
+		flush.Visible = not idle.Visible
 		if autoUnlocked then
 			local uptime = math.floor((autoStatus.Uptime or 0) + (if autoEnabled and not paused then elapsed else 0))
 			auto.Text = "AUTO\n"
@@ -250,7 +250,9 @@ function HUD.Create(root, remotes, open, prompts)
 				math.max(0, math.ceil(serverExpiry - now)), math.max(0, math.ceil(personalExpiry - now))
 			serverText.Text = if serverLeft > 0
 				then "Server x2\n" .. timer(serverLeft)
-				else "Luck x" .. tostring(if state then Toilets[state.ToiletTier].Luck else 1)
+				else "Luck +" .. math.round(
+					((if state and state.UpgradeStats then state.UpgradeStats.LuckMultiplier else 1) - 1) * 100
+				) .. "%"
 			personalText.Text = if personalLeft > 0
 				then "Daily x2\n" .. timer(personalLeft)
 				else "Daily boost\nDay 7 reward"

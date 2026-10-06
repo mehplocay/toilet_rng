@@ -106,6 +106,73 @@ do
 		end
 		root:Destroy()
 	end)
+	check("merged HUD: capped luck and idle resume share safe action bounds on every supported viewport", function()
+		local root, remotes = H.Root(390, 722), H.Remotes()
+		local hud = H.Load("src/client/UI/HUD").Create(root, remotes, function() end, {
+			Near = function()
+				return true
+			end,
+		})
+		local state = {
+			Coins = 3000000,
+			ToiletTier = 7,
+			RebirthLevel = 0,
+			RunFlushes = 300,
+			LifetimeFlushes = 100,
+			AutoFlush = true,
+			AutoStatus = { Uptime = 1800, IdleRemaining = 0, Paused = true },
+			UpgradeStats = { LuckMultiplier = 10, LuckCapped = true },
+			LastClaimDay = 0,
+			Streak = 0,
+		}
+		hud.Update(state)
+		H.Advance(1.01)
+		H.StartTasks()
+		assert(contains(root.HUD.Boosts, "Luck +900%"), "Merged HUD lost capped luck")
+		local action = root.HUD.FlushActions
+		local resume, switch = action.IdleGuard, action.AutoFlushSwitch
+		local manual
+		for _, object in ipairs(action:GetChildren()) do
+			if object:IsA("TextButton") and object ~= resume and object ~= switch then
+				manual = object
+			end
+		end
+		for _, size in ipairs({
+			{ 375, 690 },
+			{ 711, 751 },
+			{ 360, 518 },
+			{ 390, 722 },
+			{ 640, 303 },
+			{ 711, 731 },
+			{ 724, 318 },
+			{ 768, 968 },
+			{ 1024, 712 },
+			{ 1116, 483 },
+			{ 1280, 684 },
+			{ 1920, 1044 },
+		}) do
+			root._fixed, root._abs = { X = size[1], Y = size[2] }, nil
+			root:GetPropertyChangedSignal("AbsoluteSize"):Fire()
+			H.Services.RunService.Heartbeat:Fire(0.1)
+			H.Layout(root)
+			assert(resume.Visible and switch.Visible and not manual.Visible)
+			assert(resume.AbsoluteSize.X >= 44 and resume.AbsoluteSize.Y >= 44)
+			assert(resume.AbsolutePosition.X >= action.AbsolutePosition.X)
+			assert(resume.AbsolutePosition.Y >= action.AbsolutePosition.Y)
+			assert(
+				resume.AbsolutePosition.Y + resume.AbsoluteSize.Y <= action.AbsolutePosition.Y + action.AbsoluteSize.Y
+			)
+			assert(resume.AbsolutePosition.X + resume.AbsoluteSize.X < switch.AbsolutePosition.X)
+			if not test then
+				H.Snapshot(root, "merged-idle-" .. size[1] .. "x" .. size[2])
+			end
+		end
+		state.AutoStatus.Paused = false
+		hud.Update(state)
+		H.Services.RunService.Heartbeat:Fire(0.1)
+		assert(not resume.Visible and manual.Visible and switch.Visible)
+		root:Destroy()
+	end)
 	check("activity UI: genuine input coalesces, idle/focus loss sends nothing, any input resumes", function()
 		local root = H.Root(390, 722)
 		local calls = 0

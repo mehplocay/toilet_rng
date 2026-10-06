@@ -108,7 +108,7 @@ test("merge economy: maximum paid offline ledger round-trips exact fractions and
 	local income = commerce.Income
 	assert(income.Upgrades:Cash(p) == 9)
 	assert(income.Upgrades:OfflineMinutes(p, income.Config.OfflineMinutes) == 1440)
-	assert(income:Rates(p)["1"] == 1200000 * 9 * 6000)
+	assert(income:Rates(p)["1"] == 1300000 * 9 * 6000)
 	p.Income.UpdatedAt = e.Now - 86400
 	income:Settle(p, e.Now, true)
 	assert(income:TotalUnits(p) == 9e15 and income:StorageUnits(p, false) == 9e15)
@@ -124,3 +124,63 @@ test("merge economy: maximum paid offline ledger round-trips exact fractions and
 	assert(income:Collect(restored) == 0, "Collection multiplied already boosted pending coins")
 	assert(e.Data:Get(joined) == restored)
 end)
+
+test(
+	"merge permanent/catalog: cash cap applies to maximum progression, sales, service, income and quoted receipts",
+	function()
+		local e, player, p, commerce, config = catalogPlayer(432)
+		e:Load("src/server/Services/MonetizationService").Cosmetics = nil
+		for i, key in ipairs({ "DoubleCash", "VIPPack", "OfflinePlus" }) do
+			config.Gamepasses[key].Id = 8500 + i
+		end
+		local u = commerce.Income.Upgrades
+		for _, paid in ipairs({ {}, { DoubleCash = true }, { VIPPack = true }, { DoubleCash = true, VIPPack = true } }) do
+			p.Monetization.Passes = paid
+			for level = 0, 100 do
+				for rebirth = 0, 15 do
+					p.Upgrades.CashBoost, p.RebirthLevel = level, rebirth
+					local bonus = e:Load("src/shared/Config/Rebirth").Levels[rebirth]
+					local base = 1
+						+ math.min(level, 10) * 0.1
+						+ math.max(0, level - 10) * 0.025
+						+ (if bonus then bonus.Cash else 0)
+					local expected =
+						math.min(10, base * (if paid.DoubleCash then 2 else 1) * (if paid.VIPPack then 1.25 else 1))
+					assert(math.abs(u:Cash(p) - expected) < 1e-12 and u:Cash(p) <= 10)
+				end
+			end
+		end
+		p.Monetization.Passes = { DoubleCash = true, VIPPack = true, OfflinePlus = true }
+		p.Upgrades.CashBoost, p.Upgrades.LuckBoost, p.Upgrades.OfflineTank = 100, 50, 100
+		p.ToiletTier, p.RebirthLevel = 7, 15
+		assert(u:Cash(p) == 10 and u:OfflineMinutes(p, 480) == 1440)
+		assert(math.abs(u:Luck(p, 1.3) - 5.07) < 1e-12, "Cash passes changed luck")
+		p.Inventory.Rat, p.Inventory.Mystery, p.Displays["1"] = 3, 1, "Mystery"
+		local items = e:Load("src/shared/Config/Items")
+		local rat
+		for _, item in ipairs(items) do
+			if item.Id == "Rat" then
+				rat = item
+			end
+		end
+		e:Fire("Sell", player, "Rat", 1)
+		assert(p.Coins == rat.Value * 10 and p.Inventory.Rat == 2)
+		local before = p.Coins
+		e:Fire("Flush", player)
+		assert(p.Coins == before + e:Load("src/shared/Config/Toilets")[7].ServiceCoins * 10)
+		assert(p.Stats.Flushes == 1)
+		p.Income.UpdatedAt = e.Now - 60
+		commerce.Income:Settle(p, e.Now, false)
+		assert(commerce.Income:PendingCoins(p) == 780000000)
+		before = p.Coins
+		e:Fire("CollectIncome", player)
+		assert(p.Coins == before + 780000000 and commerce.Income:TotalUnits(p) == 0)
+		p.Monetization.Quote = { Key = "Coins6Hours", Coins = 1000000000 }
+		before = p.Coins
+		assert(e.Marketplace.ProcessReceipt(receipt(player, "permanent-cap", 9003)) == "PurchaseGranted")
+		p = e.Data:Get(player)
+		assert(p.Coins == before + 1000000000, "Quoted receipt was multiplied again")
+		assert(e.Marketplace.ProcessReceipt(receipt(player, "permanent-cap", 9003)) == "PurchaseGranted")
+		assert(p.Coins == before + 1000000000)
+	end
+)

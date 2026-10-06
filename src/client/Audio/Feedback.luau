@@ -40,7 +40,7 @@ function Feedback.new(audio, upgrades, rewards, monetization)
 		then
 			audio:Play("UpgradeMax")
 		end
-		-- Rebirth prunes inventory, displays and upgrades; never call these sales/removals.
+		-- Rebirth clears loose inventory; never report the reset as a sale.
 		if (state.RebirthLevel or 0) ~= (before.RebirthLevel or 0) then
 			return
 		end
@@ -54,6 +54,7 @@ function Feedback.new(audio, upgrades, rewards, monetization)
 				upgraded = true
 				maxed = maxed
 					or level >= track.MaxLevel
+					or math.floor(level / 10) > math.floor(((before.Upgrades or {})[track.Id] or 0) / 10)
 					or (track.Id == "DisplaySlots" and state.DisplaySlots >= upgrades.DisplayCapacity)
 			end
 		end

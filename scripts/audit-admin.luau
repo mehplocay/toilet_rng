@@ -180,6 +180,51 @@ test("admin: mutations sanitize through the same profile schema and persist befo
 	)
 end)
 
+test("admin permanent: extended tracks, capped slots, items and coin-gated rebirth survive saves", function()
+	local e = adminFixture()
+	local owner = e:JoinAdmin()
+	local config = e:Load("src/shared/Config/Upgrades")
+	for _, track in ipairs(config.Tracks) do
+		e:Advance()
+		e:Command(owner, "Upgrade", { Track = track.Id, Level = track.MaxLevel })
+		local p = e.Data:Get(owner)
+		assert(e:Last().Success and p.Upgrades[track.Id] == track.MaxLevel and p.UpgradeVersion == 2)
+		assert(p.DisplaySlots <= 10)
+		local writes = e.Store.Writes
+		e:Advance()
+		e:Command(owner, "Upgrade", { Track = track.Id, Level = track.MaxLevel + 1 })
+		assert(e.Data:Get(owner) == p and e.Store.Writes == writes, "Out-of-range admin level changed progression")
+	end
+	for _, command in ipairs({
+		{ "Toilet", { Level = 7 } },
+		{ "Display", { ItemId = "Mystery", Slot = 10 } },
+		{ "Rebirth", { Level = 14 } },
+		{ "Flushes", { Amount = 300 } },
+	}) do
+		e:Advance()
+		e:Command(owner, command[1], command[2])
+		assert(e:Last().Success)
+	end
+	local p = e.Data:Get(owner)
+	local rules = e:Load("src/shared/RebirthRules").new(e:Load("src/shared/Config/Rebirth"))
+	assert(not rules:Eligible(p, 14), "Admin level assignment bypassed the coin gate")
+	p.Coins = rules.Config.Levels[15].RequiredCoins
+	local reset = assert(rules:Build(p, 14, e.Now))
+	assert(reset.ToiletTier == 7 and reset.DisplaySlots == 10 and reset.Displays["10"] == "Mystery")
+	assert(reset.Upgrades.CashBoost == 100 and reset.Upgrades.LuckBoost == 50 and reset.Upgrades.OfflineTank == 100)
+	assert(e.Data:ReplaceAndSave(owner, p, reset))
+	e.Data:Close(owner)
+	local joined = e:JoinAdmin()
+	local restored = e.Data:Get(joined)
+	assert(restored.RebirthLevel == 15 and restored.Coins == rules.Config.Levels[15].StarterCoins)
+	assert(restored.Upgrades.CashBoost == 100 and restored.DisplaySlots == 10 and restored.Displays["10"] == "Mystery")
+	-- Existing saved capacity above ten remains addressable after an admin edit.
+	restored.DisplaySlots = 100
+	e:Advance()
+	e:Command(joined, "Upgrade", { Track = "DisplaySlots", Level = 10 })
+	assert(e:Last().Success and e.Data:Get(joined).DisplaySlots == 100)
+end)
+
 test("admin: full display slots, pending caps and numeric ceilings reject atomically", function()
 	local e = adminFixture()
 	local owner, p = e:JoinAdmin()

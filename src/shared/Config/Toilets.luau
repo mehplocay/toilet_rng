@@ -31,7 +31,7 @@ return {
 	{
 		Id = "Diamond",
 		Name = "Diamond Toilet",
-		Price = 105000,
+		Price = 65000,
 		Cooldown = 1.15,
 		Luck = 1.15,
 		ServiceCoins = 100,
@@ -40,7 +40,7 @@ return {
 	{
 		Id = "Radioactive",
 		Name = "Radioactive Toilet",
-		Price = 1100000,
+		Price = 300000,
 		Cooldown = 1,
 		Luck = 1.2,
 		ServiceCoins = 1200,
@@ -49,7 +49,7 @@ return {
 	{
 		Id = "Demon",
 		Name = "Demon Toilet",
-		Price = 14000000,
+		Price = 2400000,
 		Cooldown = 0.9,
 		Luck = 1.25,
 		ServiceCoins = 2400,
@@ -58,7 +58,7 @@ return {
 	{
 		Id = "Galaxy",
 		Name = "Galaxy Toilet",
-		Price = 95000000,
+		Price = 16000000,
 		Cooldown = 0.8,
 		Luck = 1.3,
 		ServiceCoins = 4500,

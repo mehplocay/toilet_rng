@@ -31,6 +31,7 @@ function C.Run(population, uptime, rebirthRuns, slotLimit, stopAt)
 			Displays = {},
 			DisplaySlots = 3,
 			Upgrades = U:Sanitize(nil),
+			UpgradeVersion = U.Config.Version,
 			ToiletTier = 1,
 			Income = { UpdatedAt = 1000, Pending = {} },
 			IndexClaims = {},
@@ -72,12 +73,12 @@ function C.Run(population, uptime, rebirthRuns, slotLimit, stopAt)
 			local slots = math.min(slotLimit or 10, if p.ToiletTier >= 4 then 10 elseif p.ToiletTier == 1 then 3 else 5)
 			if p.DisplaySlots < slots then
 				U:Buy(p, "DisplaySlots", U:Level(p, "DisplaySlots"))
-				pendingPurchase = p.DisplaySlots < slots
+				pendingPurchase = p.ToiletTier < 4 and p.DisplaySlots < slots
 			end
 			for _, id in ipairs({ "FlushSpeed", "CashBoost", "LuckBoost" }) do
 				local level = U:Level(p, id)
-				if level < math.min(p.ToiletTier - 1, 4) and not U:Buy(p, id, level) then
-					pendingPurchase = true
+				if level < math.min(p.ToiletTier - 1, 4) then
+					U:Buy(p, id, level)
 				end
 			end
 			local nextTier = Toilets[p.ToiletTier + 1]

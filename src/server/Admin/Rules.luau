@@ -78,7 +78,7 @@ function Rules.new(config, items, toilets, upgrades, rebirth)
 		IncomeCap = {},
 		ClearCooldown = {},
 		Toilet = { Level = number(1, #toilets) },
-		Upgrade = { Track = enum(tracks), Level = number(0, 12) },
+		Upgrade = { Track = enum(tracks), Level = number(0, 100) },
 		Rebirth = { Level = number(0, #rebirth.Levels) },
 		Flushes = { Amount = number(0, config.MaxCounter) },
 		Teleport = {

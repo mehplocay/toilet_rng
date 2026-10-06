@@ -8,12 +8,12 @@ local Tracks = {}
 function Tracks.Create(body, remotes)
 	local row = C.Scroll(body, UDim2.new(1, 0, 1, -146), UDim2.fromOffset(0, 110))
 	row.Name, row.Visible = "PermanentUpgradeTracks", false
-	C.Grid(row, 210, 300, 3)
+	C.Grid(row, 210, 350, 3)
 	local latest, cards = nil, {}
 	local colors = { C.Gold, C.Purple, C.Green, C.Blue, C.Purple, C.Gold }
 	local descriptions = {
 		CashBoost = "Sales, service and display income. Whole coins round down.",
-		LuckBoost = "Multiplies tier and timed luck. Total luck stops at " .. Config.LuckCap .. "x.",
+		LuckBoost = "Cap: 10x total (+900%). Above 5x, extra luck is halved for rarer than 1 in 25K.",
 		FlushSpeed = "Shorter shared cooldown. Always at least " .. Config.CooldownFloor .. " seconds.",
 		AutoFlushSpeed = "Faster auto interval, never below your flush cooldown. Free at 100 flushes.",
 		DisplaySlots = "+1 display slot per purchase. Ten physical slots; index rewards kept.",
@@ -28,16 +28,28 @@ function Tracks.Create(body, remotes)
 		local effect = C.BodyText(card, "", UDim2.new(1, -20, 0, 40), UDim2.fromOffset(10, 96))
 		level.Name, effect.Name = "Level", "Effect"
 		C.BodyText(card, descriptions[track.Id], UDim2.new(1, -20, 0, 65), UDim2.fromOffset(10, 139))
-		local price = C.Text(card, "", UDim2.new(1, -20, 0, 30), UDim2.fromOffset(10, 207), 22)
+		local progress = C.ProgressBar(card, UDim2.new(1, -20, 0, 8), UDim2.fromOffset(10, 208), colors[order])
+		progress.Frame.Name = "Progress"
+		local milestone = C.BodyText(card, "", UDim2.new(1, -20, 0, 36), UDim2.fromOffset(10, 219))
+		milestone.Name = "Milestone"
+		local price = C.Text(card, "", UDim2.new(1, -20, 0, 30), UDim2.fromOffset(10, 258), 22)
 		price.TextColor3 = C.Gold
 		price.Name = "Price"
-		local button = C.Button(card, "Buy", UDim2.new(1, -20, 0, 44), UDim2.fromOffset(10, 246), function()
+		local button = C.Button(card, "Buy", UDim2.new(1, -20, 0, 44), UDim2.fromOffset(10, 300), function()
 			if latest then
 				remotes.BuyUpgrade:FireServer(track.Id, rules:Level(latest, track.Id))
 			end
 		end, C.Green)
 		button.Interactable = false
-		cards[track.Id] = { Level = level, Effect = effect, Price = price, Button = button }
+		cards[track.Id] = {
+			Frame = card,
+			Progress = progress,
+			Milestone = milestone,
+			Level = level,
+			Effect = effect,
+			Price = price,
+			Button = button,
+		}
 	end
 	if remotes.Result then
 		local toast = C.Toast(body.Parent.Parent.Parent)
@@ -50,25 +62,33 @@ function Tracks.Create(body, remotes)
 	return {
 		Frame = row,
 		Update = function(state)
+			local previous = latest
 			latest = state
 			local stats = state.UpgradeStats or {}
 			for _, track in ipairs(Config.Tracks) do
 				local card, level = cards[track.Id], rules:Level(state, track.Id)
 				local price = rules:Price(track.Id, level)
 				local full = track.Id == "DisplaySlots" and (state.DisplaySlots or 3) >= Config.DisplayCapacity
-				card.Level.Text = "LEVEL " .. level .. " / " .. track.MaxLevel
+				card.Level.Text = level .. " / " .. track.MaxLevel
+				card.Progress.Set(if full then 1 else level / track.MaxLevel)
+				local title, nextLevel = rules:Milestone(state, track.Id)
+				card.Milestone.Text = title .. (if nextLevel then " | Next title: " .. nextLevel else "")
+				if previous and level > rules:Level(previous, track.Id) then
+					C.Pop(card.Frame)
+				end
 				local effects = {
 					CashBoost = string.format("+%d%% coins", math.round((rules:Cash(state) - 1) * 100)),
 					LuckBoost = string.format(
-						"+%d%% luck%s",
-						math.round(level * track.Step * 100),
+						"Luck +%d%%%s",
+						math.round(((stats.LuckMultiplier or 1) - 1) * 100),
 						if stats.LuckCapped then " | " .. Config.LuckCap .. "x CAP REACHED" else ""
 					),
 					FlushSpeed = string.format("%.2fs current cooldown", stats.Cooldown or 1.5),
 					AutoFlushSpeed = string.format("%.2fs current auto interval", stats.AutoInterval or 3),
 					DisplaySlots = tostring(state.DisplaySlots or 3) .. " slots unlocked",
-					OfflineTank = tostring((stats.OfflineMinutes or Income.OfflineMinutes) / 60)
-						.. " hours offline cap",
+					OfflineTank = string
+						.format("%.1f", (stats.OfflineMinutes or Income.OfflineMinutes) / 60)
+						:gsub("%.0$", "") .. " hours offline cap",
 				}
 				card.Effect.Text = effects[track.Id]
 				card.Price.Text = if full then "PLOT FULL" elseif price then C.Commas(price) .. " Coins" else "MAX LEVEL"

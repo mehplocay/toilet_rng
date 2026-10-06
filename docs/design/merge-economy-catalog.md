@@ -1,3 +1,5 @@
+2026-10-06 follow-up: [Permanent economy](economy-v2.md) and [coin-gate rebirth](rebirth.md) supersede the reset/timing/upgrade limits in this historical merge report. Commerce receipt/pass preservation and paid caps remain unchanged.
+
 # Income-first, admin and path/catalog merge
 
 2026-10-06. Resolves the existing merge into main without committing or aborting it. This note supersedes conflicting historical branch-specific counts and tuning statements in the linked design notes.
@@ -8,11 +10,11 @@ Working files contain no conflict markers. Staging was attempted but Git could n
 
 All [income-first v2](economy-v2.md) item values, toilet/upgrade prices, rarity rates, abbreviations, 3,300-flush rebirth threshold and numeric bounds remain. Rebirth retains every occupied display at its original slot, including sparse coin-bought slots; it resets pending income and resumes at Basic rates with retained bonuses. Owner admin, rare reveal, audio and upgrade functionality remain registered and tested.
 
-Cash for service, sales and new passive income is `min(10, (1 + cashUpgradeBonus + rebirthBonus) * DoubleCash * VIP)`. Double Cash is 2 and VIP is 1.25 when verified, otherwise 1. Current maximum progression plus both passes is 9x; 10x is the configurable safety cap. Paid luck stays disabled. Collection and Auto Collect transfer already-boosted subcoins and never apply cash again. Product quotes and VIP chests already use boosted display rates, then clamp to 100..1B coins; wallet credit does not multiply them again.
+Cash for service, sales and new passive income is `min(10, (1 + cashUpgradeBonus + rebirthBonus) * DoubleCash * VIP)`. Double Cash is 2 and VIP is 1.25 when verified, otherwise 1. Permanent level-100 progression plus both passes reaches the 10x cash cap (5.85x without passes at R15). Paid luck stays disabled. Collection and Auto Collect transfer already-boosted subcoins and never apply cash again. Product quotes and VIP chests already use boosted display rates, then clamp to 100..1B coins; wallet credit does not multiply them again.
 
 Ordinary daily rewards deliberately retain Config/Rewards' separate tier schedule: Basic 25..250 coins, Galaxy 1,600..16,000 coins across seven days. Both passes give floored 2.5x amounts (Basic 62..625; Galaxy 4K..40K). Cash upgrades/rebirth do not multiply these daily rewards, nor do large display rates feed their calculation. This preserves both branches' tuning and keeps daily claims bounded at the new economy scale. Server and UI use the same schedule/factors. Rejected wallet/Earned overflow leaves the day, streak and luck expiry untouched.
 
-Wallet and Earned each remain at most 9e15 **coins**. The complete passive ledger remains at most 9e15 **subcoins**, or 1.5T coins, even with all passes/upgrades/rebirth. Offline Plus doubles the 8..12-hour allowance to 16..24 hours, but storage limits still apply. Maximum paid/offline saves preserve the final fractional subcoin and cannot credit it twice.
+Wallet and Earned each remain at most 9e15 **coins**. The complete passive ledger remains at most 9e15 **subcoins**, or 1.5T coins, even with all passes/upgrades/rebirth. Permanent Offline Tank extends the allowance from 8 to 24 hours. Offline Plus doubles the allowance up to the same 24-hour hard limit; offline accrual remains 50% and storage limits still apply. Maximum paid/offline saves preserve the final fractional subcoin and cannot credit it twice.
 
 ## Integration corrections
 

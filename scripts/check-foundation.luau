@@ -64,7 +64,7 @@ assert(broadcasts == 3 and #event.Pending == 0)
 assert(not event:Trigger(owner, Items[9], 2))
 local base = Roll.Distribution(Items, Toilets, 7, Toilets[7].Luck)
 local boosted = Roll.Distribution(Items, Toilets, 7, Toilets[7].Luck * event:Multiplier() * 2)
-assert(math.abs(boosted[1].Check - base[1].Check * 4) < 1e-12)
+assert(math.abs(boosted[1].Check - 5.1 / Items[11].Chance) < 1e-12)
 assert(Roll.Sample(boosted, function()
 	return 0.999999
 end).Id == "Poop")

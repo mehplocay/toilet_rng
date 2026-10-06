@@ -1,113 +1,79 @@
-# Economy v2: income first
+# Economy v2: permanent progression
 
-Current catalog/admin integration and verification: [merged behavior](merge-economy-catalog.md). All base tuning below remains; optional paid cash/offline factors are applied within the same wallet/subcoin bounds. Exact retained display slots change normal second-rebirth p50 to 50.70 minutes; paid-OFF timing targets still pass.
+2026-10-06, `feature/permanent`. This owner decision supersedes the old reset-to-Basic, ten-level tracks, 5x luck and 60/90-minute pacing in earlier audits and merge notes. No commit or push. [Research](../research/permanent-economy.md), [rebirth contract](rebirth.md), [upgrades](upgrades.md), [full measured output](economy-v2-balance.txt), [odds output](permanent-odds.txt).
 
-2026-10-06; feature/income-first; no commit or push. Supersedes historical active-only stage medians and passive/active ceilings in passive-income, display-collect, upgrades and rebirth design notes. Existing RNG, protection, remote and persistence contracts stay in force. [API/numeric research](../research/income-first-economy.md).
+## Permanent progression and rates
 
-## Intended loop
+Rebirth preserves toilet tier, every upgrade level, all display capacity/placements, lifetime index, passes, cosmetics and settings. It clears the wallet to a configured starter grant, **all non-displayed inventory** (including first/protected loose copies), uncollected pending coins and the run flush counter. Settle the old pending ledger before the complete replacement; settlement does not collect it or count toward the coin gate. Only displayed quantities survive, with their existing protection. Lifetime discovery is never spendable inventory.
 
-Flush to find better units; display the best owned copies; collect meaningful income; buy toilets to multiply every display. Flushes still award guaranteed service coins and sellable surplus copies. No empty drops, new rarity odds, paid power or new item catalog.
+Base rarity income remains Common 1, Uncommon 3, Rare 10, Epic 40, Legendary 200, Mythic 1K, Godly 6K, Secret 100K coins/second. Multiply by toilet factor and bounded cash. King Poop remains Mythic. Sales and service use per-copy/per-award integer rounding; collection never multiplies already-earned coins again.
 
-Targets are cumulative wall-clock minutes from a fresh account. Galaxy timing defers rebirth; first-rebirth timing uses a separate cohort that resets as soon as eligible. Treating Galaxy 90 and rebirth 60 as milestones on one uninterrupted run would be contradictory.
-
-## Per-item income
-
-Coins per second before Cash Boost and rebirth. All values live in Config/Income.
-
-| Rarity | Basic x1 | Dirty x1.5 | Golden x2.2 | Diamond x3.3 | Radioactive x5 | Demon x8 | Galaxy x12 |
-|---|---:|---:|---:|---:|---:|---:|---:|
-| Common | 1 | 1.5 | 2.2 | 3.3 | 5 | 8 | 12 |
-| Uncommon | 3 | 4.5 | 6.6 | 9.9 | 15 | 24 | 36 |
-| Rare | 10 | 15 | 22 | 33 | 50 | 80 | 120 |
-| Epic | 40 | 60 | 88 | 132 | 200 | 320 | 480 |
-| Legendary | 200 | 300 | 440 | 660 | 1K | 1.6K | 2.4K |
-| Mythic | 1K | 1.5K | 2.2K | 3.3K | 5K | 8K | 12K |
-| Godly | 6K | 9K | 13.2K | 19.8K | 30K | 48K | 72K |
-| Secret | 100K | 150K | 220K | 330K | 500K | 800K | 1.2M |
-
-Multiply by 1 + 0.1 * CashBoostLevel + rebirthCashBonus, capped by the existing maximum 3.6x. Example: a Diamond Common at Cash L1 and rebirth 1 earns exactly $4.455/s (26,730 subcoins/s); its two-decimal nametag conservatively shows $4.45/s. Storage/collection retain the fraction.
-
-King Poop remains Mythic, so its display earns less than Godly Sewer Shark. It retains its event prestige and higher sale value. Sell-value ordering is not an income ordering.
-
-## Prices and direct income
-
-| Toilet | Purchase price | Guaranteed coins/flush |
-|---|---:|---:|
-| Basic | Owned | 40 |
-| Dirty | 6.5K | 60 |
-| Golden | 14K | 80 |
-| Diamond | 105K | 100 |
-| Radioactive | 1.1M | 1.2K |
-| Demon | 14M | 2.4K |
-| Galaxy | 95M | 4.5K |
-
-Sale values: Poop 80; Toilet Paper 280; Rat 1K; Fish 2.48K; Duck 8K; Golden Poop 30K; Toilet Baby 150K; Sewer Shark 800K; King Poop 5M; Alien Toilet 40M; Mystery 500M. These are 40x the preceding values, with odds unchanged. Larger late-tier service awards keep active coins meaningful alongside valuable displays. Service/sales round per award/copy; sale batches cannot improve rounding.
-
-Upgrade price at current level L is ceil(BaseCost * Growth^L). Effects and level caps remain as before.
-
-| Track | First cost | Growth | Levels | Last cost |
+| Toilet | Price | Display factor | Service coins/flush | Normal p50 / p90 minutes |
 |---|---:|---:|---:|---:|
-| Cash Boost | 400 | 5 | 10 | 781.25M |
-| Luck Boost | 600 | 5 | 10 | 1.171875B |
-| Flush Speed | 400 | 5 | 10 | 781.25M |
-| Auto-Flush Speed | 800 | 5 | 10 | 1.5625B |
-| Display Slots | 600 | 2 | 7 | 38.4K |
-| Offline Tank | 1K | 5 | 10 | 1.953125B |
+| Basic | Owned | 1 | 40 | 0 |
+| Dirty | 6.5K | 1.5 | 60 | 1.50 / 1.57 |
+| Golden | 14K | 2.2 | 80 | 3.10 / 3.52 |
+| Diamond | 65K | 3.3 | 100 | 6.37 / 7.16 |
+| Radioactive | 300K | 5.25 | 1.2K | 12.36 / 14.63 |
+| Demon | 2.4M | 8.5 | 2.4K | 20.60 / 25.23 |
+| Galaxy | 16M | 13 | 4.5K | 36.43 / 47.26 |
 
-Rebirth requires Diamond and 3,300 NEW successful flushes (previously 3,600), with no monetary fee. Starter grants remain 2,500 + 250 per subsequent rebirth; count thresholds are tuned for timing rather than inflated to currency scale. Permanent bonuses, fifteen-level cap, retained protected copies, run-track reset and pending-income reset remain unchanged. This preserves the existing no-fee design instead of adding an unrequested coin gate. Even with unlimited coins, the 0.4s floor requires 22 minutes of fresh flushes.
+These cumulative tier timings defer rebirth. The separate continuous rebirth cohort resets as soon as eligible, so buying Galaxy can occur later. Prices, income factors and rate caps are in Config/Toilets and Config/Income. Existing sale values stay unchanged.
 
-## Reproducible cohort
+Cash is `min(10, (1 + trackEffect + rebirthBonus) * DoubleCash * VIP)`. The first ten Cash levels keep +10% each; levels 11-100 add +2.5% each. Maximum unpaid cash is 5.85x, paid cash remains capped at 10x. Daily rewards retain their separate schedule and paid factors. No paid luck is introduced.
 
-Run luau scripts/balance.luau. [Checked output](economy-v2-balance.txt). Two hundred independently seeded accounts per archetype, production distribution/service/sale/upgrade/accrual/reset math. Cash is never granted by the simulator outside the normal service/sale/collect/reset paths. Stable item order and explicit seed replay are checked.
+Offline Tank retains +24 minutes for each legacy level 1-10, then +8 minutes/level through 100: 8 hours base, 12 at L10, 24 at L100; Offline Plus doubles these. Storage can fill earlier. Base storage is 37.44B coins/slot and 374.4B/player, scaled by cash and tank; the entire ledger still caps at **9e15 subcoins = 1.5T coins**. The saved scale remains 6,000 units/coin. Wallet/Earned remain <=9e15 coins. Fraction retention, bounded products, old-rate settlement and timestamp high-water rules are unchanged.
 
-Start with zero coins/items and three slots. Display best owned copies, preserving first/displayed/protected reservations; sell only surplus. Buy Dirty first, then five slots. Purchase ten slots at Diamond. Buy one Cash/Luck/Flush Speed level per attained tier starting at Dirty, stopping at L4, before the next toilet. All purchases debit real costs. No free ten-slot showcase, starting offline bank, daily/index/tutorial rewards, paid passes or temporary event boosts. Rare event items may drop; their temporary server luck effects are excluded so external server activity cannot change this experiment.
+## Purchase curves and measured upgrade pace
 
-Casual flush uptime is 30%, normal 75%, grinder 100%. Passive runs through the entire online session; collect every 120/30/15 seconds. This averages interruptions into flush intervals, and assumes the player can visit the jar on that cadence. It does not model physical walking, latency, long disconnected periods, or players who forget displays/collection. The steady-state table is a separate upper-showcase comparison using floored expected copies after 60 minutes at a fixed tier; it is NOT the progression cohort.
+Config/Upgrades gives each track strictly increasing piecewise exponential cost anchors. For purchase number n between anchors (a,A) and (b,B), cost is `ceil(A * (B/A)^((n-a)/(b-a)))`. Endpoints are included, server-authoritative and validated under the integer ceiling. Every ten levels unlocks a named title; maximum unlocks Master. Titles add no hidden economic multiplier.
 
-### Cumulative time to tier (p50 / p90 minutes)
+| Track | Cap | First / last price | Normal milestone p50 hours |
+|---|---:|---:|---|
+| Cash Boost | 100 | 400 / 20B | L35 1.93; L60 9.89; L85 23.45; L100 36.59 |
+| Offline Tank | 100 | 1K / 20B | L35 1.99; L60 10.05; L85 23.79; L100 36.90 |
+| Luck | 50 | 600 / 3.5B | L18 0.80; L30 2.81; L43 9.72; L50 17.60 |
+| Flush Speed | 10 | 400 / 140M | L7 0.87; L10 2.38 |
+| Auto-Flush Speed | 10 | 800 / 140M | L7 0.99; L10 2.43 |
+| Display Slots | 10 configured | 600 / 300M theoretical | Seven purchases fill the starting three-slot plot: 1.84h |
 
-| Milestone | Normal target | Casual | Normal | Grinder |
-|---|---:|---:|---:|---:|
-| Dirty | 1-1.5 | 3.42 / 4.00 | 1.50 / 1.57 | 1.10 / 1.23 |
-| Golden | 3 | 6.14 / 8.14 | 3.10 / 3.52 | 2.48 / 2.78 |
-| Diamond | 8 | 14.32 / 16.27 | 7.84 / 9.17 | 6.39 / 7.27 |
-| Radioactive | 20 | 34.38 / 44.32 | 20.17 / 25.45 | 16.89 / 21.24 |
-| Demon | 45 | 74.97 / 98.98 | 45.46 / 57.84 | 38.45 / 49.33 |
-| Galaxy (rebirth deferred) | 90 | 146.22 / 198.95 | 89.37 / 111.43 | 76.21 / 96.76 |
-| First rebirth | ~60 | 146.91 / 151.18 | 61.94 / 63.88 | 47.23 / 48.86 |
-| Second rebirth (duration of second run) | Faster | 119.31 / 125.07 | 50.76 / 53.21 | 39.18 / 40.35 |
+Display purchases stop at physical capacity ten. Levels 8-10 are not sold to an already-full plot; no useless slot or currency refund is minted. The full plot receives its Master title and completed bar at that effective cap. Index/paid slots can make capacity arrive earlier. This is the explicit bounded-capacity exception to the ten-level presentation. Legacy capacities up to 100 remain intact.
 
-Normal second rebirth is 18.1% faster. Normal tier median assertions allow 1-1.5 minutes for Dirty and +/-20% for later approximate targets; first rebirth allows 54-66 minutes. All archetypes must improve second rebirth by >8%, without becoming instant. These ranges replace obsolete active-only stage assertions explicitly; the old 40%-of-active passive ceiling directly conflicts with income first.
+At the very start, the first five Cash levels are affordable within four active minutes **from service coins alone**, with no sales or displays. The main cohort instead prioritizes toilets and reaches L10 around 44 minutes; it does not pretend every player immediately purchases the cheapest possible level. The complete tables contain every requested checkpoint for all three archetypes, including p90 tails. Cash L100 p90 is 57.53h, so these are typical timing targets rather than hard completion deadlines.
 
-### Passive share of total earnings
-
-Share means passive / (passive + service + actual protected-safe sales), including pending accrued income, not passive divided by active. Acquisition and purchases are modeled; spending does not reduce earned-income totals.
-
-| Scenario | Casual | Normal | Grinder |
+| Milestone (p50 hours) | Casual | Normal | Grinder |
 |---|---:|---:|---:|
-| First ten minutes, natural slot policy | 59.74% | 57.85% | 59.65% |
-| Ten minutes following Diamond purchase | 86.28% | 80.38% | 77.02% |
+| Cash L35 / L60 / L85 / L100 | 3.43 / 14.57 / 30.53 / 58.80 | 1.93 / 9.89 / 23.45 / 36.59 | 1.68 / 8.74 / 20.27 / 31.49 |
+| Tank L35 / L60 / L85 / L100 | 3.57 / 14.87 / 30.87 / 60.07 | 1.99 / 10.05 / 23.79 / 36.90 | 1.75 / 8.90 / 20.41 / 31.92 |
+| Luck L50 | 23.97 | 17.60 | 16.15 |
+| Flush / Auto max | 3.83 / 3.90 | 2.38 / 2.43 | 2.05 / 2.08 |
+| Full ten-slot plot | 3.20 | 1.84 | 1.60 |
+| Rebirth 1 | 0.70 | 0.40 | 0.33 |
+| Rebirth 5 | 3.30 | 2.03 | 1.77 |
+| Rebirth 15 | 140.00 | 95.67 | 84.62 |
 
-Separate normal cohort restricted to FIVE purchased slots: **53.62%** passive in the first ten minutes (asserted 40-60%). Normal Diamond window is asserted 70-90%. Ten-slot steady-state showcases are 89.97% at Diamond, 87.01% Radioactive, 85.56% Demon and 82.95% Galaxy, including identical cash/luck/speed state for active comparison. Late rewards therefore remain meaningful without overtaking typical display income. Jackpot-heavy plots may exceed 90%; that is intentional, not an absolute passive ceiling.
+## Reproducibility and limitations
 
-## Caps, persistence and UI
+`luau scripts/balance.luau` uses 200 independently seeded short accounts per archetype for toilet timings; the long cohort uses 64 per archetype through 300 online hours, or all upgrades/R15 completed. Unfinished accounts are explicitly censored as infinity, never excluded from percentiles. Normal checks enforce tier targets within 20%, R1 20-25 minutes, R5 2-3h, R15 80-150h; long tracks enforce the milestone bands (L35 and full plot allow approximately 2h via a 1.8h lower tolerance).
 
-[Passive accounting contract](passive-income.md). Base offline allowance is eight hours; Offline Tank adds 24 minutes/level up to twelve hours. UI reports the current hour cap and that storage limits apply. Pending base storage is 34.56B/slot and 345.6B/player, scaled by cash and tank, with a hard total of 9e15 subcoins (1.5T coins). Rate caps accommodate one Secret per slot and ten per player at every tier; legacy 100-slot plots share the player cap. Wallet and Earned remain 9e15 coins.
+Casual/normal/grinder use 30%/75%/100% manual cooldown uptime, collect every 120/30/15 seconds, and earn passive income throughout online time. Buy Dirty first, five slots, then affordable slots and one Cash/Luck/Speed per tier through L4, while buying each next toilet. After Galaxy, buy the cheapest available track only when its price is <=25% of the wallet, keeping the rest toward rebirth. Best owned displays are reserved and only legitimate surplus is sold. All spending, permanent effects, rebirth losses and starter grants are included. No initial inventory, free showcase slots, index/daily rewards, paid modifiers, temporary server luck or offline windfalls.
 
-Fixed 6,000-subcoin units, integer sums, high-water timestamps, division correction, bounded multiplication and retained collection fractions prevent tiny earnings from disappearing in large balances. Collect ownership/distance/life/lease validation, durable-save budgets, immutable retry snapshots and replay-safe updates are retained. RNG remains server-owned with exactly one item, 5x luck ceiling and unchanged rare event probabilities.
+Long-horizon rolls sample the exact equivalent rare-first probability distribution, in 2-second batches during hour one and 30-second batches later. Income settles at the previous display/rate before mutations; new finds enter the following interval. Purchase/cooldown decisions have at most one batch of timing discretization. This avoids hundreds of millions of profile rebuilds, but is not an engine scheduling benchmark. The per-flush short cohort independently exercises production grants and settlement. Both replay seeds deterministically.
 
-One shared formatter supports K/M/B/T/Qa/Qi throughout economy UI. The wallet cannot reach Qi under its safe ceiling. Toilet cards now disclose their display-income multiplier. Existing assets and map geometry are unchanged.
+Normal passive share is 60.95% over the first ten minutes and 62.04% over the ten minutes following Diamond. Earlier 40-60%/70-90% assertions are superseded: faster tier changes and optional slots shift the measurement window. Displays still lead midgame income; steady ten-slot showcases range 84-90% at Diamond and above. Rare jackpots broaden both tails.
 
-## Risks, limits and rollout
+These estimates assume continuously online play, efficient display/sale choices and regular collection. Auto-only play, travel, latency, missed collections, passes and actual time away change outcomes. Old saved inventories and offline tanks can skip early coin gates; the fresh-flush minimum remains. There is no economy compensation or wallet wipe.
 
-- Inflation is intentional: old inventories have far larger resale/display value. Eight-hour offline payouts can skip coin gates; existing players will not follow fresh-account timings. New rates apply to the whole capped absence when v2 first settles it. No compensation or wallet wipe is applied.
-- Rare drops drive a broad tail: normal Galaxy p90 is 111.43 minutes; casual p90 is 198.95. Normal means manual 75% uptime, not slow unupgraded auto-only play. Display choice, optional upgrades and missed collection materially change these estimates.
-- Rebirth remains flush-count limited for many players, particularly casuals. Strong retained displays and offline balances speed purchases but cannot bypass fresh flushes. At fully upgraded cash/tank, ten Galaxy Secrets hit the 1.5T global tank cap before twelve hours. Future currencies/prices beyond 9Qa require a different numeric representation.
-- Retire older servers before rollout: their smaller ledger caps would truncate v2 balances. Persisted units/schema are unchanged, but rolling back to old economy code is not financially safe. Existing session locks do not solve mixed-version sanitizer incompatibility.
-- Headless tests do not establish real Roblox DataStore availability, outage durability, device text rendering or actual walking cadence. Published multiplayer/device QA remains necessary before release. Selene 0.31.0 cannot run with the missing roblox standard library; no lint-pass claim is made.
+## Luck and migration
 
-## Verification and files
+Total luck is capped at 10x. The UI says `Luck +N%`, so 10x is +900% (1000% total). The first 5x applies fully; for base odds strictly rarer than 1/25,000, additional luck is halved: `min(luck,5) + max(0,luck-5)/2`. Sewer Shark at exactly 1/25K uses full luck. Maximum untimed Galaxy luck is 5.07x (+407%); late-game 4-6x total is typical. Daily/server boosts can reach the cap, paid luck cannot.
 
-Config: Income, Items, Toilets, Upgrades, Rebirth. Accounting: IncomeAccrual, SafeInventory, IncomeService, RewardService. Formatting: NumberFormat, Components/PresentationRules and world income/board/stairs labels; toilet and Offline Tank cards. Evidence: economy-cohort, balance/income-balance, check-economy-v2, audit-economy-v2, ui-economy-v2, existing upgraded fixtures, this document and research notes.
+`simulate.luau` prints each item's effective sequential odds and checks one million independent rolls at each of 1x, 5x and 10x. Expected first Secret at one flush/second: 252.53h / 50.51h / 33.67h. At 10x, total event probability is 0.000083249 per roll: about 8.99 arrivals/hour at the worst 12-player, 0.4s floor, far below one broadcast per 8 seconds. Existing bounded queue, deduplication and announcement limits are unchanged. Every accepted roll returns an item. At 10x Toilet Paper's check reaches certainty if all rarer checks fail, so Poop has zero effective probability, while remaining the structural fallback.
 
-All standalone check-*.luau run directly; audit/UI runtime files run through their PS1 bundlers. Extended check-audit.ps1 has 98 passing scenarios including billion-coin ambiguous saves/rejoins and exact last-subcoin handling. check-ui.ps1 covers actual wallet/pending/popup/shop/upgrade/rebirth/player-list text plus 972 safe-area layouts. check-world.ps1 covers all six template modes; check-visuals.ps1 verifies real builders. Passed: all 19 standalone check scripts, the 98-scenario audit, UI suite, check-visuals.ps1, all six check-world.ps1 modes, scripts/simulate.luau (including five million 5x-luck rolls), deterministic balance targets, stylua --check --line-endings Windows src scripts, rojo build -o build.rbxl, and git diff --check. Reviewed headless phone previews: [rebirth with large balances](economy-v2-previews/income-first-rebirth-phone.png), [upgrade prices](economy-v2-previews/income-first-upgrades-phone.png). These approximate the UI tree and do not replace live-device QA.
+`UpgradeVersion=2` preserves saved valid old levels and their first-ten-level effects; legacy over-cap values clamp to the old maxima before adopting the new schema. New profiles and repeated saves preserve new maxima without multiplying slots or refunding coins. Nonfinite, negative and fractional upgrade levels are rejected. Retire older server binaries before rollout: their sanitizers cannot preserve these extended levels or larger pending capacity. No mixed-version downgrade guarantee.
+
+Verification includes the extended audit harness, all standalone checks, UI/runtime and 972 layout cases, visuals, all six world modes, odds, balance, StyLua and Rojo. Native touch/gamepad rendering, device performance, live DataStore outages/lease timing and paid receipts still require isolated Studio/published-server QA. Existing crash/ambiguous-save durability limits remain; no exactly-once outage guarantee is claimed.
+
+Final verification: 21 standalone checks, 148 audit scenarios, UI plus 972 layout cases, visual checks and all six world modes passed. Balance, three-million-roll odds, StyLua and `rojo build -o build.rbxl` passed. Selene was attempted but could not load its configured `roblox` standard library; no Selene pass is claimed. Representative [upgrade phone](permanent-previews/upgrades-phone.png), [rebirth overview](permanent-previews/rebirth-desktop.png) and [rebirth phone review](permanent-previews/rebirth-phone.png) images are headless approximations, not Studio screenshots.
+
+Runtime files: Config/Upgrades, Config/Rebirth, Config/Toilets, Config/Income; UpgradeRules/RebirthRules; DataService schema marker and RollService rare odds; HUD/UpgradeTracks/Upgrades/Rebirth UI, Audio/Feedback, and the existing RebirthStairs labels. The admin validator only expands its numeric envelope to the new configured track maxima. New audit-permanent and permanent-cohort modules extend the existing harness; affected old tests now assert the permanent contract rather than historical reset behavior. Studio MCP was checked and returned `studios: []`; no native engine test is claimed.

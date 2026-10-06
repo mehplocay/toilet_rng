@@ -1,7 +1,6 @@
 local C = require(script.Parent.Components)
 local Shared = game.ReplicatedStorage.Shared
 local Config = require(Shared.Config.Rebirth)
-local Toilets = require(Shared.Config.Toilets)
 local rules = require(Shared.RebirthRules).new(Config)
 local Input = game:GetService("UserInputService")
 local Run = game:GetService("RunService")
@@ -17,6 +16,7 @@ function Rebirth.Create(root, remotes)
 	local flushLabel = C.BodyText(body, "", UDim2.new(1, -8, 0, 28), UDim2.fromOffset(4, 116))
 	local flushBar = C.ProgressBar(body, UDim2.new(1, -8, 0, 12), UDim2.fromOffset(4, 148), C.Purple)
 	local tierLabel = C.BodyText(body, "", UDim2.new(1, -8, 0, 28), UDim2.fromOffset(4, 172))
+	tierLabel.Name = "CoinGate"
 	local tierBar = C.ProgressBar(body, UDim2.new(1, -8, 0, 12), UDim2.fromOffset(4, 204), C.Blue)
 	for i, definition in ipairs({ { "RESETS", Config.ResetList, C.Gold }, { "KEEPS", Config.KeepList, C.Green } }) do
 		local card = C.Card(body, definition[3])
@@ -72,8 +72,10 @@ function Rebirth.Create(root, remotes)
 			.. C.Commas(Config.RequiredFlushes)
 			.. " flushes this run"
 		flushBar.Set((state.RunFlushes or 0) / Config.RequiredFlushes)
-		tierLabel.Text = Toilets[state.ToiletTier].Name .. " / " .. Toilets[Config.RequiredTier].Name .. " required"
-		tierBar.Set(state.ToiletTier / Config.RequiredTier)
+		tierLabel.Text = if nextBonus
+			then C.Commas(state.Coins) .. " / " .. C.Commas(nextBonus.RequiredCoins) .. " Coins required"
+			else "All coin gates complete"
+		tierBar.Set(if nextBonus then state.Coins / nextBonus.RequiredCoins else 1)
 		preview.Text = if nextBonus
 			then string.format(
 				"NEXT: +%d%% cash / +%d%% luck / +%d%% speed\nStarter: %s Coins. Global luck cap and speed floor apply.",
@@ -88,7 +90,7 @@ function Rebirth.Create(root, remotes)
 			else "YOUR COSMETIC PERKS\n" .. table.concat(bonus.Perks, " / ")
 		warning.Text = if nextBonus
 			then string.format(
-				"%s wallet Coins + %s pending Coins reset.\nItems on your display keep their slots and earn again. Kept copies stay unsellable.",
+				"%s wallet Coins + %s pending Coins reset.\nLoose items reset. Toilets, upgrades and displays stay.",
 				C.Commas(state.Coins),
 				C.Commas(state.PendingCoins or 0)
 			)

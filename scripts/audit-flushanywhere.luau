@@ -197,7 +197,7 @@ end)
 test("offline: all tank levels and optional Plus use half rates with a 24-hour hard cap", function()
 	local e = server()
 	local income = accounting(e)
-	for level = 0, 10 do
+	for level = 0, 100 do
 		for _, plus in ipairs({ false, true }) do
 			local p = e.Data.DefaultProfile()
 			p.Upgrades.OfflineTank = level
@@ -205,7 +205,9 @@ test("offline: all tank levels and optional Plus use half rates with a 24-hour h
 			p.Displays["1"], p.Inventory.Poop = "Poop", 1
 			p.Income.UpdatedAt = 1000
 			income:Settle(p, 1000 + 3 * 86400, true)
-			local seconds = (480 + level * 24) * (if plus then 2 else 1) * 60
+			local minutes = 480 + math.min(level, 10) * 24 + math.max(0, level - 10) * 8
+			local seconds = math.min(1440, minutes * (if plus then 2 else 1)) * 60
+			assert(income.Upgrades:OfflineMinutes(p, 480) == seconds / 60, "Snapshot overstates the offline allowance")
 			assert(income:TotalUnits(p) == seconds * 3000)
 			local report = income:OfflineSnapshot(p)
 			assert(report.Coins == seconds / 2 and report.FullSeconds == 3 * 86400 - seconds)

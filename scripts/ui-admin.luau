@@ -32,7 +32,7 @@ do
 	window.Send("Give", { ItemId = "Poop", Count = 0 })
 	window.Send("Give", { ItemId = "Poop", Count = 10001 })
 	window.Send("SetCoins", { Amount = math.huge })
-	window.Send("Upgrade", { Track = "CashBoost", Level = 11 })
+	window.Send("Upgrade", { Track = "CashBoost", Level = 101 })
 	assert(#remote.Calls == initialCalls, "Invalid numeric fields must not lock the UI waiting for a dropped request")
 	H.Services.UserInputService.InputBegan:Fire({ KeyCode = Enum.KeyCode.F2 }, true)
 	assert(window.Panel.Visible, "Processed F2 must not toggle the panel while typing")
@@ -66,6 +66,28 @@ do
 	window.Pages.Items:FindFirstChild("Spawn into inventory", true).Activated:Fire()
 	assert(#remote.Calls == before, "Pending clicks must not replay a grant")
 	remote.OnClientEvent:Fire(request[1], { Success = true, Message = "Saved" })
+	window.Select("Economy")
+	local economy = window.Pages.Economy
+	local levelBox = economy:FindFirstChild("Track / rebirth level", true)
+	local picker = economy:FindFirstChild("Upgrade track: CashBoost", true)
+	for _, track in ipairs(H.Load("src/shared/Config/Upgrades").Tracks) do
+		levelBox.Text = tostring(track.MaxLevel)
+		economy:FindFirstChild("Set selected upgrade level", true).Activated:Fire()
+		request = remote.Calls[#remote.Calls]
+		assert(request[2] == "Upgrade" and request[3].Track == track.Id and request[3].Level == track.MaxLevel)
+		remote.OnClientEvent:Fire(request[1], { Success = true, Message = "Saved" })
+		before = #remote.Calls
+		levelBox.Text = tostring(track.MaxLevel + 1)
+		economy:FindFirstChild("Set selected upgrade level", true).Activated:Fire()
+		assert(#remote.Calls == before, "Admin accepted an out-of-range track level")
+		picker.Activated:Fire()
+	end
+	levelBox.Text = "15"
+	economy:FindFirstChild("Set rebirth level (no rebirth reset)", true).Activated:Fire()
+	request = remote.Calls[#remote.Calls]
+	assert(request[2] == "Rebirth" and request[3].Level == 15)
+	remote.OnClientEvent:Fire(request[1], { Success = true, Message = "Saved" })
+	before = #remote.Calls
 	window.Select("Player")
 	window.Pages.Player:FindFirstChild("Confirm reset + create backup", true).Activated:Fire()
 	assert(#remote.Calls == before, "Reset must have a challenge and explicit text")

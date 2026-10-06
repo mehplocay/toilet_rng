@@ -53,12 +53,12 @@ test("economy v2: eight-hour Secret offline award consumes elapsed time once", f
 	e.Data:Close(player)
 	e.Now += 86400 * 30
 	local joined, restored = e:Join(812)
-	assert(restored.Income.Pending["1"] == 17280000000 * 6000)
+	assert(restored.Income.Pending["1"] == 18720000000 * 6000)
 	e:Fire("CollectIncome", joined)
-	assert(restored.Coins == 17280000000)
+	assert(restored.Coins == 18720000000)
 	e.Data:Close(joined)
 	local _, again = e:Join(812)
-	assert(again.Coins == 17280000000 and next(again.Income.Pending) == nil)
+	assert(again.Coins == 18720000000 and next(again.Income.Pending) == nil)
 end)
 
 test("economy v2: cash, toilet and rebirth multipliers settle only future seconds", function()

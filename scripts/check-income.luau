@@ -53,13 +53,13 @@ local rates, rate = Income:Rates(p), 0
 for _, value in pairs(rates) do
 	rate += value
 end
-assert(rate == 720000000 * Config.UnitsPerCoin / 60, "Player rate cap missing")
+assert(rate == 780000000 * Config.UnitsPerCoin / 60, "Player rate cap missing")
 local single = profile(7, 1, "Mystery")
-assert(Income:Rates(single)["1"] == 72000000 * Config.UnitsPerCoin / 60, "Slot rate cap missing")
+assert(Income:Rates(single)["1"] == 78000000 * Config.UnitsPerCoin / 60, "Slot rate cap missing")
 Income:Settle(p, 1000 + 86400 * 30, true)
-assert(Income:PendingCoins(p) == 720000000 * 480 * 0.5, "Offline interval not capped to 480 minutes")
+assert(Income:PendingCoins(p) == 780000000 * 480 * 0.5, "Offline interval not capped to 480 minutes")
 Income:Settle(p, p.Income.UpdatedAt, true)
-assert(Income:PendingCoins(p) == 720000000 * 480 * 0.5, "Same timestamp replayed offline award")
+assert(Income:PendingCoins(p) == 780000000 * 480 * 0.5, "Same timestamp replayed offline award")
 Income:Settle(single, 1000 + 86400 * 30, false)
 assert(Income:PendingCoins(single) == Config.SlotPendingCap)
 assert(Income:PendingCoins(p) == Config.PlayerPendingCap * 0.5)

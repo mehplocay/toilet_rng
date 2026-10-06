@@ -49,7 +49,7 @@ assert(not rules:Valid("Give", { ItemId = "unknown", Count = 1 }))
 assert(not rules:Valid("Give", { ItemId = "Poop", Count = 1, Target = 77 }))
 assert(not rules:Valid("Give", { ItemId = "Poop" }))
 assert(not rules:Valid("RunCode", { Source = "print(1)" }))
-assert(not rules:Valid("Upgrade", { Track = "LuckBoost", Level = 11 }))
+assert(not rules:Valid("Upgrade", { Track = "LuckBoost", Level = 51 }))
 assert(not rules:Valid("Import", { Json = string.rep("x", Config.MaxImportBytes + 1) }))
 assert(not Rules.JsonTree({ Coins = math.huge }, Config))
 local cycle = {}

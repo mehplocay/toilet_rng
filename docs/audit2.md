@@ -1,3 +1,5 @@
+Permanent progression follow-up (2026-10-06, `feature/permanent`): **148 audit scenarios pass**, including legacy/new-cap migration, permanent tiers/tracks/slots, strict loose-inventory reset, coin-gate boundaries, pending exclusion, level-100 response-loss/replay and reset/purchase/collection races. Existing announcement queues and persistence lease/save machinery are unchanged. [Current contract, measured pacing and limits](design/economy-v2.md) supersede historical reset/tuning statements below.
+
 # Full-game security, exploit and performance audit
 
 2026-10-06 task follow-up: [rare-find chat/native PlayerList](design/chat-native-list.md) extends the audit harness to 150 passing regressions. The new finder-only/coalesced Rare+ path is independent of friendship lookups; existing cross-player bounds remain. PresentationSettings now also accepts the validated ChatMessages enum. Native PlayerList replaces the custom UI and publishes Coins/Rebirths/Rarest only. Actual CoreScript rendering remains open: Studio execute_luau was denied by the automatic approval policy.

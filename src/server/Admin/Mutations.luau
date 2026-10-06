@@ -74,7 +74,11 @@ function Mutations.Build(data, profile, action, args, now, imported)
 		candidate.ToiletTier = args.Level
 	elseif action == "Upgrade" then
 		if args.Track == "DisplaySlots" then
-			candidate.DisplaySlots = math.max(1, candidate.DisplaySlots - candidate.Upgrades.DisplaySlots + args.Level)
+			candidate.DisplaySlots = math.clamp(
+				candidate.DisplaySlots - candidate.Upgrades.DisplaySlots + args.Level,
+				1,
+				math.max(upgrades.Config.DisplayCapacity, candidate.DisplaySlots)
+			)
 		end
 		candidate.Upgrades[args.Track] = args.Level
 	elseif action == "Rebirth" then

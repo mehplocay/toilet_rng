@@ -1,101 +1,64 @@
-# Rebirth implementation and review
+# Coin-gated rebirth with permanent progression
 
-Current merged behavior and validation: [income-first/catalog merge](merge-economy-catalog.md). Eligibility is Diamond and **3,300 new flushes**; normal first-rebirth p50 is **61.94 minutes**. Displays keep their exact slots. Unpaid cash reaches 3.6x; Double Cash/VIP multiply it up to 9x under the 10x hard cap. The older eligibility, simulation assumptions and validation figures below are historical.
+2026-10-06, `feature/permanent`; supersedes the earlier flush/tier gate and reset-to-Basic contract. [Economy tables and assumptions](economy-v2.md), [source review](../research/permanent-economy.md). No commit/push.
 
-2026-10-06 income-first update: [Economy v2](economy-v2.md) supersedes the historical rates, prices, offline cap and timing assertions below. Collection, protection, lease and reset contracts remain.
-2026-10-06, `feature/path-boost-catalog`: **every occupied display now survives in its exact slot**, including gaps and slots originally bought with coins. The previous builder retained copies but packed assignments into reduced capacity; that did not satisfy the owner's placement requirement. The reset keeps enough capacity for the highest occupied slot, plus paid and index minima. This follow-up changes no economy values or eligibility requirements. [Catalog and transaction review](monetization.md).
+## Reset contract
 
-2026-10-06: [Display/collection follow-up](display-collect.md) retunes passive income and extends balance cohorts with retained displays. Reset/protection rules and the 60–90-minute first-rebirth target remain; the old passive fraction below is superseded.
+**Keep:** every toilet tier and upgrade level; all display slots, exact pedestal positions and displayed copies; lifetime collection/index/rarest find/lifetime flushes; index claims, stamps, cosmetics, daily claims, tutorial state, passes/commerce receipt history and settings. Copies retained on display remain protected from sale. An empty purchased slot is also permanent.
 
-2026-10-05, `feature/rebirth`. Uncommitted; no pushes. This implementation supersedes the old Galaxy/fee/all-inventory proposal in progression.md. [Current API research](../research/rebirth.md).
+**Reset:** wallet to the next level's starter coins; all non-displayed inventory, including loose first copies and previously protected copies; all uncollected pending income; successful-flushes-since-rebirth counter. No first-copy inventory is reconstructed from lifetime discoveries. The UI explicitly says ALL loose inventory resets.
 
-## Eligibility and tuning
+`DataService:Get` settles the old income state before eligibility/build. This records elapsed pending earnings, but does not transfer them to the wallet; uncollected pending cannot satisfy the coin gate and is then discarded. Collected coins are part of the wallet that resets. The new ledger retains `max(now, old UpdatedAt)` to prevent replay/clock rollback. New income uses retained toilets, tracks and displays plus the new rebirth bonus.
 
-The server requires Diamond (runtime tier **4**) or better and **3,600 successful flushes since the last rebirth**, with a maximum of 15 rebirths. No fee, rare drop, paid product or time gate. Config lives in `src/shared/Config/Rebirth.luau`. The requested starting proposal of 1,200 flushes was measured at only 27.89 minutes with the current faster upgrade economy; the count was tuned to meet the requested 60–90 active-minute target. Set `RequiredFlushes = 1200` to restore that faster option; the balance target assertion will intentionally flag it.
+## Requirements and rewards
 
-`luau scripts/balance.luau` runs a seeded 500-player, two-run cohort using actual roll distributions, purchases, first-copy protection and the real reset builder. Assumptions: 75% manual cooldown uptime; sell all unprotected duplicates; buy one Cash/Luck/Flush Speed level per tier through level four before buying the next toilet; continue buying toilets while accumulating flushes. No daily, tutorial, offline, passive or pass income. Auto-Flush is slower unless its separate speed track is purchased. Utility purchases and collection choices can delay progression.
+`Rebirth(expectedLevel)` accepts exactly one finite integer generation. Server rules require the current saved level, sufficient wallet coins, and at least **300 successful flushes since the last rebirth**. No toilet-tier requirement remains. Maximum is 15. The entire wallet resets, rather than deducting the gate and retaining excess coins; the window discloses the current wallet and pending loss before its review/hold action.
 
-The complete checked output is in [rebirth-balance.txt](rebirth-balance.txt), including the unchanged toilet cohort and income bounds.
+| Next rebirth | Wallet coin gate | Normal cumulative p50 / p90 hours |
+|---|---:|---:|
+| 1 | 3M | 0.40 / 0.52 |
+| 2 | 12M | 0.57 / 0.76 |
+| 3 | 35M | 0.96 / 1.30 |
+| 4 | 100M | 1.29 / 1.66 |
+| 5 | 500M | 2.03 / 2.62 |
+| 6 | 1.5B | 3.94 / 5.13 |
+| 7 | 5B | 7.73 / 9.36 |
+| 8 | 15B | 18.57 / 21.70 |
+| 9 | 40B | 27.69 / 35.90 |
+| 10 | 80B | 34.65 / 52.52 |
+| 11 | 150B | 38.28 / 63.77 |
+| 12 | 250B | 43.13 / 74.58 |
+| 13 | 400B | 52.23 / 84.26 |
+| 14 | 650B | 63.11 / 94.37 |
+| 15 | 2.5T | 95.67 / 133.84 |
 
-| Run | p50 minutes | p90 minutes |
-| --- | ---: | ---: |
-| First rebirth | 71.06 | 71.66 |
-| Second rebirth, including starter coins and permanent bonuses | 62.29 | 62.83 |
+All gates and rewards live in Config/Rebirth. Cash bonus adds 25 percentage points per level for 1-3, 10 for 4-8 and 5 afterward, capped at +160%. Luck adds two points per level, capped at +30% before the global 10x/diminishing-return rules. Speed bonuses cap at +20% and never bypass the 0.4s cooldown floor. Starter coins remain 2,500 + 250 per subsequent level, at most 6,000. Titles/badges/tokens are cosmetic; tokens are not a second currency or paid luck.
 
-Second-run median is **12.3% faster**. At the absolute 0.4-second floor, 3,600 new flushes still require at least 24 minutes of uninterrupted cooldown-perfect activity, regardless of wallet/offline rewards. These are simulated estimates, not live retention measurements or a guarantee for every play style.
+Each gate is much larger than its starter grant, so resets cannot print money. Fresh flushes provide a separate minimum even for inherited jackpot displays/offline wallets. R15 is intentionally steep; the p50 95.67h result includes permanent upgrade spending and income, not a fixed-income extrapolation. See the 64-seed/archetype simulation and its discretization limits in economy-v2.md.
 
-## Exact reset contract
+## Transaction, replay and migration
 
-| Field or source | Result |
-| --- | --- |
-| Coins | Replace with the next level's fixed starter grant: 2,500 at level 1, +250 per level, 6,000 at level 15 |
-| Current toilet | Basic, tier 1 |
-| All six coin upgrade tracks | Level zero; no refund |
-| Pending passive coins | Empty ledger; timestamp is `max(now, previous high-water timestamp)` |
-| RunFlushes | Zero; only successful server flushes increment it |
-| Inventory | Keep the greatest of one owned first copy, displayed copies, and previously protected copies of each known item; remove other copies |
-| ProtectedInventory | All kept copies become permanently unsellable; they remain freely displayable. New duplicates can be sold. Removing a display never unlocks a carried copy for sale |
-| Displays | Keep every item at its original string-keyed slot index; preserve gaps. No compaction, replacement item grant or overflow removal |
-| Display capacity | Remove unused tracked coin-bought capacity; retain at least the highest occupied index, index minimum plus the Extra Slots allowance, and base capacity plus that allowance. New paid capacity is capped at ten; existing legacy capacity remains preserved |
-| Lifetime collection / best finds / total flushes / Earned | Keep. Starter coins increase Earned once; reject the whole reset if this would exceed 9e15 |
-| Index claims/cosmetics, Stamps, daily state/boost, tutorial dismissal, settings | Keep, with no repeated claim or tutorial award |
-| Pass entitlements and commerce | Keep verified pass flags, applied-slot marker, receipt history, saved product quote, path expiry and VIP daily claim day; cosmetic settings remain |
-| RebirthLevel | Increment once, maximum 15; saved level is the permanent badge/title/token entitlement |
+The existing remote bucket stays one token, refill 0.2/s. Reject while an ordinary save is pending. Build one complete copied profile without yielding; compare-and-swap it through `ReplaceAndSave` only when the current profile and lease still match. All gameplay reads fail closed during that exclusive replacement save. Save retains immutable snapshots, ownership/lease checks on every UpdateAsync callback, retry backoff and post-save identity validation before success/sync/celebration.
 
-Permanent protection is a deliberate scope decision. The game has no acquisition-price/provenance ledger yet. No carried copy can be sold at a higher rebirth multiplier; future unlocking/trading requires that ledger first. No item is created to replace a previously sold lifetime discovery. The UI states this protection explicitly before confirmation.
+Do not roll back on an ambiguous response: the replacement may already be committed. Retry the same complete state; exhausted failures block/kick, and Close can only retry while its lease remains valid. Replays use the saved rebirth generation, never a client-supplied price or arbitrary inventory. Concurrent collection, purchases, flushes and departure cannot observe a half-reset profile.
 
-`DataService:Get` settles the old display/tier rate before reset construction. The settled **pending coins still reset**, as do the wallet and coin upgrade tracks. Preserved displays immediately accrue new income at Basic's capped rate with retained permanent/pass bonuses; keeping a display does not preserve its old rate. Copy counts remain `min(owned, max(first copy, displayed count, previously protected count))`, so reservations do not duplicate inventory or double-reserve a first copy. Removing a retained display frees a display reservation but does not make its protected copy sellable. Newly obtained unprotected duplicates remain sellable.
+| Failure point | Permitted durable state |
+|---|---|
+| Crash before write | Entire last saved old profile; unsaved progress may be lost |
+| Commit then lost response | Entire new profile, one level and starter grant |
+| Callback replay or foreign takeover | Owned/unexpired transform only; never overwrite foreign state |
+| Disconnect during save | Serialized final save of complete replacement; no stale success effect |
+| Old request after rejoin | Generation mismatch rejects it |
+| Backend never returns/deadline | Existing outage durability limit; no unlimited retry or exactly-once guarantee |
 
-The Rebirth keep list says **Items on your display**; confirmation explicitly says their slots remain. `audit-path-catalog.luau` exercises sparse slots 2/9/10, settlement, continued accrual, inventory reservations, stale replay, save/rejoin, and empty/sparse paid/index capacity after saturated upgrades. Existing rebirth interruption, lease-loss and first-copy regressions still run. Current task validation is recorded in [monetization.md](monetization.md); the original 68-case report below is historical.
+Profiles still migrate lifetime flushes into the first run only when no run counter exists; later missing run counters become zero. The separate UpgradeVersion=2 migration clamps old levels under old maxima before preserving new caps on future saves. Rebirth does not rewind the commerce ledger, product quotes, paid slots or VIP daily claim. The active auto-flush toggle can stop while Get is unavailable during the exclusive save; its lifetime unlock and saved preferences remain.
 
-Legacy saves without rebirth fields start at level zero and use lifetime flushes as first-run progress. Missing run counts at a nonzero rebirth level start at zero. Integer/nonfinite validation, inventory-bounded protected counts and a maximum level whitelist are applied on every load/save. Rebirth level is restored **before income capacity sanitation** to avoid clipping legitimate high-level pending balances.
+## UI/world and verification
 
-## Bonuses and cosmetic tokens
+The window shows wallet/coin-gate progress, run flush progress, current/next permanent bonuses, starter coins, and separate reset/keep lists. Existing two-second hold, focus/release/panel/scroll cancellation, pending lock and response timeout stay intact. Stairs reuse their geometry and now display the next coin gate plus 300 fresh flushes. Upgrade footer explicitly says toilets and upgrades are permanent. All coins use compact notation.
 
-Cash adds 25 percentage points per level for levels 1–3, 10 for 4–8, then 5 for 9–15; capped at **+160%**. It adds to the coin Cash Boost, so maximum total cash is **3.6x**, not an exponential product. Applies to service, new sellable copies and passive income/rate/storage caps. Whole service/sale coins round down per copy; batching cannot improve rounding. Daily rewards and index Stamps are unchanged.
+Drop/rebirth announcement cooldowns, bounded queues, friend lookup worker, deduplication and preferences are unchanged. Levels 3-4 notify friends and 5+ the server within that same budget. Higher luck is measured against the existing event drain in simulate.luau, not justified by increasing queue capacity.
 
-Luck adds 2 percentage points per level, capped at +30%, in the same additive factor as the coin luck track. All temporary modifiers then pass through the existing **5x total cap**. Speed subtracts 4 percentage points of base cooldown per level for levels 1–3, then 1 per level, capped at 20%; the shared **0.4-second floor** and auto/manual cooldown remain authoritative.
+The audit suite now covers permanence at extended levels, first/protected loose-item deletion, empty/sparse paid/index capacity, old/new schema round-trips, every coin boundary, pending exclusion, spent-wallet races, level-100 ambiguous purchase saves, rebirth callback replay, held reset/collection/purchase races, lease loss, rejoin, ceilings and spam. All retained earlier security scenarios still execute with updated expected reset behavior.
 
-`check-rebirth.luau` enumerates all 15 levels, all seven toilet tiers and every Cash/Speed level combination. It proves bounded nonincreasing cash increments, the luck/floor bounds, one-item probability sum and passive income below one third of guaranteed active service income at 75% uptime. Upgraded lifetime earnings/stat ceilings remain enforced.
-
-Each config level defines a permanent title, in-game profile badge and a free numbered **Rebirth Token**, with a fixed cosmetic-only perk list. Token count is derived from saved level; tokens are not spendable, tradeable or a random/paid currency. The current title/token count is visible in the Rebirth window; the player list displays `[R<n>]`. No Roblox BadgeService asset IDs, skins or promised future gameplay powers are invented.
-
-## Transaction and recovery
-
-`Rebirth(expectedLevel)` accepts exactly one finite, nonnegative integer below the level cap. Its bucket is capacity 1, refill 0.2/second. Requirements use only the live lease-gated server profile. A pending ordinary save causes rejection instead of queuing a reset behind an old snapshot.
-
-The handler deep-copies the sanitized profile and constructs the complete new state without yielding. `DataService:ReplaceAndSave` checks profile identity/lease and save availability again, installs a replacement guard, swaps `Profiles[player]` once, then immediately invokes the existing Save. While it yields, `Get` exposes neither profile for gameplay. There is no separate rebirth datastore or incremental reset write.
-
-Save uses the existing four-attempt immutable snapshot, owned unexpired lease check on every UpdateAsync callback, backoff and fail-closed rules. It does **not** roll back the swap on error: a response may have been lost after committing. Exhausted failures kick/block the session; Close retries the same complete replacement while ownership remains valid. Close/rejoin/shutdown retain existing serialization. Success, State, celebration and milestone announcement happen only after an acknowledged save with the same live replacement.
-
-| Failure point | Recoverable persisted state |
-| --- | --- |
-| Crash before reset write | Entire previous successfully saved profile; ordinary unsaved progress may be lost |
-| Commit followed by lost response | Entire new profile; retries write the same level, grants and reset together |
-| Callback replay / foreign lease takeover | Write aborts; never overwrites the new owner's profile |
-| Disconnect while saving | Final save waits, writes/releases the complete replacement; no stale success effect |
-| Replayed old request after rejoin or later eligibility | Saved level mismatch rejects it |
-| Backend never returns / final save deadline | Existing audit L3 durability limit remains; no exactly-once notification or unlimited-outage guarantee |
-
-The ledger timestamp resets with the profile, so old offline/pending earnings cannot be reclaimed. New income starts from retained displays at Basic's capped rate. Backward clock adjustments retain the high-water mark. Account-level auto unlock remains from lifetime flushes; an active auto toggle may stop during the exclusive save and can be re-enabled afterward.
-
-## UI and world integration
-
-Six-button responsive navigation adds Crown/Rebirth, with a ready badge and existing vector fallback. The window shows current bonuses/title/token count, flush/tier progress, two-column reset/keep lists, next bonuses, starter coins and the wallet/pending loss. Scroll to the review button, activate it, then hold for two seconds. Mouse, touch and selected gamepad/keyboard input are supported. Release, focus loss, mouse leave, selection loss, panel close and scrolling cancel the hold. A 15-second response timeout requests fresh State without automatically retrying the reset or claiming success.
-
-Successful saves play a bounded crown celebration; reduced/off presentation settings are respected. Levels 3–4 notify online friends and 5+ the server, through the **same** bounded announcement queue, cooldown, friend lookup worker and chat preference filter as drops. Rebirth and drop replay IDs are separate, but their rate budget is shared. Milestones may be suppressed by that budget; this is intentional.
-
-No existing World file or geometry was edited. The requested stairs placeholder is absent in this worktree. `src/server/World/RebirthHook.luau` supplies `Attach(anchor, owner)` for the polish session: call on an existing stairs BasePart/Attachment anchor when assigning a plot, and `Attach(anchor, nil)` when releasing it. It creates/reuses only one default-style prompt, tags `RebirthOwnerUserId` and `OwnerUserId`, and opens the existing panel through WorldNavigation. It cannot perform a rebirth. The hook's attach/reassign/release behavior is checked by the world harness. **Stairs placement and calling the hook remain with polish**; the left-column button works independently.
-
-## Verification and remaining limits
-
-Headless review images (not engine screenshots): [desktop overview](rebirth-previews/rebirth-1280x684.png), [desktop confirmation](rebirth-previews/rebirth-confirm-1280x684.png), [phone overview](rebirth-previews/rebirth-360x518.png), [phone confirmation](rebirth-previews/rebirth-confirm-360x518.png), [short landscape confirmation](rebirth-previews/rebirth-confirm-640x303.png).
-
-- Audit runner: **68 passing scenarios**, including atomic reset, yield blocking, double-click/stale generation, malformed/1,000-request spam, pending ordinary save, old/new rejoin, callback replay, lease loss, pre/post-commit exhaustion, response-loss retry, offline cap/high-water, index capacity saturation, first-copy/display protection and announcement audiences/cleanup.
-- All standalone `scripts/check-*.luau` pass; audit/UI runtime scripts run via their PS1 bundlers. UI coverage includes 972 safe-area geometries and actual confirmation reachability after scrolling on 12 viewports.
-- Passed: `check-ui.ps1`, `check-visuals.ps1`, six-mode `check-world.ps1`, `balance.luau`, `rojo build -o build.rbxl`, `stylua --check --line-endings Windows src scripts`, and `git diff --check`. Headless UI renders were inspected; they approximate Roblox rendering.
-- Selene was attempted but cannot find the configured `roblox` standard library. No lint-pass claim.
-- Studio MCP reports `studios: []`. Published multi-client DataStore crash/latency behavior, real touch/gamepad scrolling, uploaded icon permissions and device performance remain untested. Headless tests do not prove live service availability or exactly-once durability.
-- Deployment must retire older server builds before enabling rebirth for players. An older binary's whitelist sanitizer does not preserve these new profile fields; cross-version rolling-server compatibility is not provided by this patch.
-
-Main files: `Config/Rebirth`, `RebirthRules`, `Services/RebirthService`, `DataService`, `UI/Rebirth`, shared cash/luck/speed and inventory integration, announcement/player-list wiring, the optional `World/RebirthHook`, and rebirth audit/UI/math/balance fixtures. Unrelated map builders remain untouched.
+Headless UI/previews and world checks do not establish real touch/gamepad behavior, mobile FPS, service availability or crash durability. Retire older binaries before rollout; their sanitizers would truncate extended levels. Keep billing tests isolated; no new paid luck or IDs are added.
