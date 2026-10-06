@@ -5,7 +5,7 @@ local Rarities = require(Shared.Config.Rarities)
 local Loader = require(script.Parent.MeshLoader)
 local Placement = require(Shared.Config.WorldModels)
 local Models = { Part = P.Part }
-function Models.Toilet(parent, cf, tier, scale)
+function Models.Toilet(parent, cf, tier, scale, owner)
 	local model = Loader.Build(Placement.ToiletNames[tier], parent, cf, function()
 		return require(Shared.Visuals.Toilets).BuildPrimitive(parent, cf, tier)
 	end)
@@ -18,6 +18,11 @@ function Models.Toilet(parent, cf, tier, scale)
 	end
 	if not model:GetAttribute("MeshFallback") then
 		require(Shared.Visuals.TemplateAccents).Apply(model, scale)
+	end
+	if owner then
+		-- Only the small owned toilet persists; visitors use normal atomic streaming.
+		model.ModelStreamingMode = Enum.ModelStreamingMode.PersistentPerPlayer
+		model:AddPersistentPlayer(owner)
 	end
 	return model
 end

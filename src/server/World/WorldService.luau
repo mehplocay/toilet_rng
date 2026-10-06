@@ -67,9 +67,10 @@ function World:Refresh(player, profile)
 	if plot.Tier ~= profile.ToiletTier then
 		local upgraded = plot.Tier and profile.ToiletTier > plot.Tier
 		if plot.Toilet then
+			self:StopAnimation(player)
 			plot.Toilet:Destroy()
 		end
-		plot.Toilet = Models.Toilet(plot.Model, plot.CFrame, profile.ToiletTier, Layout.ToiletScale)
+		plot.Toilet = Models.Toilet(plot.Model, plot.CFrame, profile.ToiletTier, Layout.ToiletScale, player)
 		plot.Tier = profile.ToiletTier
 		if plot.FlushPrompt then
 			plot.FlushPrompt:Destroy()
@@ -213,7 +214,13 @@ function World:Assign(player)
 	end
 	player:Kick("All plots are occupied. Please join another server.")
 end
-function World:Animate(player, item, skipAnimation, duration, adminPreview)
+function World:StopAnimation(player)
+	local plot = self.Assigned[player]
+	if plot and plot.StopAnimation then
+		plot.StopAnimation()
+	end
+end
+function World:Animate(player, item, skipAnimation, duration, adminPreview, compact, automatic)
 	duration = duration or 0.32
 	-- Called only after the server has awarded a validated flush result.
 	if not adminPreview then
@@ -223,12 +230,15 @@ function World:Animate(player, item, skipAnimation, duration, adminPreview)
 	if not plot or not plot.Toilet then
 		return
 	end
-	if skipAnimation then
+	self:StopAnimation(player)
+	if skipAnimation and not automatic then
 		local drop = Models.Item(plot.Model, plot.CFrame * CFrame.new(0, 6, 0), item)
 		Debris:AddItem(drop, duration)
 		return
 	end
 	local toilet = plot.Toilet
+	local stopped = false
+	local particles, sound, drop, float, link, flight, completed
 	toilet:SetAttribute("Flushing", true)
 	local pivot = toilet:GetPivot()
 	local value = Instance.new("CFrameValue")
@@ -243,16 +253,48 @@ function World:Animate(player, item, skipAnimation, duration, adminPreview)
 		TweenInfo.new(duration / 12, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, 5, true),
 		{ Value = pivot * CFrame.Angles(0, 0, 0.08) }
 	)
-	tween:Play()
-	tween.Completed:Once(function()
+	local function stop()
+		if stopped then
+			return
+		end
+		stopped = true
+		plot.StopAnimation = nil
+		if completed then
+			completed:Disconnect()
+		end
 		connection:Disconnect()
+		tween:Cancel()
+		tween:Destroy()
+		if link then
+			link:Disconnect()
+		end
+		if flight then
+			flight:Cancel()
+			flight:Destroy()
+		end
+		if particles then
+			particles:Clear()
+			particles:Destroy()
+		end
+		if sound then
+			sound:Stop()
+			sound:Destroy()
+		end
+		if float then
+			float:Destroy()
+		end
+		if drop then
+			drop:Destroy()
+		end
 		if toilet.Parent then
 			toilet:PivotTo(pivot)
 			toilet:SetAttribute("Flushing", false)
 		end
 		value:Destroy()
-	end)
-	local particles = P.Particles(
+	end
+	plot.StopAnimation = stop
+	completed = tween.Completed:Once(stop)
+	particles = P.Particles(
 		toilet.PrimaryPart,
 		"FlushBurst",
 		Rarities[item.Rarity].Color,
@@ -260,34 +302,34 @@ function World:Animate(player, item, skipAnimation, duration, adminPreview)
 		{ Speed = NumberRange.new(4, 7), SpreadAngle = Vector2.new(160, 160) }
 	)
 	particles:Emit(Visuals.Budget.Burst)
-	Debris:AddItem(particles, duration)
 	local soundId = Assets.Sounds.Flush
-	if type(soundId) == "string" and soundId ~= "" then
-		local sound = Instance.new("Sound")
+	-- Auto uses the owner's existing, throttled audio feedback only.
+	if not automatic and not compact and type(soundId) == "string" and soundId ~= "" then
+		sound = Instance.new("Sound")
 		sound.SoundId = soundId
+		sound.Volume, sound.RollOffMinDistance, sound.RollOffMaxDistance = 0.25, 8, 60
 		sound.Parent = toilet.PrimaryPart
 		sound:Play()
-		Debris:AddItem(sound, 10)
 	end
-	local drop = Models.Item(plot.Model, plot.CFrame * CFrame.new(0, 6, 0), item)
-	local float = Instance.new("CFrameValue")
+	if compact or skipAnimation then
+		tween:Play()
+		return
+	end
+	drop = Models.Item(plot.Model, plot.CFrame * CFrame.new(0, 6, 0), item)
+	float = Instance.new("CFrameValue")
 	float.Value = drop:GetPivot()
-	local link = float.Changed:Connect(function(cf)
+	link = float.Changed:Connect(function(cf)
 		if drop.Parent then
 			drop:PivotTo(cf)
 		end
 	end)
-	local flight = TweenService:Create(
+	flight = TweenService:Create(
 		float,
 		TweenInfo.new(duration, Enum.EasingStyle.Sine),
 		{ Value = plot.CFrame * CFrame.new(0, 9, -3) }
 	)
 	flight:Play()
-	flight.Completed:Once(function()
-		link:Disconnect()
-		float:Destroy()
-		drop:Destroy()
-	end)
+	tween:Play()
 end
 function World:Start(data)
 	self.Data, self.Assigning = data, {}
@@ -313,6 +355,7 @@ function World:Start(data)
 		self:Assign(player)
 	end)
 	Players.PlayerRemoving:Connect(function(player)
+		self:StopAnimation(player)
 		PlotSpawn:Remove(player)
 		local plot = self.Assigned[player]
 		if plot then

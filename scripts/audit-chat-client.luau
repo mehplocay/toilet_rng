@@ -174,8 +174,10 @@ test("merge chat/auto: real remote awards retain quiet batches, exact finder cou
 	e:Load("src/server/Services/RollService").Roll = function()
 		return nextItem, 0.1
 	end
-	e.World.Animate = function()
-		error("Remote auto award animated the toilet")
+	local animations = 0
+	e.World.Animate = function(_, owner, _, _, _, _, compact, automatic)
+		assert(owner == player and compact and automatic)
+		animations += 1
 	end
 	e:Fire("AutoFlush", player, true)
 	local cursor, awards = #e.Results, 0
@@ -213,6 +215,7 @@ test("merge chat/auto: real remote awards retain quiet batches, exact finder cou
 		finds += tonumber(message.Text:match("You found (%d+) items")) or 1
 	end
 	assert(awards == 4 and finds == 4 and profile.Inventory.Poop == 3 and profile.Inventory.Fish == 1)
+	assert(animations == awards, "Every compact award must also animate its toilet")
 	assert(#messages == 2 and messages[2].Text:find("You found 3 items (best: Rare Fish)!", 1, true))
 	assert(#cues == 2 and root.RareReveal.CompactDrop.Text:find("Fish  +2 more finds", 1, true))
 	for _, cue in ipairs(cues) do

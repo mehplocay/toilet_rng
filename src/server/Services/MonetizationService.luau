@@ -35,6 +35,7 @@ function Service:IdlePaused(player)
 	if not activity.Paused and os.clock() - activity.Last >= AutoConfig.IdleSeconds then
 		activity.Uptime += math.max(0, activity.Last + AutoConfig.IdleSeconds - (activity.Since or os.clock()))
 		activity.Since, activity.Paused = nil, true
+		self.World:StopAnimation(player)
 		self.Sync(player)
 	end
 	return activity.Paused
@@ -120,6 +121,7 @@ end
 
 function Service:StopAuto(player)
 	if self.Auto[player] then
+		self.World:StopAnimation(player)
 		self.Auto[player] = false
 		self.Activity[player] = nil
 		self.Sync(player)
@@ -158,6 +160,7 @@ function Service:Start(limiter, remotes, sync, data, world)
 			self.Activity[player] = { Last = os.clock(), Since = os.clock(), Uptime = 0, Paused = false }
 		elseif not self.Auto[player] then
 			self.Activity[player] = nil
+			self.World:StopAnimation(player)
 		end
 		sync(player)
 	end)
@@ -278,6 +281,7 @@ function Service:Start(limiter, remotes, sync, data, world)
 		sync(player)
 	end)
 	Players.PlayerRemoving:Connect(function(player)
+		self.World:StopAnimation(player)
 		self.Cosmetics:Remove(player)
 		self.Owned[player] = nil
 		self.Auto[player] = nil

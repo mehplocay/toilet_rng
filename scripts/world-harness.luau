@@ -112,6 +112,15 @@ local signal = {
 	Once = function() end,
 }
 local methods = {}
+function methods:AddPersistentPlayer(player)
+	self._persistentPlayer = player
+end
+function methods:Emit(count)
+	self.Emitted = (self.Emitted or 0) + count
+end
+function methods:Clear()
+	self.Cleared = true
+end
 local function isPart(object)
 	return object.ClassName == "Part"
 		or object.ClassName == "WedgePart"
@@ -335,11 +344,31 @@ local tweens = {}
 services.TweenService = {
 	Create = function(_, target, info, goal)
 		local tween = { Target = target, Info = info, Goal = goal }
+		tween.Completed = {}
+		function tween.Completed:Once(callback)
+			self.Callback = callback
+			return {
+				Disconnect = function()
+					self.Callback = nil
+				end,
+			}
+		end
+		function tween.Completed:Fire()
+			local callback = self.Callback
+			self.Callback = nil
+			if callback then
+				callback()
+			end
+		end
+		function tween:Destroy()
+			self.Destroyed = true
+		end
 		function tween:Play()
 			self.Played = true
 		end
 		function tween:Cancel()
 			self.Cancelled = true
+			self.Completed:Fire()
 		end
 		table.insert(tweens, tween)
 		return tween

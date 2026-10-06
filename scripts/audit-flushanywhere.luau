@@ -26,12 +26,15 @@ test("anywhere: compact jackpot still records the item, server luck and existing
 	e:Load("src/server/Services/RollService").Roll = function()
 		return item, 0.00002
 	end
-	e.World.Animate = function()
-		error("Remote auto award played toilet animation")
+	local animations = 0
+	e.World.Animate = function(_, owner, _, _, _, _, compact, automatic)
+		assert(owner == player and compact and automatic)
+		animations += 1
 	end
 	e:Fire("AutoFlush", player, true)
 	e.World.Flush(player, true)
 	assert(p.Inventory[item.Id] == 1 and p.Collection[item.Id] == 1)
+	assert(animations == 1, "Compact jackpot must animate the shared toilet")
 	local compact, luck, chat = false, false, 0
 	for _, message in ipairs(e.Results) do
 		if message.Payload[1] == "Flush" then
@@ -73,7 +76,7 @@ test("anywhere: unlock and living owner authorize hub/path/plot auto, manual pro
 		e.Now += 4
 		e:Resume(e.Threads[1])
 	end
-	assert(p.Stats.Flushes == 103 and animations == 1 and auto.Auto[player])
+	assert(p.Stats.Flushes == 103 and animations == 3 and auto.Auto[player])
 	assert(p.Inventory.Poop == 3 and p.Coins == 120)
 	player.Distance = 300
 	e.Now += 4

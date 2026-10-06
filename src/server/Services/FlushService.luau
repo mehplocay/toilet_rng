@@ -92,18 +92,30 @@ function FlushService.Start(data, limiter, remotes, sync, world, events, monetiz
 				return
 			end
 		end
-		Presentation.Publish(player, profile, item, {
-			Compact = automatic == true and not Rules.InRange(distance, Monetization),
-			ItemId = item.Id,
-			Rarity = item.Rarity,
-			Chance = item.Chance,
-			Probability = probability,
-			FlushId = presentationSequence[player],
-			Cooldown = cooldown,
-			ServiceCoins = serviceCoins,
-			LuckMultiplier = luck,
-			LuckCapped = luck >= upgrades.Config.LuckCap,
-		}, world, events, remotes, upgrades:Animation(cooldown))
+		Presentation.Publish(
+			player,
+			profile,
+			item,
+			{
+				Automatic = automatic == true,
+				AutoInterval = upgrades:AutoInterval(profile, cooldown),
+				Compact = automatic == true and not Rules.InRange(distance, Monetization),
+				ItemId = item.Id,
+				Rarity = item.Rarity,
+				Chance = item.Chance,
+				Probability = probability,
+				FlushId = presentationSequence[player],
+				Cooldown = cooldown,
+				ServiceCoins = serviceCoins,
+				LuckMultiplier = luck,
+				LuckCapped = luck >= upgrades.Config.LuckCap,
+			},
+			world,
+			events,
+			remotes,
+			upgrades:Animation(cooldown),
+			automatic == true and (not monetization:CanAuto(player) or monetization:IdlePaused(player))
+		)
 		sync(player)
 	end
 	task.spawn(function()

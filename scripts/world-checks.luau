@@ -129,6 +129,7 @@ local function validate(container)
 						== (
 							if object.Parent:GetAttribute("ResortSkyline")
 								then Enum.ModelStreamingMode.Persistent
+								elseif object.Parent._persistentPlayer then Enum.ModelStreamingMode.PersistentPerPlayer
 								else Enum.ModelStreamingMode.Atomic
 						)
 				)

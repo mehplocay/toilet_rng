@@ -47,6 +47,7 @@ $harness += "}`n"
 $harness += & (Join-Path $PSScriptRoot 'read-model-templates.ps1')
 $harness += Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'world-checks.luau')
 $harness += Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'rebirth-stairs-checks.luau')
+$harness += Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'autoflush-animation-checks.luau')
 if ($World) { $harness += Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'map-layout-checks.luau') }
 try {
     [IO.File]::WriteAllText($generatedPath, $harness, [Text.UTF8Encoding]::new($false))

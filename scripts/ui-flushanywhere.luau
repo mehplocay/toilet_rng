@@ -12,6 +12,58 @@ do
 		end
 		return false
 	end
+	check("auto HUD: far confirmed cycles pulse once, expire, pause, disable and respawn", function()
+		local root, remotes = H.Root(390, 722), H.Remotes()
+		local hud = H.Load("src/client/UI/HUD").Create(root, remotes, function() end, {
+			Near = function()
+				return false
+			end,
+		})
+		local state = {
+			Coins = 0,
+			ToiletTier = 1,
+			LifetimeFlushes = 100,
+			AutoFlush = true,
+			AutoStatus = {},
+			LastClaimDay = 0,
+			Streak = 0,
+		}
+		hud.Update(state)
+		H.Advance(0.1)
+		assert(contains(root, "Auto Flush waiting"))
+		local payload = { Automatic = true, Compact = true, FlushId = 1, Cooldown = 0.4, AutoInterval = 0.4 }
+		hud.Flushed(payload)
+		H.Advance(0.1)
+		assert(contains(root, "Auto Flush running"))
+		H.Advance(2)
+		hud.Flushed(payload) -- A duplicate cannot extend the running indicator.
+		H.Advance(0.1)
+		assert(contains(root, "Auto Flush waiting"))
+		for _, cause in ipairs({ "pause", "disable", "respawn" }) do
+			state.AutoFlush, state.AutoStatus.Paused = true, false
+			hud.Update(state)
+			payload.FlushId += 1
+			hud.Flushed(payload)
+			H.Advance(0.1)
+			assert(contains(root, "Auto Flush running"))
+			if cause == "respawn" then
+				H.Services.Players.LocalPlayer.CharacterRemoving:Fire()
+			else
+				state.AutoFlush = cause ~= "disable"
+				state.AutoStatus.Paused = cause == "pause"
+				hud.Update(state)
+			end
+			H.Advance(0.1)
+			assert(not contains(root, "Auto Flush running"))
+			payload.FlushId += 1
+			hud.Flushed(payload) -- An in-flight result after stopping must not rearm the indicator.
+			state.AutoFlush, state.AutoStatus.Paused = true, false
+			hud.Update(state)
+			H.Advance(0.1)
+			assert(contains(root, "Auto Flush waiting"))
+		end
+		root:Destroy()
+	end)
 	check("away UI: join, repeated snapshots, double-click, error, timeout, pad collect and session restore", function()
 		local root, remotes = H.Root(390, 722), H.Remotes()
 		local window = H.Load("src/client/UI/OfflineIncome").Create(root, remotes)

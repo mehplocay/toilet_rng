@@ -88,6 +88,7 @@ function HUD.Create(root, remotes, open, prompts)
 	local state, untilAt, cooldown, lastRequest = nil, 0, 3, -math.huge
 	local autoEnabled, autoUnlocked = false, false
 	local autoStatus, statusAt = {}, 0
+	local autoRunningUntil, autoPulseAt, lastAutoId = 0, 0, 0
 	local flush
 	flush = C.Button(action, "FLUSH", UDim2.new(1, -96, 1, 0), nil, function()
 		if state and not prompts.Near() then
@@ -193,6 +194,7 @@ function HUD.Create(root, remotes, open, prompts)
 		local elapsed = math.max(0, os.clock() - statusAt)
 		local idleLeft = math.max(0, math.ceil((autoStatus.IdleRemaining or 0) - elapsed))
 		local paused = autoStatus.Paused == true
+		local running = autoEnabled and not paused and os.clock() < autoRunningUntil
 		idle.Visible = autoEnabled and paused
 		flush.Visible = not idle.Visible
 		if autoUnlocked then
@@ -212,12 +214,15 @@ function HUD.Create(root, remotes, open, prompts)
 		flush.Interactable = state ~= nil and (not near or remaining <= 0)
 		flush.Text = if not state
 			then "LOADING..."
+			elseif autoEnabled and not near then (if running then "Auto Flush running" else "Auto Flush waiting")
 			elseif not near then "GO TO YOUR TOILET"
 			elseif remaining > 0 then string.format("%.1fs", remaining)
 			else "FLUSH"
-		flushIcon.Visible = near
-		flush.Label.Position = if near then UDim2.fromScale(0.28, 0.1) else UDim2.fromScale(0.05, 0.1)
-		flush.Label.Size = if near then UDim2.fromScale(0.69, 0.8) else UDim2.fromScale(0.9, 0.8)
+		flushIcon.Visible = near or running
+		-- Reuse the action icon: one scalar update, no new instances or repeating tweens.
+		flushIcon.Rotation = if running then math.sin((os.clock() - autoPulseAt) * 8) * 12 else 0
+		flush.Label.Position = if near or running then UDim2.fromScale(0.28, 0.1) else UDim2.fromScale(0.05, 0.1)
+		flush.Label.Size = if near or running then UDim2.fromScale(0.69, 0.8) else UDim2.fromScale(0.9, 0.8)
 		ring.Visible = remaining > 0
 		for i, tick in ipairs(ticks) do
 			tick.Visible = i <= math.ceil(remaining / cooldown * 24)
@@ -240,8 +245,12 @@ function HUD.Create(root, remotes, open, prompts)
 		hint.Visible = hintLeft > 0 and not revealing and not eventActive and not coinPopup
 		hint.GroupTransparency = math.clamp(1 - hintLeft / 0.5, 0, 1)
 	end)
+	local characterRemoving = game:GetService("Players").LocalPlayer.CharacterRemoving:Connect(function()
+		autoEnabled, autoRunningUntil, flushIcon.Rotation = false, 0, 0
+	end)
 	gui.Destroying:Connect(function()
 		heartbeat:Disconnect()
+		characterRemoving:Disconnect()
 	end)
 	task.spawn(function()
 		while gui.Parent do
@@ -298,6 +307,9 @@ function HUD.Create(root, remotes, open, prompts)
 				C.Tween(value, 0.55, { Value = state.Coins })
 			end
 			autoUnlocked, autoEnabled = state.LifetimeFlushes >= Monetization.AutoFlushUnlock, state.AutoFlush
+			if not autoEnabled or autoStatus.Paused then
+				autoRunningUntil, flushIcon.Rotation = 0, 0
+			end
 			auto.Interactable = autoUnlocked
 			auto.Text = if autoUnlocked
 				then (if autoEnabled then "AUTO\nON" else "AUTO\nOFF")
@@ -306,6 +318,19 @@ function HUD.Create(root, remotes, open, prompts)
 			serverExpiry, personalExpiry = state.ServerLuckExpires or 0, state.RewardLuckExpires or 0
 		end,
 		Flushed = function(payload)
+			if
+				autoEnabled
+				and not autoStatus.Paused
+				and payload.Automatic
+				and not payload.Admin
+				and (payload.FlushId or 0) > lastAutoId
+			then
+				lastAutoId = payload.FlushId
+				autoPulseAt = os.clock()
+				autoRunningUntil = autoPulseAt
+					+ (payload.AutoInterval or payload.Cooldown or 3)
+					+ AutoConfig.StatusGrace
+			end
 			cooldown = math.max(0.1, payload.Cooldown or 3)
 			untilAt = os.clock() + cooldown
 		end,

@@ -393,6 +393,7 @@ local function server(options)
 		Refresh = function() end,
 		RefreshIncome = function() end,
 		Animate = function() end,
+		StopAnimation = function() end,
 	}
 	e:Override("src/server/World/WorldService", world)
 	-- Network-only startup is covered by check-icons; keep auto-flush scheduler isolation.
