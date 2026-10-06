@@ -1,0 +1,109 @@
+{
+  "scope": "Blender FBX round trip; not Roblox Studio upload",
+  "assets": [
+    {
+      "id": "CoralCommode",
+      "fbx_round_trip": "passed",
+      "tris": 4004,
+      "single_mesh_material_uv": true,
+      "closed_components": true,
+      "no_degenerate_triangles": true,
+      "embedded_atlas_bytes_match": true,
+      "ground_and_origin": "within 0.001 stud",
+      "dimensions": "within 0.001 stud",
+      "all_vertex_max_error_studs": 4.2e-07,
+      "fbx_sha256": "12d33cc6fe154389f7763d6609689ecc3bb5bbda2857b6fcef35a7fc73682585"
+    },
+    {
+      "id": "CloudCushion",
+      "fbx_round_trip": "passed",
+      "tris": 4130,
+      "single_mesh_material_uv": true,
+      "closed_components": true,
+      "no_degenerate_triangles": true,
+      "embedded_atlas_bytes_match": true,
+      "ground_and_origin": "within 0.001 stud",
+      "dimensions": "within 0.001 stud",
+      "all_vertex_max_error_studs": 3.9e-07,
+      "fbx_sha256": "e5e2da812f311a9e3be3094a5c07a3174528ce0188037140b76a69a7c1738188"
+    },
+    {
+      "id": "ClockworkCloset",
+      "fbx_round_trip": "passed",
+      "tris": 4752,
+      "single_mesh_material_uv": true,
+      "closed_components": true,
+      "no_degenerate_triangles": true,
+      "embedded_atlas_bytes_match": true,
+      "ground_and_origin": "within 0.001 stud",
+      "dimensions": "within 0.001 stud",
+      "all_vertex_max_error_studs": 4.9e-07,
+      "fbx_sha256": "5946c1f43a7d86cd4022ae7a7f0dc1c40ac4aa5abb4e2e7dcd5e8b23317dc50a"
+    },
+    {
+      "id": "DragonKiln",
+      "fbx_round_trip": "passed",
+      "tris": 4080,
+      "single_mesh_material_uv": true,
+      "closed_components": true,
+      "no_degenerate_triangles": true,
+      "embedded_atlas_bytes_match": true,
+      "ground_and_origin": "within 0.001 stud",
+      "dimensions": "within 0.001 stud",
+      "all_vertex_max_error_studs": 4.9e-07,
+      "fbx_sha256": "23f4ff854c7ee5c531f023a56ca2a9b7748c2badda7b7461515e22c6cd723eeb"
+    },
+    {
+      "id": "AuroraThrone",
+      "fbx_round_trip": "passed",
+      "tris": 2730,
+      "single_mesh_material_uv": true,
+      "closed_components": true,
+      "no_degenerate_triangles": true,
+      "embedded_atlas_bytes_match": true,
+      "ground_and_origin": "within 0.001 stud",
+      "dimensions": "within 0.001 stud",
+      "all_vertex_max_error_studs": 6.1e-07,
+      "fbx_sha256": "176cdff91cf6e42479671953f99142dac51f3f05bce0eff494b54f034cd42699"
+    },
+    {
+      "id": "AstralAltar",
+      "fbx_round_trip": "passed",
+      "tris": 3716,
+      "single_mesh_material_uv": true,
+      "closed_components": true,
+      "no_degenerate_triangles": true,
+      "embedded_atlas_bytes_match": true,
+      "ground_and_origin": "within 0.001 stud",
+      "dimensions": "within 0.001 stud",
+      "all_vertex_max_error_studs": 5.5e-07,
+      "fbx_sha256": "c4b5ff8b9b4f461972a18c0774593de973d1a8b0b02ef578b1b6017318de3e95"
+    },
+    {
+      "id": "ParadoxPotty",
+      "fbx_round_trip": "passed",
+      "tris": 3224,
+      "single_mesh_material_uv": true,
+      "closed_components": true,
+      "no_degenerate_triangles": true,
+      "embedded_atlas_bytes_match": true,
+      "ground_and_origin": "within 0.001 stud",
+      "dimensions": "within 0.001 stud",
+      "all_vertex_max_error_studs": 6.1e-07,
+      "fbx_sha256": "a60fa35f77cfed20f43de3d106c49e38bfe02cd3282e3d37fefd6154aaad816f"
+    },
+    {
+      "id": "InfinityFlush",
+      "fbx_round_trip": "passed",
+      "tris": 4824,
+      "single_mesh_material_uv": true,
+      "closed_components": true,
+      "no_degenerate_triangles": true,
+      "embedded_atlas_bytes_match": true,
+      "ground_and_origin": "within 0.001 stud",
+      "dimensions": "within 0.001 stud",
+      "all_vertex_max_error_studs": 6.1e-07,
+      "fbx_sha256": "dc401b59e0c895b9becaefee4528db0113e3c448a0b4246b5276fb31e91bbbba"
+    }
+  ]
+}

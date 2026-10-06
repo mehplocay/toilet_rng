@@ -1,0 +1,240 @@
+{
+  "schema_version": 1,
+  "group": "T",
+  "generator": "assets/blender/build_wave1_t.py",
+  "coordinate_system": "Export Y-up / Z-forward; author Z-up, front -Y; dimensions Roblox X/Y/Z",
+  "units": "stud",
+  "atlas_sha256": "1f1b2d5b903956746c7d92e25389fa3bd2c40c3b4deb6fa91ed669a0bb2d56f3",
+  "import_settings": {
+    "scale_unit": "Stud",
+    "scale_factor": 1,
+    "world_forward": "Front",
+    "world_up": "Top"
+  },
+  "assets": [
+    {
+      "id": "CoralCommode",
+      "name": "Coral Commode",
+      "tier": 8,
+      "category": "toilets",
+      "file": "assets/models/wave1/t/CoralCommode.fbx",
+      "source": "assets/blender/generated/wave1/t/CoralCommode.blend",
+      "tris": 4004,
+      "budget": 4600,
+      "size_studs": [
+        3.52,
+        4.92,
+        2.9122
+      ],
+      "target_size_studs": [
+        3.6,
+        5,
+        3.2
+      ],
+      "texture": "assets/textures/ToyPalette.png",
+      "pivot": "center of bottom foot at ground",
+      "seat_center_height_studs": 2.08,
+      "core_lid_top_studs": 4.79,
+      "mesh_count": 1,
+      "material_count": 1,
+      "preview": "assets/previews/wave1/t/CoralCommode.png",
+      "front_preview": "assets/previews/wave1/t/CoralCommode_front.png"
+    },
+    {
+      "id": "CloudCushion",
+      "name": "Cloud Cushion",
+      "tier": 9,
+      "category": "toilets",
+      "file": "assets/models/wave1/t/CloudCushion.fbx",
+      "source": "assets/blender/generated/wave1/t/CloudCushion.blend",
+      "tris": 4130,
+      "budget": 4300,
+      "size_studs": [
+        3.3,
+        4.79,
+        2.9122
+      ],
+      "target_size_studs": [
+        3.7,
+        5.1,
+        3.3
+      ],
+      "texture": "assets/textures/ToyPalette.png",
+      "pivot": "center of bottom foot at ground",
+      "seat_center_height_studs": 2.08,
+      "core_lid_top_studs": 4.79,
+      "mesh_count": 1,
+      "material_count": 1,
+      "preview": "assets/previews/wave1/t/CloudCushion.png",
+      "front_preview": "assets/previews/wave1/t/CloudCushion_front.png"
+    },
+    {
+      "id": "ClockworkCloset",
+      "name": "Clockwork Closet",
+      "tier": 10,
+      "category": "toilets",
+      "file": "assets/models/wave1/t/ClockworkCloset.fbx",
+      "source": "assets/blender/generated/wave1/t/ClockworkCloset.blend",
+      "tris": 4752,
+      "budget": 4800,
+      "size_studs": [
+        3.5202,
+        5.18,
+        2.9922
+      ],
+      "target_size_studs": [
+        3.7,
+        5.2,
+        3.3
+      ],
+      "texture": "assets/textures/ToyPalette.png",
+      "pivot": "center of bottom foot at ground",
+      "seat_center_height_studs": 2.08,
+      "core_lid_top_studs": 4.79,
+      "mesh_count": 1,
+      "material_count": 1,
+      "preview": "assets/previews/wave1/t/ClockworkCloset.png",
+      "front_preview": "assets/previews/wave1/t/ClockworkCloset_front.png"
+    },
+    {
+      "id": "DragonKiln",
+      "name": "Dragon Kiln",
+      "tier": 11,
+      "category": "toilets",
+      "file": "assets/models/wave1/t/DragonKiln.fbx",
+      "source": "assets/blender/generated/wave1/t/DragonKiln.blend",
+      "tris": 4080,
+      "budget": 5000,
+      "size_studs": [
+        3.64,
+        5.3088,
+        2.9122
+      ],
+      "target_size_studs": [
+        3.8,
+        5.3,
+        3.4
+      ],
+      "texture": "assets/textures/ToyPalette.png",
+      "pivot": "center of bottom foot at ground",
+      "seat_center_height_studs": 2.08,
+      "core_lid_top_studs": 4.79,
+      "mesh_count": 1,
+      "material_count": 1,
+      "preview": "assets/previews/wave1/t/DragonKiln.png",
+      "front_preview": "assets/previews/wave1/t/DragonKiln_front.png"
+    },
+    {
+      "id": "AuroraThrone",
+      "name": "Aurora Throne",
+      "tier": 12,
+      "category": "toilets",
+      "file": "assets/models/wave1/t/AuroraThrone.fbx",
+      "source": "assets/blender/generated/wave1/t/AuroraThrone.blend",
+      "tris": 2730,
+      "budget": 4700,
+      "size_studs": [
+        3.68,
+        5.4,
+        2.9122
+      ],
+      "target_size_studs": [
+        3.8,
+        5.4,
+        3.3
+      ],
+      "texture": "assets/textures/ToyPalette.png",
+      "pivot": "center of bottom foot at ground",
+      "seat_center_height_studs": 2.08,
+      "core_lid_top_studs": 4.79,
+      "mesh_count": 1,
+      "material_count": 1,
+      "preview": "assets/previews/wave1/t/AuroraThrone.png",
+      "front_preview": "assets/previews/wave1/t/AuroraThrone_front.png"
+    },
+    {
+      "id": "AstralAltar",
+      "name": "Astral Altar",
+      "tier": 13,
+      "category": "toilets",
+      "file": "assets/models/wave1/t/AstralAltar.fbx",
+      "source": "assets/blender/generated/wave1/t/AstralAltar.blend",
+      "tris": 3716,
+      "budget": 4900,
+      "size_studs": [
+        3.54,
+        5.38,
+        3.2297
+      ],
+      "target_size_studs": [
+        3.7,
+        5.5,
+        3.3
+      ],
+      "texture": "assets/textures/ToyPalette.png",
+      "pivot": "center of bottom foot at ground",
+      "seat_center_height_studs": 2.08,
+      "core_lid_top_studs": 4.79,
+      "mesh_count": 1,
+      "material_count": 1,
+      "preview": "assets/previews/wave1/t/AstralAltar.png",
+      "front_preview": "assets/previews/wave1/t/AstralAltar_front.png"
+    },
+    {
+      "id": "ParadoxPotty",
+      "name": "Paradox Potty",
+      "tier": 14,
+      "category": "toilets",
+      "file": "assets/models/wave1/t/ParadoxPotty.fbx",
+      "source": "assets/blender/generated/wave1/t/ParadoxPotty.blend",
+      "tris": 3224,
+      "budget": 4800,
+      "size_studs": [
+        3.48,
+        5.4,
+        3.1072
+      ],
+      "target_size_studs": [
+        3.8,
+        5.4,
+        3.4
+      ],
+      "texture": "assets/textures/ToyPalette.png",
+      "pivot": "center of bottom foot at ground",
+      "seat_center_height_studs": 2.08,
+      "core_lid_top_studs": 4.79,
+      "mesh_count": 1,
+      "material_count": 1,
+      "preview": "assets/previews/wave1/t/ParadoxPotty.png",
+      "front_preview": "assets/previews/wave1/t/ParadoxPotty_front.png"
+    },
+    {
+      "id": "InfinityFlush",
+      "name": "Infinity Flush",
+      "tier": 15,
+      "category": "toilets",
+      "file": "assets/models/wave1/t/InfinityFlush.fbx",
+      "source": "assets/blender/generated/wave1/t/InfinityFlush.blend",
+      "tris": 4824,
+      "budget": 5000,
+      "size_studs": [
+        3.9656,
+        5.421,
+        2.9122
+      ],
+      "target_size_studs": [
+        4,
+        5.5,
+        3.5
+      ],
+      "texture": "assets/textures/ToyPalette.png",
+      "pivot": "center of bottom foot at ground",
+      "seat_center_height_studs": 2.08,
+      "core_lid_top_studs": 4.79,
+      "mesh_count": 1,
+      "material_count": 1,
+      "preview": "assets/previews/wave1/t/InfinityFlush.png",
+      "front_preview": "assets/previews/wave1/t/InfinityFlush_front.png"
+    }
+  ]
+}
