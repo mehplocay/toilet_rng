@@ -1,0 +1,150 @@
+{
+  "scope": "Blender FBX round trip; not Studio import acceptance",
+  "manifest": "assets/manifest-wave1-a.json",
+  "assets": [
+    {
+      "id": "SudsSlug",
+      "tris": 1424,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "nondegenerate_triangles": true,
+      "single_mesh_material_uv": true,
+      "embedded_atlas_sha256": "1f1b2d5b903956746c7d92e25389fa3bd2c40c3b4deb6fa91ed669a0bb2d56f3",
+      "base_center_origin": true,
+      "source_palette_packed": true,
+      "max_dimension_error_studs": 4.529953003817866e-07
+    },
+    {
+      "id": "PocketPuddle",
+      "tris": 1404,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "nondegenerate_triangles": true,
+      "single_mesh_material_uv": true,
+      "embedded_atlas_sha256": "1f1b2d5b903956746c7d92e25389fa3bd2c40c3b4deb6fa91ed669a0bb2d56f3",
+      "base_center_origin": true,
+      "source_palette_packed": true,
+      "max_dimension_error_studs": 4.0531158429502057e-07
+    },
+    {
+      "id": "LoopyLoofah",
+      "tris": 1716,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "nondegenerate_triangles": true,
+      "single_mesh_material_uv": true,
+      "embedded_atlas_sha256": "1f1b2d5b903956746c7d92e25389fa3bd2c40c3b4deb6fa91ed669a0bb2d56f3",
+      "base_center_origin": true,
+      "source_palette_packed": true,
+      "max_dimension_error_studs": 3.5762786865234375e-07
+    },
+    {
+      "id": "SoggySock",
+      "tris": 1184,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "nondegenerate_triangles": true,
+      "single_mesh_material_uv": true,
+      "embedded_atlas_sha256": "1f1b2d5b903956746c7d92e25389fa3bd2c40c3b4deb6fa91ed669a0bb2d56f3",
+      "base_center_origin": true,
+      "source_palette_packed": true,
+      "max_dimension_error_studs": 3.5762786865234375e-07
+    },
+    {
+      "id": "TubTadpole",
+      "tris": 1468,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "nondegenerate_triangles": true,
+      "single_mesh_material_uv": true,
+      "embedded_atlas_sha256": "1f1b2d5b903956746c7d92e25389fa3bd2c40c3b4deb6fa91ed669a0bb2d56f3",
+      "base_center_origin": true,
+      "source_palette_packed": true,
+      "max_dimension_error_studs": 3.5762786865234375e-07
+    },
+    {
+      "id": "BrushBristle",
+      "tris": 1418,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "nondegenerate_triangles": true,
+      "single_mesh_material_uv": true,
+      "embedded_atlas_sha256": "1f1b2d5b903956746c7d92e25389fa3bd2c40c3b4deb6fa91ed669a0bb2d56f3",
+      "base_center_origin": true,
+      "source_palette_packed": true,
+      "max_dimension_error_studs": 4.0531158451706517e-07
+    },
+    {
+      "id": "RollMole",
+      "tris": 1764,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "nondegenerate_triangles": true,
+      "single_mesh_material_uv": true,
+      "embedded_atlas_sha256": "1f1b2d5b903956746c7d92e25389fa3bd2c40c3b4deb6fa91ed669a0bb2d56f3",
+      "base_center_origin": true,
+      "source_palette_packed": true,
+      "max_dimension_error_studs": 4.291534423384036e-07
+    },
+    {
+      "id": "CapybaraCap",
+      "tris": 2068,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "nondegenerate_triangles": true,
+      "single_mesh_material_uv": true,
+      "embedded_atlas_sha256": "1f1b2d5b903956746c7d92e25389fa3bd2c40c3b4deb6fa91ed669a0bb2d56f3",
+      "base_center_origin": true,
+      "source_palette_packed": true,
+      "max_dimension_error_studs": 4.410743712490728e-07
+    },
+    {
+      "id": "DrainCrab",
+      "tris": 1892,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "nondegenerate_triangles": true,
+      "single_mesh_material_uv": true,
+      "embedded_atlas_sha256": "1f1b2d5b903956746c7d92e25389fa3bd2c40c3b4deb6fa91ed669a0bb2d56f3",
+      "base_center_origin": true,
+      "source_palette_packed": true,
+      "max_dimension_error_studs": 3.5762786865234375e-07
+    },
+    {
+      "id": "ToothpasteGoose",
+      "tris": 1788,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "nondegenerate_triangles": true,
+      "single_mesh_material_uv": true,
+      "embedded_atlas_sha256": "1f1b2d5b903956746c7d92e25389fa3bd2c40c3b4deb6fa91ed669a0bb2d56f3",
+      "base_center_origin": true,
+      "source_palette_packed": true,
+      "max_dimension_error_studs": 4.410743712490728e-07
+    },
+    {
+      "id": "SpongeKnight",
+      "tris": 1908,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "nondegenerate_triangles": true,
+      "single_mesh_material_uv": true,
+      "embedded_atlas_sha256": "1f1b2d5b903956746c7d92e25389fa3bd2c40c3b4deb6fa91ed669a0bb2d56f3",
+      "base_center_origin": true,
+      "source_palette_packed": true,
+      "max_dimension_error_studs": 4.172325134277344e-07
+    },
+    {
+      "id": "BubbleBeard",
+      "tris": 2080,
+      "fbx_round_trip": "passed",
+      "closed_components": true,
+      "nondegenerate_triangles": true,
+      "single_mesh_material_uv": true,
+      "embedded_atlas_sha256": "1f1b2d5b903956746c7d92e25389fa3bd2c40c3b4deb6fa91ed669a0bb2d56f3",
+      "base_center_origin": true,
+      "source_palette_packed": true,
+      "max_dimension_error_studs": 4.887580871137942e-07
+    }
+  ]
+}
