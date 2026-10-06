@@ -2,8 +2,8 @@ local Rules = require("../src/shared/PresentationRules")
 local Settings = require("../src/shared/PresentationSettings")
 local Config = require("../src/shared/Config/Presentation")
 local Items = require("../src/shared/Config/Items")
-local expected = { "Pop", "Pop", "Burst", "Sparkle", "Banner", "Banner", "Cinematic", "Cinematic" }
-for i, rarity in ipairs({ "Common", "Uncommon", "Rare", "Epic", "Legendary", "Mythic", "Godly", "Secret" }) do
+local expected = { "Pop", "Pop", "Burst", "Sparkle", "Banner", "Cinematic", "Cinematic", "Cinematic", "Cinematic" }
+for i, rarity in ipairs({ "Common", "Uncommon", "Rare", "Epic", "Legendary", "Mythic", "Godly", "Celestial", "Secret" }) do
 	assert(Rules.Tier(rarity, "Full") == expected[i])
 	assert(Rules.Tier(rarity, "Reduced") == "Pop" and Rules.Tier(rarity, "Off") == "Toast")
 end

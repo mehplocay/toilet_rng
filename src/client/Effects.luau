@@ -8,6 +8,8 @@ local P = require(game.ReplicatedStorage.Shared.Visuals.Primitives)
 local Visuals = require(Config.Visuals)
 local upgrades = require(game.ReplicatedStorage.Shared.UpgradeRules).new(require(Config.Upgrades))
 local Effects = {}
+local RevealSky = require(script.Parent.Presentation.RevealSky)
+local RevealConfig = require(Config.Reveals)
 function Effects.Create(gui, _soundGroup, hud)
 	local generation, skipAnimation = 0, false
 	local banner = C.Card(gui, C.Gold, true)
@@ -19,6 +21,18 @@ function Effects.Create(gui, _soundGroup, hud)
 	gui:GetPropertyChangedSignal("AbsoluteSize"):Connect(resize)
 	resize()
 	local tint = C.New("ColorCorrectionEffect", Lighting, { Name = "RareDropTint" })
+	local releaseSky
+	local function clearSky()
+		if releaseSky then
+			releaseSky()
+			releaseSky = nil
+		end
+	end
+	gui.Destroying:Connect(function()
+		generation += 1
+		clearSky()
+		tint:Destroy()
+	end)
 	local function drop(item, cooldown)
 		if skipAnimation then
 			return
@@ -44,6 +58,7 @@ function Effects.Create(gui, _soundGroup, hud)
 		SetSkip = function(enabled)
 			skipAnimation = enabled
 			if enabled then
+				clearSky()
 				C.Tween(tint, 0.1, { TintColor = Color3.new(1, 1, 1), Brightness = 0 })
 			end
 		end,
@@ -60,6 +75,7 @@ function Effects.Create(gui, _soundGroup, hud)
 				return
 			end
 			generation += 1
+			clearSky()
 			local token = generation
 			text.Text = (if payload.Admin then "[ADMIN TEST] " else "")
 				.. payload.PlayerName
@@ -73,13 +89,18 @@ function Effects.Create(gui, _soundGroup, hud)
 				else Rarities[item.Rarity].Color:Lerp(Color3.new(1, 1, 1), 0.3)
 			banner.Visible = true
 			hud.EventActive(true)
-			if C.SoundHook then
-				C.SoundHook("ServerEvent")
+			-- The finder already owns a rarity cue; the higher-priority generic
+			-- fanfare would otherwise replace Mythic/Godly/Secret on the same find.
+			if C.SoundHook and payload.PlayerName ~= game.Players.LocalPlayer.Name then
+				C.SoundHook(if item.Rarity == "Secret" then "Secret" else "ServerEvent")
 			end
 			if C.AudioHook then
 				C.AudioHook("Event", 5)
 			end
 			if not skipAnimation then
+				if item.Rarity == "Secret" then
+					releaseSky = RevealSky.Acquire(RevealConfig.Tiers.Secret)
+				end
 				C.Pop(banner)
 				C.Shine(banner)
 				local rgb = Events.Tints[item.Id] or Events.Tints.KingPoop
@@ -93,6 +114,7 @@ function Effects.Create(gui, _soundGroup, hud)
 					return
 				end
 				banner.Visible = false
+				clearSky()
 				hud.EventActive(false)
 				C.Tween(tint, 1.2, { TintColor = Color3.new(1, 1, 1), Brightness = 0 })
 			end)

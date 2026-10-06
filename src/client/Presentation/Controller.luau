@@ -6,7 +6,8 @@ function Presentation.Start(root, hud, remotes, audio, settingsList, chat)
 	local list = require(script.Parent.PlayerList).Create(root)
 	local settings = require(script.Parent.SettingsUI).Create(settingsList, remotes.PresentationSettings)
 	local self = {}
-	function self.Update(raw)
+	function self.Update(raw, collection)
+		reveal:UpdateDiscovery(collection)
 		local values = Settings.Sanitize(raw)
 		-- Retain the older free quick-reveal toggle as a reduced-motion override.
 		reveal:SetIntensity(
