@@ -1,0 +1,72 @@
+INCOME-FIRST v2: 200 seeded accounts per archetype; fresh wallet/inventory, real protected sales and purchased slots.
+Uptime: casual 30%, normal 75%, grinder 100%; collect every 120/30/15 seconds, passive runs throughout.
+Buy Dirty first; then 5 slots, 10 at Diamond; one Cash/Luck/Speed level per tier through L4. No index/daily/pass/event/offline grants.
+Times are cumulative wall-clock minutes. Galaxy run defers rebirth; separate two-run cohort rebirths immediately.
+Cash Boost / rebirth bonuses add; toilet display multipliers multiply. Counts use unchanged rare-first probabilities.
+Base rarity income per item ($/s): Basic / Dirty / Golden / Diamond / Radioactive / Demon / Galaxy
+Common | 1 | 1.5 | 2.2 | 3.3 | 5 | 8 | 12
+Uncommon | 3 | 4.5 | 6.6 | 9.9 | 15 | 24 | 36
+Rare | 10 | 15 | 22 | 33 | 50 | 80 | 120
+Epic | 40 | 60 | 88 | 132 | 200 | 320 | 480
+Legendary | 200 | 300 | 440 | 660 | 1000 | 1600 | 2400
+Mythic | 1000 | 1500 | 2200 | 3300 | 5000 | 8000 | 12000
+Godly | 6000 | 9000 | 13200 | 19800 | 30000 | 48000 | 72000
+Secret | 100000 | 150000 | 220000 | 330000 | 500000 | 800000 | 1200000
+Sell values (before cash):
+Poop	80
+ToiletPaper	280
+Rat	1000
+Fish	2480
+Duck	8000
+GoldenPoop	30000
+ToiletBaby	150000
+SewerShark	800000
+KingPoop	5000000
+AlienToilet	40000000
+Mystery	500000000
+Upgrade costs: first / last; exponential growth; max level
+CashBoost	400	781250000	5	10
+LuckBoost	600	1171875000	5	10
+FlushSpeed	400	781250000	5	10
+AutoFlushSpeed	800	1562500000	5	10
+DisplaySlots	600	38400	2	7
+OfflineTank	1000	1953125000	5	10
+Casual | Tier | Price | target | p50 | p90 (minutes)
+Casual  | Dirty        |      6500 |  1.25 |    3.42 |    4.00
+Casual  | Golden       |     14000 |  3.00 |    6.14 |    8.14
+Casual  | Diamond      |    105000 |  8.00 |   14.32 |   16.27
+Casual  | Radioactive  |   1100000 | 20.00 |   34.38 |   44.32
+Casual  | Demon        |  14000000 | 45.00 |   74.97 |   98.98
+Casual  | Galaxy       |  95000000 | 90.00 |  146.22 |  198.95
+Casual passive share: first 10 min 59.74%; 10 min after Diamond 86.28%
+Casual rebirth 3300 flushes: first p50 146.91 / p90 151.18; second p50 119.31 / p90 125.07
+Normal | Tier | Price | target | p50 | p90 (minutes)
+Normal  | Dirty        |      6500 |  1.25 |    1.50 |    1.57
+Normal  | Golden       |     14000 |  3.00 |    3.10 |    3.52
+Normal  | Diamond      |    105000 |  8.00 |    7.84 |    9.17
+Normal  | Radioactive  |   1100000 | 20.00 |   20.17 |   25.45
+Normal  | Demon        |  14000000 | 45.00 |   45.46 |   57.84
+Normal  | Galaxy       |  95000000 | 90.00 |   89.37 |  111.43
+Normal passive share: first 10 min 57.85%; 10 min after Diamond 80.38%
+Normal rebirth 3300 flushes: first p50 61.94 / p90 63.88; second p50 50.76 / p90 53.21
+Grinder | Tier | Price | target | p50 | p90 (minutes)
+Grinder | Dirty        |      6500 |  1.25 |    1.10 |    1.23
+Grinder | Golden       |     14000 |  3.00 |    2.48 |    2.78
+Grinder | Diamond      |    105000 |  8.00 |    6.39 |    7.27
+Grinder | Radioactive  |   1100000 | 20.00 |   16.89 |   21.24
+Grinder | Demon        |  14000000 | 45.00 |   38.45 |   49.33
+Grinder | Galaxy       |  95000000 | 90.00 |   76.21 |   96.76
+Grinder passive share: first 10 min 59.65%; 10 min after Diamond 77.02%
+Grinder rebirth 3300 flushes: first p50 47.23 / p90 48.86; second p50 39.18 / p90 40.35
+Normal, five-slot limit: first 10-minute passive share 53.62% (slots purchased, no free inventory)
+Steady display rates: ten best floored expected drops from 60 minutes at current tier; acquisition/slot costs excluded.
+Tier          Passive/s   Active/s   Share   Items
+Basic            110.00     126.70   46.47% 10x Fish
+Dirty            720.00     208.73   77.52% 10x Duck
+Golden          2516.80     330.70   88.39% 3x GoldenPoop, 7x Duck
+Diamond         4804.80     535.72   89.97% 4x GoldenPoop, 6x Duck
+Radioactive    15120.00    2256.77   87.01% 1x ToiletBaby, 5x GoldenPoop, 4x Duck
+Demon          25984.00    4385.91   85.56% 1x ToiletBaby, 6x GoldenPoop, 3x Duck
+Galaxy         41664.00    8562.90   82.95% 1x ToiletBaby, 7x GoldenPoop, 2x Duck
+Offline: 8 hours base / 12 hours max tank; wallet <=9e15 coins; entire ledger <=9e15 integer subcoins.
+All v2 balance targets and deterministic replay passed. Rare jackpot tails can exceed typical income shares.

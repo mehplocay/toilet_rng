@@ -20,9 +20,14 @@ function Income:CapacityMultiplier(profile)
 			/ self.Config.OfflineMinutes
 		else 1
 end
+-- Keep the persisted scale; cap subcoins separately from wallet coins.
+function Income:StorageUnits(profile, perSlot)
+	local c = self.Config
+	local coins = (if perSlot then c.SlotPendingCap else c.PlayerPendingCap) * self:CapacityMultiplier(profile)
+	return math.floor(math.min(coins, math.floor(c.MaxLedgerUnits / c.UnitsPerCoin))) * c.UnitsPerCoin
+end
 function Income:Sanitize(raw, profile)
 	local c = self.Config
-	local capacity = self:CapacityMultiplier(profile)
 	local result = { UpdatedAt = 0, Pending = {} }
 	if type(raw) ~= "table" then
 		return result
@@ -30,11 +35,12 @@ function Income:Sanitize(raw, profile)
 	if type(raw.UpdatedAt) == "number" and raw.UpdatedAt <= c.MaxTimestamp then
 		result.UpdatedAt = bounded(raw.UpdatedAt, c.MaxTimestamp)
 	end
-	local remaining = math.floor(c.PlayerPendingCap * capacity * c.UnitsPerCoin)
+	local remaining = self:StorageUnits(profile, false)
+	local slotStorage = self:StorageUnits(profile, true)
 	for slot = 1, c.MaxSlots do
 		local key = tostring(slot)
 		local value = if type(raw.Pending) == "table" then raw.Pending[key] else nil
-		local units = math.min(bounded(value, math.floor(c.SlotPendingCap * capacity * c.UnitsPerCoin)), remaining)
+		local units = math.min(bounded(value, slotStorage), remaining)
 		if units > 0 then
 			result.Pending[key] = units
 			remaining -= units
@@ -49,8 +55,14 @@ function Income:TotalUnits(profile)
 	end
 	return total
 end
+-- Division can round (9e15 - 1)/6000 up to a whole coin. Correct using exact integers.
+function Income:WholeCoins(units)
+	local scale = self.Config.UnitsPerCoin
+	local coins = math.floor(units / scale)
+	return if coins * scale > units then coins - 1 else coins
+end
 function Income:PendingCoins(profile)
-	return math.floor(self:TotalUnits(profile) / self.Config.UnitsPerCoin)
+	return self:WholeCoins(self:TotalUnits(profile))
 end
 function Income:Rates(profile)
 	local c, rates, total = self.Config, {}, 0
@@ -60,19 +72,32 @@ function Income:Rates(profile)
 		local key = tostring(slot)
 		local item = self.Items[profile.Displays[key]]
 		if item then
-			local units = math.floor(math.min(item.Value * c.PassiveRate, slotCap) * cash * c.UnitsPerCoin / 60 + 1e-9)
+			local units = math.floor(
+				math.min((c.RarityRates[item.Rarity] or 0) * (c.TierMultipliers[profile.ToiletTier] or 0) * 60, slotCap)
+						* cash
+						* c.UnitsPerCoin
+						/ 60
+					+ 0.5
+			)
 			rates[key], total = units, total + units
 		end
 	end
 	local cap = math.floor((c.PlayerRateCaps[profile.ToiletTier] or 0) * cash * c.UnitsPerCoin / 60)
 	if total > cap then
-		-- Cumulative rounding preserves the total cap without losing units for larger displays.
-		local numerator, allocated = 0, 0
+		-- Divide first: multiplying rate by cap would lose integer precision.
+		local allocated = 0
 		for slot = 1, c.MaxSlots do
 			local key = tostring(slot)
-			numerator += (rates[key] or 0) * cap
-			local cumulative = math.floor(numerator / total)
-			rates[key], allocated = cumulative - allocated, cumulative
+			local units = math.floor((rates[key] or 0) / total * cap)
+			rates[key], allocated = units, allocated + units
+		end
+		local remaining = cap - allocated
+		for slot = 1, c.MaxSlots do
+			local key = tostring(slot)
+			if remaining > 0 and rates[key] > 0 then
+				rates[key] += 1
+				remaining -= 1
+			end
 		end
 	end
 	return rates
@@ -95,16 +120,15 @@ function Income:Settle(profile, now, offline)
 	end
 	ledger.UpdatedAt = now -- Consume capped time too; reconnecting cannot reclaim it.
 	local rates = self:Rates(profile)
-	local capacity = self:CapacityMultiplier(profile)
-	local room = math.floor(c.PlayerPendingCap * capacity * c.UnitsPerCoin) - self:TotalUnits(profile)
-	for slot = 1, c.MaxSlots do
+	local room = self:StorageUnits(profile, false) - self:TotalUnits(profile)
+	local slotStorage = self:StorageUnits(profile, true)
+	for slot = 1, math.min(profile.DisplaySlots, c.MaxSlots) do
 		local key = tostring(slot)
 		local pending = ledger.Pending[key] or 0
-		local grant = math.min(
-			(rates[key] or 0) * elapsed,
-			math.floor(c.SlotPendingCap * capacity * c.UnitsPerCoin) - pending,
-			room
-		)
+		local limit = math.max(0, math.min(slotStorage - pending, room))
+		local rate = rates[key] or 0
+		-- Compare before multiplying: even decades elapsed cannot overflow subcoins.
+		local grant = if rate > math.floor(limit / elapsed) then limit else rate * elapsed
 		if grant > 0 then
 			ledger.Pending[key] = pending + grant
 			room -= grant
@@ -117,7 +141,7 @@ function Income:Collect(profile, slot)
 		return 0
 	end
 	local available = if slot
-		then math.floor((profile.Income.Pending[tostring(slot)] or 0) / c.UnitsPerCoin)
+		then self:WholeCoins(profile.Income.Pending[tostring(slot)] or 0)
 		else self:PendingCoins(profile)
 	local coins = math.min(available, c.MaxBalance - profile.Coins, c.MaxBalance - profile.Stats.Earned)
 	if coins <= 0 then

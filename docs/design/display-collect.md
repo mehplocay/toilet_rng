@@ -1,5 +1,7 @@
 # Display and income collection fix
 
+2026-10-06 income-first update: [Economy v2](economy-v2.md) supersedes the historical rates, prices, offline cap and timing assertions below. Collection, protection, lease and reset contracts remain.
+
 2026-10-06, `fix/display-collect`, baseline `b91a3bb82be41ef7507f88ef46b0f8b50caf3404`. No commit or push. [API research](../research/display-collect.md).
 
 ## Root causes and reproduction

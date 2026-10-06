@@ -1,5 +1,6 @@
 local C = require(script.Parent.Components)
 local Toilets = require(game.ReplicatedStorage.Shared.Config.Toilets)
+local Income = require(game.ReplicatedStorage.Shared.Config.Income)
 local Style = require(game.ReplicatedStorage.Shared.Config.World)
 local Preview = require(script.Parent.Preview)
 local Upgrades = {}
@@ -8,14 +9,18 @@ function Upgrades.Create(gui, remotes)
 	local body = panel.ContentScroll.Body
 	local wallet = C.Text(body, "Better toilets. Bigger possibilities!", UDim2.new(1, 0, 0, 32), nil, 24)
 	wallet.TextColor3 = Color3.fromRGB(153, 255, 143)
-	local footer =
-		C.BodyText(body, "Better toilets = new drops + higher odds!", UDim2.new(1, 0, 0, 26), UDim2.new(0, 0, 1, -26))
+	local footer = C.BodyText(
+		body,
+		"Better toilets = more income + better drops!",
+		UDim2.new(1, 0, 0, 26),
+		UDim2.new(0, 0, 1, -26)
+	)
 	local row = C.Scroll(body, UDim2.new(1, 0, 1, -146), UDim2.fromOffset(0, 110))
 	local tracks = require(script.Parent.UpgradeTracks).Create(body, remotes)
 	local tabs = C.TabBar(body, { "Toilets", "Coin Upgrades" }, function(name)
 		row.Visible, tracks.Frame.Visible = name == "Toilets", name == "Coin Upgrades"
 		footer.Text = if name == "Toilets"
-			then "Better toilets = new drops + higher odds!"
+			then "Better toilets = more income + better drops!"
 			else "Coin upgrades last until your next rebirth."
 	end)
 	tabs.Frame.Position = UDim2.fromOffset(0, 38)
@@ -32,7 +37,7 @@ function Upgrades.Create(gui, remotes)
 		C.Text(card, toilet.Name, UDim2.new(1, -12, 0, 30), UDim2.fromOffset(6, 140), 22)
 		C.BodyText(
 			card,
-			tostring(toilet.Cooldown) .. "s flush  /  " .. toilet.Luck .. "x luck",
+			tostring(Income.TierMultipliers[tier]) .. "x display income / " .. toilet.Luck .. "x luck",
 			UDim2.new(1, -12, 0, 25),
 			UDim2.fromOffset(6, 174)
 		)

@@ -3,6 +3,7 @@ local Layout = require(Shared.Config.MapLayout)
 local V = require(Shared.Config.Visuals)
 local Rarities = require(Shared.Config.Rarities)
 local Income = require(Shared.Config.Income)
+local NumberFormat = require(Shared.NumberFormat)
 local Items = require(Shared.Config.Items)
 local accounting =
 	require(Shared.IncomeAccrual).new(Income, Items, require(Shared.UpgradeRules).new(require(Shared.Config.Upgrades)))
@@ -91,14 +92,7 @@ function Rows.Build(plot, previewProfile)
 				"IncomeNametag",
 				cf * CFrame.new(0, 7.5, 0),
 				Vector3.new(7, 4, 0.1),
-				item.Name
-					.. "\n"
-					.. item.Rarity
-					.. "\n1 in "
-					.. item.Chance
-					.. "\n$"
-					.. string.format("%.2f", rate)
-					.. "/s",
+				item.Name .. "\n" .. item.Rarity .. "\n1 in " .. item.Chance .. "\n$" .. NumberFormat.Rate(rate) .. "/s",
 				color,
 				true,
 				Layout.Labels.OccupiedDistance

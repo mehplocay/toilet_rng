@@ -4,6 +4,7 @@ local Rebirth = require(Config.Rebirth)
 local Rarities = require(Config.Rarities)
 local Toilets = require(Config.Toilets)
 local Layout = require(Config.MapLayout)
+local NumberFormat = require(game.ReplicatedStorage.Shared.NumberFormat)
 local colors = {}
 for _, rarity in pairs(Rarities) do
 	colors[rarity.Order] = rarity.Color
@@ -19,7 +20,7 @@ function Stairs.Refresh(plot, owner, profile)
 	-- Five existing terraces follow the current milestone through the full 15-level cap.
 	local first =
 		math.clamp(level - Layout.Rebirth.Steps + 2, 1, math.max(1, #Rebirth.Levels - Layout.Rebirth.Steps + 1))
-	local requirement = tostring(Rebirth.RequiredFlushes):reverse():gsub("(%d%d%d)", "%1,"):reverse():gsub("^,", "")
+	local requirement = NumberFormat.Compact(Rebirth.RequiredFlushes)
 		.. " flushes + "
 		.. Toilets[Rebirth.RequiredTier].Id
 	for index, step in ipairs(plot.RebirthSteps) do

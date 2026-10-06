@@ -1,3 +1,4 @@
+local NumberFormat = require(game.ReplicatedStorage.Shared.NumberFormat)
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local Debris = game:GetService("Debris")
@@ -160,7 +161,7 @@ function World:RefreshLeaderboards()
 			local entry = ranked[rank]
 			row.Name.Text = if entry then rank .. ".  " .. entry.Name elseif rank == 1 then "Waiting for players" else ""
 			row.Value.Text = if entry
-				then (if key == "Rarest" and entry.Value > 0 then "1 in " else "") .. string.format("%.0f", entry.Value)
+				then (if key == "Rarest" and entry.Value > 0 then "1 in " else "") .. NumberFormat.Compact(entry.Value)
 				else ""
 		end
 	end

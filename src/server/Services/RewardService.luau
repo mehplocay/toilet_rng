@@ -1,4 +1,5 @@
 local RewardService = {}
+local NumberFormat = require(if script then game.ReplicatedStorage.Shared.NumberFormat else "../../shared/NumberFormat")
 RewardService.__index = RewardService
 
 function RewardService.new(config, schedule, clock)
@@ -16,7 +17,7 @@ function RewardService:Claim(profile)
 		return { Success = false, Message = "Today's reward has already been claimed." }
 	end
 	local coins = self.Schedule.Coins(day, profile.ToiletTier, self.Config)
-	if profile.Coins + coins > 9e15 or profile.Stats.Earned + coins > 9e15 then
+	if coins > 9e15 - profile.Coins or coins > 9e15 - profile.Stats.Earned then
 		return { Success = false, Message = "Coin limit reached." }
 	end
 	-- No yields: eligibility and all reward mutations are one server-side operation.
@@ -31,7 +32,7 @@ function RewardService:Claim(profile)
 		Success = true,
 		Day = day,
 		Coins = coins,
-		Message = "+" .. coins .. " Coins!" .. (if day == #self.Config.BaseCoins
+		Message = "+" .. NumberFormat.Compact(coins) .. " Coins!" .. (if day == #self.Config.BaseCoins
 			then " Luck x2 for 10 minutes!"
 			else ""),
 	}

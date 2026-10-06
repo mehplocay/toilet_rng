@@ -90,53 +90,53 @@ end)
 test("upgrades: delayed save and duplicate purchase cannot double debit or level", function()
 	local e = server()
 	local player, p = e:Join(71)
-	p.Coins = 1000
+	p.Coins = 10000
 	e.Store.Before = function()
 		coroutine.yield("purchase save held")
 	end
 	local buy = e:Spawn(function()
 		e:Fire("BuyUpgrade", player, "CashBoost", 0)
 	end)
-	assert(p.Coins == 970 and p.Upgrades.CashBoost == 1)
+	assert(p.Coins == 9600 and p.Upgrades.CashBoost == 1)
 	e:Fire("BuyUpgrade", player, "CashBoost", 0)
-	assert(p.Coins == 970 and p.Upgrades.CashBoost == 1)
+	assert(p.Coins == 9600 and p.Upgrades.CashBoost == 1)
 	local second = e:Spawn(function()
 		e:Fire("BuyUpgrade", player, "CashBoost", 1)
 	end)
-	assert(coroutine.status(second) == "dead" and p.Coins == 970 and p.Upgrades.CashBoost == 1)
+	assert(coroutine.status(second) == "dead" and p.Coins == 9600 and p.Upgrades.CashBoost == 1)
 	e.Store.Before = nil
 	e:Resume(buy)
-	assert(e.Store.Records.Player_71.Data.Coins == 970 and e.Store.Records.Player_71.Data.Upgrades.CashBoost == 1)
+	assert(e.Store.Records.Player_71.Data.Coins == 9600 and e.Store.Records.Player_71.Data.Upgrades.CashBoost == 1)
 	-- Busy saves reject without mutating or queueing; retry the next level after acknowledgement.
 	e.Now += 1
 	e:Fire("BuyUpgrade", player, "CashBoost", 1)
-	assert(e.Store.Records.Player_71.Data.Coins == 880 and e.Store.Records.Player_71.Data.Upgrades.CashBoost == 2)
+	assert(e.Store.Records.Player_71.Data.Coins == 7600 and e.Store.Records.Player_71.Data.Upgrades.CashBoost == 2)
 	e.Data:Close(player)
 	local rejoined = e:Join(71)
-	assert(e.Data:Get(rejoined).Coins == 880 and e.Data:Get(rejoined).Upgrades.CashBoost == 2)
+	assert(e.Data:Get(rejoined).Coins == 7600 and e.Data:Get(rejoined).Upgrades.CashBoost == 2)
 end)
 
 test("upgrades: committed response loss retries one immutable transaction", function()
 	local e = server()
 	local player, p = e:Join(72)
-	p.Coins = 1000
+	p.Coins = 10000
 	e.Store.After = function()
 		error("lost purchase response")
 	end
 	local buy = e:Spawn(function()
 		e:Fire("BuyUpgrade", player, "FlushSpeed", 0)
 	end)
-	assert(e.Store.Records.Player_72.Data.Coins == 975 and p.Upgrades.FlushSpeed == 1)
+	assert(e.Store.Records.Player_72.Data.Coins == 9600 and p.Upgrades.FlushSpeed == 1)
 	e:Fire("BuyUpgrade", player, "FlushSpeed", 0)
 	e.Store.After = nil
 	e:Resume(buy)
-	assert(p.Coins == 975 and e.Store.Records.Player_72.Data.Upgrades.FlushSpeed == 1)
+	assert(p.Coins == 9600 and e.Store.Records.Player_72.Data.Upgrades.FlushSpeed == 1)
 end)
 
 test("upgrades: expired lease and foreign takeover reject purchases and save success", function()
 	local e = server()
 	local player, p = e:Join(73)
-	p.Coins = 1000
+	p.Coins = 10000
 	e.Store.Before = function()
 		coroutine.yield("held")
 	end
@@ -146,7 +146,7 @@ test("upgrades: expired lease and foreign takeover reject purchases and save suc
 	e.Now += 181
 	e.Store.Records.Player_73 = { Data = { Coins = 123 }, Lock = { Session = "foreign", Expires = e.Now + 180 } }
 	e:Fire("BuyUpgrade", player, "CashBoost", 1)
-	assert(p.Coins == 970 and p.Upgrades.CashBoost == 1)
+	assert(p.Coins == 9600 and p.Upgrades.CashBoost == 1)
 	e.Store.Before = nil
 	e:Resume(buy)
 	assert(e.Store.Records.Player_73.Data.Coins == 123)
@@ -192,22 +192,22 @@ end)
 test("upgrades: cash settles past income before changing rates; index and slots stay bounded", function()
 	local e = server()
 	local player, p = e:Join(75)
-	p.Coins = 1000
+	p.Coins = 10000
 	p.Inventory.Poop = 10
 	e:Fire("Display", player, "Poop", 1)
 	e.Now += 60
 	e:Fire("BuyUpgrade", player, "CashBoost", 0)
 	local before = p.Income.Pending["1"]
-	assert(before == 24000, "Past income used new boost")
+	assert(before == 360000, "Past income used new boost")
 	e.Now += 60
 	e:Fire("State", player)
-	assert(p.Income.Pending["1"] == before + 26400, "Cash boost must affect only subsequent accrual")
+	assert(p.Income.Pending["1"] == before + 396000, "Cash boost must affect only subsequent accrual")
 	p.Upgrades.CashBoost = 10
 	e.Now += 60
 	e:Fire("State", player)
-	assert(p.Income.Pending["1"] == before + 26400 + 48000)
+	assert(p.Income.Pending["1"] == before + 396000 + 720000)
 	e:Fire("Sell", player, "Poop", 1)
-	assert(p.Coins == 974 and p.Inventory.Poop == 9)
+	assert(p.Coins == 9760 and p.Inventory.Poop == 9)
 	p.DisplaySlots = 9
 	e:Fire("BuyUpgrade", player, "DisplaySlots", 0)
 	assert(p.DisplaySlots == 10)
@@ -302,7 +302,7 @@ test("upgrades: display purchases and index claims commute and survive migration
 	for _, indexFirst in ipairs({ true, false }) do
 		local e = server()
 		local player, p = e:Join(79)
-		p.Coins = 1000
+		p.Coins = 10000
 		for _, item in ipairs(e:Load("src/shared/Config/Items")) do
 			p.Collection[item.Id] = 1
 		end
@@ -313,7 +313,7 @@ test("upgrades: display purchases and index claims commute and survive migration
 		if not indexFirst then
 			e:Fire("ClaimIndexReward", player, "total:5")
 		end
-		assert(p.DisplaySlots == 5 and p.Upgrades.DisplaySlots == 1 and p.Coins == 900)
+		assert(p.DisplaySlots == 5 and p.Upgrades.DisplaySlots == 1 and p.Coins == 9400)
 		e:Fire("ClaimIndexReward", player, "total:5")
 		assert(p.DisplaySlots == 5)
 		e.Data:Close(player)
@@ -348,9 +348,9 @@ test("upgrades: maximum offline tank survives ambiguous load and cannot be recla
 		e:Load("src/shared/UpgradeRules").new(e:Load("src/shared/Config/Upgrades"))
 	)
 	local restored = e.Data:Get(second)
-	assert(income:PendingCoins(restored) == 1353600 and restored.Upgrades.OfflineTank == 10)
+	assert(income:PendingCoins(restored) == 1036800000000 and restored.Upgrades.OfflineTank == 10)
 	e.Data:Close(second)
 	local third = e:Player(80)
 	e.Data:Load(third)
-	assert(income:PendingCoins(e.Data:Get(third)) == 1353600, "Reconnect repeated maximum tank")
+	assert(income:PendingCoins(e.Data:Get(third)) == 1036800000000, "Reconnect repeated maximum tank")
 end)

@@ -25,7 +25,7 @@ do
 			assert(step.Label.Parent.MaxDistance == layout.Rebirth.SignDistance)
 			assert(not step.Label.RichText and not step.Label.Parent.AlwaysOnTop)
 			if nextStep then
-				assert(step.Label.Text == "Rebirth " .. (level + 1) .. ":\n3,600 flushes + Diamond")
+				assert(step.Label.Text == "Rebirth " .. (level + 1) .. ":\n3.3K flushes + Diamond")
 			elseif unlocked then
 				assert(step.Label.Text == "Rebirth " .. milestone .. ": Unlocked")
 			else
@@ -62,7 +62,7 @@ do
 	World:Refresh(replacementOwner, profile)
 	assert(plot.StairsOwnerId == replacementOwner.UserId)
 	assert(plot.Sign.Text == "New Owner's Plot\nRebirth 2")
-	assert(plot.RebirthSteps[3].Label.Text == "Rebirth 3:\n3,600 flushes + Diamond")
+	assert(plot.RebirthSteps[3].Label.Text == "Rebirth 3:\n3.3K flushes + Diamond")
 	World.Assigned[replacementOwner] = nil
 	plot.Model:Destroy()
 	print(

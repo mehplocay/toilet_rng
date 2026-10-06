@@ -57,7 +57,7 @@ function SafeInventory.Sell(profile, items, id, count, cashMultiplier)
 	end
 	-- Round per copy, so batching or splitting sales cannot change their value.
 	local value = math.floor(item.Value * multiplier + 1e-9) * count
-	if profile.Coins + value > 9e15 or profile.Stats.Earned + value > 9e15 then
+	if value > 9e15 - profile.Coins or value > 9e15 - profile.Stats.Earned then
 		return false
 	end
 	profile.Inventory[id] -= count

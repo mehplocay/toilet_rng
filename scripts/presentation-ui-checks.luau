@@ -171,6 +171,9 @@ assert(rows["3"].PlayerName.Text == "[R3] Player3")
 players[1].leaderstats.Coins.Value = 2e6
 H.Advance(1.1)
 assert(rows["1"].LayoutOrder == 1 and rows["1"].Coins.Text == "2M")
+players[1].leaderstats.Coins.Value = 9e15
+H.Advance(1.1)
+assert(rows["1"].Coins.Text == "9Qa" and rows["1"].LayoutOrder == 1)
 table.remove(players, 2)
 H.Advance(1.1)
 assert(not rows:FindFirstChild("2"))

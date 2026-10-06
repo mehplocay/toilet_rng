@@ -1,6 +1,7 @@
 local TweenService = game:GetService("TweenService")
 local Visuals = require(game.ReplicatedStorage.Shared.Config.Visuals)
 local Assets = require(game.ReplicatedStorage.Shared.Config.Assets)
+local NumberFormat = require(game.ReplicatedStorage.Shared.NumberFormat)
 local Layout = require(script.Parent.Layout)
 local C = {
 	Navy = Visuals.Palette.Navy,
@@ -58,7 +59,7 @@ function C.StartAudioInput(playerGui, lifetime)
 	end)
 end
 function C.Commas(value)
-	return (tostring(math.floor(value)):reverse():gsub("(%d%d%d)", "%1,"):reverse():gsub("^,", ""))
+	return NumberFormat.Compact(value)
 end
 function C.New(class, parent, props)
 	local object = Instance.new(class)

@@ -9,11 +9,11 @@ do
 	tab.Activated:Fire()
 	assert(tracks.Visible)
 	local state = {
-		Coins = 100,
+		Coins = 10000,
 		ToiletTier = 1,
 		DisplaySlots = 3,
 		Upgrades = {},
-		UpgradeStats = { Cooldown = 1.5, AutoInterval = 3, OfflineMinutes = 240, LuckCapped = false },
+		UpgradeStats = { Cooldown = 1.5, AutoInterval = 3, OfflineMinutes = 480, LuckCapped = false },
 	}
 	panel.Update(state)
 	local before = #H.Calls
@@ -22,7 +22,7 @@ do
 	assert(H.Calls[#H.Calls].Args[1] == "CashBoost" and H.Calls[#H.Calls].Args[2] == 0)
 	state.Upgrades.CashBoost = 1
 	panel.Update(state)
-	assert(tracks.CashBoost.Level.Text == "LEVEL 1 / 10" and tracks.CashBoost.Price.Text == "90 Coins")
+	assert(tracks.CashBoost.Level.Text == "LEVEL 1 / 10" and tracks.CashBoost.Price.Text == "2K Coins")
 	tracks.CashBoost.Buy.Activated:Fire()
 	assert(H.Calls[#H.Calls].Args[2] == 1, "Purchase callback retained an old level")
 	state.Coins = 0
@@ -31,11 +31,16 @@ do
 	tracks.CashBoost.Buy.Activated:Fire()
 	assert(#H.Calls == before and not tracks.CashBoost.Buy.Interactable)
 	state.Coins = 9e15
+	state.Upgrades.CashBoost, state.Upgrades.LuckBoost, state.Upgrades.OfflineTank = 9, 9, 9
+	panel.Update(state)
+	assert(tracks.CashBoost.Price.Text == "781.2M Coins")
+	assert(tracks.LuckBoost.Price.Text == "1.1B Coins" and tracks.OfflineTank.Price.Text == "1.9B Coins")
+	assert(tracks.OfflineTank.Effect.Text == "8 hours offline cap")
 	for _, track in ipairs(config.Tracks) do
 		state.Upgrades[track.Id] = track.MaxLevel
 	end
 	state.DisplaySlots = 10
-	state.UpgradeStats = { Cooldown = 0.4, AutoInterval = 0.4, OfflineMinutes = 480, LuckCapped = true }
+	state.UpgradeStats = { Cooldown = 0.4, AutoInterval = 0.4, OfflineMinutes = 720, LuckCapped = true }
 	panel.Update(state)
 	assert(string.find(tracks.LuckBoost.Effect.Text, "5x CAP REACHED", 1, true))
 	for _, track in ipairs(config.Tracks) do

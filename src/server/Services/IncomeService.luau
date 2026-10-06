@@ -59,7 +59,7 @@ function IncomeService.Start(data, limiter, remotes, sync, world)
 			return
 		end
 		local available = if slot
-			then math.floor((profile.Income.Pending[tostring(slot)] or 0) / Config.UnitsPerCoin)
+			then accounting:WholeCoins(profile.Income.Pending[tostring(slot)] or 0)
 			else accounting:PendingCoins(profile)
 		if available > 0 and not limiter:Allow(player, "CollectIncomeSave") then
 			remotes.Result:FireClient(

@@ -1,4 +1,5 @@
 local Rules = {}
+local NumberFormat = require(if script then script.Parent.NumberFormat else "./NumberFormat")
 local tiers = {
 	Common = "Pop",
 	Uncommon = "Pop",
@@ -51,17 +52,7 @@ function Rules.Integer(value)
 	return if type(value) == "number" and value == value and value >= 0 and value <= 9e15 then math.floor(value) else 0
 end
 function Rules.Abbreviate(value)
-	value = Rules.Integer(value)
-	local suffixes = { "", "K", "M", "B", "T", "Qa" }
-	local index = 1
-	while value >= 1000 and index < #suffixes do
-		value /= 1000
-		index += 1
-	end
-	-- Floor to one decimal: never claim the player owns more spendable Coins.
-	local scaled = math.floor(value * 10) / 10
-	return (if index == 1 then tostring(math.floor(value)) else string.format("%.1f", scaled):gsub("%.0$", ""))
-		.. suffixes[index]
+	return NumberFormat.Compact(value)
 end
 function Rules.Escape(text)
 	return (text:gsub("&", "&amp;"):gsub("<", "&lt;"):gsub(">", "&gt;"):gsub('"', "&quot;"):gsub("'", "&apos;"))
