@@ -37,6 +37,10 @@ $parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'audit-econom
 if (!$Baseline -and !$Audit2Baseline -and !$DisplayCollectBaseline) {
     $parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'audit-admin.luau')))
 }
+$parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'audit-path-catalog.luau')))
+if (!$Baseline -and !$Audit2Baseline -and !$DisplayCollectBaseline) {
+    $parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'audit-merge-catalog.luau')))
+}
 $parts.Add('do')
 $parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'ui-harness.luau')))
 $parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'audit2-client.luau')))

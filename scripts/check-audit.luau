@@ -426,6 +426,9 @@ local function server(options)
 			IncomePoint = { Position = position, Parent = world },
 			CFrame = { Position = position },
 			Model = {
+				FindFirstChild = function()
+					return nil
+				end,
 				GetDescendants = function()
 					return {}
 				end,

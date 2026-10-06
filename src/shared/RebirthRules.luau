@@ -1,6 +1,8 @@
 -- Pure reset construction. The caller swaps this complete tree without yielding.
 local Rules = {}
 local IndexRewards = require(if script then script.Parent.Config.IndexRewards else "./Config/IndexRewards")
+local Paid = require(if script then script.Parent.PaidBenefits else "./PaidBenefits")
+local Monetization = require(if script then script.Parent.Config.Monetization else "./Config/Monetization")
 Rules.__index = Rules
 local function integer(value, maximum)
 	return type(value) == "number" and value == value and value >= 0 and value <= maximum and value % 1 == 0
@@ -62,11 +64,15 @@ function Rules:Build(profile, expectedLevel, now)
 	result.Coins, result.ToiletTier = bonus.StarterCoins, self.Config.ResetTier
 	result.Stats.Earned += bonus.StarterCoins
 	-- Preserve capacity of unknown/legacy/paid origin. Remove only tracked coin purchases.
-	result.DisplaySlots =
-		math.max(self.Config.BaseDisplaySlots, profile.DisplaySlots - (profile.Upgrades.DisplaySlots or 0))
+	local paidSlots = Paid.Slots(profile)
+	result.DisplaySlots = math.max(
+		math.min(Monetization.DisplayCapacity, self.Config.BaseDisplaySlots + paidSlots),
+		profile.DisplaySlots - (profile.Upgrades.DisplaySlots or 0)
+	)
 	for _, reward in ipairs(IndexRewards.Milestones) do
 		if profile.IndexClaims["total:" .. reward.Count] and reward.DisplaySlots then
-			result.DisplaySlots = math.max(result.DisplaySlots, reward.DisplaySlots)
+			result.DisplaySlots =
+				math.max(result.DisplaySlots, math.min(Monetization.DisplayCapacity, reward.DisplaySlots + paidSlots))
 		end
 	end
 	for id in pairs(result.Upgrades) do
@@ -81,14 +87,14 @@ function Rules:Build(profile, expectedLevel, now)
 		local kept = math.min(count, math.max(1, reserved[id] or 0, (profile.ProtectedInventory or {})[id] or 0))
 		result.Inventory[id], result.ProtectedInventory[id] = kept, kept
 	end
-	-- Repack surviving displays into retained slots; excess copies stay protected in inventory.
+	-- Occupied pedestals survive in place, including gaps and upgrade-funded slots.
+	-- Retain enough capacity to address the highest occupied slot after upgrades reset.
 	result.Displays = {}
-	local destination = 1
 	for slot = 1, profile.DisplaySlots do
 		local id = profile.Displays[tostring(slot)]
-		if id and destination <= result.DisplaySlots then
-			result.Displays[tostring(destination)] = id
-			destination += 1
+		if id then
+			result.Displays[tostring(slot)] = id
+			result.DisplaySlots = math.max(result.DisplaySlots, slot)
 		end
 	end
 	result.Income = { Pending = {}, UpdatedAt = math.max(now, profile.Income.UpdatedAt) }

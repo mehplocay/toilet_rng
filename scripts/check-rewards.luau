@@ -109,3 +109,48 @@ assert(results == 2 and syncs == 2) -- Failed persistence cannot report success.
 print(
 	"Reward checks passed: UTC boundaries, duplicate claims, missed days, cycle, tiers, boost expiry, validation and rate limits"
 )
+
+-- All paid combinations share the preview's schedule; upgrades never multiply a daily twice.
+for _, double in ipairs({ false, true }) do
+	for _, vip in ipairs({ false, true }) do
+		for tier = 1, 7 do
+			for rewardDay = 1, 7 do
+				local expected = math.floor(
+					Config.BaseCoins[rewardDay]
+						* Config.TierMultipliers[tier]
+						* (if double then 2 else 1)
+						* (if vip then 1.25 else 1)
+				)
+				local function fresh()
+					return {
+						LastClaimDay = math.floor(now / Config.DaySeconds) - 1,
+						Streak = rewardDay - 1,
+						ToiletTier = tier,
+						RewardLuckExpires = 0,
+						Coins = 0,
+						Stats = { Earned = 0 },
+						RebirthLevel = 15,
+						Upgrades = { CashBoost = 10 },
+						Monetization = { Passes = { DoubleCash = double, VIPPack = vip } },
+					}
+				end
+				for _, field in ipairs({ "Coins", "Earned" }) do
+					local paidProfile = fresh()
+					local balance = if field == "Coins" then paidProfile else paidProfile.Stats
+					balance[field] = 9e15 - expected
+					assert(service:Claim(paidProfile).Coins == expected and balance[field] == 9e15)
+					paidProfile = fresh()
+					balance = if field == "Coins" then paidProfile else paidProfile.Stats
+					balance[field] = 9e15 - expected + 1
+					local last = paidProfile.LastClaimDay
+					assert(not service:Claim(paidProfile).Success)
+					assert(balance[field] == 9e15 - expected + 1 and paidProfile.LastClaimDay == last)
+					assert(paidProfile.Streak == rewardDay - 1 and paidProfile.RewardLuckExpires == 0)
+				end
+			end
+		end
+	end
+end
+print(
+	"Reward merge checks passed: all tiers/days/paid factors, exact wallet/Earned ceilings and atomic overflow rejection"
+)

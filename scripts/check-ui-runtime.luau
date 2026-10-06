@@ -230,7 +230,14 @@ for _, viewport in ipairs(H.Viewports) do
 	for _, key in ipairs(passConfig.PassOrder) do
 		local slot, offer = offerGrid[key], offerGrid[key].OfferCard
 		local icon = offer[shopConfig.Offers[key].Icon .. "Icon"]
-		assert(icon.Asset.Image == Images.Get(Assets.Icons[shopConfig.Offers[key].Icon]))
+		if Assets.Icons[shopConfig.Offers[key].Icon] == "" then
+			assert(
+				icon.Fallback.Visible and not icon:FindFirstChild("Asset"),
+				"Unuploaded catalog art must use vectors"
+			)
+		else
+			assert(icon.Asset.Image == Images.Get(Assets.Icons[shopConfig.Offers[key].Icon]))
+		end
 		assert(icon.AbsolutePosition.Y >= slot.AbsolutePosition.Y, "Offer sculpture clips above grid cell")
 		assert(icon.AbsolutePosition.Y < offer.AbsolutePosition.Y, "Offer sculpture does not overflow card")
 		assert(
@@ -585,6 +592,7 @@ do
 	local previousCamera = H.Workspace.CurrentCamera
 	local centerY = 30
 	H.Workspace.CurrentCamera = {
+		FieldOfView = 70,
 		CFrame = { UpVector = Vector3.new(0, 1, 0), Position = Vector3.new() },
 		WorldToScreenPoint = function(_, position)
 			return { X = 250, Y = centerY - position.Y * 10, Z = 20 }
@@ -592,16 +600,16 @@ do
 	}
 	H.Load("src/client/WorldLabels").Start(testHud)
 	billboard:SetAttribute("AvoidHUD", true)
-	H.Services.RunService.RenderStepped:Fire()
+	H.Services.RunService.RenderStepped:Fire(1 / 60)
 	assert(not billboard.Enabled, "World PASSES label overlaps travel controls")
 	centerY = 300
-	H.Services.RunService.RenderStepped:Fire()
+	H.Services.RunService.RenderStepped:Fire(1 / 60)
 	assert(billboard.Enabled, "World landmark label did not return in clear space")
 	control.Visible, centerY = false, 30
-	H.Services.RunService.RenderStepped:Fire()
+	H.Services.RunService.RenderStepped:Fire(1 / 60)
 	assert(billboard.Enabled, "Hidden controls unnecessarily suppress world labels")
 	testHud.Visible = false
-	H.Services.RunService.RenderStepped:Fire()
+	H.Services.RunService.RenderStepped:Fire(1 / 60)
 	assert(not billboard.Enabled, "Modal view leaves world text over its content")
 	testHud:Destroy()
 	assert(billboard.Enabled, "Label suppression leaked after HUD destruction")

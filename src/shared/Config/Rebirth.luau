@@ -54,14 +54,14 @@ return {
 		"All coin upgrade levels",
 		"Pending display coins",
 		"Unprotected extra items",
-		"Coin-bought display capacity",
+		"Unused coin-bought slots",
 	},
 	KeepList = {
-		"First copies + displayed items",
+		"Items on your display",
 		"Kept copies stay unsellable",
 		"Lifetime index + best finds",
 		"Passes, cosmetics + settings",
 		"Tutorial, daily + index claims",
-		"Index / legacy / paid capacity",
+		"First copies + occupied slots",
 	},
 }

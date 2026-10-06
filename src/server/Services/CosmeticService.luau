@@ -14,8 +14,14 @@ function CosmeticService:Apply(player, owned, profile)
 	local character = player.Character
 	local root = character and character:FindFirstChild("HumanoidRootPart")
 	local head = character and character:FindFirstChild("Head")
-	local gold = Color3.fromRGB(table.unpack(Config.SparkleRGB))
-	if root and owned.SparkleTrail == true and not root:FindFirstChild("PassSparkleTrail") then
+	local vip = owned.VIPStar == true or owned.VIPPack == true
+	local gold = Color3.fromRGB(table.unpack(Config.VIPTrailRGB))
+	local trailColor = if owned.VIPPack then gold else Color3.fromRGB(table.unpack(Config.SparkleRGB))
+	if
+		root
+		and (owned.SparkleTrail == true or owned.VIPPack == true)
+		and not root:FindFirstChild("PassSparkleTrail")
+	then
 		local left, right = Instance.new("Attachment"), Instance.new("Attachment")
 		left.Name, right.Name = "PassTrailLeft", "PassTrailRight"
 		left.Position, right.Position = Vector3.new(-0.65, -1, 0), Vector3.new(0.65, -1, 0)
@@ -23,18 +29,25 @@ function CosmeticService:Apply(player, owned, profile)
 		local trail = Instance.new("Trail")
 		trail.Name = "PassSparkleTrail"
 		trail.Attachment0, trail.Attachment1 = left, right
-		trail.Color = ColorSequence.new(gold)
+		trail.Color = ColorSequence.new(trailColor)
 		trail.Lifetime = Config.TrailLifetime
 		trail.Transparency = NumberSequence.new(0.35, 1)
 		trail.FaceCamera = true
 		trail.Parent = root
-		P.Particles(root, "PassSparkles", gold, Config.SparkleRate, {
+		P.Particles(root, "PassSparkles", trailColor, Config.SparkleRate, {
 			Speed = NumberRange.new(0.5, 1.5),
 			SpreadAngle = Vector2.new(180, 180),
 		})
 	end
-	player:SetAttribute("VIPStar", owned.VIPStar == true)
-	if head and owned.VIPStar == true and not head:FindFirstChild("PassVIPStar") then
+	if root and (owned.SparkleTrail == true or owned.VIPPack == true) and root:FindFirstChild("PassSparkleTrail") then
+		root.PassSparkleTrail.Color = ColorSequence.new(trailColor)
+		local sparkles = root:FindFirstChild("PassSparkles")
+		if sparkles then
+			sparkles.Color = ColorSequence.new(trailColor)
+		end
+	end
+	player:SetAttribute("VIPStar", vip)
+	if head and vip and not head:FindFirstChild("PassVIPStar") then
 		local tag = Instance.new("BillboardGui")
 		tag.Name, tag.Adornee = "PassVIPStar", head
 		tag.Size = UDim2.fromOffset(120, 32)
@@ -53,6 +66,16 @@ function CosmeticService:Apply(player, owned, profile)
 		return
 	end
 	self.PlayerPlots[player] = plot
+	if owned.VIPPack and plot.IncomePoint and not plot.Model:FindFirstChild("VIPPlotSign") then
+		local tag = Instance.new("BillboardGui")
+		tag.Name, tag.Adornee = "VIPPlotSign", plot.IncomePoint
+		tag.Size, tag.StudsOffset = UDim2.fromOffset(110, 34), Vector3.new(0, 4, 0)
+		tag.MaxDistance, tag.Parent = 60, plot.Model
+		local text = Instance.new("TextLabel")
+		text.Size, text.BackgroundColor3 = UDim2.fromScale(1, 1), Color3.fromRGB(37, 30, 52)
+		text.Text, text.TextColor3 = Config.VIPLabel, gold
+		text.Font, text.TextSize, text.Parent = Enum.Font.GothamBold, 23, tag
+	end
 	-- Remember builder colors so an empty plot or the next owner never inherits a tint.
 	local originals = self.Colors[plot]
 	if not originals then
@@ -75,6 +98,10 @@ function CosmeticService:Apply(player, owned, profile)
 end
 
 function CosmeticService:ResetPlot(plot)
+	local sign = plot.Model:FindFirstChild("VIPPlotSign")
+	if sign then
+		sign:Destroy()
+	end
 	for part, color in pairs(self.Colors[plot] or {}) do
 		part.Color = color
 	end

@@ -24,8 +24,16 @@ function Passes.Create(gui, remotes)
 	end)
 	local body = panel.ContentScroll.Body
 	local owned, metadata, buttons, prices, colors, marks = {}, {}, {}, {}, {}, {}
-	local status = C.BodyText(body, "Make it yours! Auto-Flush and animation skip are free.", UDim2.new(1, 0, 0, 40))
-	local scroll = C.Scroll(body, UDim2.new(1, 0, 1, -102), UDim2.fromOffset(0, 44))
+	local commerce = { Quotes = {} }
+	local keys = table.clone(Config.PassOrder)
+	for _, key in ipairs(Config.ProductOrder) do
+		table.insert(keys, key)
+	end
+	local function definition(key)
+		return Config.Gamepasses[key] or Config.DeveloperProducts[key]
+	end
+	local status = C.BodyText(body, "Known benefits only. No paid luck or random items.", UDim2.new(1, 0, 0, 40))
+	local scroll = C.Scroll(body, UDim2.new(1, 0, 1, -150), UDim2.fromOffset(0, 92))
 	local content = C.New(
 		"Frame",
 		scroll,
@@ -40,15 +48,39 @@ function Passes.Create(gui, remotes)
 	})
 	row.Name = "OfferGrid"
 	C.Grid(row, Card.MinimumWidth, Card.CellHeight, 4)
+	local boostRow = C.New("Frame", content, {
+		Name = "BoostGrid",
+		Size = UDim2.new(1, 0, 0, 0),
+		AutomaticSize = Enum.AutomaticSize.Y,
+		BackgroundTransparency = 1,
+		LayoutOrder = 1,
+		Visible = false,
+	})
+	C.Grid(boostRow, Card.MinimumWidth, Card.CellHeight, 4)
+	local selectTab
+	C.Button(body, "Passes", UDim2.new(0.5, -5, 0, 40), UDim2.fromOffset(0, 44), function()
+		selectTab(false)
+	end, C.Purple, { Name = "PassesTab" })
+	C.Button(body, "Boosts", UDim2.new(0.5, -5, 0, 40), UDim2.new(0.5, 5, 0, 44), function()
+		selectTab(true)
+	end, C.Blue, { Name = "BoostsTab" })
 	local function updateButtons()
-		for _, key in ipairs(Config.PassOrder) do
-			local pass, info, button = Config.Gamepasses[key], metadata[key], buttons[key]
+		for _, key in ipairs(keys) do
+			local pass, info, button = definition(key), metadata[key], buttons[key]
 			button.Text = if owned[key]
 				then "Owned"
 				elseif pass.Id == 0 then "Coming soon"
 				elseif info and info.IsForSale then C.Commas(info.PriceInRobux)
 				else "Unavailable"
-			button.Interactable = not owned[key] and pass.Id > 0 and info ~= nil and info.IsForSale == true
+			button.Interactable = not owned[key]
+				and pass.Id > 0
+				and info ~= nil
+				and info.IsForSale == true
+				and not (
+					Config.DeveloperProducts[key]
+					and commerce.PendingProduct
+					and not (commerce.PendingProduct == key and commerce.CanResume)
+				)
 			button.RobuxIcon.Visible = button.Interactable
 			button.Label.Position = if button.Interactable
 				then UDim2.fromScale(0.29, 0.12)
@@ -59,14 +91,22 @@ function Passes.Create(gui, remotes)
 				then "Yours to enjoy"
 				elseif pass.Id == 0 then "Not on sale yet"
 				elseif not info then "Price unavailable"
+				elseif Config.DeveloperProducts[key] and pass.IncomeSeconds then C.Commas(
+					(commerce.Quotes or {})[key] or 0
+				) .. " Coins"
+				elseif Config.DeveloperProducts[key] then "Timer continues offline"
 				else "One-time purchase"
 		end
 	end
-	for order, key in ipairs(Config.PassOrder) do
-		local pass = Config.Gamepasses[key]
+	for order, key in ipairs(keys) do
+		local pass = definition(key)
 		local offer = Shop.Offers[key]
 		local color = Color3.fromRGB(table.unpack(offer.Color))
-		local slot = C.New("Frame", row, { Name = key, BackgroundTransparency = 1, LayoutOrder = order })
+		local slot = C.New(
+			"Frame",
+			if Config.DeveloperProducts[key] then boostRow else row,
+			{ Name = key, BackgroundTransparency = 1, LayoutOrder = order }
+		)
 		local card = C.Card(slot, color, true)
 		card.Background.UIGradient.Color = ColorSequence.new(C.Navy:Lerp(color, 0.12), C.Ink)
 		card.Name = "OfferCard"
@@ -105,8 +145,13 @@ function Passes.Create(gui, remotes)
 			UDim2.fromOffset(Card.Inset, Card.ButtonY),
 			function()
 				if buttons[key].Interactable then
-					status.Text = "Checking pass ownership..."
-					remotes.BuyPass:FireServer(key)
+					if Config.DeveloperProducts[key] then
+						status.Text = "Preparing your purchase..."
+						remotes.BuyProduct:FireServer(key, (commerce.Quotes or {})[key] or 0)
+					else
+						status.Text = "Checking pass ownership..."
+						remotes.BuyPass:FireServer(key)
+					end
 				end
 			end,
 			C.Green,
@@ -132,14 +177,14 @@ function Passes.Create(gui, remotes)
 		end
 		loading = true
 		task.spawn(function()
-			for _, key in ipairs(Config.PassOrder) do
-				local pass = Config.Gamepasses[key]
+			for _, key in ipairs(keys) do
+				local pass = definition(key)
 				if pass.Id > 0 then
 					local ok, info = pcall(
 						MarketplaceService.GetProductInfoAsync,
 						MarketplaceService,
 						pass.Id,
-						Enum.InfoType.GamePass
+						if Config.Gamepasses[key] then Enum.InfoType.GamePass else Enum.InfoType.Product
 					)
 					local valid = ok
 						and type(info) == "table"
@@ -168,6 +213,22 @@ function Passes.Create(gui, remotes)
 		LayoutOrder = 3,
 	})
 	C.Grid(swatches, 112, 48)
+	local details = C.BodyText(
+		content,
+		"VIP Pack: +25% cash, +1 path speed step, gold-star trail, name/chat star, permanent VIP plot sign and daily display-income coins. No luck.\nCoin packs and VIP chest: 100 to 1,000,000,000 Coins. Cash bonuses cap at 10x; path speed at 5x.",
+		UDim2.new(1, -12, 0, 112)
+	)
+	details.LayoutOrder = 4
+	local chest = C.Button(content, "VIP daily chest", UDim2.new(1, -12, 0, 44), nil, function()
+		remotes.ClaimVIP:FireServer()
+	end, C.Gold, { Name = "VIPChest" })
+	chest.LayoutOrder, chest.Interactable = 5, false
+	selectTab = function(boosts)
+		row.Visible, boostRow.Visible = not boosts, boosts
+		colorHeading.Visible, swatches.Visible = not boosts, not boosts
+		chest.Visible = not boosts
+		scroll.CanvasPosition = Vector2.new(0, 0)
+	end
 	for order, color in ipairs(Config.PlotColors) do
 		colors[color.Id] = C.Button(swatches, color.Name, UDim2.fromOffset(120, 48), nil, function()
 			remotes.PlotColor:FireServer(color.Id)
@@ -181,9 +242,15 @@ function Passes.Create(gui, remotes)
 		refreshPrices()
 	end, C.Blue, { TextSize = 18 })
 	remotes.Result.OnClientEvent:Connect(function(action, payload)
-		if action == "BuyPass" or action == "RefreshPasses" or action == "PlotColor" then
+		if
+			action == "BuyPass"
+			or action == "BuyProduct"
+			or action == "ClaimVIP"
+			or action == "RefreshPasses"
+			or action == "PlotColor"
+		then
 			message.Text = payload.Message or "Request unavailable."
-			status.Text = "Make it yours! Auto-Flush and animation skip are free."
+			status.Text = "Known benefits only. No paid luck or random items."
 		end
 	end)
 	updateButtons()
@@ -191,6 +258,15 @@ function Passes.Create(gui, remotes)
 		Panel = panel,
 		Update = function(state)
 			owned = state.OwnedPasses or {}
+			commerce = state.Commerce or { Quotes = {} }
+			status.Text = if commerce.PendingProduct
+				then "Saved offer: reopen to finish or cancel. Already paid? Rejoin for delivery."
+				else "Known benefits only. No paid luck or random items."
+			chest.Interactable = owned.VIPPack == true and (commerce.VIPDay or 0) < math.floor(os.time() / 86400)
+			chest.Text = if chest.Interactable
+				then "Claim VIP daily chest"
+				elseif owned.VIPPack then "VIP chest claimed today"
+				else "Daily chest requires VIP Pack"
 			updateButtons()
 			local selected = state.Settings.PlotColor or "Default"
 			colorHeading.Text = if owned.CustomPlotColor

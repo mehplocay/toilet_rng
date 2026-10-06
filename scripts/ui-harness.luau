@@ -71,9 +71,14 @@ end
 function vector3MT.__sub(a, b)
 	return Vector3.new(a.X - b.X, a.Y - b.Y, a.Z - b.Z)
 end
+function vector3MT.__mul(a, b)
+	return Vector3.new(a.X * b, a.Y * b, a.Z * b)
+end
 function vector3MT.__index(a, key)
 	if key == "Magnitude" then
 		return math.sqrt(a.X * a.X + a.Y * a.Y + a.Z * a.Z)
+	elseif key == "Unit" then
+		return a * (1 / a.Magnitude)
 	end
 end
 local frameMT = {}
@@ -450,6 +455,7 @@ end
 local workspace = Instance.new("Workspace")
 workspace.CurrentCamera = Instance.new("Camera")
 workspace.CurrentCamera.CFrame = CFrame.new()
+workspace.CurrentCamera.FieldOfView = 70
 services.Workspace = workspace
 function workspace:GetServerTimeNow()
 	return 1800000000
@@ -543,6 +549,8 @@ function H.Remotes()
 		"AnimationSkip",
 		"PlotColor",
 		"BuyPass",
+		"BuyProduct",
+		"ClaimVIP",
 		"RefreshPasses",
 		"DevGrant",
 		"TutorialDone",

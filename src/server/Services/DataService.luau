@@ -17,6 +17,7 @@ local index = require(game.ReplicatedStorage.Shared.IndexProgress).new(
 )
 local Monetization = require(game.ReplicatedStorage.Shared.Config.Monetization)
 local MonetizationRules = require(game.ReplicatedStorage.Shared.MonetizationRules)
+local CommerceProfile = require(game.ReplicatedStorage.Shared.CommerceProfile)
 local AudioSettings = require(game.ReplicatedStorage.Shared.AudioSettings)
 local PresentationSettings = require(game.ReplicatedStorage.Shared.PresentationSettings)
 local Audio = require(game.ReplicatedStorage.Shared.Config.Audio)
@@ -60,6 +61,7 @@ function DataService.DefaultProfile()
 	settings.Sound, settings.SkipAnimation, settings.PlotColor = true, false, "Default"
 	PresentationSettings.Apply(settings, PresentationSettings.Sanitize(nil))
 	return {
+		Monetization = CommerceProfile.Sanitize(nil),
 		Version = 1,
 		RebirthLevel = 0,
 		RunFlushes = 0,
@@ -90,6 +92,7 @@ local function sanitize(raw, withoutAdmin)
 		return profile
 	end
 	profile.TutorialDone = raw.TutorialDone == true
+	profile.Monetization = CommerceProfile.Sanitize(raw.Monetization)
 	MonetizationRules.RestoreSettings(profile.Settings, raw.Settings, Monetization)
 	AudioSettings.Apply(profile.Settings, AudioSettings.Sanitize(raw.Settings, Audio.Defaults))
 	PresentationSettings.Apply(profile.Settings, PresentationSettings.Sanitize(raw.Settings))

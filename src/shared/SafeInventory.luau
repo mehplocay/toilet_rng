@@ -1,5 +1,5 @@
 local SafeInventory = {}
-local Rebirth = require(if script then script.Parent.Config.Rebirth else "./Config/Rebirth")
+local Monetization = require(if script then script.Parent.Config.Monetization else "./Config/Monetization")
 
 function SafeInventory.Displayed(profile, id)
 	local displayed = 0
@@ -51,7 +51,7 @@ function SafeInventory.Sell(profile, items, id, count, cashMultiplier)
 		type(multiplier) ~= "number"
 		or multiplier ~= multiplier
 		or multiplier < 1
-		or multiplier > 2 + Rebirth.CashCap
+		or multiplier > Monetization.CashMultiplierCap
 	then
 		return false
 	end

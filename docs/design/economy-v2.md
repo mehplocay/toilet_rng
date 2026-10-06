@@ -1,5 +1,7 @@
 # Economy v2: income first
 
+Current catalog/admin integration and verification: [merged behavior](merge-economy-catalog.md). All base tuning below remains; optional paid cash/offline factors are applied within the same wallet/subcoin bounds. Exact retained display slots change normal second-rebirth p50 to 50.70 minutes; paid-OFF timing targets still pass.
+
 2026-10-06; feature/income-first; no commit or push. Supersedes historical active-only stage medians and passive/active ceilings in passive-income, display-collect, upgrades and rebirth design notes. Existing RNG, protection, remote and persistence contracts stay in force. [API/numeric research](../research/income-first-economy.md).
 
 ## Intended loop

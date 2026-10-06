@@ -1,5 +1,6 @@
 -- Pure, bounded upgrade math. Server callers hold a live profile and never yield during Buy.
 local Rules = {}
+local Paid = require(if script then script.Parent.PaidBenefits else "./PaidBenefits")
 Rules.__index = Rules
 local function integer(value, maximum)
 	return type(value) == "number" and value == value and value >= 0 and value <= maximum and value % 1 == 0
@@ -30,10 +31,16 @@ function Rules:Sanitize(raw)
 end
 function Rules:Restore(profile, raw)
 	profile.Upgrades = self:Sanitize(raw)
-	profile.DisplaySlots = math.max(profile.DisplaySlots, self.Config.BaseDisplaySlots + profile.Upgrades.DisplaySlots)
+	profile.DisplaySlots = math.max(
+		profile.DisplaySlots,
+		math.min(
+			self.Config.DisplayCapacity,
+			self.Config.BaseDisplaySlots + profile.Upgrades.DisplaySlots + Paid.Slots(profile)
+		)
+	)
 end
 function Rules:IndexSlots(profile, minimum)
-	return math.min(self.Config.DisplayCapacity, minimum + self:Level(profile, "DisplaySlots"))
+	return math.min(self.Config.DisplayCapacity, minimum + self:Level(profile, "DisplaySlots") + Paid.Slots(profile))
 end
 function Rules:Price(id, level)
 	local track = if type(id) == "string" then self.ById[id] else nil
@@ -43,7 +50,10 @@ function Rules:Price(id, level)
 	return math.ceil(track.BaseCost * track.Growth ^ level)
 end
 function Rules:Cash(profile)
-	return 1 + self:Level(profile, "CashBoost") * self.ById.CashBoost.Step + self:RebirthBonus(profile, "Cash")
+	return Paid.Cash(
+		profile,
+		1 + self:Level(profile, "CashBoost") * self.ById.CashBoost.Step + self:RebirthBonus(profile, "Cash")
+	)
 end
 function Rules:RebirthBonus(profile, key)
 	local level = profile and profile.RebirthLevel
@@ -79,7 +89,7 @@ function Rules:AutoInterval(profile, cooldown)
 	)
 end
 function Rules:OfflineMinutes(profile, base)
-	return base + self:Level(profile, "OfflineTank") * self.ById.OfflineTank.Step
+	return Paid.Offline(profile, base + self:Level(profile, "OfflineTank") * self.ById.OfflineTank.Step)
 end
 function Rules:Animation(cooldown)
 	return math.min(self.Config.AnimationMax, cooldown * 0.8)

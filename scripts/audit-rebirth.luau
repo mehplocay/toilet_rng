@@ -31,7 +31,7 @@ test("rebirth: atomic replacement keeps discoveries, first copies, displays, rew
 	assert(p ~= before and before.Coins == 98765 and before.RunFlushes > 0)
 	assert(p.RebirthLevel == 1 and p.RunFlushes == 0 and p.ToiletTier == 1 and p.Coins == 2500)
 	assert(p.Inventory.Poop == 1 and p.Inventory.Rat == 2 and p.ProtectedInventory.Rat == 2)
-	assert(p.DisplaySlots == 4 and p.Displays["3"] == "Poop" and p.Displays["5"] == nil)
+	assert(p.DisplaySlots == 5 and p.Displays["3"] == nil and p.Displays["5"] == "Poop")
 	assert(p.Collection.Poop == 100 and p.Collection.Rat == 10 and p.Stats.Flushes == 5000)
 	assert(p.TutorialDone and p.Stamps == 33 and p.LastClaimDay == 123 and p.Streak == 2 and p.IndexClaims["total:5"])
 	assert(p.Settings ~= before.Settings and p.Stats.RarestItemId == "Rat")
@@ -211,7 +211,7 @@ test(
 		e:Fire("Sell", player, "Rat", 1)
 		assert(p.Inventory.Rat == 2 and p.Coins == 3750 and p.Collection.Rat == 10)
 		e:Fire("ClaimIndexReward", player, "total:5")
-		assert(p.Stamps == 33 and p.DisplaySlots == 4)
+		assert(p.Stamps == 33 and p.DisplaySlots == 5)
 		e.Data:Close(player)
 		e.Now += 86400
 		local _, restored = e:Join(207)
@@ -292,7 +292,7 @@ test("rebirth: saturated coin/index slots, high-water clocks and high-level inco
 	p.Income.UpdatedAt = e.Now + 100
 	e:Fire("Rebirth", player, 0)
 	p = e.Data:Get(player)
-	assert(p.DisplaySlots == 4 and e.Store.Records.Player_213.Data.DisplaySlots == 4)
+	assert(p.DisplaySlots == 5 and e.Store.Records.Player_213.Data.DisplaySlots == 5)
 	assert(p.Income.UpdatedAt == e.Now + 100)
 	p.RebirthLevel, p.ToiletTier, p.Upgrades.CashBoost, p.Upgrades.OfflineTank = 15, 7, 10, 10
 	p.Inventory.Mystery, p.Displays = 3, { ["1"] = "Mystery", ["2"] = "Mystery", ["3"] = "Mystery" }

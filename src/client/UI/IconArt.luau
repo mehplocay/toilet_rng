@@ -1,6 +1,16 @@
 -- Small, layered primitive illustrations. No external image is required.
 local Art = {}
 function Art.Draw(C, parent, kind, tint)
+	local aliases = {
+		DoubleCash = "Coins",
+		AutoCollect = "Shop",
+		ExtraSlots = "Collection",
+		OfflinePlus = "Daily",
+		VIPPack = "Crown",
+		CoinPack = "Coins",
+		PathBoost = "Upgrades",
+	}
+	kind = aliases[kind] or kind
 	local white, ink = Color3.fromRGB(245, 251, 255), C.Ink
 	local layer = parent.ZIndex
 	local function shape(x, y, w, h, color, round, angle)

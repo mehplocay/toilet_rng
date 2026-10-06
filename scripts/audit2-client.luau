@@ -104,10 +104,10 @@ test("audit2: far map billboards skip projection while nearby labels retain HUD 
 	end
 	H.Load("src/client/WorldLabels").Start(root)
 	world.DescendantAdded:Fire(gui)
-	H.Services.RunService.RenderStepped:Fire()
+	H.Services.RunService.RenderStepped:Fire(1 / 60)
 	assert(projections == 0 and not gui.Enabled, "Far billboard still projects every frame")
 	distance = 10
-	H.Services.RunService.RenderStepped:Fire()
+	H.Services.RunService.RenderStepped:Fire(1 / 60)
 	assert(projections == 2 and gui.Enabled)
 	root:Destroy()
 	anchor:Destroy()

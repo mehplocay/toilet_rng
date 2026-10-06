@@ -26,6 +26,8 @@ for _, name in ipairs({
 	"AnimationSkip",
 	"PlotColor",
 	"BuyPass",
+	"BuyProduct",
+	"ClaimVIP",
 	"RefreshPasses",
 	"DevGrant",
 	"TutorialDone",
@@ -70,6 +72,7 @@ local screen = C.New("ScreenGui", player:WaitForChild("PlayerGui"), {
 	ZIndexBehavior = Enum.ZIndexBehavior.Sibling,
 })
 local root = C.New("Frame", screen, { Name = "SafeArea", Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1 })
+require(script.PathBoostEffects).Start(root, player, remotes)
 C.StartAudioInput(screen.Parent, screen)
 local toast = C.Toast(root)
 local collection = require(script.UI.Collection).Create(root, remotes)

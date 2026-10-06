@@ -1,0 +1,9 @@
+# Income-first/catalog integration research
+
+Checked 2026-10-06 while resolving the in-progress merge.
+
+- Luau uses IEEE-754 doubles, exact for integers through 2^53: https://luau.org/syntax/. Keep wallet/Earned limits at 9e15 coins and pending limits at 9e15 integer subcoins separately. Compare available room before crediting; never multiply an already-accrued ledger during collection.
+- Roblox's purchasing guidance stores receipt identity alongside the granted profile data: https://create.roblox.com/docs/cloud-services/data-stores/player-data-purchasing. ProcessReceipt can replay and requires durable acknowledgement: https://create.roblox.com/docs/reference/engine/classes/MarketplaceService. Integration consequence: owner reset/import must preserve current commerce history, not restore receipt IDs from an old export.
+- The DevForum documentation bug discussion illustrates why yielding purchase work inside an UpdateAsync transform is invalid: https://devforum.roblox.com/t/3563250. Existing immutable profile snapshots and non-yielding transforms remain intact.
+- Server attributes coordinate the admin speed override with the path service; SetAttribute with nil clears the override: https://create.roblox.com/docs/reference/engine/classes/Instance#SetAttribute. WalkSpeed remains a movement setting, not proof of client movement security: https://create.roblox.com/docs/reference/engine/classes/Humanoid#WalkSpeed. Existing path checks remain observations, not punitive client-position authority.
+- Checked the release index (https://create.roblox.com/docs/release-notes), but the accessible page supplied no substantive release text; no claim of exhaustive release verification. Tool references: https://rojo.space/docs/v7/project-format/ and https://github.com/JohnnyMorganz/StyLua. Local builds and formatting checks are the verification evidence.

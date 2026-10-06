@@ -107,6 +107,8 @@ function Runtime.new(data, world, events, remotes)
 			return
 		end
 		self.Movement[player] = nil
+		player:SetAttribute("AdminWalkSpeed", nil)
+		player:SetAttribute("AdminBaseWalkSpeed", nil)
 		if state.Humanoid.Parent then
 			state.Humanoid.WalkSpeed, state.Humanoid.JumpPower, state.Humanoid.UseJumpPower =
 				state.Speed, state.Jump, state.UseJumpPower
@@ -246,6 +248,8 @@ function Runtime.new(data, world, events, remotes)
 			end
 			state.Expires = os.clock() + Config.MovementLeaseSeconds
 			if action == "Speed" then
+				player:SetAttribute("AdminBaseWalkSpeed", state.Speed)
+				player:SetAttribute("AdminWalkSpeed", args.Amount)
 				humanoid.WalkSpeed = args.Amount
 			elseif action == "Jump" then
 				humanoid.UseJumpPower, humanoid.JumpPower = true, args.Amount

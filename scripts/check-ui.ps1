@@ -45,6 +45,7 @@ $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'presentation-ui-chec
 $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-upgrades.luau')))
 $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-rebirth.luau')))
 $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-economy-v2.luau')))
+$parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-path-catalog.luau')))
 $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'audio-coverage-checks.luau')))
 $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-admin.luau')))
 try {

@@ -1,0 +1,17 @@
+# Path speed runtime research
+
+Checked 2026-10-06 for `feature/path-boost-catalog`.
+
+- [Humanoid.WalkSpeed](https://create.roblox.com/docs/reference/engine/classes/Humanoid#WalkSpeed): default walking speed is 16 studs/second; analog input can produce slower actual motion. Local character movement can be changed by a client. Setting the property on the server is authoritative for this feature's configured bonuses, **not** an anti-cheat guarantee.
+- [Network ownership and movement validation](https://create.roblox.com/docs/scripting/security/network-ownership): network-owned character physics needs independent validation to detect movement exploits. This task only observes implausible horizontal displacement, rate-limits logs, and ignores large teleport-like deltas; it never kicks or grants currency from movement.
+- [TweenService](https://create.roblox.com/docs/reference/engine/classes/TweenService): tween numeric properties, cancel a previous tween when replacing its target. The service checks map rectangles every 0.2 seconds and uses 0.35-second Sine/InOut WalkSpeed tweens. The stable target is always computed from the captured character base, never the current boosted speed.
+- [DevForum replication discussion](https://devforum.roblox.com/t/what-all-replicates-from-client-to-server/548906) and [same-value server write discussion](https://devforum.roblox.com/t/walkspeed-does-not-replicates-to-client/2022353) corroborate that client movement and server property state are different concerns. These older discussions are context; the current official security documentation controls the implementation.
+- [Release notes index](https://create.roblox.com/docs/release-notes) was checked; no specific change superseding the current WalkSpeed contract was found. No reliance on undocumented replication timing.
+
+`MapLayout.Pieces` path strips and `PlotPieces` path rectangles supply position/yaw/size; unsized plot corners use `MeshCatalog.Size`. No generated map edits, raycasts, touch-event flooding or client speed remotes. Root-height tolerance is 7 studs. A corner's authored rectangle is the detection footprint, including its small decorative corner cutout.
+
+`Player.ServerSpeedMultiplier` composes multiplicatively under the 5x cap. `Player.AdminWalkSpeed` is an absolute server-only override, separate from bonuses; admin modules should set/remove that attribute instead of multiplying WalkSpeed. Client attribute changes do not authorize the server. Admin implementation belongs to the parallel task.
+
+Recovery review: free path speed does not depend on profile readiness. During an exclusive receipt/rebirth save, the movement controller retains its last verified VIP flag and saved expiry; expiry continues to advance. Once the profile is available it refreshes those values, and unavailable/closing profiles outside a replacement lose paid movement benefits. A zero captured base speed is preserved exactly. `ui-path-catalog.luau` executes moving chevrons, Reduced/Off modes, camera replacement/external FOV changes, death, exit and destruction cleanup.
+
+Four local neon chevrons (eight Parts), six edge lines and a speed chip reuse primitives. Reduced/Off presentation suppresses animated path effects and FOV; the chip remains. Existing audio has no necessary speed cue, so no asset ID or sound slot was added. Camera changes and destruction restore only this effect's owned FOV contribution. Native tween replication, streaming and phone rendering still require Studio/device testing.

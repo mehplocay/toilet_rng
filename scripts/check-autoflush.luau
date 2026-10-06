@@ -58,12 +58,27 @@ assert(not flush(ready, nil) and nextFlush[player] == ready)
 assert(flush(ready, 0))
 assert(awards == 3)
 
-local expectedPrices = { SparkleTrail = 49, VIPStar = 59, CustomPlotColor = 79, FastFlush = 99 }
+local expectedPrices = {
+	SparkleTrail = 49,
+	VIPStar = 59,
+	CustomPlotColor = 79,
+	FastFlush = 99,
+	DoubleCash = 249,
+	AutoCollect = 149,
+	ExtraSlots = 149,
+	OfflinePlus = 129,
+	VIPPack = 399,
+}
 for _, key in ipairs(Config.PassOrder) do
 	assert(Rules.Pass(Config, key).Price == expectedPrices[key])
 	assert(Config.Gamepasses[key].Id == 0)
 end
-assert(#Config.PassOrder == 4 and next(Config.DeveloperProducts) == nil)
+assert(#Config.PassOrder == 9 and #Config.ProductOrder == 4)
+local productPrices = { Coins10Minutes = 49, Coins1Hour = 149, Coins6Hours = 399, PathBoost10Minutes = 29 }
+for _, key in ipairs(Config.ProductOrder) do
+	assert(Config.DeveloperProducts[key].Price == productPrices[key])
+	assert(Config.DeveloperProducts[key].Id == 0)
+end
 assert(Config.Gamepasses.DoubleLuck == nil and Config.Gamepasses.AutoFlush == nil)
 assert(Rules.Pass(Config, {}) == nil and Rules.Pass(Config, "Unknown") == nil)
 assert(Rules.PassKey(Config, 0) == nil)

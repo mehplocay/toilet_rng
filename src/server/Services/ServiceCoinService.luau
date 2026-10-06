@@ -1,7 +1,8 @@
 -- Pure profile mutation; only the validated server flush path grants this award.
 local ServiceCoinService = {}
 local MAX_COINS = 9e15
-local Rebirth = require(if script then game.ReplicatedStorage.Shared.Config.Rebirth else "../../shared/Config/Rebirth")
+local Monetization =
+	require(if script then game.ReplicatedStorage.Shared.Config.Monetization else "../../shared/Config/Monetization")
 
 function ServiceCoinService.Grant(profile, toilet, cashMultiplier)
 	local amount = toilet.ServiceCoins
@@ -11,7 +12,7 @@ function ServiceCoinService.Grant(profile, toilet, cashMultiplier)
 	)
 	local multiplier = cashMultiplier or 1
 	assert(
-		type(multiplier) == "number" and multiplier >= 1 and multiplier <= 2 + Rebirth.CashCap,
+		type(multiplier) == "number" and multiplier >= 1 and multiplier <= Monetization.CashMultiplierCap,
 		"Invalid cash multiplier"
 	)
 	amount = math.floor(amount * multiplier + 1e-9)
