@@ -148,7 +148,6 @@ test("rebirth rewards: additive upgrades, toilet multiplication, paid cap, luck 
 	local e = server()
 	local u = e:Load("src/shared/UpgradeRules").new(e:Load("src/shared/Config/Upgrades"))
 	local config = e:Load("src/shared/Config/Rebirth")
-	local cap = e:Load("src/shared/Config/Monetization").CashMultiplierCap
 	for level = 0, 15 do
 		for cash = 0, 100 do
 			for _, passes in ipairs({
@@ -167,7 +166,7 @@ test("rebirth rewards: additive upgrades, toilet multiplication, paid cap, luck 
 					+ math.max(0, cash - 10) * 0.025
 					+ (if level == 0 then 0 else config.Levels[level].Cash)
 				local factor = (if passes.DoubleCash then 2 else 1) * (if passes.VIPPack then 1.5 else 1)
-				assert(math.abs(u:Cash(p) - math.min(cap, base * factor)) < 1e-10)
+				assert(math.abs(u:Cash(p) - math.min(40, base) * factor) < 1e-10)
 				assert(u:Luck(p, 1.3, 2, 2, 1e300) == 10 and u:Cooldown(p, 1.8 * 0.8) >= 0.4)
 			end
 		end

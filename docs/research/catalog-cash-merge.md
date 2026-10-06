@@ -1,0 +1,10 @@
+# Catalog / cash-layer merge review (2026-10-06)
+
+- [MarketplaceService API](https://create.roblox.com/docs/reference/engine/classes/MarketplaceService): ProcessReceipt remains documented; receipt delivery may repeat. Preserve the existing server-owned atomic grant/PurchaseId and replay handling. No purchase API migration is needed for cash math.
+- [Roblox DevForum receipt clarification](https://devforum.roblox.com/t/logic-error-in-the-processreceipt-example-code-will-cause-player-to-get-the-same-paid-items-with-every-server-join-after-purchase/3563250): UpdateAsync callbacks cannot yield; separate reward grants and receipt persistence risk duplicate rewards. The retained audit suite exercises interrupted saves, receipt replay and rejoin.
+- [Luau standard library](https://luau.org/library/): math.min/math.clamp support the separate bounded cash factors; table iteration order must not change the capped product. Factors are bounded before multiplication.
+- [Rojo build implementation](https://github.com/rojo-rbx/rojo/blob/master/src/cli/build.rs) and [release changes](https://github.com/rojo-rbx/rojo/blob/master/CHANGELOG.md): build output supports binary .rbxl; the project successfully builds with the installed tool.
+- [StyLua](https://github.com/JohnnyMorganz/StyLua): format the changed Luau sources and verify with --check.
+- [Selene Roblox guide](https://kampfkarren.github.io/selene/roblox.html): Roblox linting needs its standard library definitions. The installed CLI cannot find the configured roblox library; report linting as unavailable rather than treating a non-Roblox lint run as a pass.
+
+Integration decisions: preserve all 16 passes and eight products, VIP's extra slots/tank/pad/cosmetics and policy-gated Lucky Flush. Ultimate Bundle implies the individual cash passes once; both explicit and implied ownership use PaidBenefits.Cash. Product coin quotes are credits, not additional permanent factors. The cash audit now includes bundle-only and overlapping direct ownership across all rebirth/Cash/toilet combinations, plus all four bundle coin-pack receipts at 120x with replay/rejoin.

@@ -94,23 +94,23 @@ function Income:PendingCoins(profile)
 end
 function Income:Rates(profile)
 	local c, rates, total = self.Config, {}, 0
-	local cash = if self.Upgrades then self.Upgrades:Cash(profile) else 1
+	local tier = c.TierMultipliers[profile.ToiletTier] or 0
+	if tier <= 0 then
+		return rates
+	end
+	local cash = if self.Upgrades then self.Upgrades:Cash(profile, tier) else tier
 	local slotCap = c.SlotRateCaps[profile.ToiletTier] or 0
 	for slot = 1, math.min(profile.DisplaySlots, c.MaxSlots) do
 		local key = tostring(slot)
 		local item = self.Items[profile.Displays[key]]
 		if item then
 			local units = math.floor(
-				math.min((c.RarityRates[item.Rarity] or 0) * (c.TierMultipliers[profile.ToiletTier] or 0) * 60, slotCap)
-						* cash
-						* c.UnitsPerCoin
-						/ 60
-					+ 0.5
+				math.min((c.RarityRates[item.Rarity] or 0) * 60, slotCap / tier) * cash * c.UnitsPerCoin / 60 + 0.5
 			)
 			rates[key], total = units, total + units
 		end
 	end
-	local cap = math.floor((c.PlayerRateCaps[profile.ToiletTier] or 0) * cash * c.UnitsPerCoin / 60)
+	local cap = math.floor((c.PlayerRateCaps[profile.ToiletTier] or 0) / tier * cash * c.UnitsPerCoin / 60)
 	if total > cap then
 		-- Divide first: multiplying rate by cap would lose integer precision.
 		local allocated = 0

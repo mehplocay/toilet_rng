@@ -3,6 +3,14 @@ do
 	local config = H.Load("src/shared/Config/Monetization")
 	local ui = H.Load("src/client/UI/Passes").Create(root, remotes)
 	local body = ui.Panel.ContentScroll.Body
+	local vip = ui.Panel:FindFirstChild("OfferGrid", true).VIPPack
+	local cashExplanation = false
+	for _, label in ipairs(vip:GetDescendants()) do
+		if label:IsA("TextLabel") and string.find(label.Text, "paid cap 3x on top", 1, true) then
+			cashExplanation = string.find(label.Text, "Free cash cap 40x", 1, true) ~= nil
+		end
+	end
+	assert(cashExplanation, "Premium VIP card must explain the separate cash caps")
 	local luckyGrid = ui.Panel:FindFirstChild("LuckyGrid", true)
 	local state =
 		{ Settings = {}, OwnedPasses = {}, Commerce = { Quotes = {}, Lucky = { Allowed = false, Count = 3 } } }

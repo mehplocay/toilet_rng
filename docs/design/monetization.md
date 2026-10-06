@@ -2,7 +2,7 @@
 
 # Fair monetization: implemented catalog
 
-Current integration: [income-first/catalog merge](merge-economy-catalog.md). Income-first rates and ledger caps apply; owner Reset/Import preserve live commerce history. The merged suite has 140 passing audit scenarios. Branch-specific validation below records the earlier catalog implementation.
+Current integration: [income-first/catalog merge](merge-economy-catalog.md). Income-first rates and ledger caps apply; owner Reset/Import preserve live commerce history. The current rebirth-balance suite has 245 passing audit scenarios; see [validation](rebirth-values-validation.md) for the 40x free / 3x paid cap and VIP 1.5x retune. Branch-specific validation below records the earlier catalog implementation.
 
 2026-10-06, `feature/path-boost-catalog`. This manager-approved catalog replaces the earlier paid-luck proposal in this document. The older roadmap's Lucky Flush/Server Luck plans are not implemented or authorized by this catalog. **No paid luck, paid odds modifiers or paid random items.** All random outcomes remain free.
 
@@ -16,7 +16,7 @@ VIP Pack is a one-time pass, not a subscription. Its permanent sign is the reque
 
 Ownership is checked on the server at load, every 120 seconds, on manual refresh and before pass prompting. Server PromptGamePassPurchaseFinished grants are monotonic and idempotent. Failed/stale negative lookups cannot erase a verified positive. Verified pass flags persist for offline calculations; config ID 0 disables grants and lookups. Entitlement changes settle the previous rate before changing benefits.
 
-Double Cash multiplies service coins, sellable-copy sales, passive accrual and ordinary daily coins by 2. VIP multiplies those same sources by 1.25. The existing upgrade-plus-rebirth cash factor is unchanged; paid factors multiply that result, with a new configurable hard total cap of 10x. Existing unpaid daily rewards stay unchanged and receive only the paid factor. Starter/rebirth grants, Stamps and administrative grants are not income and are not multiplied. Product/chest quotes already include the display-income factors, so wallet credit never applies them twice. No economy values, toilet/item prices, upgrade prices, paid luck or RNG behavior were retuned.
+Double Cash multiplies service coins, sellable-copy sales, passive accrual and ordinary daily coins by 2. VIP multiplies those same sources by 1.5. Cash Boost and rebirth bonuses add; display toilet factors join that free layer before its 40x cap. Verified paid cash factors multiply separately, capped at 3x (Double Cash 2x times VIP 1.5x), giving a 120x maximum. Config/Cash owns both caps; future paid cash pass entries share the same paid cap. Existing unpaid daily rewards stay unchanged and receive only the paid factor. Starter/rebirth grants, Stamps and administrative grants are not income and are not multiplied. Product/chest quotes already include the display-income factors, so wallet credit never applies them twice. The rebirth-balance retune changes rebirth coin gates only; toilet/item and upgrade prices, paid luck and RNG behavior stay unchanged.
 
 Extra Slots adds 3 above existing earned/upgrade capacity, capped at the ten physical pedestals. An AppliedSlots marker prevents refresh/rejoin/rebirth from adding slots repeatedly; index minima include the paid allowance. Legacy capacity above ten is preserved, not increased by the pass. Rebirth keeps the original indexes of every occupied display and enough capacity to retain them.
 

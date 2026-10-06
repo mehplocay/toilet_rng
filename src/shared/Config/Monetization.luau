@@ -1,10 +1,11 @@
+local Cash = require(if script then script.Parent.Cash else "./Cash")
 return {
 	AutoFlushUnlock = 100,
 	FlushRange = 14,
 	AutoTick = 0.1,
 	OwnershipRefresh = 120,
 	PromptTimeout = 120,
-	CashMultiplierCap = 10,
+	CashMultiplierCap = Cash.TotalCap,
 	DisplayCapacity = 10,
 	AutoCollectSeconds = 5,
 	ReceiptHistoryLimit = 128,
@@ -80,7 +81,7 @@ return {
 			Id = 0,
 			Name = "Double Cash",
 			Price = 249,
-			Description = "2x all coin income. Stacks multiplicatively up to the 10x cash cap.",
+			Description = "2x coin income. Paid factors stack up to 3x on top of free bonuses.",
 			CashMultiplier = 2,
 		},
 		AutoCollect = {

@@ -1,5 +1,3 @@
-scripts/balance.luau: FAIL (unchanged target assertion: R5 >= 2h; measured 1.725h).
-
 PERMANENT ECONOMY: paid OFF, daily/server boosts OFF; fresh accounts, production roll/accrual/sale/reset math.
 Short cohort: 200 seeds, per-flush settlement. Long cohort: 64 seeds, 2s batches in hour one, 30s later; 300h censoring.
 Casual/normal/grinder flush uptime 30/75/100%; collect every 120/30/15s; online displays earn continuously.
@@ -28,16 +26,168 @@ Normal | Galaxy | 36.43 / 47.26
 Normal | rebirth | required coins | cumulative p50 / p90 hours
 Normal | R1 | 3000000 | 0.40 / 0.52
 Normal | R2 | 12000000 | 0.56 / 0.73
-Normal | R3 | 35000000 | 0.89 / 1.18
-Normal | R4 | 100000000 | 1.17 / 1.50
-Normal | R5 | 500000000 | 1.73 / 2.39
-Normal | R6 | 1500000000 | 3.08 / 4.22
-Normal | R7 | 5000000000 | 5.76 / 7.12
-Normal | R8 | 15000000000 | 12.29 / 14.62
-Normal | R9 | 40000000000 | 19.20 / 22.32
-Normal | R10 | 80000000000 | 24.04 / 31.49
-Normal | R11 | 150000000000 | 26.67 / 36.81
-Normal | R12 | 250000000000 | 29.98 / 45.59
-Normal | R13 | 400000000000 | 34.09 / 53.20
-Normal | R14 | 650000000000 | 41.99 / 62.17
-Normal | R15 | 2500000000000 | 65.25 / 91.61
+Normal | R3 | 35000000 | 0.93 / 1.20
+Normal | R4 | 100000000 | 1.26 / 1.62
+Normal | R5 | 500000000 | 2.02 / 2.75
+Normal | R6 | 1000000000 | 3.36 / 4.46
+Normal | R7 | 2000000000 | 5.21 / 6.38
+Normal | R8 | 4000000000 | 7.64 / 9.36
+Normal | R9 | 15000000000 | 23.17 / 26.99
+Normal | R10 | 40000000000 | 32.00 / 48.61
+Normal | R11 | 120000000000 | 46.83 / 64.94
+Normal | R12 | 200000000000 | 52.48 / 73.75
+Normal | R13 | 320000000000 | 61.59 / 87.21
+Normal | R14 | 520000000000 | 72.02 / 104.42
+Normal | R15 | 1250000000000 | 96.83 / 138.50
+Normal | track | level | cumulative p50 / p90 hours
+Normal | CashBoost | 1 | 0.03 / 0.03
+Normal | CashBoost | 10 | 0.69 / 0.89
+Normal | CashBoost | 35 | 1.95 / 2.66
+Normal | CashBoost | 60 | 11.09 / 13.31
+Normal | CashBoost | 85 | 27.07 / 35.68
+Normal | CashBoost | 100 | 43.42 / 61.54
+Normal | LuckBoost | 1 | 0.03 / 0.03
+Normal | LuckBoost | 10 | 0.69 / 0.89
+Normal | LuckBoost | 18 | 0.74 / 0.99
+Normal | LuckBoost | 30 | 2.88 / 3.88
+Normal | LuckBoost | 43 | 10.87 / 13.09
+Normal | LuckBoost | 50 | 21.43 / 25.13
+Normal | FlushSpeed | 1 | 0.03 / 0.03
+Normal | FlushSpeed | 4 | 0.21 / 0.26
+Normal | FlushSpeed | 7 | 0.83 / 1.08
+Normal | FlushSpeed | 10 | 2.42 / 3.12
+Normal | AutoFlushSpeed | 1 | 0.69 / 0.88
+Normal | AutoFlushSpeed | 4 | 0.70 / 0.89
+Normal | AutoFlushSpeed | 7 | 0.93 / 1.26
+Normal | AutoFlushSpeed | 10 | 2.47 / 3.17
+Normal | DisplaySlots | 1 | 0.03 / 0.03
+Normal | DisplaySlots | 4 | 0.11 / 0.12
+Normal | DisplaySlots | 6 | 0.13 / 0.15
+Normal | DisplaySlots | 7 | 1.84 / 2.54
+Normal | OfflineTank | 1 | 0.69 / 0.88
+Normal | OfflineTank | 10 | 0.69 / 0.89
+Normal | OfflineTank | 35 | 1.98 / 2.70
+Normal | OfflineTank | 60 | 11.32 / 13.53
+Normal | OfflineTank | 85 | 27.29 / 36.23
+Normal | OfflineTank | 100 | 44.17 / 62.42
+Normal passive income shares: first 10min 60.95%; 10min after Diamond 62.04%
+Casual | tier | p50 / p90 minutes (rebirth deferred)
+Casual | Dirty | 3.42 / 4.00
+Casual | Golden | 6.14 / 8.14
+Casual | Diamond | 12.16 / 14.18
+Casual | Radioactive | 22.20 / 26.25
+Casual | Demon | 36.31 / 44.49
+Casual | Galaxy | 62.21 / 80.64
+Casual | rebirth | required coins | cumulative p50 / p90 hours
+Casual | R1 | 3000000 | 0.70 / 0.93
+Casual | R2 | 12000000 | 1.00 / 1.30
+Casual | R3 | 35000000 | 1.57 / 2.13
+Casual | R4 | 100000000 | 2.03 / 2.83
+Casual | R5 | 500000000 | 3.37 / 4.57
+Casual | R6 | 1000000000 | 5.22 / 6.86
+Casual | R7 | 2000000000 | 7.80 / 10.50
+Casual | R8 | 4000000000 | 11.71 / 14.74
+Casual | R9 | 15000000000 | 30.11 / 37.08
+Casual | R10 | 40000000000 | 51.11 / 60.15
+Casual | R11 | 120000000000 | 67.95 / 96.54
+Casual | R12 | 200000000000 | 76.19 / 118.04
+Casual | R13 | 320000000000 | 87.47 / 135.04
+Casual | R14 | 520000000000 | 106.72 / 157.33
+Casual | R15 | 1250000000000 | 147.17 / 209.21
+Casual | track | level | cumulative p50 / p90 hours
+Casual | CashBoost | 1 | 0.06 / 0.07
+Casual | CashBoost | 10 | 1.20 / 1.63
+Casual | CashBoost | 35 | 3.50 / 4.57
+Casual | CashBoost | 60 | 16.73 / 21.25
+Casual | CashBoost | 85 | 38.36 / 45.61
+Casual | CashBoost | 100 | 64.38 / 87.60
+Casual | LuckBoost | 1 | 0.07 / 0.07
+Casual | LuckBoost | 10 | 1.22 / 1.65
+Casual | LuckBoost | 18 | 1.27 / 1.77
+Casual | LuckBoost | 30 | 4.58 / 6.17
+Casual | LuckBoost | 43 | 16.38 / 20.90
+Casual | LuckBoost | 50 | 28.53 / 34.90
+Casual | FlushSpeed | 1 | 0.06 / 0.07
+Casual | FlushSpeed | 4 | 0.38 / 0.47
+Casual | FlushSpeed | 7 | 1.43 / 1.90
+Casual | FlushSpeed | 10 | 3.92 / 5.38
+Casual | AutoFlushSpeed | 1 | 1.18 / 1.61
+Casual | AutoFlushSpeed | 4 | 1.23 / 1.66
+Casual | AutoFlushSpeed | 7 | 1.63 / 2.27
+Casual | AutoFlushSpeed | 10 | 3.98 / 5.45
+Casual | DisplaySlots | 1 | 0.07 / 0.07
+Casual | DisplaySlots | 4 | 0.21 / 0.23
+Casual | DisplaySlots | 6 | 0.23 / 0.29
+Casual | DisplaySlots | 7 | 3.24 / 4.20
+Casual | OfflineTank | 1 | 1.18 / 1.61
+Casual | OfflineTank | 10 | 1.20 / 1.63
+Casual | OfflineTank | 35 | 3.62 / 4.84
+Casual | OfflineTank | 60 | 17.12 / 21.52
+Casual | OfflineTank | 85 | 38.92 / 46.17
+Casual | OfflineTank | 100 | 65.27 / 89.74
+Casual passive income shares: first 10min 59.85%; 10min after Diamond 82.15%
+Grinder | tier | p50 / p90 minutes (rebirth deferred)
+Grinder | Dirty | 1.10 / 1.23
+Grinder | Golden | 2.48 / 2.78
+Grinder | Diamond | 5.13 / 5.66
+Grinder | Radioactive | 10.11 / 12.16
+Grinder | Demon | 16.96 / 20.51
+Grinder | Galaxy | 30.74 / 39.23
+Grinder | rebirth | required coins | cumulative p50 / p90 hours
+Grinder | R1 | 3000000 | 0.33 / 0.43
+Grinder | R2 | 12000000 | 0.47 / 0.60
+Grinder | R3 | 35000000 | 0.76 / 1.02
+Grinder | R4 | 100000000 | 1.06 / 1.33
+Grinder | R5 | 500000000 | 1.77 / 2.27
+Grinder | R6 | 1000000000 | 2.98 / 3.73
+Grinder | R7 | 2000000000 | 4.61 / 5.53
+Grinder | R8 | 4000000000 | 6.59 / 7.99
+Grinder | R9 | 15000000000 | 19.78 / 25.17
+Grinder | R10 | 40000000000 | 28.10 / 44.33
+Grinder | R11 | 120000000000 | 40.92 / 56.80
+Grinder | R12 | 200000000000 | 46.46 / 65.55
+Grinder | R13 | 320000000000 | 52.48 / 77.28
+Grinder | R14 | 520000000000 | 62.73 / 89.68
+Grinder | R15 | 1250000000000 | 86.22 / 116.38
+Grinder | track | level | cumulative p50 / p90 hours
+Grinder | CashBoost | 1 | 0.02 / 0.02
+Grinder | CashBoost | 10 | 0.58 / 0.74
+Grinder | CashBoost | 35 | 1.68 / 2.17
+Grinder | CashBoost | 60 | 9.88 / 11.66
+Grinder | CashBoost | 85 | 22.59 / 33.62
+Grinder | CashBoost | 100 | 38.38 / 53.30
+Grinder | LuckBoost | 1 | 0.02 / 0.02
+Grinder | LuckBoost | 10 | 0.58 / 0.75
+Grinder | LuckBoost | 18 | 0.63 / 0.81
+Grinder | LuckBoost | 30 | 2.57 / 3.35
+Grinder | LuckBoost | 43 | 9.72 / 11.44
+Grinder | LuckBoost | 50 | 19.19 / 23.14
+Grinder | FlushSpeed | 1 | 0.02 / 0.02
+Grinder | FlushSpeed | 4 | 0.17 / 0.21
+Grinder | FlushSpeed | 7 | 0.69 / 0.90
+Grinder | FlushSpeed | 10 | 2.08 / 2.70
+Grinder | AutoFlushSpeed | 1 | 0.57 / 0.74
+Grinder | AutoFlushSpeed | 4 | 0.58 / 0.76
+Grinder | AutoFlushSpeed | 7 | 0.78 / 1.03
+Grinder | AutoFlushSpeed | 10 | 2.13 / 2.75
+Grinder | DisplaySlots | 1 | 0.02 / 0.02
+Grinder | DisplaySlots | 4 | 0.09 / 0.10
+Grinder | DisplaySlots | 6 | 0.11 / 0.12
+Grinder | DisplaySlots | 7 | 1.59 / 2.09
+Grinder | OfflineTank | 1 | 0.57 / 0.74
+Grinder | OfflineTank | 10 | 0.58 / 0.74
+Grinder | OfflineTank | 35 | 1.73 / 2.23
+Grinder | OfflineTank | 60 | 10.10 / 11.88
+Grinder | OfflineTank | 85 | 22.82 / 34.16
+Grinder | OfflineTank | 100 | 38.79 / 54.17
+Grinder passive income shares: first 10min 60.22%; 10min after Diamond 57.68%
+Steady display rates: ten best floored expected drops from 60 minutes at current tier; acquisition/slot costs excluded.
+Tier          Passive/s   Active/s   Share   Items
+Basic            110.00     126.70   46.47% 10x Fish
+Dirty            720.00     208.73   77.52% 10x Duck
+Golden          2516.80     330.70   88.39% 3x GoldenPoop, 7x Duck
+Diamond         4804.80     535.72   89.97% 4x GoldenPoop, 6x Duck
+Radioactive    15876.00    2256.77   87.55% 1x ToiletBaby, 5x GoldenPoop, 4x Duck
+Demon          27608.00    4385.91   86.29% 1x ToiletBaby, 6x GoldenPoop, 3x Duck
+Galaxy         45136.00    8562.90   84.05% 1x ToiletBaby, 7x GoldenPoop, 2x Duck
+Balance targets and replay passed. Timings are policy-dependent estimates, not guaranteed player outcomes; inf = censored after 300h.
