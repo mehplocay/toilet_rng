@@ -10,6 +10,14 @@
       "$className": "Lighting",
       "$properties": { "LightingStyle": "Soft", "PrioritizeLightingQuality": true }
     },
+    "TextChatService": {
+      "$className": "TextChatService",
+      "$properties": { "ChatVersion": "TextChatService", "CreateDefaultTextChannels": true },
+      "ChatWindowConfiguration": {
+        "$className": "ChatWindowConfiguration",
+        "$properties": { "Enabled": true }
+      }
+    },
     "ReplicatedStorage": {
       "Shared": { "$path": "src/shared" },
       "ModelTemplates": { "$path": "assets/rbxm/ModelTemplates.rbxm" },
