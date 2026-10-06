@@ -3,6 +3,7 @@ local Config = require(Shared.Config.Monetization)
 local Layout = require(Shared.Config.MapLayout)
 local Profile = require(Shared.CommerceProfile)
 local Paid = require(Shared.PaidBenefits)
+local Rebirth = require(Shared.RebirthRules).new(require(Shared.Config.Rebirth))
 local PathRules = require(Shared.PathBoostRules)
 local Players = game:GetService("Players")
 local Marketplace = game:GetService("MarketplaceService")
@@ -83,7 +84,7 @@ function Commerce:Collect(player)
 		return
 	end
 	local profile = self.Data:Get(player)
-	if not profile or not Paid.Owns(profile, "AutoCollect") then
+	if not profile or not (Paid.Owns(profile, "AutoCollect") or Rebirth:Bonus(profile).AutoCollect) then
 		return
 	end
 	if self.Income:Collect(profile) > 0 then

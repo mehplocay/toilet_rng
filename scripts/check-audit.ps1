@@ -51,6 +51,7 @@ if (!$Baseline -and !$Audit2Baseline -and !$DisplayCollectBaseline) {
 }
 if (!$Baseline -and !$Audit2Baseline -and !$DisplayCollectBaseline) {
     $parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'audit-permanent.luau')))
+    $parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'audit-rebirth-values.luau')))
 }
 $parts.Add('do')
 $parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'ui-harness.luau')))

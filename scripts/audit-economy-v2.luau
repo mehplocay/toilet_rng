@@ -79,7 +79,7 @@ test("economy v2: cash, toilet and rebirth multipliers settle only future second
 	p.RebirthLevel = 1
 	e.Now += 10
 	e:Fire("State", player)
-	assert(p.Income.Pending["1"] == 1615500)
+	assert(p.Income.Pending["1"] == 1638000)
 end)
 
 test("economy v2: wallet and lifetime ceilings retain unpaid large pending balances", function()

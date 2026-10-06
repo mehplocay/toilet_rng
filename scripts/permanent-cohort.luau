@@ -60,7 +60,8 @@ function C.Run(population, uptime, horizon)
 			I:Settle(p, 1000 + seconds, false)
 			if seconds >= nextCollect then
 				I:Collect(p)
-				nextCollect = seconds + collectInterval
+				nextCollect = seconds
+					+ (if R:Bonus(p).AutoCollect then math.min(5, collectInterval) else collectInterval)
 			end
 			if R:Eligible(p, p.RebirthLevel) then
 				result.Rebirths[p.RebirthLevel + 1][player] = seconds / 3600

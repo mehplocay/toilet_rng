@@ -32,6 +32,13 @@ function Stairs.Refresh(plot, owner, profile)
 			then "Rebirth " .. milestone .. ": Unlocked"
 			elseif nextStep then "Rebirth " .. milestone .. ":\n" .. requirement
 			else "\u{1F512} Rebirth " .. milestone
+		local reward = Rebirth.Levels[milestone]
+		step.Label.Text ..= string.format(
+			"\n+%d%% cash / +%d%% luck / +%d%% speed",
+			math.round(reward.Cash * 100),
+			math.round(reward.Luck * 100),
+			math.round(reward.Speed * 100)
+		)
 		step.Label.TextColor3 = if unlocked or nextStep then color else colors[Rarities.Common.Order]
 		step.Label.Parent.LightInfluence = 0
 		for _, surface in ipairs(step.Surfaces) do

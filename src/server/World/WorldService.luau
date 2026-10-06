@@ -110,6 +110,7 @@ function World:Refresh(player, profile)
 			end
 		end
 	end
+	require(script.Parent.RebirthCosmetics).Plot(plot, profile.RebirthLevel or 0)
 	local entries = {
 		tostring(profile.DisplaySlots),
 		tostring(profile.ToiletTier),
