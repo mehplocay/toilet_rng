@@ -7,7 +7,10 @@ for index, id in ipairs(Assets.Music) do
 	assert(id == expectedAudio["Music" .. index], "Wrong uploaded music ID: Music" .. index)
 end
 for key in pairs(audioSlots) do
-	assert(Assets.Sounds[key] == expectedAudio[key], "Slot without uploaded ID or wrong mapping: " .. key)
+	assert(
+		Assets.Sounds[key] == expectedAudio[if key == "Celestial" then "Godly" else key],
+		"Slot without uploaded ID or wrong mapping: " .. key
+	)
 end
 for key in pairs(Assets.Sounds) do
 	assert(audioSlots[key], "Configured ID without runtime slot: " .. key)
@@ -199,6 +202,10 @@ Assets.Icons.Shop = shopId
 local previewModule = H.Load("src/client/UI/Preview")
 for _, item in ipairs(Items) do
 	local itemPreview = previewModule.Create(imageRoot, H.UDim2.fromOffset(80, 80), nil, item)
+	if Assets.ItemIcons[item.Id] == "" then
+		assert(itemPreview:FindFirstChild("ModelPreview"), "New item needs a model icon fallback")
+		continue
+	end
 	assert(
 		itemPreview:FindFirstChild("Asset", true).Image == Images.Get(Assets.ItemIcons[item.Id]),
 		"Item icon mismatch"
@@ -206,6 +213,10 @@ for _, item in ipairs(Items) do
 end
 for tier, toilet in ipairs(H.Load("src/shared/Config/Toilets")) do
 	local toiletPreview = previewModule.Create(imageRoot, H.UDim2.fromOffset(80, 80), nil, nil, tier)
+	if Assets.ToiletIcons[toilet.Id] == "" then
+		assert(toiletPreview:FindFirstChild("ModelPreview"), "New toilet needs a model icon fallback")
+		continue
+	end
 	assert(
 		toiletPreview:FindFirstChild("Asset", true).Image == Images.Get(Assets.ToiletIcons[toilet.Id]),
 		"Toilet icon mismatch"

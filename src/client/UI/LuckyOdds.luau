@@ -51,7 +51,7 @@ function Odds.Create(gui, remotes)
 		UDim2.new(1, 0, 0, 134)
 	)
 	explanation.LayoutOrder = 1
-	local rarityText = C.BodyText(content, "", UDim2.new(1, 0, 0, 216))
+	local rarityText = C.BodyText(content, "", UDim2.new(1, 0, 0, 240))
 	rarityText.LayoutOrder, rarityText.TextXAlignment = 2, Enum.TextXAlignment.Left
 	local rows = {}
 	local current, key, quote
@@ -102,11 +102,13 @@ function Odds.Create(gui, remotes)
 					item.Name
 						.. " ("
 						.. item.Rarity
-						.. ")\nNormal "
+						.. ")\n"
+						.. (if item.Fallback then "Fallback" else "Base check 1 in " .. C.Commas(item.BaseChance or 0))
+						.. "\nCurrent outcome: Normal "
 						.. Odds.Percent(item.Normal)
 						.. " / Lucky "
 						.. Odds.Percent(item.Boosted),
-					UDim2.new(1, 0, 0, 60)
+					UDim2.new(1, 0, 0, 82)
 				)
 				row.LayoutOrder, row.TextXAlignment = i + 2, Enum.TextXAlignment.Left
 				table.insert(rows, row)

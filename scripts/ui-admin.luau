@@ -51,6 +51,12 @@ do
 		end
 	end
 	window.Select("Items")
+	local itemField = window.Pages.Items:FindFirstChild("Item ID", true)
+	local nextItem = window.Pages.Items:FindFirstChild("Next catalog item", true)
+	for _, item in ipairs(H.Load("src/shared/Config/Items")) do
+		assert(itemField.Text == item.Id, "Admin item picker omitted " .. item.Id)
+		nextItem.Activated:Fire()
+	end
 	if previewIcons then
 		for _, size in ipairs({ { 1280, 720 }, { 390, 722 }, { 640, 303 } }) do
 			root._fixed, root._abs = { X = size[1], Y = size[2] }, nil
@@ -68,6 +74,13 @@ do
 	remote.OnClientEvent:Fire(request[1], { Success = true, Message = "Saved" })
 	window.Select("Economy")
 	local economy = window.Pages.Economy
+	local toilets = H.Load("src/shared/Config/Toilets")
+	local toiletField = economy:FindFirstChild("Toilet tier (1-" .. #toilets .. ")", true)
+	for tier in ipairs(toilets) do
+		assert(toiletField.Text == tostring(tier))
+		economy:FindFirstChild("Next catalog toilet", true).Activated:Fire()
+	end
+	assert(toiletField.Text == "1", "Admin toilet picker must wrap after tier 15")
 	local levelBox = economy:FindFirstChild("Track / rebirth level", true)
 	local picker = economy:FindFirstChild("Upgrade track: CashBoost", true)
 	for _, track in ipairs(H.Load("src/shared/Config/Upgrades").Tracks) do

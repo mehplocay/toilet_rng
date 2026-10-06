@@ -17,6 +17,7 @@ if ($Baseline -or $Audit2Baseline -or $DisplayCollectBaseline) {
     if ($LASTEXITCODE -ne 0) { throw "Cannot enumerate baseline $revision" }
 }
 $parts.Add('local sources = {}')
+$parts.Add((& (Join-Path $PSScriptRoot 'wave1-spec-fixture.ps1')))
 $parts.Add('local displayCollectBaseline = ' + $DisplayCollectBaseline.IsPresent.ToString().ToLower())
 foreach ($file in (Get-ChildItem -LiteralPath (Join-Path $workspaceRoot 'src') -Recurse -Filter '*.luau')) {
     $relative = $file.FullName.Substring($workspaceRoot.Length + 1).Replace('\', '/')
@@ -54,6 +55,7 @@ if (!$Baseline -and !$Audit2Baseline -and !$DisplayCollectBaseline) {
     $parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'audit-rebirth-values.luau')))
     $parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'audit-catalog2.luau')))
     $parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'audit-rebirth-balance.luau')))
+    $parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'audit-wave1.luau')))
 }
 $parts.Add('do')
 $parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'ui-harness.luau')))

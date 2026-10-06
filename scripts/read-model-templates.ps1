@@ -8,13 +8,15 @@ try {
     [xml]$place = [IO.File]::ReadAllText($xmlPath)
     $lines = [Collections.Generic.List[string]]::new()
     $lines.Add('local importedTemplates = {')
-    foreach ($batch in @(@('ModelTemplates','assets/manifest.json',31), @('EnvTemplates','assets/manifest-env.json',44))) {
+    foreach ($batch in @(@('ModelTemplates','assets/manifest.json',31), @('EnvTemplates','assets/manifest-env.json',44), @('Wave1Templates','wave1',44))) {
     $folderName, $manifestFile, $expectedCount = $batch
     $root = $place.SelectSingleNode("//Item[@class='ReplicatedStorage']/Item[Properties/string[@name='Name']='$folderName']")
     if (-not $root -or $root.class -ne 'Model' -or @($root.Item).Count -ne $expectedCount) { throw "Expected $folderName with $expectedCount direct models" }
-    $manifest = Get-Content -Raw (Join-Path $workspaceRoot $manifestFile) | ConvertFrom-Json
-    foreach ($asset in $manifest.assets) {
-        $name = $asset.name
+    if ($manifestFile -eq 'wave1') {
+        $assets = foreach ($group in @('a','b','c','t')) { (Get-Content -Raw (Join-Path $workspaceRoot "assets/manifest-wave1-$group.json") | ConvertFrom-Json).assets }
+    } else { $assets = (Get-Content -Raw (Join-Path $workspaceRoot $manifestFile) | ConvertFrom-Json).assets }
+    foreach ($asset in $assets) {
+        $name = if ($asset.id) { $asset.id } else { $asset.name }
         $models = $root.SelectNodes("Item[@class='Model'][Properties/string[@name='Name']='$name']")
         if ($models.Count -ne 1) { throw "Missing/duplicate model: $name" }
         $meshes = $models[0].SelectNodes(".//Item[@class='MeshPart']")
@@ -42,7 +44,7 @@ try {
     if ($root.SelectNodes(".//Item[@class='MeshPart']").Count -ne $expectedCount) { throw 'Wrong MeshPart count' }
     }
     $lines.Add('}')
-    Write-Host 'Verified binary import: 75 models (31 original + 44 environment), 75 MeshParts, 150 content references, manifest sizes, Y-up pivots, Automatic rendering.'
+    Write-Host 'Verified binary import: 119 models (31 original + 44 environment + 44 Wave 1), 119 MeshParts, 238 content references, manifest sizes, Y-up pivots, Automatic rendering.'
     return (($lines -join "`n") + "`n")
 } finally {
     if (Test-Path -LiteralPath $xmlPath) { Remove-Item -LiteralPath $xmlPath }

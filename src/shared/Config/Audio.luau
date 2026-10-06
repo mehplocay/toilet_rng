@@ -1,5 +1,5 @@
 -- Length is the source's maximum seconds, including its tail; also bounds stale voices.
-return {
+local Audio = {
 	Defaults = { MusicVolume = 0.25, SFXVolume = 0.7, MusicMuted = false, SFXMuted = false },
 	Crossfade = 3,
 	FadeIn = 2.5,
@@ -520,3 +520,5 @@ return {
 		},
 	},
 }
+Audio.Cues.Celestial = table.clone(Audio.Cues.Godly)
+return Audio

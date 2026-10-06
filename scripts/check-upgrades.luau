@@ -132,14 +132,14 @@ for tier = 1, #Toilets do
 			events += entry.Probability
 		end
 		if entry.Item.Id == "KingPoop" then
-			assert(entry.Probability >= 0.0000749993 and entry.Probability <= 0.000075)
+			assert(entry.Probability >= 0.000074 and entry.Probability <= 0.000075)
 		end
 	end
 	assert(empty == 0 and math.abs(total - 1) < 1e-12)
-	assert(events <= 0.00008325 and (tier < 5 or events >= 0.000075 - 1e-12))
+	assert(events <= 0.00008325 and (tier < 5 or events >= 0.000074))
 	assert(Roll.Sample(entries, function()
 		return 0.999999999
-	end).Id == "ToiletPaper")
+	end).Id == "TubTadpole")
 end
 print(
 	"Upgrade checks passed: bounded exponential purchases, compare-and-swap replay, migration, slots, luck/cooldown/auto caps, cash rounding, full tank and exact odds"

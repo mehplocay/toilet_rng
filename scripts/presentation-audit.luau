@@ -187,7 +187,7 @@ local function runPresentationAudit(test, environment, server)
 					rarest = object
 				end
 			end
-			assert(folder.Parent == player and coins.Value == 1234 and rarest.Value == "Mythic")
+			assert(folder.Parent == player and coins.Value == 1234 and rarest.Value == "Godly")
 			assert(#e.Objects == 8)
 			profile.Coins = 1e6
 			assert(coins.Value == 1234)

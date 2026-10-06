@@ -7,6 +7,10 @@ function Toilets.BuildPrimitive(parent, cf, tier, preview)
 	model.Name = "Toilet"
 	local color, material = Style.ToiletColors[tier], Visuals.ToiletMaterials[tier]
 	local accent = if tier == 6 then Color3.fromRGB(255, 45, 60) else color:Lerp(Color3.new(1, 1, 1), 0.3)
+	local effect = require(Config.TemplateEffects)[require(Config.WorldModels).ToiletNames[tier]]
+	if tier > 7 and effect then
+		accent = effect.Color
+	end
 	local function part(name, size, offset, shape, tint, mat)
 		local result = P.Part(model, name, size, cf * offset, tint or color, shape, mat or material)
 		if tier == 4 and mat == nil then
@@ -185,7 +189,16 @@ function Toilets.BuildPrimitive(parent, cf, tier, preview)
 		orbit.Parent = model
 	end
 	if tier >= 4 and not preview then
-		P.Light(water, accent, 8)
+		P.Light(water, if effect then effect.LightColor or accent else accent, 8)
+		if tier > 7 and effect then
+			P.Particles(
+				water,
+				effect.Particles,
+				accent,
+				effect.Rate,
+				require(script.Parent.TemplateAccents).ParticleOptions(effect)
+			)
+		end
 	end
 	model.Parent = parent
 	return model

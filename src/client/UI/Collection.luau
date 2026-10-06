@@ -5,6 +5,13 @@ local SafeInventory = require(Shared.SafeInventory)
 local Preview = require(script.Parent.Preview)
 local index = require(Shared.IndexProgress).new(Items, require(Shared.Config.IndexRewards))
 local Collection = {}
+local orderedItems = table.clone(Items)
+table.sort(orderedItems, function(a, b)
+	if a.Rarity ~= b.Rarity then
+		return Rarities[a.Rarity].Order < Rarities[b.Rarity].Order
+	end
+	return if a.Chance == b.Chance then a.Id < b.Id else a.Chance < b.Chance
+end)
 function Collection.Create(gui, remotes)
 	local panel = C.Panel(gui, "My Collection", C.Blue)
 	local body = panel.ContentScroll.Body
@@ -151,7 +158,7 @@ function Collection.Create(gui, remotes)
 				.. (if entry then entry.Discovered .. "/" .. entry.Total else total .. "/" .. #Items)
 		end
 		local visible = 0
-		for order, item in ipairs(Items) do
+		for order, item in ipairs(orderedItems) do
 			local discovered = (state.Collection[item.Id] or 0) > 0
 			local name = if discovered then item.Name else "???"
 			local show = (filter == "All" or filter == item.Rarity)

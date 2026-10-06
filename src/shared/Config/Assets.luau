@@ -1,4 +1,4 @@
-return {
+local Assets = {
 	-- Creator Hub uploads are DECAL IDs, resolved by the server before UI use.
 	-- Optional ["decalId"] = "rbxassetid://imageId" overrides; see docs/icons-resolve.md.
 	IconImages = {},
@@ -48,6 +48,44 @@ return {
 		Coin = "rbxassetid://110019653714338",
 	},
 	ItemIcons = {
+		-- Wave 1 uses static model previews until uploaded icons are wired.
+		SudsSlug = "",
+		PocketPuddle = "",
+		LoopyLoofah = "",
+		SoggySock = "",
+		TubTadpole = "",
+		BrushBristle = "",
+		RollMole = "",
+		CapybaraCap = "",
+		DrainCrab = "",
+		ToothpasteGoose = "",
+		SpongeKnight = "",
+		BubbleBeard = "",
+		PlungerPogo = "",
+		BathMatBat = "",
+		DiscoBidet = "",
+		TowelTornado = "",
+		PorcelainPoodle = "",
+		FaucetPharaoh = "",
+		RoyalFlushFrog = "",
+		GoldenGargler = "",
+		Clogtopus = "",
+		LaundryYeti = "",
+		SteamGenie = "",
+		BathBombBehemoth = "",
+		DrainKraken = "",
+		GeyserGorilla = "",
+		ThroneColossus = "",
+		PlungerPaladin = "",
+		HaloHamster = "",
+		CometCommode = "",
+		ConstellationClam = "",
+		StarlightSeraph = "",
+		TheLastToilet = "",
+		EmergencyUniverse = "",
+		InfiniteOccupied = "",
+		CosmicCourtesy = "",
+
 		Poop = "rbxassetid://132606773624980",
 		ToiletPaper = "rbxassetid://94552390440474",
 		Rat = "rbxassetid://114075083106829",
@@ -61,6 +99,16 @@ return {
 		Mystery = "rbxassetid://79503365881133",
 	},
 	ToiletIcons = {
+		-- Wave 1 uses static model previews until uploaded icons are wired.
+		CoralCommode = "",
+		CloudCushion = "",
+		ClockworkCloset = "",
+		DragonKiln = "",
+		AuroraThrone = "",
+		AstralAltar = "",
+		ParadoxPotty = "",
+		InfinityFlush = "",
+
 		Basic = "rbxassetid://121645637624013",
 		Dirty = "rbxassetid://132010370094095",
 		Golden = "rbxassetid://137177033047314",
@@ -165,3 +213,5 @@ return {
 	Gamepasses = {}, -- No real asset/product IDs configured yet.
 	DeveloperProducts = {},
 }
+Assets.Sounds.Celestial = Assets.Sounds.Godly
+return Assets

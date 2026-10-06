@@ -12,7 +12,7 @@ function C.Percentile(values, fraction)
 	table.sort(values)
 	return values[math.ceil(#values * fraction)]
 end
-function C.Run(population, uptime, rebirthRuns, slotLimit, stopAt)
+function C.Run(population, uptime, rebirthRuns, slotLimit, stopAt, maxTier)
 	local result = { Tiers = {}, Runs = { {}, {} }, EarlyShare = {}, MidShare = {} }
 	for tier = 2, #Toilets do
 		result.Tiers[tier] = {}
@@ -93,7 +93,7 @@ function C.Run(population, uptime, rebirthRuns, slotLimit, stopAt)
 					end
 				end
 			end
-			if not rebirthRuns and p.ToiletTier == #Toilets and earlyTaken and not midStart then
+			if not rebirthRuns and p.ToiletTier == (maxTier or #Toilets) and earlyTaken and not midStart then
 				break
 			end
 			local toilet = Toilets[p.ToiletTier]

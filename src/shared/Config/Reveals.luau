@@ -1,4 +1,4 @@
--- Presentation only. Celestial is dormant until Config.Rarities contains it.
+-- Presentation only; all nine catalog rarities are enabled.
 return {
 	UpdateHz = 30,
 	ParticleCap = 24,
@@ -39,8 +39,7 @@ return {
 		Celestial = {
 			Tier = "Cinematic",
 			Signature = "Starlight",
-			Sound = "Mythic",
-			SoundGain = 0.65,
+			Sound = "Celestial",
 			Duration = 4.2,
 			Particles = 20,
 			Shake = 0,

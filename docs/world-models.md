@@ -1,5 +1,7 @@
 # World models and Studio template handoff
 
+Wave 1 update, 2026-10-06: the shared loader also routes `ReplicatedStorage.Wave1Templates`, mapped from `assets/rbxm/Wave1Templates.rbxm`. Its 36 item and eight toilet meshes use `manifest-wave1-a/b/c/t.json` dimensions and the existing normalization/fallback path. There are now 119 template models across ModelTemplates, EnvTemplates and Wave1Templates, with 238 serialized mesh/texture references. New toilet pivots preserve the authored foot datum; blank icon entries use static effect-free model previews. See [integration decisions and verification](design/wave1-integration.md).
+
 Implemented in the `feature/templates` worktree, uncommitted. `assets/rbxm/ModelTemplates.rbxm` is mapped directly to `ReplicatedStorage.ModelTemplates` in `default.project.json`. Its single root contains all 31 named Models, each with one MeshPart and uploaded mesh/palette references. The binary import is unchanged. [Current API research and evidence](research/model-templates.md).
 
 ## Loading and normalization

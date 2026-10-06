@@ -9,6 +9,8 @@ local function largest(size)
 end
 
 local function warm(name)
+	-- Catalog folders cover ModelTemplates, EnvTemplates and Wave1Templates.
+	-- Explicit routing avoids matching a same-name asset from an unrelated folder.
 	local folder = Storage:FindFirstChild(Catalog[name].Folder or "ModelTemplates")
 	local source = folder and folder:FindFirstChild(name)
 	local count = if source then #source:GetDescendants() else 0
@@ -56,7 +58,7 @@ local function warm(name)
 		assert((normalizedSize - Catalog[name].Size).Magnitude < 0.01, "Bounds disagree with manifest axes/aspect")
 		part.Size = part.Size * factor
 		local center = Vector3.new(0, normalizedSize.Y / 2, 0)
-		if Catalog[name].Center then
+		if Catalog[name].Center or Catalog[name].PreserveFoot then
 			-- Decorations shift toilet bounds. Keep the imported foot datum and shared 2.08-stud seat.
 			local foot = rotation:VectorToWorldSpace(importedPivot.Position * factor)
 			center = Vector3.new(-foot.X, normalizedSize.Y / 2, -foot.Z)

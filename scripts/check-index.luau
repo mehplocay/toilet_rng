@@ -26,7 +26,7 @@ local p = profile()
 assert(p.Stamps == 0 and next(p.IndexClaims) == nil and next(p.IndexCosmetics) == nil)
 assert(not index:Claim(p, "total:3").Success)
 assert(not index:Claim(p, {}).Success and not index:Claim(p, "unknown").Success)
-assert(index.ById["total:12"] == nil and index.ById["total:35"] == nil)
+assert(index.ById["total:12"] and index.ById["total:35"] and index.ById["total:47"])
 for _, item in ipairs(Items) do
 	assert(index.ById["rarity:" .. item.Rarity])
 end
@@ -34,10 +34,15 @@ end
 -- Lifetime discovery counts, including sold-out items, never depend on inventory.
 p.Collection = { Poop = 50, ToiletPaper = 1, Rat = 1, Unknown = 900 }
 local total, rarities = index:Progress(p)
-assert(total == 3 and rarities.Common.Discovered == 1 and rarities.Rare.Total == 2)
+assert(total == 3 and rarities.Common.Discovered == 1 and rarities.Rare.Total == 6)
 assert(not index:Claim(p, "rarity:Rare").Success)
 assert(index:Claim(p, "total:3").Success and p.Stamps == 10)
 assert(not index:Claim(p, "total:3").Success and p.Stamps == 10)
+for _, item in ipairs(Items) do
+	if item.Rarity == "Common" then
+		p.Collection[item.Id] = 1
+	end
+end
 assert(index:Claim(p, "rarity:Common").Success and p.Stamps == 12)
 assert(p.Coins == 20 and p.Stats.Earned == 30 and p.RewardLuckExpires == 123)
 assert(next(p.Inventory) == nil)
@@ -72,12 +77,15 @@ assert(malformed.Stamps == 0)
 index:Sanitize(malformed, { Stamps = 3.9, IndexClaims = { ["total:5"] = true } })
 assert(malformed.Stamps == 3 and malformed.DisplaySlots == 4)
 local capped = profile()
-capped.Collection.Poop, capped.Stamps = 1, 9e15
+for _, item in ipairs(Items) do
+	capped.Collection[item.Id] = 1
+end
+capped.Stamps = 9e15
 assert(not index:Claim(capped, "rarity:Common").Success and not capped.IndexClaims["rarity:Common"])
 
 -- New shipped items grow denominators without invalidating earlier claim IDs.
 local expanded = table.clone(Items)
-for n = #Items + 1, 35 do
+for n = #Items + 1, #Items + 4 do
 	table.insert(expanded, { Id = "New" .. n, Rarity = "Rare" })
 end
 local future = Index.new(expanded, Config)
@@ -126,6 +134,11 @@ assert(not Safe.Sell(inv, Items, "Poop", 1) and inv.Inventory.Poop == 4)
 local handler, saves, syncs, results = nil, 0, 0, {}
 local remoteProfile, player = profile(), {}
 remoteProfile.Collection = { Poop = 1, Rat = 1, Fish = 1 }
+for _, item in ipairs(Items) do
+	if item.Rarity == "Common" then
+		remoteProfile.Collection[item.Id] = 1
+	end
+end
 local data = {
 	Saving = {},
 	Get = function()

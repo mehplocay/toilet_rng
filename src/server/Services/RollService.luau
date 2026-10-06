@@ -17,7 +17,11 @@ function RollService.Distribution(items, toilets, tier, luckOverride)
 		end
 	end
 	table.sort(sorted, function(a, b)
-		return a.Chance > b.Chance
+		return if a.Id == "Poop"
+			then false
+			elseif b.Id == "Poop" then true
+			elseif a.Chance == b.Chance then a.Id < b.Id
+			else a.Chance > b.Chance
 	end)
 	local entries, remaining = {}, 1
 	for _, item in ipairs(sorted) do

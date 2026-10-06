@@ -561,6 +561,32 @@ function H.Reload(path)
 	cache[path] = nil
 	return loadModule(path)
 end
+-- Geometry is exercised by check-world.ps1. UI tests mock only its engine boundary.
+local function previewModel(parent, name)
+	H.PreviewBuilds = (H.PreviewBuilds or 0) + 1
+	local model = Instance.new("Model")
+	model.Name, model.Parent = name, parent
+	function model:GetBoundingBox()
+		return CFrame.new(), Vector3.new(4, 5, 3)
+	end
+	function model:GetPivot()
+		return CFrame.new()
+	end
+	function model:PivotTo(cf)
+		self.Pivot = cf
+	end
+	return model
+end
+cache["src/shared/Visuals/Items"] = {
+	Build = function(parent, _, item)
+		return previewModel(parent, item.Id)
+	end,
+}
+cache["src/shared/Visuals/Toilets"] = {
+	Build = function(parent, _, tier)
+		return previewModel(parent, "Toilet" .. tier)
+	end,
+}
 function H.Root(w, h)
 	local root = Instance.new("Frame")
 	root._fixed = Vector2.new(w, h)

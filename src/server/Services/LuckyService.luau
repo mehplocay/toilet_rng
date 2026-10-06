@@ -48,6 +48,8 @@ function Lucky:Odds(profile)
 			Id = item.Id,
 			Name = item.Name,
 			Rarity = item.Rarity,
+			BaseChance = item.Chance,
+			Fallback = item.Id == "Poop",
 			Normal = entry.Probability,
 			Boosted = enhanced[i].Probability,
 		}

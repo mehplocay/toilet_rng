@@ -1,5 +1,13 @@
 # Economy v2: permanent progression and two-layer cash
 
+## Wave 1 integration update (2026-10-06)
+
+The current catalog has nine rarities, 47 items and 15 toilets. Celestial adds 25,000 base coins/s between Godly 6,000 and Secret 100,000. The cash formula below and 10x luck cap with diminishing returns above 5x for odds over 25,000 are retained. New display factors rebase from Galaxy 13x and remain inside the 40x free cap.
+
+Expanded early pools required toilet prices of 7.5K/16K/90K/420K/3M/16.5M to preserve original pacing. Measured normal fresh-account p50 arrivals are 1.47/3.01/6.12/11.85/20.09/35.47 minutes. All eight new prices and service awards follow the Wave 1 JSON. Capped fresh-account arrivals, conditional arrivals for all three archetypes, the four corrected late-tier targets and the unresolved rebirth-gate conflict are documented in [Wave 1 integration](wave1-integration.md). The unchanged rebirth gates currently reach R15 in 57.725 hours; the older 96.83-hour result below describes the previous seven-toilet catalog and is not a current Wave 1 proof.
+
+Use [the integrated Wave 1 output](wave1-balance.txt) and `scripts/balance.luau` for current evidence. Historical numbers below are retained as the pre-Wave-1 baseline; the new catalog does not multiply nominal late toilet factors outside the cash cap.
+
 2026-10-06, feature/rebirth-balance. This retune replaces the previous single 10x cash cap and historical pacing numbers. See [rebirth contract](rebirth.md), [validation](rebirth-values-validation.md), [full balance output](rebirth-values-balance.txt), [rebirth cohorts](rebirth-values-simulations.txt), [upgrade definitions](upgrades.md) and [source/numeric review](../research/rebirth-cash-layers.md). No commit or push.
 
 ## Cash and permanent progression

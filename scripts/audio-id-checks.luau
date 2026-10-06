@@ -6,7 +6,12 @@ return function(assets, audio)
 		local digits = type(id) == "string" and id:match("^rbxassetid://(%d+)$")
 		if not digits or #digits < 12 or #digits > 17 or digits:sub(1, 1) == "0" then
 			table.insert(errors, "Slot without valid 12-17 digit ID: " .. key)
-		elseif seen[digits] then
+		elseif
+			seen[digits]
+			and not (
+				(key == "Celestial" and seen[digits] == "Godly") or (key == "Godly" and seen[digits] == "Celestial")
+			)
+		then
 			table.insert(errors, "Duplicate ID: " .. key .. " / " .. seen[digits])
 		else
 			seen[digits] = key
@@ -25,7 +30,7 @@ return function(assets, audio)
 		end
 	end
 	assert(#errors == 0, table.concat(errors, "\n"))
-	assert(slots == 53, "Expected 53 configured audio slots")
+	assert(slots == 54, "Expected 54 logical audio slots (53 unique assets)")
 	assert(audio.Cues.Ambience.Looped and audio.Cues.RebirthHold.Looped)
 	assert(audio.StopFade >= 0.02 and audio.StopFade <= 0.03)
 	assert(audio.LoopAttack >= 0.02 and audio.LoopAttack <= 0.03)

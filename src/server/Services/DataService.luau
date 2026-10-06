@@ -111,6 +111,8 @@ local function sanitize(raw, withoutAdmin)
 	index:Sanitize(profile, raw)
 	profile.Income = income:Sanitize(raw.Income, profile)
 	for _, item in ipairs(Items) do
+		-- Stable IDs preserve legacy counts; newly shipped IDs start at zero.
+		-- Rarity, odds and display income are always resolved from the deployed catalog.
 		profile.Inventory[item.Id] = integer(if type(raw.Inventory) == "table" then raw.Inventory[item.Id] else nil, 0)
 		profile.Collection[item.Id] =
 			integer(if type(raw.Collection) == "table" then raw.Collection[item.Id] else nil, 0)

@@ -271,6 +271,18 @@ function Window.Create(gui, remote, C, reloadLabels)
 			send("ClearCooldown")
 		end)
 		local tier = field(body, "Toilet tier (1-" .. #Toilets .. ")", 1)
+		button(body, "Next catalog toilet", function()
+			local current = tonumber(tier.Text) or 1
+			local nextTier = math.floor(current) % #Toilets + 1
+			tier.Text = tostring(nextTier)
+		end, C.Navy)
+		local toiletName = text(body, Toilets[1].Name)
+		if toiletName then
+			tier:GetPropertyChangedSignal("Text"):Connect(function()
+				local selected = Toilets[tonumber(tier.Text)]
+				toiletName.Text = if selected then selected.Name else "Enter a valid toilet tier."
+			end)
+		end
 		button(body, "Set toilet tier", function()
 			send("Toilet", { Level = tonumber(tier.Text) })
 		end)

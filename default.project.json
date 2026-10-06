@@ -26,7 +26,8 @@
     "ReplicatedStorage": {
       "Shared": { "$path": "src/shared" },
       "ModelTemplates": { "$path": "assets/rbxm/ModelTemplates.rbxm" },
-      "EnvTemplates": { "$path": "assets/rbxm/EnvTemplates.rbxm" }
+      "EnvTemplates": { "$path": "assets/rbxm/EnvTemplates.rbxm" },
+      "Wave1Templates": { "$path": "assets/rbxm/Wave1Templates.rbxm" }
     },
     "ServerStorage": { "AdminClient": { "$path": "src/admin-client" } },
     "ServerScriptService": { "Server": { "$path": "src/server" } },

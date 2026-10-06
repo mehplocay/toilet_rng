@@ -1,5 +1,7 @@
 # Sound coverage map
 
+Wave 1 update, 2026-10-06: Celestial is now a live rarity and uses the existing Godly stinger with identical cue settings through the `Celestial` logical sound key. This replaces the provisional Mythic-at-65% hook described below. There are 54 logical slots and 53 unique audio IDs; only the Godly/Celestial alias is permitted by coverage checks. No new audio asset was introduced.
+
 2026-10-06 `feature/reveals2` presentation follow-up: the finder now receives only its rarity reveal stinger, so the higher-priority generic Event fanfare cannot replace it. Other Secret event recipients use the existing Secret slot; other events retain ServerEvent. The five-second event duck is unchanged. Celestial provisionally reuses Mythic at 65% gain until a distinct soft choir/chime asset exists. Secret retains its unique 2.4 s asset during a 4.8 s reveal. See [tiered reveals](rare-drop-reveal.md); no audio assets, mixer limits or server rules changed.
 
 Audit: 2026-10-06, branch `feature/sound-coverage`. Scope: every file in `src/client/**`, world builders/prompts in `src/server/World/**`, all server Result/Event/State producers and replicated presentation changes. English-only feedback; no server logic edits, asset IDs, generated audio edits or footsteps.

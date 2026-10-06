@@ -59,7 +59,7 @@ end
 function Rules.Audience(rarity)
 	return if rarity == "Epic" or rarity == "Legendary"
 		then "Friends"
-		elseif rarity == "Mythic" or rarity == "Godly" or rarity == "Secret" then "Server"
+		elseif rarity == "Mythic" or rarity == "Godly" or rarity == "Celestial" or rarity == "Secret" then "Server"
 		else nil
 end
 function Rules.Announcements(config, clock)

@@ -16,9 +16,9 @@ for tier = 1, #Toilets do
 		assert(Roll.Sample(entries, math.random))
 	end
 end
-assert(#Roll.Distribution(Items, Toilets, 1) == 4)
-assert(#Roll.Distribution(Items, Toilets, 5) == 9)
-assert(#Roll.Distribution(Items, Toilets, 6) == 10)
+assert(#Roll.Distribution(Items, Toilets, 1) == 7)
+assert(#Roll.Distribution(Items, Toilets, 5) == 24)
+assert(#Roll.Distribution(Items, Toilets, 6) == 27)
 assert(Roll.Roll(Items, Toilets, 7, function()
 	return 0
 end).Id == "Mystery")
@@ -67,7 +67,7 @@ local boosted = Roll.Distribution(Items, Toilets, 7, Toilets[7].Luck * event:Mul
 assert(math.abs(boosted[1].Check - 5.1 / Items[11].Chance) < 1e-12)
 assert(Roll.Sample(boosted, function()
 	return 0.999999
-end).Id == "Poop")
+end).Id == "LoopyLoofah")
 now = event.Expires
 assert(event:Multiplier() == 1)
 event:Remove(owner)

@@ -2051,8 +2051,9 @@
       ],
       "SlotRateCapPerMinute": 540000000,
       "PlayerRateCapPerMinute": 5400000000,
-      "TargetCumulativeMinutes": 285,
-      "TargetStatus": "conditional post-Galaxy active cohort target; +/-20%",
+      "TargetCumulativeMinutes": 350,
+      "HistoricalUncappedTargetMinutes": 285,
+      "TargetStatus": "integrated 40x free cash cap, normal conditional post-Galaxy cohort; +/-20%; see wave1-integration.md",
       "DailyRewardMultiplier": 64
     },
     {
@@ -2101,8 +2102,9 @@
       ],
       "SlotRateCapPerMinute": 810000000,
       "PlayerRateCapPerMinute": 8100000000,
-      "TargetCumulativeMinutes": 365,
-      "TargetStatus": "conditional post-Galaxy active cohort target; +/-20%",
+      "TargetCumulativeMinutes": 530,
+      "HistoricalUncappedTargetMinutes": 365,
+      "TargetStatus": "integrated 40x free cash cap, normal conditional post-Galaxy cohort; +/-20%; see wave1-integration.md",
       "DailyRewardMultiplier": 64
     },
     {
@@ -2151,8 +2153,9 @@
       ],
       "SlotRateCapPerMinute": 1200000000,
       "PlayerRateCapPerMinute": 12000000000,
-      "TargetCumulativeMinutes": 460,
-      "TargetStatus": "conditional post-Galaxy active cohort target; +/-20%",
+      "TargetCumulativeMinutes": 770,
+      "HistoricalUncappedTargetMinutes": 460,
+      "TargetStatus": "integrated 40x free cash cap, normal conditional post-Galaxy cohort; +/-20%; see wave1-integration.md",
       "DailyRewardMultiplier": 64
     },
     {
@@ -2200,8 +2203,9 @@
       ],
       "SlotRateCapPerMinute": 1800000000,
       "PlayerRateCapPerMinute": 18000000000,
-      "TargetCumulativeMinutes": 570,
-      "TargetStatus": "conditional post-Galaxy active cohort target; +/-20%",
+      "TargetCumulativeMinutes": 1150,
+      "HistoricalUncappedTargetMinutes": 570,
+      "TargetStatus": "integrated 40x free cash cap, normal conditional post-Galaxy cohort; +/-20%; see wave1-integration.md",
       "DailyRewardMultiplier": 64
     }
   ],

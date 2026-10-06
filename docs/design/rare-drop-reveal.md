@@ -1,5 +1,7 @@
 # Rare drop presentation review
 
+Wave 1 update, 2026-10-06: Celestial is enabled at rarity order 8, with Secret at 9. Its existing 4.2-second white/cyan constellation reveal now runs for actual catalog items and uses the Godly stinger via the `Celestial` cue. The headless suite exercises real Celestial full/reduced/disabled, queue and cleanup paths. The provisional audio/unused-rarity statements below describe the earlier presentation-only handoff. Mythic retains the merged cinematic treatment even though the older Wave 1 metadata called it a banner.
+
 ## Tiered reveals 2 — current implementation
 
 2026-10-06, `feature/reveals2`; uncommitted. This section supersedes the shared Legendary/Mythic and Godly/Secret visuals described below. [API review](../research/tiered-reveals2.md), [headless previews](reveals2-previews/README.md).

@@ -3,7 +3,7 @@ local Roll = require("../src/server/Services/RollService")
 local Items = require("../src/shared/Config/Items")
 local Toilets = require("../src/shared/Config/Toilets")
 
-local expectedAwards = { 40, 60, 80, 100, 1200, 2400, 4500 }
+local expectedAwards = { 40, 60, 80, 100, 1200, 2400, 4500, 6500, 9000, 12500, 23000, 35000, 70000, 105000, 155000 }
 for tier, toilet in ipairs(Toilets) do
 	assert(toilet.ServiceCoins == expectedAwards[tier], "Service award differs from the progression design")
 	local profile = { Coins = 10, Stats = { Earned = 20 }, Inventory = { Poop = 1 } }
@@ -13,7 +13,7 @@ for tier, toilet in ipairs(Toilets) do
 			local item = Roll.Roll(Items, Toilets, tier, function()
 				return sample
 			end, luck)
-			assert(item and (sample == 0 or item.Id == "Poop"))
+			assert(item and (sample ~= 0 or item.Id == Roll.Distribution(Items, Toilets, tier, luck)[1].Item.Id))
 			local before, earned = profile.Coins, profile.Stats.Earned
 			assert(ServiceCoins.Grant(profile, toilet) == expectedAwards[tier])
 			assert(profile.Coins == before + expectedAwards[tier])

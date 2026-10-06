@@ -14,7 +14,7 @@ do
 		shortCount += 1
 		assert(id ~= originalSounds.Ambience and sound.Volume == 0 and not sound.IsPlaying)
 	end
-	assert(shortCount == 47, "Startup omitted short SFX or eagerly preloaded the long bed")
+	assert(shortCount == 47, "Startup omitted short SFX or eagerly preloaded the long bed; Celestial reuses Godly")
 	assert(#H.Preloads > preloadCount)
 	for _, track in ipairs({ originalMusic[2], originalMusic[3], originalMusic[4], originalMusic[5] }) do
 		for i = preloadCount + 1, #H.Preloads do

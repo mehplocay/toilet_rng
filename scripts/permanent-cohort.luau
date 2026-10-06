@@ -10,7 +10,7 @@ local Roll = require("../src/server/Services/RollService")
 local Service = require("../src/server/Services/ServiceCoinService")
 local Display = require("./display-cohort")
 local C = {}
-function C.Run(population, uptime, horizon)
+function C.Run(population, uptime, horizon, deferRebirth)
 	local result = { Levels = {}, Rebirths = {}, Tiers = {}, FirstTen = {} }
 	for _, track in ipairs(Config.Tracks) do
 		result.Levels[track.Id] = {}
@@ -21,7 +21,7 @@ function C.Run(population, uptime, horizon)
 	for level = 1, 15 do
 		result.Rebirths[level] = {}
 	end
-	for tier = 2, 7 do
+	for tier = 2, #Toilets do
 		result.Tiers[tier] = {}
 	end
 	for player = 1, population do
@@ -63,7 +63,7 @@ function C.Run(population, uptime, horizon)
 				nextCollect = seconds
 					+ (if R:Bonus(p).AutoCollect then math.min(5, collectInterval) else collectInterval)
 			end
-			if R:Eligible(p, p.RebirthLevel) then
+			if not deferRebirth and R:Eligible(p, p.RebirthLevel) then
 				result.Rebirths[p.RebirthLevel + 1][player] = seconds / 3600
 				p = assert(R:Build(p, p.RebirthLevel, 1000 + seconds))
 			end
@@ -99,6 +99,12 @@ function C.Run(population, uptime, horizon)
 					end
 					assert(buy(selected))
 				end
+				local toilet = Toilets[p.ToiletTier + 1]
+				if toilet and p.Coins >= toilet.Price then
+					p.Coins -= toilet.Price
+					p.ToiletTier += 1
+					result.Tiers[p.ToiletTier][player] = seconds / 3600
+				end
 			end
 			local toilet, luck = Toilets[p.ToiletTier], U:Luck(p, Toilets[p.ToiletTier].Luck)
 			if oldTier ~= p.ToiletTier or oldLuck ~= luck then
@@ -121,6 +127,9 @@ function C.Run(population, uptime, horizon)
 			p.RunFlushes += rolls
 			Display.ReserveAndSell(p)
 			seconds += step
+			if deferRebirth and p.ToiletTier == #Toilets then
+				break
+			end
 			if
 				p.RebirthLevel == 15
 				and p.Upgrades.CashBoost == 100
@@ -140,6 +149,9 @@ function C.Run(population, uptime, horizon)
 			end
 		end
 		for _, values in ipairs(result.Rebirths) do
+			values[player] = values[player] or math.huge
+		end
+		for _, values in pairs(result.Tiers) do
 			values[player] = values[player] or math.huge
 		end
 	end

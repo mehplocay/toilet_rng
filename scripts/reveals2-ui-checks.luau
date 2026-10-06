@@ -1,4 +1,4 @@
--- Production presentation with a temporary ninth-tier fixture, never shipped data.
+-- Production presentation with the real shipped Celestial catalog.
 do
 	local module = H.Load("src/client/Presentation/RevealController")
 	local config = H.Load("src/shared/Config/Reveals")
@@ -12,9 +12,8 @@ do
 		end
 		error(rarity)
 	end
-	local celestial = table.clone(find("Godly"))
-	celestial.Id, celestial.Name, celestial.Rarity = "CelestialFixture", "Astral Discovery", "Celestial"
-	local oldCelestial, oldOrder = rarities.Celestial, rarities.Secret.Order
+	local celestial = find("Celestial")
+	assert(rarities.Celestial.Order == 8 and rarities.Secret.Order == 9)
 	local lighting = H.Services.Lighting
 	lighting.ClockTime = 14
 	local sky = H.Instance.new("Sky")
@@ -33,13 +32,6 @@ do
 		controller:Show(find("Mythic"), { Admin = true })
 		assert(not root.RareReveal.RevealContent:FindFirstChild("NewDiscovery"))
 		controller:Skip()
-		if not oldCelestial then
-			rarities.Celestial = nil
-			controller:Show(celestial)
-			assert(not controller.Queue.Active, "Dormant rarity must allocate nothing")
-		end
-		rarities.Celestial = { Order = 8, Color = Color3.fromRGB(178, 247, 255) }
-		rarities.Secret.Order = 9
 		for _, rarity in ipairs({ "Legendary", "Mythic", "Godly", "Celestial", "Secret" }) do
 			local item = if rarity == "Celestial" then celestial else find(rarity)
 			controller:Show(item)
@@ -107,7 +99,6 @@ do
 		root:Destroy()
 	end
 	H.Services.UserInputService.TouchEnabled = false
-	rarities.Celestial, rarities.Secret.Order = oldCelestial, oldOrder
 	-- Real server-event consumer plus overlapping local sky, including replacement/skip.
 	local root = H.Root(1280, 684)
 	local effects = H.Load("src/client/Effects").Create(root, nil, { EventActive = function() end })

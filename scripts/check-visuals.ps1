@@ -37,9 +37,11 @@ foreach ($modulePath in $modulePaths) {
 $manifest = Get-Content -Raw -LiteralPath (Join-Path $workspaceRoot 'assets/manifest.json') | ConvertFrom-Json
 $harness += "`nlocal manifest = {`n"
 $envManifest = Get-Content -Raw -LiteralPath (Join-Path $workspaceRoot 'assets/manifest-env.json') | ConvertFrom-Json
-foreach ($asset in @($manifest.assets) + @($envManifest.assets)) {
+$waveAssets = foreach ($group in @('a','b','c','t')) { (Get-Content -Raw (Join-Path $workspaceRoot "assets/manifest-wave1-$group.json") | ConvertFrom-Json).assets }
+foreach ($asset in @($manifest.assets) + @($envManifest.assets) + @($waveAssets)) {
+    $assetName = if ($asset.id) { $asset.id } else { $asset.name }
     $size = ($asset.size_studs | ForEach-Object { $_.ToString([Globalization.CultureInfo]::InvariantCulture) }) -join ', '
-    $harness += "['$($asset.name)'] = { Size = Vector3.new($size), Triangles = $($asset.tris) },`n"
+    $harness += "['$assetName'] = { Size = Vector3.new($size), Triangles = $($asset.tris) },`n"
 }
 $harness += "}`n"
 $harness += & (Join-Path $PSScriptRoot 'read-model-templates.ps1')

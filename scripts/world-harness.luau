@@ -196,7 +196,14 @@ end
 local Instance = {}
 local templateClones = 0
 function methods:Clone()
-	if self.Parent and (self.Parent.Name == "ModelTemplates" or self.Parent.Name == "EnvTemplates") then
+	if
+		self.Parent
+		and (
+			self.Parent.Name == "ModelTemplates"
+			or self.Parent.Name == "EnvTemplates"
+			or self.Parent.Name == "Wave1Templates"
+		)
+	then
 		templateClones += 1
 	end
 	local result = Instance.new(self.ClassName)

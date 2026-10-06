@@ -12,6 +12,7 @@ test("merge: capped RNG odds, cash, lifetime collection and animation survive ma
 	p.Stats.Flushes = 100
 	e:Fire("AutoFlush", player, true)
 	local lastId = 100
+	local counts = {}
 	for _, upgraded in ipairs({ false, true }) do
 		if upgraded then
 			p.ToiletTier = 7
@@ -44,15 +45,19 @@ test("merge: capped RNG odds, cash, lifetime collection and animation survive ma
 			assert(animation.Duration > 0 and animation.Duration < cooldown)
 			assert(payload.ServiceCoins == toilets[p.ToiletTier].ServiceCoins * (if upgraded then 2 else 1))
 			assert(p.Coins == coins + payload.ServiceCoins and p.Stats.Earned == p.Coins)
-			assert(p.Inventory.Poop == lastId - 100 and p.Collection.Poop == lastId - 100)
+			counts[payload.ItemId] = (counts[payload.ItemId] or 0) + 1
+			assert(
+				p.Inventory[payload.ItemId] == counts[payload.ItemId]
+					and p.Collection[payload.ItemId] == counts[payload.ItemId]
+			)
 			e.World.Flush(player, not automatic)
 			assert(p.Stats.Flushes == lastId and #animations == lastId - 100, "Manual/auto overlap awarded twice")
 		end
 	end
 	e:Fire("Sell", player, "Poop", p.Inventory.Poop)
-	assert(p.Inventory.Poop == lastId - 100, "Upgrade cash bypassed first-copy protection")
+	assert(p.Inventory.Poop == counts.Poop, "Upgrade cash bypassed first-copy protection")
 	e:Fire("Sell", player, "Poop", p.Inventory.Poop - 1)
-	assert(p.Inventory.Poop == 1 and p.Collection.Poop == lastId - 100, "Sale erased lifetime index progress")
+	assert(p.Inventory.Poop == 1 and p.Collection.Poop == counts.Poop, "Sale erased lifetime index progress")
 end)
 
 test("upgrades: remote fuzz, server price and token bucket", function()
@@ -243,7 +248,7 @@ test("upgrades: 0.4s shared cooldown admits legitimate requests and rejects burs
 		e.World.Flush(player, true)
 		e.Now += 0.401
 	end
-	assert(p.Stats.Flushes == 120 and p.Inventory.Poop == 20)
+	assert(p.Stats.Flushes == 120 and p.Inventory.LoopyLoofah == 20)
 	for _ = 1, 100 do
 		e:Fire("Flush", player)
 	end

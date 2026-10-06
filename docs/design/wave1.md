@@ -1,5 +1,7 @@
 # Wave 1 content specification
 
+Integration update (2026-10-06): [Wave 1 integration](wave1-integration.md) records the actual 47-item/15-toilet implementation, saved-profile behavior and capped balance results. The long proof embedded below is historical: its uncapped cash and linear rare-luck assumptions do not describe the merged economy. Use [the regenerated production-config proof](wave1-balance.txt). Four conditional targets in the JSON now preserve their historical values separately and reflect the 40x free cash cap.
+
 2026-10-06 · `docs/wave1-spec` · proposal for application **after `feature/permanent` merges**.
 
 **36 new items, four in each of nine rarities; 11 retained items; 47 total. Eight new toilet tiers after Galaxy; 15 total. No mutations, Divine rarity, new worlds, asset uploads or runtime changes.** The requested standalone proof is the only executable addition. No commit or push.

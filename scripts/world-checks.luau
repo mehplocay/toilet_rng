@@ -6,12 +6,15 @@ local V = loadModule(node("src/shared/Config/Visuals"))
 local Catalog = loadModule(node("src/shared/Config/MeshCatalog"))
 local Loader = loadModule(node("src/server/World/MeshLoader"))
 local Models = loadModule(node("src/server/World/Models"))
+local ToiletConfig = loadModule(node("src/shared/Config/Toilets"))
 local configured = 0
 local names = {}
 local sourceRoot = Instance.new("Model")
 sourceRoot.Name = "ModelTemplates"
 local envRoot = Instance.new("Model")
 envRoot.Name = "EnvTemplates"
+local waveRoot = Instance.new("Model")
+waveRoot.Name = "Wave1Templates"
 for name, entry in pairs(manifest) do
 	assert(Catalog[name] and importedTemplates[name], "Missing catalog/template: " .. name)
 	assert((Catalog[name].Size - entry.Size).Magnitude < 0.00001, "Manifest size drift: " .. name)
@@ -35,15 +38,18 @@ for name, entry in pairs(manifest) do
 	end
 	part.Parent, model.PrimaryPart = model, part
 	if testMode ~= "Mixed" or name ~= "PalmTree" then
-		model.Parent = if Catalog[name].Folder == "EnvTemplates" then envRoot else sourceRoot
+		model.Parent = if Catalog[name].Folder == "Wave1Templates"
+			then waveRoot
+			elseif Catalog[name].Folder == "EnvTemplates" then envRoot
+			else sourceRoot
 	end
 end
 for name in pairs(Catalog) do
 	assert(manifest[name])
 end
-assert(#names == 75)
+assert(#names == 119)
 if testMode ~= "Empty" and testMode ~= "Late" then
-	sourceRoot.Parent, envRoot.Parent = storage, storage
+	sourceRoot.Parent, envRoot.Parent, waveRoot.Parent = storage, storage, storage
 end
 Loader.Preload()
 local startupCalls = calls
@@ -64,11 +70,14 @@ for _, name in ipairs(names) do
 			part.MeshContent == importedTemplates[name].MeshContent
 				and part.TextureID == importedTemplates[name].TextureID
 		)
-		if Catalog[name].Center then
+		if Catalog[name].Center or Catalog[name].PreserveFoot then
 			assert(model:GetAttribute("SeatHeight") == 2.08)
-			local expected = Catalog[name].Center
-			assert(math.abs(part.CFrame.Position.X - expected.X) < 0.001)
-			assert(math.abs(part.CFrame.Position.Z + expected.Z) < 0.001)
+			local expected = if Catalog[name].Folder == "Wave1Templates"
+				then importedTemplates[name].PivotOffset.Position
+				else Catalog[name].Center
+			assert(math.abs(part.CFrame.Position.X - expected.X) < 0.001, "Foot X: " .. name)
+			local z = if Catalog[name].Folder == "Wave1Templates" then expected.Z else -expected.Z
+			assert(math.abs(part.CFrame.Position.Z - z) < 0.001, "Foot Z: " .. name)
 		end
 		local placed = Loader.Clone(name, nil, CFrame.new(7, 4, -11) * CFrame.Angles(0, 0.8, 0), 1.7)
 		assert((placed.PrimaryPart.Size - part.Size * 1.7).Magnitude < 0.001)
@@ -79,7 +88,9 @@ for _, name in ipairs(names) do
 		model:Destroy()
 	end
 end
-assert(configured == (if testMode == "Ready" or testMode == "Scaled" then 75 elseif testMode == "Mixed" then 74 else 0))
+assert(
+	configured == (if testMode == "Ready" or testMode == "Scaled" then 119 elseif testMode == "Mixed" then 118 else 0)
+)
 local root = Instance.new("Folder")
 local function checkAccents(model)
 	local effect = loadModule(node("src/shared/Config/TemplateEffects"))[model:GetAttribute("MeshAsset")]
@@ -91,7 +102,7 @@ local function checkAccents(model)
 			end
 			if child:IsA("ParticleEmitter") then
 				emitters += 1
-				assert(child.Name == effect.Particles and child.Rate == 2)
+				assert(child.Name == effect.Particles and child.Rate == (effect.Rate or 2))
 			end
 		end
 		assert(lights == 1 and emitters == 1)
@@ -193,6 +204,7 @@ local hubEmitters, hubRate, hubParticles = effectCost(root)
 local hubLabels = countClass(root, "BillboardGui")
 local maxPlotEmitters, maxPlotRate, maxPlotParticles, maxPlotLabels = 0, 0, 0, 0
 local maxItemEmitters, maxItemRate, maxItemParticles = 0, 0, 0
+local maxPartItemTriangles = 0
 for _, item in ipairs(Items) do
 	local preview = ItemBuilder.Build(root, CFrame.new(), item, true)
 	assert(preview.PrimaryPart and P.Count(preview) >= 1, item.Id .. " missing preview geometry")
@@ -214,10 +226,11 @@ for _, item in ipairs(Items) do
 	local emitters, rate, particles = effectCost(model)
 	maxItemEmitters, maxItemRate, maxItemParticles =
 		math.max(maxItemEmitters, emitters), math.max(maxItemRate, rate), math.max(maxItemParticles, particles)
-	if P.Count(model) > maxItem or (P.Count(model) == maxItem and itemTriangles > maxItemTriangles) then
+	if P.Count(model) > maxItem or (P.Count(model) == maxItem and itemTriangles > maxPartItemTriangles) then
 		maxItem, maxItemId = P.Count(model), item.Id
-		maxItemTriangles = itemTriangles
+		maxPartItemTriangles = itemTriangles
 	end
+	maxItemTriangles = math.max(maxItemTriangles, itemTriangles)
 	recordAssets(model.Parent)
 	validate(model)
 	model:Destroy()
@@ -278,7 +291,7 @@ do
 		World:Refresh(owner, profile)
 	end
 	P.Count = originalCount
-	for tier = 1, 7 do
+	for tier = 1, #ToiletConfig do
 		local previous, oldTween = plot.Toilet, plot.GlowRing[1].Tween
 		profile.ToiletTier = tier
 		World:Refresh(owner, profile)
@@ -302,11 +315,11 @@ do
 		World:Refresh(owner, profile)
 		assert(plot.Toilet == currentToilet and plot.FlushPrompt == currentPrompt)
 	end
-	assert(#plot.GlowRing == 10 and #tweens == count + 6 * #plot.GlowRing)
+	assert(#plot.GlowRing == 10 and #tweens == count + (#ToiletConfig - 1) * #plot.GlowRing)
 	World.Assigned[owner] = nil
 	plot.Model:Destroy()
 end
-for tier = 1, 7 do
+for tier = 1, #ToiletConfig do
 	local plot = Plot.Build(root, CFrame.new(), tier)
 	assert(plot.Spawn:IsA("SpawnLocation") and plot.Spawn.Neutral and plot.Spawn.Enabled)
 	assert(plot.Spawn.Transparency == 1 and not plot.Spawn.CanCollide and not plot.Spawn.AllowTeamChangeOnTouch)
@@ -440,7 +453,9 @@ for tier = 1, 7 do
 		maxPlotLabels = math.max(maxPlotLabels, countClass(plot.Model, "BillboardGui"))
 		local meshes, _, triangles = stats(plot.Model)
 		maxPlotMeshes = math.max(maxPlotMeshes, meshes)
-		maxPlotTriangles = math.max(maxPlotTriangles, triangles)
+		-- The most parts and the most triangles need not belong to the same item.
+		-- Reserve ten maximum-triangle meshes as well as the maximum-part fixture.
+		maxPlotTriangles = math.max(maxPlotTriangles, triangles + 10 * (maxItemTriangles - maxPartItemTriangles))
 		assert(plot.Displays:FindFirstChild("Slot" .. ((page - 1) * 10 + 1)), "Display page lost a slot")
 	end
 	recordAssets(plot.Model)
@@ -497,10 +512,12 @@ if checkWorld then
 	World:RecordFlush({ DisplayName = "Spoof", UserId = 4 }, spoof)
 	assert(workspace:GetAttribute("BestFlushUserId") == 42 and workspace:GetAttribute("BestFlushChance") == best.Chance)
 	if testMode == "Invalid" then
-		assert(warnings == 75, "Invalid templates must warn once and stay uncached")
+		assert(warnings == 119, "Invalid templates must warn once and stay uncached")
 	elseif testMode == "Late" then
-		sourceRoot.Parent, envRoot.Parent = storage, storage
+		sourceRoot.Parent, envRoot.Parent, waveRoot.Parent = storage, storage, storage
 		assert(Loader.Status("Poop") == "Ready", "Late replication did not recover")
+		assert(Loader.Status("HaloHamster") == "Ready", "Late Wave 1 item did not recover")
+		assert(Loader.Status("InfinityFlush") == "Ready", "Late Wave 1 toilet did not recover")
 		local preview = ItemBuilder.Build(root, CFrame.new(), Items[1], true)
 		assert(preview:GetAttribute("MeshAsset"), "Client preview did not recover")
 		preview:Destroy()
@@ -655,7 +672,7 @@ do
 end
 print(
 	string.format(
-		"Headless %s checks passed: hub %d parts; worst plot + drop %d; largest toilet %d, item %d; all 75 asset paths covered; %d normalized templates. Startup calls: %d.",
+		"Headless %s checks passed: hub %d parts; worst plot + drop %d; largest toilet %d, item %d; all 119 asset paths covered; %d normalized templates. Startup calls: %d.",
 		testMode,
 		hubCount,
 		maxPlot,

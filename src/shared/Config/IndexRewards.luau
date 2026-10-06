@@ -8,9 +8,10 @@ return {
 		Legendary = 10,
 		Mythic = 15,
 		Godly = 20,
+		Celestial = 22,
 		Secret = 25,
 	},
-	RarityOrder = { "Common", "Uncommon", "Rare", "Epic", "Legendary", "Mythic", "Godly", "Secret" },
+	RarityOrder = { "Common", "Uncommon", "Rare", "Epic", "Legendary", "Mythic", "Godly", "Celestial", "Secret" },
 	Milestones = {
 		{ Count = 3, Stamps = 10, Label = "10 Stamps" },
 		{ Count = 5, DisplaySlots = 4, Label = "Fourth display slot" },
@@ -19,7 +20,8 @@ return {
 		{ Count = 18, DisplaySlots = 6, Stamps = 40, Label = "Sixth display slot + 40 Stamps" },
 		{ Count = 24, Cosmetic = "HologramPedestal", Label = "Hologram pedestal skin" },
 		{ Count = 30, Cosmetic = "RoyalFlush", Label = "Royal Flush title" },
-		{ Count = 35, Cosmetic = "FullIndexPlaque", Label = "Full-index animated plaque" },
+		{ Count = 35, Cosmetic = "FullIndexPlaque", Label = "Veteran index plaque" },
+		{ Count = 47, Cosmetic = "WaveOneComplete", Label = "Wave 1 complete plaque" },
 	},
 	FoundingItems = {
 		"Poop",

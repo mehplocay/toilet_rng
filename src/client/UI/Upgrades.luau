@@ -11,7 +11,7 @@ function Upgrades.Create(gui, remotes)
 	wallet.TextColor3 = Color3.fromRGB(153, 255, 143)
 	local footer = C.BodyText(
 		body,
-		"Better toilets = more income + better drops!",
+		"Display bonuses share the 40x free cap; paid cash adds up to 3x.",
 		UDim2.new(1, 0, 0, 26),
 		UDim2.new(0, 0, 1, -26)
 	)
@@ -20,7 +20,7 @@ function Upgrades.Create(gui, remotes)
 	local tabs = C.TabBar(body, { "Toilets", "Coin Upgrades" }, function(name)
 		row.Visible, tracks.Frame.Visible = name == "Toilets", name == "Coin Upgrades"
 		footer.Text = if name == "Toilets"
-			then "Better toilets = more income + better drops!"
+			then "Display bonuses share the 40x free cap; paid cash adds up to 3x."
 			else "Toilets and coin upgrades are permanent."
 	end)
 	tabs.Frame.Position = UDim2.fromOffset(0, 38)
@@ -29,6 +29,7 @@ function Upgrades.Create(gui, remotes)
 	for tier, toilet in ipairs(Toilets) do
 		local color = Style.ToiletColors[tier]
 		local card = C.Card(row, color, tier >= 3)
+		card.Name = toilet.Id
 		card.LayoutOrder = tier
 		local _, tierLabel =
 			C.Pill(card, "TIER " .. tier, color:Lerp(C.Navy, 0.5), UDim2.fromOffset(72, 23), UDim2.fromOffset(8, 8))
@@ -37,7 +38,7 @@ function Upgrades.Create(gui, remotes)
 		C.Text(card, toilet.Name, UDim2.new(1, -12, 0, 30), UDim2.fromOffset(6, 140), 22)
 		C.BodyText(
 			card,
-			tostring(Income.TierMultipliers[tier]) .. "x display income / " .. toilet.Luck .. "x luck",
+			string.format("%.3g", Income.TierMultipliers[tier]) .. "x display income / " .. toilet.Luck .. "x luck",
 			UDim2.new(1, -12, 0, 25),
 			UDim2.fromOffset(6, 174)
 		)

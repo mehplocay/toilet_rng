@@ -8,6 +8,13 @@ local function percentile(values, fraction)
 	return C.Percentile(table.clone(values), fraction)
 end
 local failures = {}
+-- Fresh-account baselines under the merged cap; unlike the conditional Wave 1
+-- targets these players also pay for permanent upgrades throughout the run.
+local extendedTargets = {
+	Normal = { 86.5, 125, 217, 345.5, 518, 1088.5, 1481.5, 1889.5 },
+	Casual = { 144.5, 195.5, 332, 526, 794, 1576, 2166, 2896 },
+	Grinder = { 74.5, 108, 187.5, 297.5, 457, 947.5, 1255.5, 1627 },
+}
 local function within(value, low, high, message)
 	if not (value >= low and value <= high) then
 		table.insert(failures, message .. ": " .. tostring(value) .. " (expected " .. low .. "-" .. high .. ")")
@@ -22,7 +29,7 @@ print(
 	"Buy Dirty, five slots, then affordable slots and one Cash/Luck/Speed per tier through L4; purchase every next toilet."
 )
 print(
-	"After Galaxy, buy the cheapest available track at <=25% of wallet, reserve the rest for rebirth. All purchases debit coins."
+	"After Galaxy, buy the cheapest track at <=25% of wallet and affordable next toilets; check rebirth first. All purchases debit coins."
 )
 print("Galaxy timing defers rebirth. Long cohort rebirths at every coin gate: its Galaxy timing may be later.")
 print(
@@ -62,8 +69,9 @@ for level = 0, 4 do
 end
 assert(seconds <= 240, "First five levels must be affordable in four active minutes even without sales/display")
 for _, arch in ipairs({ { "Normal", 0.75 }, { "Casual", 0.3 }, { "Grinder", 1 } }) do
-	local short = C.Run(200, arch[2], false)
+	local short = C.Run(200, arch[2], false, nil, nil, 7)
 	local long = Long.Run(64, arch[2], 300)
+	local extended = Long.Run(64, arch[2], 300, true)
 	print(arch[1] .. " | tier | p50 / p90 minutes (rebirth deferred)")
 	local target = { 0, 1.5, 3, 6, 12, 20, 35 }
 	for tier = 2, 7 do
@@ -72,6 +80,14 @@ for _, arch in ipairs({ { "Normal", 0.75 }, { "Casual", 0.3 }, { "Grinder", 1 } 
 		if arch[1] == "Normal" then
 			within(median, target[tier] * 0.8, target[tier] * 1.2, "Tier " .. Toilets[tier].Id)
 		end
+	end
+	print(arch[1] .. " | Wave 1 tier | fresh-account p50 / p90 minutes (rebirth deferred; upgrades continue)")
+	for tier = 8, #Toilets do
+		local median, tail = percentile(extended.Tiers[tier], 0.5) * 60, percentile(extended.Tiers[tier], 0.9) * 60
+		print(string.format("%s | %s | %.2f / %.2f", arch[1], Toilets[tier].Id, median, tail))
+		assert(median < math.huge and tail >= median, "Unreachable extended toilet")
+		local expected = extendedTargets[arch[1]][tier - 7]
+		within(median, expected * 0.8, expected * 1.2, arch[1] .. " extended " .. Toilets[tier].Id)
 	end
 	print(arch[1] .. " | rebirth | required coins | cumulative p50 / p90 hours")
 	for level = 1, 15 do

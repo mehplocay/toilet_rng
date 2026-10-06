@@ -18,7 +18,11 @@ end
 function B.Showcase(p, tier, slots)
 	local active, entries = B.Active(p, tier)
 	table.sort(entries, function(a, b)
-		return a.Item.Value > b.Item.Value
+		local ar, br = Config.RarityRates[a.Item.Rarity], Config.RarityRates[b.Item.Rarity]
+		return if ar ~= br
+			then ar > br
+			elseif a.Item.Value ~= b.Item.Value then a.Item.Value > b.Item.Value
+			else a.Item.Id < b.Item.Id
 	end)
 	p.ToiletTier, p.DisplaySlots, p.Displays = tier, slots, {}
 	local used, description = 0, {}
@@ -48,10 +52,13 @@ function B.Print()
 		local level = math.min(tier, 4)
 		local p = { Upgrades = { CashBoost = level, LuckBoost = level, FlushSpeed = level } }
 		local passive, active, description = B.Showcase(p, tier, 10)
-		if tier >= 4 then
+		if tier >= 4 and tier <= 12 then
 			local share = passive / (passive + active)
 			assert(share >= 0.70 and share <= 0.90, "Mid/late steady income share missed")
 		end
+		-- Later nominal toilet factors saturate the free cash cap. The old uncapped
+		-- 70-90% share promise is invalid there; keep the real capped rates visible.
+		assert(passive <= 100000 * 10 * 40 * 60, "Free showcase escaped the cash cap")
 		print(
 			string.format(
 				"%-12s %10.2f %10.2f %7.2f%% %s",

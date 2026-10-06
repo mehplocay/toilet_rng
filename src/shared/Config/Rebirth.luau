@@ -1,7 +1,7 @@
 -- Cumulative bonuses add to Cash Boost; toilet display factors share the free cash cap.
 local levels = {
 	{
-		RequiredCoins = 3000000,
+		RequiredCoins = 4000000,
 		Cash = 0.5,
 		Luck = 0.05,
 		Speed = 0.03,
@@ -41,7 +41,7 @@ local levels = {
 		Perks = { "Royal Cleaner title" },
 	},
 	{
-		RequiredCoins = 500000000,
+		RequiredCoins = 450000000,
 		Cash = 3,
 		Luck = 0.25,
 		Speed = 0.1,
@@ -91,7 +91,7 @@ local levels = {
 		Perks = { "Porcelain Hero title" },
 	},
 	{
-		RequiredCoins = 40000000000,
+		RequiredCoins = 60000000000,
 		Cash = 8,
 		Luck = 0.6,
 		Speed = 0.25,
@@ -141,7 +141,7 @@ local levels = {
 		Perks = { "Eternal Cleaner title" },
 	},
 	{
-		RequiredCoins = 1250000000000,
+		RequiredCoins = 6500000000000,
 		Cash = 15,
 		Luck = 1,
 		Speed = 0.5,

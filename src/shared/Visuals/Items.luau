@@ -227,6 +227,10 @@ function Items.BuildPrimitive(parent, cf, item, preview)
 			Enum.Material.Neon
 		)
 	end
+	if not body then
+		body = part("Placeholder", Vector3.new(2, 2, 2), CFrame.new(), Enum.PartType.Ball)
+		P.Eyes(model, cf * CFrame.new(0, 0.3, -0.9), 0.3, 0.7)
+	end
 	model.PrimaryPart = body
 	if not preview then
 		local rarity = Rarities[item.Rarity]
