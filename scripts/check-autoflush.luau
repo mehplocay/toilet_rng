@@ -68,13 +68,29 @@ local expectedPrices = {
 	ExtraSlots = 149,
 	OfflinePlus = 129,
 	VIPPack = 399,
+	RainbowName = 39,
+	ConfettiReveal = 39,
+	GoldenName = 49,
+	DancePack = 49,
+	ToiletGlow = 69,
+	Companion = 99,
+	UltimateBundle = 799,
 }
 for _, key in ipairs(Config.PassOrder) do
 	assert(Rules.Pass(Config, key).Price == expectedPrices[key])
-	assert(Config.Gamepasses[key].Id == 0)
+	assert(Config.Gamepasses[key].Id == (if key == "VIPStar" then 2008628314 else 0))
 end
-assert(#Config.PassOrder == 9 and #Config.ProductOrder == 4)
-local productPrices = { Coins10Minutes = 49, Coins1Hour = 149, Coins6Hours = 399, PathBoost10Minutes = 29 }
+assert(#Config.PassOrder == 16 and #Config.ProductOrder == 8)
+local productPrices = {
+	Coins10Minutes = 10,
+	Coins1Hour = 49,
+	Coins6Hours = 249,
+	Coins24Hours = 799,
+	PathBoost10Minutes = 29,
+	LuckyFlush1 = 25,
+	LuckyFlush5 = 99,
+	LuckyFlush20 = 349,
+}
 for _, key in ipairs(Config.ProductOrder) do
 	assert(Config.DeveloperProducts[key].Price == productPrices[key])
 	assert(Config.DeveloperProducts[key].Id == 0)

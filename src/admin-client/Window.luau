@@ -442,11 +442,12 @@ function Window.Create(gui, remote, C, reloadLabels)
 			end
 			if extra.Coins then
 				summary.Text = string.format(
-					"Coins %s | Tier %d | Rebirth %d | %s",
+					"Coins %s | Tier %d | Rebirth %d | %s | Lucky Flushes %d",
 					C.Commas(extra.Coins),
 					extra.ToiletTier,
 					extra.RebirthLevel,
-					if extra.NoPersistence then "MEMORY ONLY" else "Persistent"
+					if extra.NoPersistence then "MEMORY ONLY" else "Persistent",
+					extra.LuckyFlushes or 0
 				)
 			end
 			if extra.Instances then

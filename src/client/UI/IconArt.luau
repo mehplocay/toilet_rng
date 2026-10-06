@@ -2,6 +2,22 @@
 local Art = {}
 function Art.Draw(C, parent, kind, tint)
 	local aliases = {
+		StarTag = "Crown",
+		VIP = "Crown",
+		RainbowName = "Crown",
+		ConfettiReveal = "Crown",
+		GoldenName = "Crown",
+		DancePack = "Crown",
+		ToiletGlow = "Crown",
+		Companion = "Home",
+		UltimateBundle = "Crown",
+		CoinPackMini = "Coins",
+		CoinPackSmall = "Coins",
+		CoinPackLarge = "Coins",
+		CoinPackHuge = "Coins",
+		LuckyFlush1 = "Gem",
+		LuckyFlush5 = "Gem",
+		LuckyFlush20 = "Gem",
 		DoubleCash = "Coins",
 		AutoCollect = "Shop",
 		ExtraSlots = "Collection",

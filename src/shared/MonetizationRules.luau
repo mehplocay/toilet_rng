@@ -30,6 +30,16 @@ function Rules.TryFlush(nextFlush, player, now, distance, cooldown, config)
 	return true
 end
 
+function Rules.Entitlements(owned, config)
+	local result = table.clone(owned or {})
+	if result.UltimateBundle then
+		for _, key in ipairs(config.PassOrder) do
+			result[key] = true
+		end
+	end
+	return result
+end
+
 function Rules.Pass(config, key)
 	return if type(key) == "string" then config.Gamepasses[key] else nil
 end

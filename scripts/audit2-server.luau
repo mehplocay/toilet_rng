@@ -176,6 +176,7 @@ end)
 
 test("audit2: zero/unknown passes never query, prompt or grant", function()
 	local e = server()
+	e:Load("src/shared/Config/Monetization").Gamepasses.VIPStar.Id = 0
 	local player, profile = e:Join(205)
 	local service = e:Load("src/server/Services/MonetizationService")
 	local queries, prompts = 0, 0

@@ -23,6 +23,7 @@ return {
 	BuyPass = "BuyPass",
 	BuyProduct = "BuyProduct",
 	ClaimVIP = "ClaimVIP",
+	LuckyFlush = "LuckyFlush",
 	RefreshPasses = "RefreshPasses",
 	DevGrant = "DevGrant",
 	TutorialDone = "TutorialDone",
@@ -31,6 +32,8 @@ return {
 	Limits = {
 		PlayerActivity = { Capacity = 1, Refill = 0.1 },
 		BuyProduct = { Capacity = 1, Refill = 0.1 },
+		VIPPad = { Capacity = 1, Refill = 0.2 },
+		LuckyFlush = { Capacity = 1, Refill = 0.2 },
 		ClaimVIP = { Capacity = 1, Refill = 0.2 },
 		Rebirth = { Capacity = 1, Refill = 0.2 },
 		PresentationSettings = { Capacity = 3, Refill = 1 },

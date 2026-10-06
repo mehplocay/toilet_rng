@@ -8,10 +8,14 @@ local ServiceCoins = require(script.Parent.ServiceCoinService)
 local Presentation = require(script.Parent.FlushPresentation)
 local upgrades =
 	require(game.ReplicatedStorage.Shared.UpgradeRules).new(require(game.ReplicatedStorage.Shared.Config.Upgrades))
+local Lucky = require(script.Parent.LuckyService)
+local Profile = require(game.ReplicatedStorage.Shared.CommerceProfile)
 local FlushService = {}
 function FlushService.Start(data, limiter, remotes, sync, world, events, monetization, rewards)
+	monetization.Lucky = Lucky
+	Lucky:Start(data, limiter, remotes, sync, events, rewards)
 	local nextFlush, nextAuto, random = {}, {}, Random.new()
-	local presentationSequence = {}
+	local presentationSequence, autoBusy = {}, {}
 	local function flush(player, automatic)
 		if not automatic and not limiter:Allow(player, "Flush") then
 			return
@@ -39,6 +43,24 @@ function FlushService.Start(data, limiter, remotes, sync, world, events, monetiz
 		end
 		local luck =
 			upgrades:Luck(profile, toilet.Luck, events:Multiplier(), monetization:Luck(player), rewards:Luck(profile))
+		local paidFlush = profile.Monetization.LuckyFlushes > 0 and Lucky:Allowed(player)
+		local original = profile
+		if paidFlush then
+			local odds = Lucky:Odds(profile)
+			if data.Saving[player] or Lucky.Armed[player] ~= odds.Token then
+				if not automatic then
+					sync(player)
+					remotes.Result:FireClient(
+						player,
+						"LuckyReview",
+						{ Message = "Review Lucky Flush odds before using your next charge." }
+					)
+				end
+				return
+			end
+			luck = odds.Luck
+			profile = Profile.Copy(profile)
+		end
 		local item, probability = RollService.Roll(Items, Toilets, profile.ToiletTier, function()
 			return random:NextNumber()
 		end, luck)
@@ -63,6 +85,13 @@ function FlushService.Start(data, limiter, remotes, sync, world, events, monetiz
 		profile.RunFlushes = (profile.RunFlushes or 0) + 1
 		profile.Inventory[item.Id] = (profile.Inventory[item.Id] or 0) + 1
 		profile.Collection[item.Id] = (profile.Collection[item.Id] or 0) + 1
+		if paidFlush then
+			profile.Monetization.LuckyFlushes -= 1
+			Lucky.Armed[player] = nil
+			if not data:ReplaceAndSave(player, original, profile) or data:Get(player) ~= profile then
+				return
+			end
+		end
 		Presentation.Publish(player, profile, item, {
 			Compact = automatic == true and not Rules.InRange(distance, Monetization),
 			ItemId = item.Id,
@@ -82,9 +111,16 @@ function FlushService.Start(data, limiter, remotes, sync, world, events, monetiz
 			task.wait(Monetization.AutoTick)
 			events:Drain()
 			for player, enabled in pairs(monetization.Auto) do
-				if enabled then
+				if enabled and not autoBusy[player] then
 					if monetization:CanAuto(player) then
-						flush(player, true)
+						autoBusy[player] = true
+						task.spawn(function()
+							local ok, err = pcall(flush, player, true)
+							autoBusy[player] = nil
+							if not ok then
+								warn("Automatic flush failed: " .. tostring(err))
+							end
+						end)
 					else
 						monetization:StopAuto(player)
 					end
@@ -106,6 +142,7 @@ function FlushService.Start(data, limiter, remotes, sync, world, events, monetiz
 		nextFlush[player] = nil
 		nextAuto[player] = nil
 		presentationSequence[player] = nil
+		autoBusy[player] = nil
 	end)
 end
 return FlushService

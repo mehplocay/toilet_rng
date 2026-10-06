@@ -6,6 +6,7 @@ local Paid = require(Shared.PaidBenefits)
 local PathRules = require(Shared.PathBoostRules)
 local Players = game:GetService("Players")
 local Marketplace = game:GetService("MarketplaceService")
+local Lucky = require(script.Parent.LuckyService)
 local Commerce = {}
 Commerce.__index = Commerce
 function Commerce.new(data, world, sync)
@@ -56,6 +57,7 @@ function Commerce:Snapshot(profile, player)
 	end
 	return {
 		Quotes = quotes,
+		Lucky = Lucky:Snapshot(player, profile),
 		PathExpires = profile.Monetization.PathExpires,
 		VIPDay = profile.Monetization.VIPDay,
 		PendingProduct = profile.Monetization.Quote and profile.Monetization.Quote.Key,
@@ -92,6 +94,8 @@ function Commerce:Collect(player)
 	end
 end
 function Commerce:Start(limiter, remotes)
+	self.Limiter = limiter
+	self.VIPPad = require(script.Parent.VIPPadService).Start(self, remotes)
 	local function result(player, success, message)
 		if player.Parent == Players then
 			remotes.Result:FireClient(player, "BuyProduct", { Success = success, Message = message })
@@ -100,7 +104,7 @@ function Commerce:Start(limiter, remotes)
 	Marketplace.ProcessReceipt = function(info)
 		return self.Receipts:Process(info)
 	end
-	remotes.BuyProduct.OnServerEvent:Connect(function(player, key, expectedCoins, ...)
+	remotes.BuyProduct.OnServerEvent:Connect(function(player, key, expectedCoins, oddsToken, ...)
 		if select("#", ...) ~= 0 or not limiter:Allow(player, "BuyProduct") then
 			return
 		end
@@ -116,6 +120,19 @@ function Commerce:Start(limiter, remotes)
 			or self.Data.Saving[player]
 			or self.Prompting[player]
 		then
+			return
+		end
+		if product.LuckyCharges then
+			if
+				type(oddsToken) ~= "string"
+				or #oddsToken > 100
+				or not Lucky:Allowed(player)
+				or oddsToken ~= Lucky:Odds(profile).Token
+				or profile.Monetization.LuckyFlushes > Config.LuckyFlushCap - product.LuckyCharges
+			then
+				return
+			end
+		elseif oddsToken ~= nil then
 			return
 		end
 		local quote = profile.Monetization.Quote
@@ -136,6 +153,14 @@ function Commerce:Start(limiter, remotes)
 			replacement.Monetization.Quote = { Key = key, Coins = coins }
 			if not self.Data:ReplaceAndSave(player, profile, replacement) or player.Parent ~= Players then
 				self.Prompting[player] = nil
+				return
+			end
+		end
+		if product.LuckyCharges then
+			local current = self.Data:Get(player)
+			if not current or not Lucky:Allowed(player) or oddsToken ~= Lucky:Odds(current).Token then
+				self:CancelQuote(player, key)
+				self.Sync(player)
 				return
 			end
 		end
@@ -175,7 +200,7 @@ function Commerce:Start(limiter, remotes)
 		replacement.Monetization.VIPDay = day
 		replacement.Coins += coins
 		replacement.Stats.Earned += coins
-		if self.Data:ReplaceAndSave(player, profile, replacement) then
+		if self.Data:ReplaceAndSave(player, profile, replacement) and self.Data:Get(player) == replacement then
 			self.Sync(player)
 			remotes.Result:FireClient(
 				player,

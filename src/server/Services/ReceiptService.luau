@@ -5,6 +5,7 @@ local Config = require(Shared.Config.Monetization)
 local Profile = require(Shared.CommerceProfile)
 local Paid = require(Shared.PaidBenefits)
 local Players = game:GetService("Players")
+local Lucky = require(script.Parent.LuckyService)
 local Receipt = {}
 Receipt.__index = Receipt
 function Receipt.new(data, income, archive, sync)
@@ -64,7 +65,7 @@ function Receipt:Process(info)
 			player.Parent == Players
 			and not data.Stopping
 			and not data.Closing[player]
-			and (not data.Profiles[player] or data.Saving[player] or data.Replacing[player])
+			and (not data.Profiles[player] or data.Saving[player] or data.Replacing[player] or (Config.DeveloperProducts[key].LuckyCharges and (Lucky.Loading[player] or not Lucky.Policies[player])))
 			and os.clock() < deadline
 		do
 			task.wait(0.1)
@@ -118,6 +119,11 @@ function Receipt:Process(info)
 			end
 			replacement.Coins += coins
 			replacement.Stats.Earned += coins
+		elseif product.LuckyCharges then
+			if not Lucky:Allowed(player) or commerce.LuckyFlushes > Config.LuckyFlushCap - product.LuckyCharges then
+				return pending
+			end
+			commerce.LuckyFlushes += product.LuckyCharges
 		else
 			if commerce.PathExpires > 9e15 - product.Duration then
 				return pending

@@ -296,6 +296,7 @@ state.OwnedPasses.SparkleTrail = true
 passes.Update(state)
 assert(not offer.Buy.Interactable and offer.Buy.Text == "Owned" and offer.CheckIcon.Visible)
 state.OwnedPasses.SparkleTrail = nil
+passes.Update(state)
 for _, info in ipairs({ { IsForSale = false, PriceInRobux = 79 }, false, { IsForSale = true, PriceInRobux = -1 } }) do
 	productInfo = info
 	passes.Panel.Visible = false

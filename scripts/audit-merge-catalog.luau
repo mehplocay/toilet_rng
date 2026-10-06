@@ -106,9 +106,9 @@ test("merge economy: maximum paid offline ledger round-trips exact fractions and
 		p.Displays[tostring(slot)] = "Mystery"
 	end
 	local income = commerce.Income
-	assert(income.Upgrades:Cash(p) == 9)
+	assert(income.Upgrades:Cash(p) == 10)
 	assert(income.Upgrades:OfflineMinutes(p, income.Config.OfflineMinutes) == 1440)
-	assert(income:Rates(p)["1"] == 1300000 * 9 * 6000)
+	assert(income:Rates(p)["1"] == 1300000 * 10 * 6000)
 	p.Income.UpdatedAt = e.Now - 86400
 	income:Settle(p, e.Now, true)
 	assert(income:TotalUnits(p) == 9e15 and income:StorageUnits(p, false) == 9e15)
@@ -145,7 +145,7 @@ test(
 						+ math.max(0, level - 10) * 0.025
 						+ (if bonus then bonus.Cash else 0)
 					local expected =
-						math.min(10, base * (if paid.DoubleCash then 2 else 1) * (if paid.VIPPack then 1.25 else 1))
+						math.min(10, base * (if paid.DoubleCash then 2 else 1) * (if paid.VIPPack then 1.5 else 1))
 					assert(math.abs(u:Cash(p) - expected) < 1e-12 and u:Cash(p) <= 10)
 				end
 			end

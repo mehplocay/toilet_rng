@@ -217,9 +217,9 @@ test("catalog cash: sales, service, passive, daily and offline caps honor paid f
 	service.Commerce:Apply(player, service.Owned[player])
 	local rules = e:Load("src/shared/UpgradeRules").new(e:Load("src/shared/Config/Upgrades"))
 	local paid = e:Load("src/shared/PaidBenefits")
-	assert(rules:Cash(p) == 2.5 and service:Luck(player) == 1 and paid.Cash(p, 1e300) == config.CashMultiplierCap)
+	assert(rules:Cash(p) == 3 and service:Luck(player) == 1 and paid.Cash(p, 1e300) == config.CashMultiplierCap)
 	p.RebirthLevel, p.Upgrades.CashBoost = 15, 10
-	assert(math.abs(rules:Cash(p) - 9) < 1e-9)
+	assert(rules:Cash(p) == config.CashMultiplierCap)
 	p.Inventory.Rat = 3
 	local item
 	for _, candidate in ipairs(e:Load("src/shared/Config/Items")) do
@@ -228,7 +228,7 @@ test("catalog cash: sales, service, passive, daily and offline caps honor paid f
 		end
 	end
 	assert(e:Load("src/server/Services/EconomyService").Sell(p, "Rat", 1))
-	assert(p.Coins == math.floor(item.Value * 9 + 1e-9))
+	assert(p.Coins == math.floor(item.Value * config.CashMultiplierCap + 1e-9))
 	local serviceCoins = e:Load("src/server/Services/ServiceCoinService")
 		.Grant(p, e:Load("src/shared/Config/Toilets")[1], rules:Cash(p))
 	assert(serviceCoins > 0)
@@ -237,12 +237,12 @@ test("catalog cash: sales, service, passive, daily and offline caps honor paid f
 			return e.Now
 		end)
 	local base = daily.Schedule.Coins(1, p.ToiletTier, daily.Config)
-	assert(daily:Claim(p).Coins == math.floor(base * 2.5))
+	assert(daily:Claim(p).Coins == math.floor(base * 3))
 	local income = service.Commerce.Income
 	p.Displays["1"] = "Rat"
 	local rate = income:Rates(p)["1"]
 	p.Monetization.Passes.DoubleCash, p.Monetization.Passes.VIPPack = false, false
-	assert(math.abs(rate / income:Rates(p)["1"] - 2.5) < 0.01)
+	assert(math.abs(rate / income:Rates(p)["1"] - (config.CashMultiplierCap / 3.6)) < 0.01)
 	local baseMinutes = rules:OfflineMinutes(p, income.Config.OfflineMinutes)
 	p.Monetization.Passes.OfflinePlus = false
 	assert(baseMinutes == 2 * rules:OfflineMinutes(p, income.Config.OfflineMinutes))

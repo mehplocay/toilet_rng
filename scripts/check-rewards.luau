@@ -119,7 +119,7 @@ for _, double in ipairs({ false, true }) do
 					Config.BaseCoins[rewardDay]
 						* Config.TierMultipliers[tier]
 						* (if double then 2 else 1)
-						* (if vip then 1.25 else 1)
+						* (if vip then 1.5 else 1)
 				)
 				local function fresh()
 					return {

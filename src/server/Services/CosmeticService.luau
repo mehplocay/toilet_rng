@@ -11,6 +11,10 @@ function CosmeticService.new(world)
 end
 
 function CosmeticService:Apply(player, owned, profile)
+	owned = Rules.Entitlements(owned, Config)
+	for _, key in ipairs({ "RainbowName", "GoldenName", "ConfettiReveal", "DancePack", "Companion", "VIPPack" }) do
+		player:SetAttribute(key, owned[key] == true)
+	end
 	local character = player.Character
 	local root = character and character:FindFirstChild("HumanoidRootPart")
 	local head = character and character:FindFirstChild("Head")
@@ -56,16 +60,65 @@ function CosmeticService:Apply(player, owned, profile)
 		tag.Parent = head
 		local label = Instance.new("TextLabel")
 		label.Size, label.BackgroundTransparency = UDim2.fromScale(1, 1), 1
-		label.Text, label.TextColor3 = Config.VIPLabel, gold
+		label.Text, label.TextColor3 = if owned.VIPPack then Config.VIPLabel else "\u{2605}", gold
 		label.Font, label.TextSize = Enum.Font.GothamBold, 22
 		label.TextStrokeTransparency = 0.3
 		label.Parent = tag
+	end
+	if head then
+		local humanoid = character:FindFirstChildWhichIsA("Humanoid")
+		if humanoid then
+			if owned.RainbowName or owned.GoldenName then
+				if humanoid:GetAttribute("PassNameDistance") == nil then
+					humanoid:SetAttribute("PassNameDistance", humanoid.NameDisplayDistance)
+				end
+				humanoid.NameDisplayDistance = 0
+			else
+				local prior = humanoid:GetAttribute("PassNameDistance")
+				if prior ~= nil then
+					humanoid.NameDisplayDistance = prior
+					humanoid:SetAttribute("PassNameDistance", nil)
+				end
+				local old = head:FindFirstChild("PassName")
+				if old then
+					old:Destroy()
+				end
+			end
+		end
+		local star = head:FindFirstChild("PassVIPStar")
+		if star then
+			star:FindFirstChildWhichIsA("TextLabel").Text = if owned.VIPPack then Config.VIPLabel else "\u{2605}"
+		end
+		if (owned.RainbowName or owned.GoldenName) and not head:FindFirstChild("PassName") then
+			local tag = Instance.new("BillboardGui")
+			tag.Name, tag.Adornee, tag.Size, tag.StudsOffset, tag.MaxDistance =
+				"PassName", head, UDim2.fromOffset(220, 32), Vector3.new(0, 2.4, 0), 70
+			tag.Parent = head
+			local label = Instance.new("TextLabel")
+			label.Name, label.Size, label.BackgroundTransparency = "NameColor", UDim2.fromScale(1, 1), 1
+			label.Text, label.TextColor3, label.RichText = player.DisplayName, gold, false
+			label.Font, label.TextSize, label.TextStrokeTransparency, label.Parent = Enum.Font.GothamBold, 20, 0.3, tag
+		end
 	end
 	local plot = self.World.Assigned[player]
 	if not plot then
 		return
 	end
 	self.PlayerPlots[player] = plot
+	if owned.ToiletGlow and plot.PromptAnchor and not plot.PromptAnchor:FindFirstChild("PassToiletGlow") then
+		P.Particles(
+			plot.PromptAnchor,
+			"PassToiletGlow",
+			gold,
+			5,
+			{ Speed = NumberRange.new(1, 2), SpreadAngle = Vector2.new(180, 180) }
+		)
+	end
+	if owned.VIPPack and plot.Sign and not plot.Sign:FindFirstChild("VIPTrim") then
+		local trim = Instance.new("UIStroke")
+		trim.Name, trim.Color, trim.Thickness, trim.ApplyStrokeMode, trim.Parent =
+			"VIPTrim", gold, 4, Enum.ApplyStrokeMode.Border, plot.Sign
+	end
 	if owned.VIPPack and plot.IncomePoint and not plot.Model:FindFirstChild("VIPPlotSign") then
 		local tag = Instance.new("BillboardGui")
 		tag.Name, tag.Adornee = "VIPPlotSign", plot.IncomePoint
@@ -98,6 +151,12 @@ function CosmeticService:Apply(player, owned, profile)
 end
 
 function CosmeticService:ResetPlot(plot)
+	for _, name in ipairs({ "PassToiletGlow", "VIPTrim" }) do
+		local effect = plot.Model:FindFirstChild(name, true)
+		if effect then
+			effect:Destroy()
+		end
+	end
 	local sign = plot.Model:FindFirstChild("VIPPlotSign")
 	if sign then
 		sign:Destroy()
