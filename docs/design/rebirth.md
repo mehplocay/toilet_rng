@@ -81,7 +81,7 @@ Do not roll back on an ambiguous response: the replacement may already be commit
 | Old request after rejoin | Generation mismatch rejects it |
 | Backend never returns/deadline | Existing outage durability limit; no unlimited retry or exactly-once guarantee |
 
-Existing saved rebirth levels automatically read the new bonus table; no coin compensation or level reset is performed. Malformed levels retain the existing sanitizer behavior. Profiles still migrate lifetime flushes into the first run only when no run counter exists; later missing run counters become zero. The separate UpgradeVersion=2 migration clamps old levels under old maxima before preserving new caps on future saves. Rebirth does not rewind the commerce ledger, product quotes, paid slots or VIP daily claim. The active auto-flush toggle can stop while Get is unavailable during the exclusive save; its lifetime unlock and saved preferences remain.
+Existing saved rebirth levels automatically read the new bonus table; no coin compensation or level reset is performed. Malformed levels retain the existing sanitizer behavior. Profiles still migrate lifetime flushes into the first run only when no run counter exists; later missing run counters become zero. The separate UpgradeVersion=2 migration clamps old levels under old maxima before preserving new caps on future saves. Rebirth does not rewind the commerce ledger, product quotes, saved legacy slot capacity or VIP daily claim. The active auto-flush toggle can stop while Get is unavailable during the exclusive save; its lifetime unlock and saved preferences remain.
 
 ## UI/world and verification
 

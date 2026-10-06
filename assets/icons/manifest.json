@@ -1200,11 +1200,11 @@
       ],
       "category": "passes",
       "offer_kind": "pass",
-      "config_key": "Icons.ExtraSlots",
-      "intended_assets_key": "Assets.Icons.ExtraSlots",
-      "config_key_exists": true,
+      "config_key": null,
+      "intended_assets_key": null,
+      "config_key_exists": false,
       "transparent": true,
-      "catalog_status": "catalog"
+      "catalog_status": "retired"
     },
     {
       "name": "ExtraSlots",
@@ -1216,11 +1216,11 @@
       ],
       "category": "passes",
       "offer_kind": "pass",
-      "config_key": "Icons.ExtraSlots",
-      "intended_assets_key": "Assets.Icons.ExtraSlots",
-      "config_key_exists": true,
+      "config_key": null,
+      "intended_assets_key": null,
+      "config_key_exists": false,
       "transparent": true,
-      "catalog_status": "catalog"
+      "catalog_status": "retired"
     },
     {
       "name": "OfflinePlus",

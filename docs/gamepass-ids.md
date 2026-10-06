@@ -9,6 +9,8 @@ Created and priced through the Creator Hub on 2026-10-06 (experience is private,
 | CustomPlotColor | Custom Plot Color | 2006679679 | 79 | created, for sale |
 | FastFlush | Fast Flush | 2005125786 | 99 | created, for sale |
 
+Current catalog: 15 passes, including Ultimate Bundle with all 14 other passes. Display slots are never sold; VIP grants no slots. Do not create or enable the retired slot pass. Existing valid saved capacity is retained; see [the slot migration contract](design/monetization.md).
+
 Next: wire these ids into Config/Monetization.luau (the manager does it after the catalog session is merged) and create the new catalog passes/products from docs/monetization-catalog.md.
 Pass management: https://create.roblox.com/dashboard/creations/experiences/10769513431/monetization/passes
 

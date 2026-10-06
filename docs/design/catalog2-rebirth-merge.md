@@ -11,9 +11,9 @@ The existing merge into main is retained at the user's explicit request. No comm
 
 ## Economy and validation
 
-Both audit registries execute: rebirth rewards and extended catalog. Preserve premium VIP's 1.5x cash multiplier and the shared 10x cash cap, including R15, as well as the free R5 Auto Collect and permanent R10 slots. Bundle/individual ownership cannot double-grant slots; cap remains 10 with occupied/legacy capacity safeguards. Existing receipt, policy, odds, RNG, remote-validation and rate-limit coverage remains enabled.
+Both audit registries execute: rebirth rewards and extended catalog. Preserve premium VIP's 1.5x cash multiplier and the shared 10x cash cap, including R15, as well as the free R5 Auto Collect and permanent R10 slots. Bundle/individual ownership grants no slots; all ten slots remain free, and saved legacy capacity is retained. Existing receipt, policy, odds, RNG, remote-validation and rate-limit coverage remains enabled.
 
-Added shared UI/audit regressions cover all 16 rebirth levels across eight paid-trail ownership combinations, bounded/repeated construction, both trim layers, revocation, respawn, leave, reassignment and 48 chat combinations. A server scenario covers R10 together with overlapping VIP, Extra Slots and Ultimate Bundle across reset/rejoin. Catalog effect tests also verify respawn clears companions and confetti.
+Added shared UI/audit regressions cover all 16 rebirth levels across eight paid-trail ownership combinations, bounded/repeated construction, both trim layers, revocation, respawn, leave, reassignment and 48 chat combinations. A server scenario covers R10 together with overlapping VIP and Ultimate Bundle across reset/rejoin. Catalog effect tests also verify respawn clears companions and confetti.
 
 UI icon checks retain all 37 existing upload mappings. Unuploaded catalog artwork uses the existing empty/vector fallback or an already verified upload; tests reject invented IDs. The audit bundler now reads UTF-8 explicitly.
 

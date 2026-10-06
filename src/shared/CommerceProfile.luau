@@ -14,20 +14,13 @@ function Profile.Copy(value)
 	return result
 end
 function Profile.Sanitize(raw)
-	local result =
-		{ Passes = {}, Receipts = {}, AppliedSlots = 0, PathExpires = 0, VIPDay = 0, VIPPadAt = 0, LuckyFlushes = 0 }
+	local result = { Passes = {}, Receipts = {}, PathExpires = 0, VIPDay = 0, VIPPadAt = 0, LuckyFlushes = 0 }
 	if type(raw) ~= "table" then
 		return result
 	end
 	for _, key in ipairs(Config.PassOrder) do
 		result.Passes[key] = Config.Gamepasses[key].Id > 0 and type(raw.Passes) == "table" and raw.Passes[key] == true
 	end
-	result.AppliedSlots = if integer(
-			raw.AppliedSlots,
-			Config.Gamepasses.ExtraSlots.Slots + Config.Gamepasses.VIPPack.Slots
-		)
-		then raw.AppliedSlots
-		else 0
 	result.LuckyFlushes = if integer(raw.LuckyFlushes, Config.LuckyFlushCap) then raw.LuckyFlushes else 0
 	result.VIPPadAt = if integer(raw.VIPPadAt, 9e15) then raw.VIPPadAt else 0
 	result.PathExpires = if integer(raw.PathExpires, 9e15) then raw.PathExpires else 0

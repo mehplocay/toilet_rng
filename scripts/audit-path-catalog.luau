@@ -180,32 +180,36 @@ test("catalog products: path timer extends once per receipt, persists, and zero-
 	e:Fire("BuyProduct", player, "PathBoost10Minutes", 0)
 	assert(not e.Marketplace.LastProduct)
 end)
-test("catalog entitlements: API refresh, callback replay and cached failure apply extra slots once", function()
-	local e, player, p, commerce, config = catalogPlayer(410)
-	config.Gamepasses.ExtraSlots.Id = 8001
-	e.Marketplace.Lookup = function()
-		return true
-	end
-	local service = e:Load("src/server/Services/MonetizationService")
-	service:Load(player)
-	assert(p.DisplaySlots == 6 and p.Monetization.Passes.ExtraSlots)
-	for _ = 1, 10 do
+test(
+	"catalog entitlements: API refresh, callback replay and cached failure preserve VIP without adding slots",
+	function()
+		local e, player, p, commerce, config = catalogPlayer(410)
+		config.Gamepasses.VIPPack.Id = 8001
+		e.Marketplace.Lookup = function()
+			return true
+		end
+		local service = e:Load("src/server/Services/MonetizationService")
+		service.Cosmetics = nil -- Cosmetic geometry is covered by the visual harness.
 		service:Load(player)
-		e.Marketplace.PromptGamePassPurchaseFinished:Fire(player, 8001, true)
+		assert(p.DisplaySlots == 3 and p.Monetization.Passes.VIPPack)
+		for _ = 1, 10 do
+			service:Load(player)
+			e.Marketplace.PromptGamePassPurchaseFinished:Fire(player, 8001, true)
+		end
+		e.Marketplace.Lookup = function()
+			error("ownership outage")
+		end
+		assert(not service:Load(player) and p.DisplaySlots == 3)
+		p.Upgrades.DisplaySlots = 4
+		p.DisplaySlots = 10
+		commerce:Apply(player, service.Owned[player])
+		assert(p.DisplaySlots == 10)
+		e.Data:Close(player)
+		player.Parent = nil
+		local _, restored = e:Join(410)
+		assert(restored.DisplaySlots == 10 and restored.Monetization.Passes.VIPPack)
 	end
-	e.Marketplace.Lookup = function()
-		error("ownership outage")
-	end
-	assert(not service:Load(player) and p.DisplaySlots == 6)
-	p.Upgrades.DisplaySlots = 4
-	p.DisplaySlots = 10
-	commerce:Apply(player, service.Owned[player])
-	assert(p.DisplaySlots == 10)
-	e.Data:Close(player)
-	player.Parent = nil
-	local _, restored = e:Join(410)
-	assert(restored.DisplaySlots == 10 and restored.Monetization.AppliedSlots == 3)
-end)
+)
 test("catalog cash: sales, service, passive, daily and offline caps honor paid factors without luck", function()
 	local e, player, p, _, config = catalogPlayer(411)
 	local service = e:Load("src/server/Services/MonetizationService")
@@ -481,13 +485,10 @@ test("path service: base restore, VIP/product cap, expiry, overrides, death, res
 	assert(coroutine.status(tick) == "dead")
 end)
 
-test("rebirth capacity: capped paid slots and index minima survive empty and sparse displays", function()
+test("rebirth capacity: free slot upgrades and index minima survive empty and sparse displays", function()
 	for _, indexed in ipairs({ false, true }) do
 		local e = server()
-		e:Load("src/shared/Config/Monetization").Gamepasses.ExtraSlots.Id = 8001
 		local player, before = rebirthReady(e, if indexed then 419 else 418)
-		before.Monetization.Passes.ExtraSlots = true
-		before.Monetization.AppliedSlots = 3
 		before.Upgrades.DisplaySlots, before.DisplaySlots = 7, 10
 		before.Displays, before.IndexClaims = {}, {}
 		local expected = 10
@@ -495,7 +496,7 @@ test("rebirth capacity: capped paid slots and index minima survive empty and spa
 			for _, reward in ipairs(e:Load("src/shared/Config/IndexRewards").Milestones) do
 				if reward.DisplaySlots then
 					before.IndexClaims["total:" .. reward.Count] = true
-					expected = math.max(expected, math.min(10, reward.DisplaySlots + 3))
+					expected = math.max(expected, math.min(10, reward.DisplaySlots + before.Upgrades.DisplaySlots))
 				end
 			end
 			before.Inventory.Rat = 3
@@ -508,6 +509,6 @@ test("rebirth capacity: capped paid slots and index minima survive empty and spa
 		e.Data:Close(player)
 		player.Parent = nil
 		local _, loaded = e:Join(player.UserId)
-		assert(loaded.DisplaySlots == expected, "Save/rejoin changed retained paid capacity")
+		assert(loaded.DisplaySlots == expected, "Save/rejoin changed retained free capacity")
 	end
 end)

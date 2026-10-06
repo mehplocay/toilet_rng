@@ -42,13 +42,6 @@ function Commerce:Apply(player, owned)
 			profile.Monetization.Passes[key] = true
 		end
 	end
-	local slots = Paid.Slots(profile)
-	local extra = math.max(0, slots - profile.Monetization.AppliedSlots)
-	if extra > 0 then
-		profile.DisplaySlots =
-			math.max(profile.DisplaySlots, math.min(Config.DisplayCapacity, profile.DisplaySlots + extra))
-		profile.Monetization.AppliedSlots = slots
-	end
 end
 function Commerce:Snapshot(profile, player)
 	local quotes = {}
