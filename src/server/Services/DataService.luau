@@ -84,7 +84,7 @@ function DataService.DefaultProfile()
 	}
 end
 
-local function sanitize(raw)
+local function sanitize(raw, withoutAdmin)
 	local profile = DataService.DefaultProfile()
 	if type(raw) ~= "table" then
 		return profile
@@ -132,8 +132,14 @@ local function sanitize(raw)
 			end
 		end
 	end
+	if not withoutAdmin then
+		require(script.Parent.Parent.Admin.Profile).Restore(profile, raw.Admin, sanitize)
+	end
 	return profile
 end
+
+-- Admin transactions use exactly the load/save sanitizer, including NoPersistence sessions.
+DataService.Sanitize = sanitize
 
 local function retry(callback)
 	for attempt = 1, 4 do

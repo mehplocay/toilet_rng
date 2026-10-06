@@ -97,7 +97,7 @@ local function sync(player)
 			Streak = profile.Streak,
 			RewardLuckExpires = profile.RewardLuckExpires,
 			Settings = profile.Settings,
-			OwnedPasses = monetization.Owned[player] or {},
+			OwnedPasses = monetization:EffectiveOwned(player),
 			AutoFlush = monetization.Auto[player] == true,
 			LifetimeFlushes = profile.Stats.Flushes,
 			ServerLuckExpires = events.Expires,
@@ -105,7 +105,7 @@ local function sync(player)
 			Collection = profile.Collection,
 			Stamps = profile.Stamps,
 			IndexClaims = profile.IndexClaims,
-			IndexCosmetics = profile.IndexCosmetics,
+			IndexCosmetics = monetization:EffectiveCosmetics(player, profile.IndexCosmetics),
 			ToiletTier = profile.ToiletTier,
 			Displays = profile.Displays,
 			DisplaySlots = profile.DisplaySlots,
@@ -156,10 +156,14 @@ end)
 Players.PlayerRemoving:Connect(function(player)
 	events:Remove(player)
 end)
+local admin = require(script.Services.AdminService).Start(data, sync, world, events, remotes)
 data.Loaded = function(player)
 	sync(player)
 	monetization:Load(player)
 	sync(player)
+	task.spawn(function()
+		admin:Grant(player)
+	end)
 end
 data:Start()
 folder.Parent = ReplicatedStorage

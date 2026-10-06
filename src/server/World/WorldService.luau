@@ -211,10 +211,12 @@ function World:Assign(player)
 	end
 	player:Kick("All plots are occupied. Please join another server.")
 end
-function World:Animate(player, item, skipAnimation, duration)
+function World:Animate(player, item, skipAnimation, duration, adminPreview)
 	duration = duration or 0.32
 	-- Called only after the server has awarded a validated flush result.
-	self:RecordFlush(player, item)
+	if not adminPreview then
+		self:RecordFlush(player, item)
+	end
 	local plot = self.Assigned[player]
 	if not plot or not plot.Toilet then
 		return

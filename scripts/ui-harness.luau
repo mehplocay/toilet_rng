@@ -342,7 +342,7 @@ function Instance.new(class)
 end
 local services = {
 	ProximityPromptService = { PromptTriggered = signal(), PromptShown = signal(), PromptHidden = signal() },
-	RunService = { Heartbeat = signal(), RenderStepped = signal() },
+	RunService = { Heartbeat = signal(), RenderStepped = signal(), PreSimulation = signal() },
 	UserInputService = {
 		TouchEnabled = false,
 		InputBegan = signal(),

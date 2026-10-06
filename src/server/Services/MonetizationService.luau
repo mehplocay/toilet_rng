@@ -4,9 +4,17 @@ local Config = require(game.ReplicatedStorage.Shared.Config.Monetization)
 local Rules = require(game.ReplicatedStorage.Shared.MonetizationRules)
 local Service = { Owned = {}, Auto = {}, Loading = {}, Pending = {}, Checking = {} }
 
+function Service:EffectiveOwned(player)
+	local owned = self.Owned[player] or {}
+	return if self.AdminTestOwnership then self.AdminTestOwnership(player, owned) else owned
+end
+function Service:EffectiveCosmetics(player, original)
+	return if self.AdminTestCosmetics then self.AdminTestCosmetics(player, original) else original
+end
+
 function Service:Apply(player)
 	if self.Cosmetics then
-		self.Cosmetics:Apply(player, self.Owned[player] or {}, self.Data:Get(player))
+		self.Cosmetics:Apply(player, self:EffectiveOwned(player), self.Data:Get(player))
 	end
 end
 
@@ -40,7 +48,7 @@ function Service:Luck(player)
 	return 1 -- Paid randomness is not enabled.
 end
 function Service:Cooldown(player, base)
-	return Rules.Cooldown(base, self.Owned[player] or {}, Config)
+	return Rules.Cooldown(base, self:EffectiveOwned(player), Config)
 end
 
 function Service:Distance(player)
@@ -113,7 +121,7 @@ function Service:Start(limiter, remotes, sync, data, world)
 		if select("#", ...) ~= 0 or type(id) ~= "string" or not limiter:Allow(player, "PlotColor") then
 			return
 		end
-		local success = Rules.SetPlotColor(data:Get(player), self.Owned[player] or {}, id, Config)
+		local success = Rules.SetPlotColor(data:Get(player), self:EffectiveOwned(player), id, Config)
 		result(player, "PlotColor", success, if success then "Plot color saved." else "Plot color is unavailable.")
 		sync(player)
 	end)

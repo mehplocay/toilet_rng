@@ -57,6 +57,9 @@ function Announcements.Start(remote)
 			Rules.Escape(item.Name),
 			C.Commas(item.Chance)
 		)
+		if payload.Admin == true then
+			text = "[ADMIN TEST] " .. text
+		end
 		pcall(function()
 			channel:DisplaySystemMessage(text, "ToiletDrop")
 			-- World-event drops already have the server fanfare.

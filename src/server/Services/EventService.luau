@@ -47,6 +47,22 @@ function EventService.new(config, clock, broadcast, luckChanged)
 		self.Seen[player] = nil
 	end
 
+	function self:Boost()
+		self.Expires = math.max(self.Expires, clock() + config.Duration)
+		luckChanged(self.Expires)
+	end
+
+	function self:Preview(player, item)
+		-- Does not touch Seen, natural roll counters or automatic luck grants.
+		if self.ObserveAdmin then
+			self.ObserveAdmin(player, item)
+		end
+		if item.Event and #self.Pending < config.QueueCap then
+			table.insert(self.Pending, { ItemId = item.Id, PlayerName = Rules.Name(player.Name), Admin = true })
+			self:Drain()
+		end
+	end
+
 	return self
 end
 

@@ -226,7 +226,7 @@ function Controller.Create(root, hud, audio)
 		if self.Destroyed then
 			return
 		end
-		if payload and payload.FlushId then
+		if payload and payload.FlushId and not payload.Admin then
 			if Rules.Integer(payload.FlushId) ~= payload.FlushId or payload.FlushId <= self.LastId then
 				return
 			end
@@ -249,8 +249,13 @@ function Controller.Create(root, hud, audio)
 			tier = "Toast"
 		end
 		local probability = payload and payload.Probability
+		local presented = item
+		if payload and payload.Admin then
+			presented = table.clone(item)
+			presented.Name = "[ADMIN] " .. item.Name
+		end
 		local entry = {
-			Item = item,
+			Item = presented,
 			Tier = tier,
 			Probability = if type(probability) == "number"
 					and probability >= 0

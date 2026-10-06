@@ -243,7 +243,7 @@ end
 remotes.Event.OnClientEvent:Connect(function(payload)
 	effects.Event(payload)
 	local item = byId[payload.ItemId]
-	if item then
+	if item and not payload.Admin then
 		hud.Best(payload.PlayerName, item)
 	end
 end)
@@ -273,7 +273,9 @@ remotes.Result.OnClientEvent:Connect(function(action, payload)
 		end
 		audio:Flush(autoFlush, upgradeRules:Animation(payload.Cooldown or 1.5))
 		hud.Flushed(payload)
-		hud.Best(player.DisplayName, item)
+		if not payload.Admin then
+			hud.Best(player.DisplayName, item)
+		end
 		showServiceCoins(payload.ServiceCoins)
 		presentation.Reveal(item, payload)
 	elseif action == "CollectIncome" then
