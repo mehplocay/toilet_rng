@@ -1,5 +1,7 @@
 # Permanent upgrades and faster flushes
 
+2026-10-06: [Display/collection follow-up](display-collect.md) retunes passive rates/storage and replaces the old service-only passive bound. Original active-only stage targets and upgrade prices remain unchanged; additional display-enabled cohorts are reported separately.
+
 Rebirth follow-up: coin tracks now last for the current run and reset on rebirth.
 Cash/luck/speed also receive additive, capped permanent rebirth bonuses. Carried
 inventory becomes permanently protected instead of receiving a higher resale

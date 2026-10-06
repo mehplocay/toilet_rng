@@ -4,7 +4,8 @@ local Service = require("../src/server/Services/ServiceCoinService")
 local Inventory = require("../src/shared/SafeInventory")
 local Upgrades = require("../src/shared/UpgradeRules").new(require("../src/shared/Config/Upgrades"))
 local Cohort = {}
-function Cohort.Run(items, toilets, players, buyTracks, seed)
+local DisplayCohort = require("./display-cohort")
+function Cohort.Run(items, toilets, players, buyTracks, seed, displaySlots)
 	local stages, cumulative = {}, {}
 	for tier = 1, #toilets - 1 do
 		stages[tier], cumulative[tier] = {}, {}
@@ -18,11 +19,19 @@ function Cohort.Run(items, toilets, players, buyTracks, seed)
 		local profile =
 			{ Coins = 0, Stats = { Earned = 0 }, Inventory = {}, Displays = {}, Upgrades = {}, DisplaySlots = 3 }
 		local elapsed = 0
+		if displaySlots then
+			profile.DisplaySlots = displaySlots
+			profile.Income = { UpdatedAt = 1000, Pending = {} }
+		end
 		for tier = 1, #toilets - 1 do
+			profile.ToiletTier = tier
 			local toilet, nextToilet = toilets[tier], toilets[tier + 1]
 			local duration = 0
 			local entries, luck
 			while true do
+				if displaySlots then
+					DisplayCohort.Settle(profile, (elapsed + duration) * 60)
+				end
 				local pending = false
 				if buyTracks then
 					-- One affordable step in each active track per tier, capped at four.
@@ -47,7 +56,9 @@ function Cohort.Run(items, toilets, players, buyTracks, seed)
 				local cash = Upgrades:Cash(profile)
 				assert(Service.Grant(profile, toilet, cash))
 				profile.Inventory[item.Id] = (profile.Inventory[item.Id] or 0) + 1
-				if profile.Inventory[item.Id] > 1 then
+				if displaySlots then
+					DisplayCohort.ReserveAndSell(profile)
+				elseif profile.Inventory[item.Id] > 1 then
 					assert(Inventory.Sell(profile, items, item.Id, 1, cash))
 				end
 				duration += Upgrades:Cooldown(profile, toilet.Cooldown) / 60 / 0.75

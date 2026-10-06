@@ -111,16 +111,21 @@ function Income:Settle(profile, now, offline)
 		end
 	end
 end
-function Income:Collect(profile)
+function Income:Collect(profile, slot)
 	local c = self.Config
-	local coins =
-		math.min(self:PendingCoins(profile), c.MaxBalance - profile.Coins, c.MaxBalance - profile.Stats.Earned)
+	if slot ~= nil and (type(slot) ~= "number" or slot % 1 ~= 0 or slot < 1 or slot > c.MaxSlots) then
+		return 0
+	end
+	local available = if slot
+		then math.floor((profile.Income.Pending[tostring(slot)] or 0) / c.UnitsPerCoin)
+		else self:PendingCoins(profile)
+	local coins = math.min(available, c.MaxBalance - profile.Coins, c.MaxBalance - profile.Stats.Earned)
 	if coins <= 0 then
 		return 0
 	end
 	local remaining = coins * c.UnitsPerCoin
-	for slot = 1, c.MaxSlots do
-		local key = tostring(slot)
+	for index = slot or 1, slot or c.MaxSlots do
+		local key = tostring(index)
 		local pending = profile.Income.Pending[key] or 0
 		local debit = math.min(pending, remaining)
 		profile.Income.Pending[key] = if pending > debit then pending - debit else nil

@@ -16,7 +16,7 @@ end
 function Rows.Build(plot, previewProfile)
 	local profile = previewProfile or plot.Profile
 	plot.Displays:ClearAllChildren()
-	plot.CollectPoints, plot.IncomePoint = {}, nil
+	plot.CollectPoints, plot.CollectSlots, plot.IncomePoint = {}, {}, nil
 	local pageSize = V.Budget.DisplayPageSize
 	local first = ((plot.Page or 1) - 1) * pageSize + 1
 	local rates = accounting:Rates(profile)
@@ -27,7 +27,7 @@ function Rows.Build(plot, previewProfile)
 		stand.Name = "Slot" .. slot
 		stand:SetAttribute("DisplaySlot", slot)
 		local padCF = cf * CFrame.new(if offset.X < 0 then 5 else -5, 0.02, 0)
-		Kit.Place(plot.Displays, {
+		local pad = Kit.Place(plot.Displays, {
 			Asset = "GrassSlab",
 			Position = Vector3.new(),
 			Size = Vector3.new(3.8, 0.14, 4.5),
@@ -45,11 +45,47 @@ function Rows.Build(plot, previewProfile)
 			60
 		)
 		table.insert(plot.CollectPoints, point)
+		point:SetAttribute("CollectSlot", slot)
+		if slot <= profile.DisplaySlots then
+			plot.CollectSlots[slot] = point
+		end
 		local item = byId[profile.Displays[tostring(slot)]]
+		if plot.Owner and slot <= profile.DisplaySlots then
+			local prompt = Instance.new("ProximityPrompt")
+			prompt.Name = "DisplayPrompt"
+			prompt.ActionText = if item then "Put Back" else "Place"
+			prompt.ObjectText = "Display " .. slot
+			prompt.KeyboardKeyCode, prompt.GamepadKeyCode = Enum.KeyCode.E, Enum.KeyCode.ButtonX
+			prompt.MaxActivationDistance, prompt.HoldDuration, prompt.RequiresLineOfSight = 8, 0, false
+			prompt.Enabled = true
+			prompt:SetAttribute("OwnerUserId", plot.Owner.UserId)
+			prompt:SetAttribute("DisplaySlot", slot)
+			prompt:SetAttribute("DisplayOccupied", item ~= nil)
+			prompt.Parent = stand.PrimaryPart
+		end
+		point:SetAttribute("IncomePad", true)
+		-- Reuse the existing label anchor as a thin, anchored touch sensor.
+		point.CanTouch = slot <= profile.DisplaySlots and plot.Owner ~= nil
+		if point.CanTouch then
+			point.Touched:Connect(function(hit)
+				local owner = plot.Owner
+				if owner and hit.Parent == owner.Character and point.Parent and plot.CollectIncome then
+					plot.CollectIncome(owner, slot, true)
+				end
+			end)
+		end
+		local glow = Instance.new("PointLight")
+		glow.Name, glow.Color, glow.Range, glow.Brightness, glow.Enabled =
+			"IncomeGlow", pad.PrimaryPart.Color, 5, 0.3, false
+		glow:SetAttribute("VisualIdle", true)
+		glow:SetAttribute("IncomeGlow", true)
+		glow:SetAttribute("IncomeReady", false)
+		glow.Parent = point
 		if slot <= profile.DisplaySlots and item then
 			local itemModel = Models.Item(plot.Displays, cf * CFrame.new(0, 3.45, 0), item, true)
+			itemModel:SetAttribute("DisplaySlot", slot)
 			local color = if item.Rarity == "Secret" then V.Palette.Cyan else Rarities[item.Rarity].Color
-			local rate = (rates[tostring(slot)] or 0) * 60 / Income.UnitsPerCoin
+			local rate = (rates[tostring(slot)] or 0) / Income.UnitsPerCoin
 			Kit.Label(
 				itemModel,
 				"IncomeNametag",
@@ -62,7 +98,7 @@ function Rows.Build(plot, previewProfile)
 					.. item.Chance
 					.. "\n$"
 					.. string.format("%.2f", rate)
-					.. " / min",
+					.. "/s",
 				color,
 				true,
 				Layout.Labels.OccupiedDistance

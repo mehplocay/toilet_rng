@@ -135,6 +135,9 @@ local locked = collection.Panel:FindFirstChild("Mystery", true):FindFirstChild("
 locked.Activated:Fire()
 assert(#H.Calls == calls, "Disabled button sends requests")
 H.Snapshot(root, "collection-desktop")
+collection.Panel:FindFirstChild("Slots", true).Activated:Fire()
+H.Snapshot(root, "display-slots-desktop")
+collection.SlotsPanel.Visible = false
 collection.Panel.Visible = false
 state.Inventory.Poop = 10
 count = #H.Objects
@@ -368,6 +371,9 @@ assert(not flush.Interactable, "Cooldown does not disable manual action")
 hud.Frame.Visible = false
 collection.Panel.Visible = true
 H.Snapshot(root, "collection-portrait")
+collection.Panel:FindFirstChild("Slots", true).Activated:Fire()
+H.Snapshot(root, "display-slots-portrait")
+collection.SlotsPanel.Visible = false
 collection.Panel.Visible = false
 hud.Frame.Visible = true
 root._fixed = { X = 724, Y = 318 }
@@ -437,11 +443,34 @@ local prompt = H.Instance.new("ProximityPrompt")
 prompt:SetAttribute("IncomeOwnerUserId", H.Services.Players.LocalPlayer.UserId)
 H.Services.ProximityPromptService.PromptTriggered:Fire(prompt)
 assert(H.Calls[#H.Calls].Name == "CollectIncome" and H.Calls[#H.Calls].Count == 0)
+prompt:SetAttribute("CollectSlot", 3)
+H.Services.ProximityPromptService.PromptTriggered:Fire(prompt)
+assert(H.Calls[#H.Calls].Name == "CollectIncome" and H.Calls[#H.Calls].Count == 1 and H.Calls[#H.Calls].Args[1] == 3)
 local requests = #H.Calls
 prompt:SetAttribute("IncomeOwnerUserId", -1)
 H.Services.ProximityPromptService.PromptTriggered:Fire(prompt)
 assert(#H.Calls == requests, "Foreign collect prompt sent a request")
 bootRemotes.Result.OnClientEvent:Fire("CollectIncome", { Success = true, Coins = 123 })
+local flights = 0
+for _, object in ipairs(clientRoot.HUD:GetChildren()) do
+	if object.Name == "IncomeCoinFlight" then
+		flights += 1
+	end
+end
+assert(flights == 5, "Income collection lacks a bounded coin flight burst")
+local displayPrompt = H.Instance.new("ProximityPrompt")
+displayPrompt:SetAttribute("OwnerUserId", H.Services.Players.LocalPlayer.UserId)
+displayPrompt:SetAttribute("DisplaySlot", 3)
+displayPrompt:SetAttribute("DisplayOccupied", false)
+H.Services.ProximityPromptService.PromptTriggered:Fire(displayPrompt)
+local collectionPanel = clientRoot:FindFirstChild("My Collection")
+assert(collectionPanel.Visible, "Place prompt did not open Collection")
+collectionPanel:FindFirstChild("Poop", true).Display.Activated:Fire()
+assert(H.Calls[#H.Calls].Name == "Display" and H.Calls[#H.Calls].Args[1] == "Poop" and H.Calls[#H.Calls].Args[2] == 3)
+displayPrompt:SetAttribute("DisplayOccupied", true)
+H.Services.ProximityPromptService.PromptTriggered:Fire(displayPrompt)
+assert(H.Calls[#H.Calls].Name == "Display" and H.Calls[#H.Calls].Args[1] == nil and H.Calls[#H.Calls].Args[2] == 3)
+collectionPanel.Visible = false
 for _ = 1, 20 do
 	bootRemotes.State.OnClientEvent:Fire(state)
 end

@@ -25,15 +25,10 @@ function Collection.Create(gui, remotes)
 	})
 	C.Round(search, Color3.fromRGB(69, 106, 148), 10, 2)
 	local grid = C.Scroll(body, UDim2.new(1, 0, 1, -196), UDim2.fromOffset(0, 196))
-	C.Grid(grid, 132, 318, 5)
+	C.Grid(grid, 132, 366, 5)
 	local empty = C.BodyText(grid, "No discoveries match your search.", UDim2.new(1, -20, 0, 70))
 	empty.Visible = false
-	local help = C.BodyText(
-		body,
-		"Your first copy and displayed items stay safe.",
-		UDim2.new(1, 0, 0, 26),
-		UDim2.fromOffset(0, 166)
-	)
+	local help = C.BodyText(body, "First copies can be displayed.", UDim2.new(1, -100, 0, 26), UDim2.fromOffset(0, 166))
 	local rewards = require(script.Parent.IndexRewards).Create(body, remotes)
 	local rewardsButton = C.Button(
 		body,
@@ -45,6 +40,11 @@ function Collection.Create(gui, remotes)
 		{ TextSize = 18 }
 	)
 	local filter, state, cards = "All", nil, {}
+	local selectedSlot, slotsButton
+	local slotsPanel = C.Panel(gui, "Choose display slot", C.Blue)
+	local slotGrid = C.Scroll(slotsPanel.ContentScroll.Body, UDim2.fromScale(1, 1), UDim2.fromOffset(0, 0))
+	C.Grid(slotGrid, 150, 68, 4)
+	local slotButtons = {}
 	local names, colors = { "All" }, {}
 	local ordered = {}
 	for name, rarity in pairs(Rarities) do
@@ -67,9 +67,9 @@ function Collection.Create(gui, remotes)
 		if not state then
 			return nil
 		end
-		for slot, id in pairs(state.Displays) do
-			if id == itemId then
-				return tonumber(slot)
+		for slot = state.DisplaySlots, 1, -1 do
+			if state.Displays[tostring(slot)] == itemId then
+				return slot
 			end
 		end
 		return nil
@@ -77,6 +77,11 @@ function Collection.Create(gui, remotes)
 	local function freeSlot()
 		if not state then
 			return nil
+		end
+		if selectedSlot then
+			return if selectedSlot <= state.DisplaySlots and not state.Displays[tostring(selectedSlot)]
+				then selectedSlot
+				else nil
 		end
 		for slot = 1, state.DisplaySlots do
 			if not state.Displays[tostring(slot)] then
@@ -109,14 +114,26 @@ function Collection.Create(gui, remotes)
 			end
 		end, C.Green, { TextSize = 16 })
 		local display = C.Button(frame, "Display", UDim2.new(1, -16, 0, 44), UDim2.fromOffset(8, 266), function()
-			local slot = displaySlot(item.Id)
-			if slot then
-				remotes.Display:FireServer(nil, slot)
-			elseif freeSlot() then
+			if state and SafeInventory.Displayable(state, item.Id) > 0 and freeSlot() then
 				remotes.Display:FireServer(item.Id, freeSlot())
 			end
 		end, C.Blue, { TextSize = 17 })
-		return { Frame = frame, Name = name, Odds = odds, Count = count, Sell = sell, All = all, Display = display }
+		local putBack = C.Button(frame, "Put Back", UDim2.new(1, -16, 0, 44), UDim2.fromOffset(8, 314), function()
+			local slot = displaySlot(item.Id)
+			if slot then
+				remotes.Display:FireServer(nil, slot)
+			end
+		end, C.Navy, { TextSize = 17 })
+		return {
+			Frame = frame,
+			Name = name,
+			Odds = odds,
+			Count = count,
+			Sell = sell,
+			All = all,
+			Display = display,
+			PutBack = putBack,
+		}
 	end
 	render = function()
 		if not state or not panel.Visible or rewards.Frame.Visible then
@@ -148,21 +165,27 @@ function Collection.Create(gui, remotes)
 					visible += 1
 					local count, available, slot =
 						state.Inventory[item.Id] or 0, SafeInventory.Sellable(state, item.Id), displaySlot(item.Id)
-					local signature = table.concat(
-						{ tostring(discovered), count, available, slot or 0, if freeSlot() then 1 else 0 },
-						":"
-					)
+					local signature = table.concat({
+						tostring(discovered),
+						count,
+						available,
+						slot or 0,
+						SafeInventory.Displayed(state, item.Id),
+						freeSlot() or 0,
+					}, ":")
 					if card.Signature ~= signature then
 						card.Signature = signature
 						card.Name.Text, card.Odds.Text =
 							name, if discovered then "1 in " .. C.Commas(item.Chance) else "Undiscovered"
 						card.Count.Text = "x" .. count .. " owned  |  " .. available .. " to sell"
 						card.Sell.Interactable, card.All.Interactable = available > 0, available > 0
-						card.Display.Text = if slot
-							then "Remove Display"
+						card.Display.Text = if count == 0
+							then "No copies"
+							elseif SafeInventory.Displayable(state, item.Id) == 0 then "All displayed"
 							elseif not freeSlot() then "Slots full"
 							else "Display"
-						card.Display.Interactable = slot ~= nil or (count > 0 and freeSlot() ~= nil)
+						card.Display.Interactable = SafeInventory.Displayable(state, item.Id) > 0 and freeSlot() ~= nil
+						card.PutBack.Interactable = slot ~= nil
 					end
 					if card.Discovered ~= discovered then
 						if card.Preview then
@@ -188,16 +211,67 @@ function Collection.Create(gui, remotes)
 		grid.Visible, tabs.Frame.Visible, help.Visible, search.Visible =
 			not rewards.Frame.Visible, not rewards.Frame.Visible, not rewards.Frame.Visible, not rewards.Frame.Visible
 		rewardsButton.Text = if rewards.Frame.Visible then "Items" else "Rewards"
+		slotsButton.Visible = not rewards.Frame.Visible
 		render()
 	end)
 	search:GetPropertyChangedSignal("Text"):Connect(render)
 	panel:GetPropertyChangedSignal("Visible"):Connect(render)
+	local function openSlot(slot)
+		if not state or type(slot) ~= "number" or slot % 1 ~= 0 or slot < 1 or slot > state.DisplaySlots then
+			return
+		end
+		selectedSlot = slot
+		rewards.Frame.Visible = false
+		rewardsButton.Text = "Rewards"
+		grid.Visible, tabs.Frame.Visible, help.Visible, search.Visible, slotsButton.Visible =
+			true, true, true, true, true
+		filter, search.Text = "All", ""
+		tabs.Select("All")
+		grid.CanvasPosition = Vector2.new()
+		help.Text = "Choose an item for display " .. slot
+		slotsPanel.Visible, panel.Visible = false, true
+		render()
+	end
+	local function renderSlots()
+		if not state or not slotsPanel.Visible then
+			return
+		end
+		for slot = 1, state.DisplaySlots do
+			if not slotButtons[slot] then
+				slotButtons[slot] = C.Button(slotGrid, "Slot " .. slot, UDim2.fromOffset(150, 68), nil, function()
+					if state.Displays[tostring(slot)] then
+						remotes.Display:FireServer(nil, slot)
+					else
+						openSlot(slot)
+					end
+				end, C.Blue, { TextSize = 17 })
+				slotButtons[slot].LayoutOrder = slot
+			end
+		end
+		for slot, button in pairs(slotButtons) do
+			button.Visible = slot <= state.DisplaySlots
+			button.Text = "Slot " .. slot .. "\n" .. (if state.Displays[tostring(slot)] then "Put Back" else "Place")
+		end
+	end
+	slotsButton = C.Button(body, "Slots", UDim2.fromOffset(92, 36), UDim2.new(1, -96, 0, 156), function()
+		selectedSlot = nil
+		help.Text = "First copies can be displayed."
+		panel.Visible, slotsPanel.Visible = false, true
+		renderSlots()
+	end, C.Blue, { TextSize = 17 })
 	return {
 		Panel = panel,
+		SlotsPanel = slotsPanel,
+		OpenSlot = openSlot,
 		Update = function(snapshot)
 			state = snapshot
+			if selectedSlot and (selectedSlot > state.DisplaySlots or state.Displays[tostring(selectedSlot)]) then
+				selectedSlot = nil
+				help.Text = "First copies can be displayed."
+			end
 			rewards.Update(state)
 			render()
+			renderSlots()
 		end,
 	}
 end

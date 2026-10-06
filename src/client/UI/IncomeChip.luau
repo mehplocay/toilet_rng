@@ -16,6 +16,7 @@ function IncomeChip.Create(root)
 	return {
 		Update = function(pending)
 			label.Text = "Pending: " .. C.Commas(pending)
+			label.TextColor3 = if pending >= 1 then C.Green else C.Gold
 		end,
 	}
 end

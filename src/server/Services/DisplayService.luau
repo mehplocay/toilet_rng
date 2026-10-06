@@ -1,4 +1,10 @@
 local Display = {}
+local Inventory = require(if script then game.ReplicatedStorage.Shared.SafeInventory else "../../shared/SafeInventory")
+local Items = require(if script then game.ReplicatedStorage.Shared.Config.Items else "../../shared/Config/Items")
+local known = {}
+for _, item in ipairs(Items) do
+	known[item.Id] = true
+end
 function Display.Set(profile, id, slot)
 	if type(slot) ~= "number" or slot % 1 ~= 0 or slot < 1 or slot > profile.DisplaySlots then
 		return false
@@ -8,16 +14,10 @@ function Display.Set(profile, id, slot)
 		profile.Displays[key] = nil
 		return true
 	end
-	if type(id) ~= "string" or profile.Displays[key] then
+	if type(id) ~= "string" or not known[id] or profile.Displays[key] then
 		return false
 	end
-	local reserved = 0
-	for _, value in pairs(profile.Displays) do
-		if value == id then
-			reserved += 1
-		end
-	end
-	if (profile.Inventory[id] or 0) <= reserved then
+	if Inventory.Displayable(profile, id) == 0 then
 		return false
 	end
 	profile.Displays[key] = id

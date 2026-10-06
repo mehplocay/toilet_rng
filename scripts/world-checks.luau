@@ -104,7 +104,10 @@ local function validate(container)
 	for _, object in ipairs(container:GetDescendants()) do
 		if isPart(object) then
 			assert(object.Anchored, "Unanchored geometry: " .. object.Name)
-			assert(not object.CanTouch, "Touch-enabled decoration: " .. object.Name)
+			assert(
+				not object.CanTouch or object:GetAttribute("IncomePad") == true,
+				"Touch-enabled decoration: " .. object.Name
+			)
 			assert(object.CanCollide or not object.CanQuery, "Queryable decoration: " .. object.Name)
 			assert(object.Size.X > 0 and object.Size.Y > 0 and object.Size.Z > 0, "Invalid part size")
 			if object.ClassName == "MeshPart" then
@@ -252,6 +255,19 @@ do
 	World.Assigned[owner], plot.Owner = plot, owner
 	local count = #tweens
 	World:Refresh(owner, profile)
+	local placePrompts = 0
+	for _, object in ipairs(plot.Displays:GetDescendants()) do
+		if object.Name == "DisplayPrompt" then
+			placePrompts += 1
+			assert(object.ActionText == "Place" and object.Enabled and object:GetAttribute("DisplaySlot") <= 3)
+		end
+		if object:GetAttribute("IncomePad") then
+			local unlocked = object:GetAttribute("CollectSlot") <= 3
+			assert(object.CanTouch == unlocked)
+			assert((object:FindFirstChild("IncomePrompt") ~= nil) == unlocked)
+		end
+	end
+	assert(placePrompts == 3, "Empty/locked display prompts do not match capacity")
 	assert(#tweens == count, "Initial toilet load is not an upgrade")
 	local anchor = plot.PromptAnchor
 	local originalCount = P.Count
@@ -338,27 +354,75 @@ for tier = 1, 7 do
 	for page = 1, 10 do
 		plot.Page = page
 		World:RenderDisplays(plot)
+		local names, itemsBySlot, displayPrompts = 0, {}, 0
 		for _, object in ipairs(plot.Displays:GetDescendants()) do
 			if object.Name == "IncomeNametag" then
+				names += 1
 				local gui = object:GetChildren()[1]
 				local text = gui:GetChildren()[1].Text
 				assert(
-					gui.MaxDistance == layout.Labels.OccupiedDistance and text:find("1 in ") and text:find(" / min"),
+					gui.MaxDistance == layout.Labels.OccupiedDistance and text:find("1 in ") and text:find("/s"),
 					"Occupied nametag lost odds/income"
 				)
 			end
+			if object:IsA("Model") and object:GetAttribute("DisplaySlot") and object.Name:sub(1, 4) ~= "Slot" then
+				local slot = object:GetAttribute("DisplaySlot")
+				assert(not itemsBySlot[slot], "Duplicate render for one slot")
+				itemsBySlot[slot] = object
+			end
+			if object.Name == "DisplayPrompt" then
+				displayPrompts += 1
+				assert(object.ActionText == "Put Back" and object.HoldDuration == 0 and not object.RequiresLineOfSight)
+				assert(object:GetAttribute("OwnerUserId") == tier and object:GetAttribute("DisplayOccupied"))
+			end
 		end
+		assert(names == 10 and displayPrompts == 10, "Identical items lost per-slot nametags or prompts")
 		assert(#plot.CollectPoints == 11, "Ten collect pads plus jar required")
 		for i = 1, 10 do
 			local pad = plot.CollectPoints[i]
+			local slot = (page - 1) * 10 + i
+			assert(itemsBySlot[slot] and pad.CanTouch and pad:GetAttribute("CollectSlot") == slot)
+			assert(plot.CollectSlots[slot] == pad)
+			local prompt = pad:FindFirstChild("IncomePrompt")
+			assert(prompt:GetAttribute("CollectSlot") == slot and prompt.MaxActivationDistance == 6)
+			assert(
+				prompt.ActionText == "Collect"
+					and prompt.Enabled
+					and prompt.HoldDuration == 0
+					and not prompt.RequiresLineOfSight
+			)
+			local contacts = 0
+			World.CollectIncome = function(visitor, target, touching)
+				assert(visitor == plot.Owner and target == slot and touching)
+				contacts += 1
+			end
+			pad.Touched:Fire({ Parent = { TestPlayer = { UserId = -1 } } })
+			pad.Touched:Fire({ Parent = {} })
+			assert(contacts == 0, "Foreign touch reached collect transaction")
+			plot.Owner.Character = {}
+			pad.Touched:Fire({ Parent = plot.Owner.Character })
+			assert(contacts == 1, "Owner step did not reach the exact pad transaction")
 			assert(pad.CFrame:VectorToWorldSpace(Vector3.new(0, 0, -1)).Y > 0.99, "Collect dollar faces underground")
 		end
-		assert(plot.IncomePoint.Parent == plot.Displays and plot.IncomePrompt.ActionText == "Collect")
+		assert(plot.IncomePoint.Parent == plot.Displays and plot.IncomePrompt.ActionText == "Collect All")
 		assert(plot.IncomePrompt:GetAttribute("IncomeOwnerUserId") == tier)
+		assert(
+			plot.IncomePrompt.Enabled
+				and plot.IncomePrompt.HoldDuration == 0
+				and not plot.IncomePrompt.RequiresLineOfSight
+		)
+		assert(plot.IncomePrompt.MaxActivationDistance == 10 and plot.IncomePrompt:GetAttribute("CollectSlot") == nil)
 		local incomeVisual = loadModule(node("src/server/World/IncomeDisplay"))
 		for _, pending in ipairs({ 0, 1, 10, 100, 0 }) do
+			profile.Income = { Pending = { [tostring((page - 1) * 10 + 1)] = pending * 6000 } }
 			incomeVisual.Refresh(plot, plot.Owner, pending)
 			assert(plot.IncomeLabel.Text == "COLLECT ALL\n$" .. pending)
+			assert(plot.IncomePoint:FindFirstChild("IncomeGlow"):GetAttribute("IncomeReady") == (pending >= 1))
+			assert(plot.CollectPoints[1]:FindFirstChild("IncomeGlow"):GetAttribute("IncomeReady") == (pending >= 1))
+			assert(
+				not plot.CollectPoints[2]:FindFirstChild("IncomeGlow"):GetAttribute("IncomeReady"),
+				"Pad glow used aggregate balance"
+			)
 			for level, coin in ipairs(plot.IncomeCoins) do
 				assert(coin.Transparency == (if pending >= ({ 1, 10, 100 })[level] then 0 else 1))
 			end

@@ -7,8 +7,8 @@ local accounting = require(Shared.IncomeAccrual).new(
 )
 local IncomeService = {}
 function IncomeService.Start(data, limiter, remotes, sync, world)
-	remotes.CollectIncome.OnServerEvent:Connect(function(player, ...)
-		if not limiter:Allow(player, "CollectIncome") or select("#", ...) ~= 0 then
+	local function collect(player, slot, touching)
+		if slot ~= nil and (type(slot) ~= "number" or slot % 1 ~= 0 or slot < 1 or slot > Config.MaxSlots) then
 			return
 		end
 		local plot = world.Assigned[player]
@@ -24,21 +24,52 @@ function IncomeService.Start(data, limiter, remotes, sync, world)
 		then
 			return
 		end
-		local distance = (root.Position - plot.IncomePoint.Position).Magnitude
-		for _, point in ipairs(plot.CollectPoints or {}) do
-			if point.Parent then
-				distance = math.min(distance, (root.Position - point.Position).Magnitude)
-			end
+		local point = if slot then (plot.CollectSlots or {})[slot] else plot.IncomePoint
+		if not point or not point.Parent then
+			return
 		end
-		if distance ~= distance or distance < 0 or distance > Config.CollectRange then
+		local distance = (root.Position - point.Position).Magnitude
+		local range = if touching then Config.TouchRange elseif slot then Config.PadRange else Config.CollectRange
+		if distance ~= distance or distance < 0 or distance > range then
 			return
 		end
 		-- Get settles using server time only after verifying the acknowledged session lease.
 		local profile = data:Get(player)
-		if not profile or data.Saving[player] then
+		if not profile then
+			return
+		end
+		if data.Saving[player] then
+			if not touching and limiter:Allow(player, "CollectIncome") then
+				remotes.Result:FireClient(
+					player,
+					"CollectIncome",
+					{ Success = false, Message = "Saving your last action. Please try collecting again." }
+				)
+			end
 			return -- Never queue unbounded save waiters behind a slow backend.
 		end
-		local coins = accounting:Collect(profile)
+		if slot and slot > profile.DisplaySlots then
+			return
+		end
+		-- Limb contacts on empty pads must not consume the owner's input budget.
+		if touching and (profile.Income.Pending[tostring(slot)] or 0) < Config.UnitsPerCoin then
+			return
+		end
+		if not limiter:Allow(player, "CollectIncome") then
+			return
+		end
+		local available = if slot
+			then math.floor((profile.Income.Pending[tostring(slot)] or 0) / Config.UnitsPerCoin)
+			else accounting:PendingCoins(profile)
+		if available > 0 and not limiter:Allow(player, "CollectIncomeSave") then
+			remotes.Result:FireClient(
+				player,
+				"CollectIncome",
+				{ Success = false, Message = "Collection is cooling down. Try again in a few seconds." }
+			)
+			return
+		end
+		local coins = accounting:Collect(profile, slot)
 		if coins == 0 then
 			remotes.Result:FireClient(
 				player,
@@ -50,8 +81,16 @@ function IncomeService.Start(data, limiter, remotes, sync, world)
 		-- Debit, credit and timestamp are in one immutable profile snapshot before Save yields.
 		if data:Save(player, false) and data:Get(player) == profile then
 			sync(player)
-			remotes.Result:FireClient(player, "CollectIncome", { Success = true, Coins = coins })
+			remotes.Result:FireClient(player, "CollectIncome", { Success = true, Coins = coins, Slot = slot })
 		end
+	end
+	world.CollectIncome = collect
+	remotes.CollectIncome.OnServerEvent:Connect(function(player, ...)
+		local count, slot = select("#", ...), ...
+		if count > 1 or (count == 1 and slot == nil) then
+			return
+		end
+		collect(player, slot, false)
 	end)
 	task.spawn(function()
 		while not data.Stopping do

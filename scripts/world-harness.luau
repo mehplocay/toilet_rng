@@ -229,9 +229,29 @@ function Instance.new(class)
 		},
 		_children = {},
 		_attributes = {},
+		_touch = { Handlers = {} },
 	}, {
 		__index = function(self, key)
-			return methods[key] or self._props[key] or (if key == "Triggered" or key == "Changed" then signal else nil)
+			if key == "Touched" then
+				local event = self._touch
+				function event:Connect(fn)
+					table.insert(self.Handlers, fn)
+					return { Disconnect = function() end }
+				end
+				function event:Fire(hit)
+					for _, fn in ipairs(self.Handlers) do
+						fn(hit)
+					end
+				end
+				return event
+			end
+			if methods[key] then
+				return methods[key]
+			end
+			if self._props[key] ~= nil then
+				return self._props[key]
+			end
+			return if key == "Triggered" or key == "Changed" then signal else nil
 		end,
 		__newindex = function(self, key, value)
 			if

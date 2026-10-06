@@ -220,7 +220,10 @@ test(
 			e:Load("src/shared/Config/Items"),
 			e:Load("src/shared/UpgradeRules").new(e:Load("src/shared/Config/Upgrades"))
 		)
-		assert(income:PendingCoins(restored) == 4, "Expected only retained Poop at Basic rebirth rate for 240 minutes")
+		assert(
+			income:PendingCoins(restored) == 1200,
+			"Expected only retained Poop at Basic rebirth rate for 240 minutes"
+		)
 		assert(restored.RebirthLevel == 1 and restored.RunFlushes == 0 and restored.ProtectedInventory.Rat == 2)
 		local units = income:TotalUnits(restored)
 		income:Settle(restored, e.Now, true)

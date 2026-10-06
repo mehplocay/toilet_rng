@@ -1,5 +1,7 @@
 # Flush Resort: huge map assembly
 
+2026-10-06 follow-up: [Display/collection fix](design/display-collect.md) adds per-slot prompt/contact collection, Place/Put Back, per-second nametags and pending glow. It supersedes the aggregate-pad/minute-label descriptions below; map geometry is retained.
+
 Assembled on `feature/map-assembly`; plot/hub polish on `feature/plot-polish`, October 5, 2026. Changes are intentionally **uncommitted**. No client UI, economy/upgrades services, client reveal code or `Assets.Icons` were edited.
 
 The owner scale overrides the smaller redesign proposal: twelve 48 x 60 plots, a 192-stud plaza, a roughly 98-stud ToiletCastle, and a 432 x 624 main island. Visible architecture, vegetation and ground use the supplied Blender meshes. Terrain supplies water only. The assembly includes striped station booths, three server leaderboards, three coming-soon portals, a lighthouse, a bridge/pier, layered cliffs/beaches, raised headlands, mountain ridges, floating islets and cloud banks.
