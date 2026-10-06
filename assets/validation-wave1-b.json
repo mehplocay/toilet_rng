@@ -1,0 +1,149 @@
+{
+  "scope": "Blender FBX round trip; no Studio upload performed",
+  "assets": [
+    {
+      "id": "PlungerPogo",
+      "tris": 1908,
+      "fbx_round_trip": "passed",
+      "one_mesh_one_material": true,
+      "closed_components": true,
+      "finite_vertices": true,
+      "padded_uvs": true,
+      "exact_embedded_atlas": true,
+      "base_center_origin": true,
+      "size_tolerance_studs": 0.001
+    },
+    {
+      "id": "BathMatBat",
+      "tris": 1132,
+      "fbx_round_trip": "passed",
+      "one_mesh_one_material": true,
+      "closed_components": true,
+      "finite_vertices": true,
+      "padded_uvs": true,
+      "exact_embedded_atlas": true,
+      "base_center_origin": true,
+      "size_tolerance_studs": 0.001
+    },
+    {
+      "id": "DiscoBidet",
+      "tris": 2316,
+      "fbx_round_trip": "passed",
+      "one_mesh_one_material": true,
+      "closed_components": true,
+      "finite_vertices": true,
+      "padded_uvs": true,
+      "exact_embedded_atlas": true,
+      "base_center_origin": true,
+      "size_tolerance_studs": 0.001
+    },
+    {
+      "id": "TowelTornado",
+      "tris": 2272,
+      "fbx_round_trip": "passed",
+      "one_mesh_one_material": true,
+      "closed_components": true,
+      "finite_vertices": true,
+      "padded_uvs": true,
+      "exact_embedded_atlas": true,
+      "base_center_origin": true,
+      "size_tolerance_studs": 0.001
+    },
+    {
+      "id": "PorcelainPoodle",
+      "tris": 2100,
+      "fbx_round_trip": "passed",
+      "one_mesh_one_material": true,
+      "closed_components": true,
+      "finite_vertices": true,
+      "padded_uvs": true,
+      "exact_embedded_atlas": true,
+      "base_center_origin": true,
+      "size_tolerance_studs": 0.001
+    },
+    {
+      "id": "FaucetPharaoh",
+      "tris": 2348,
+      "fbx_round_trip": "passed",
+      "one_mesh_one_material": true,
+      "closed_components": true,
+      "finite_vertices": true,
+      "padded_uvs": true,
+      "exact_embedded_atlas": true,
+      "base_center_origin": true,
+      "size_tolerance_studs": 0.001
+    },
+    {
+      "id": "RoyalFlushFrog",
+      "tris": 2000,
+      "fbx_round_trip": "passed",
+      "one_mesh_one_material": true,
+      "closed_components": true,
+      "finite_vertices": true,
+      "padded_uvs": true,
+      "exact_embedded_atlas": true,
+      "base_center_origin": true,
+      "size_tolerance_studs": 0.001
+    },
+    {
+      "id": "GoldenGargler",
+      "tris": 2096,
+      "fbx_round_trip": "passed",
+      "one_mesh_one_material": true,
+      "closed_components": true,
+      "finite_vertices": true,
+      "padded_uvs": true,
+      "exact_embedded_atlas": true,
+      "base_center_origin": true,
+      "size_tolerance_studs": 0.001
+    },
+    {
+      "id": "Clogtopus",
+      "tris": 2008,
+      "fbx_round_trip": "passed",
+      "one_mesh_one_material": true,
+      "closed_components": true,
+      "finite_vertices": true,
+      "padded_uvs": true,
+      "exact_embedded_atlas": true,
+      "base_center_origin": true,
+      "size_tolerance_studs": 0.001
+    },
+    {
+      "id": "LaundryYeti",
+      "tris": 2364,
+      "fbx_round_trip": "passed",
+      "one_mesh_one_material": true,
+      "closed_components": true,
+      "finite_vertices": true,
+      "padded_uvs": true,
+      "exact_embedded_atlas": true,
+      "base_center_origin": true,
+      "size_tolerance_studs": 0.001
+    },
+    {
+      "id": "SteamGenie",
+      "tris": 1960,
+      "fbx_round_trip": "passed",
+      "one_mesh_one_material": true,
+      "closed_components": true,
+      "finite_vertices": true,
+      "padded_uvs": true,
+      "exact_embedded_atlas": true,
+      "base_center_origin": true,
+      "size_tolerance_studs": 0.001
+    },
+    {
+      "id": "BathBombBehemoth",
+      "tris": 1924,
+      "fbx_round_trip": "passed",
+      "one_mesh_one_material": true,
+      "closed_components": true,
+      "finite_vertices": true,
+      "padded_uvs": true,
+      "exact_embedded_atlas": true,
+      "base_center_origin": true,
+      "size_tolerance_studs": 0.001
+    }
+  ]
+}
