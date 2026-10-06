@@ -89,6 +89,12 @@ function Layout.Modal(w, h)
 	local width, height = math.min(1060, w - 24), math.min(730, h - 24)
 	return rect((w - width) / 2, (h - height) / 2, width, height)
 end
+function Layout.Toast(w, h, touch)
+	local action = Layout.Compute(w, h, touch).Action
+	local modal = Layout.Modal(w, h)
+	local width = math.min(420, w - 48)
+	return rect((w - width) / 2, math.max(modal.Y + 74, action.Y - 74), width, 64)
+end
 function Layout.Grid(width, minimum, gap, maximumColumns)
 	local columns = math.max(1, math.floor((width + gap) / (minimum + gap)))
 	columns = math.min(columns, maximumColumns or columns)

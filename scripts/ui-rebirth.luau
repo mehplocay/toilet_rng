@@ -43,7 +43,7 @@ do
 	end
 	state.RebirthLevel = 0
 	ui.Update(state)
-	assert(body.CoinGate.Text == "3M / 3M Coins required" and button.Interactable)
+	assert(body.CoinGate.Text == "4M / 4M Coins required" and button.Interactable)
 	state.Coins -= 1
 	ui.Update(state)
 	assert(not button.Interactable, "Coin-short state enabled the irreversible reset")

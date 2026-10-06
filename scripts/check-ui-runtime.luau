@@ -268,7 +268,11 @@ for _, viewport in ipairs(H.Viewports) do
 			assert(element.AbsolutePosition.Y >= lastBottom, "Offer text/actions overlap")
 			lastBottom = element.AbsolutePosition.Y + element.AbsoluteSize.Y
 		end
-		assert(not offer.Description.TextWrapped, "Description is not one line")
+		assert(offer.Description.TextWrapped == (key == "ExtraSlots"), "Unexpected offer description wrapping")
+		if key == "ExtraSlots" then
+			assert(offer.Description.Text == "+3 slots (max 10). Also free via coin upgrades!")
+			assert(offer.Description.UITextSizeConstraint.MinTextSize == 14, "Free slot route is too small to read")
+		end
 		assert(offer.Buy.AbsoluteSize.X >= 100 and offer.Buy.AbsoluteSize.Y >= 44)
 		assert(offer.Gift.AbsoluteSize.X >= 44 and offer.Gift.AbsoluteSize.Y >= 44)
 		assert(

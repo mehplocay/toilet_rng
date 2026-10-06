@@ -156,6 +156,12 @@ function Passes.Create(gui, remotes)
 			UDim2.fromOffset(12, Card.DescriptionY)
 		)
 		description.Name, description.TextWrapped = "Description", false
+		if key == "ExtraSlots" then
+			title.Size = UDim2.new(1, -24, 0, 28)
+			description.Position, description.Size = UDim2.fromOffset(12, 118), UDim2.new(1, -24, 0, 44)
+			description.TextWrapped = true
+			description.UITextSizeConstraint.MinTextSize = 14
+		end
 		prices[key] = C.Text(
 			card,
 			if pass.Id == 0 then "Not on sale yet" else "Checking price...",
