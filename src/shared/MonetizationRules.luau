@@ -31,7 +31,10 @@ function Rules.TryFlush(nextFlush, player, now, distance, cooldown, config)
 end
 
 function Rules.Entitlements(owned, config)
-	local result = table.clone(owned or {})
+	local result = {}
+	for _, key in ipairs(config.PassOrder) do
+		result[key] = owned ~= nil and owned[key] == true
+	end
 	if result.UltimateBundle then
 		for _, key in ipairs(config.PassOrder) do
 			result[key] = true

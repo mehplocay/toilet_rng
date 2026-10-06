@@ -4,6 +4,19 @@ do
 	local ui = H.Load("src/client/UI/Passes").Create(root, remotes)
 	local body = ui.Panel.ContentScroll.Body
 	local vip = ui.Panel:FindFirstChild("OfferGrid", true).VIPPack
+	assert(#config.PassOrder == 15 and not ui.Panel:FindFirstChild("ExtraSlots", true))
+	local bundleDescription = false
+	for _, label in ipairs(ui.Panel:GetDescendants()) do
+		if label:IsA("TextLabel") then
+			assert(not string.find(label.Text, "Extra Slots", 1, true))
+			assert(not string.find(label.Text, "+2 slots", 1, true))
+			assert(not string.find(label.Text, "+2 display slots", 1, true))
+			if string.find(label.Text, "All 14 other passes", 1, true) then
+				bundleDescription = true
+			end
+		end
+	end
+	assert(bundleDescription, "Bundle card must promise all 14 other passes")
 	local cashExplanation = false
 	for _, label in ipairs(vip:GetDescendants()) do
 		if label:IsA("TextLabel") and string.find(label.Text, "paid cap 3x on top", 1, true) then

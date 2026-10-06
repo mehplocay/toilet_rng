@@ -1,6 +1,6 @@
 # Extended monetization validation
 
-2026-10-06, feature/catalog2. Work remains uncommitted; no push. The authoritative creation list is [monetization-catalog.md](../monetization-catalog.md): 16 passes and 8 developer products. Existing config keys and the enabled Star Tag ID are preserved.
+2026-10-06, feature/catalog2. Work remains uncommitted; no push. The authoritative creation list is [monetization-catalog.md](../monetization-catalog.md): 15 passes and 8 developer products. Existing config keys and the enabled Star Tag ID are preserved.
 
 ## Delivered files
 

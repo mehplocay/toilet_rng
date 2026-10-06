@@ -267,7 +267,7 @@ test("extended counters: sanitize, capacity, id-zero and admin preservation", fu
 	end
 	assert(not e.Marketplace.LastProduct)
 end)
-test("extended bundle: implies all 15 passes, no consumables, slots applied once and persists", function()
+test("extended bundle: implies all 14 other passes, no consumables or slots, and persists", function()
 	local e, player, p, commerce, config = catalogPlayer(656)
 	local service = e:Load("src/server/Services/MonetizationService")
 	service.Cosmetics = nil
@@ -277,17 +277,17 @@ test("extended bundle: implies all 15 passes, no consumables, slots applied once
 	for _, key in ipairs(config.PassOrder) do
 		assert(effective[key] == true)
 	end
-	assert(p.DisplaySlots == 8 and p.Monetization.AppliedSlots == 5 and p.Monetization.LuckyFlushes == 0)
+	assert(p.DisplaySlots == 3 and p.Monetization.LuckyFlushes == 0)
 	assert(commerce.Income.Upgrades:Cash(p) == 3)
 	assert(commerce.Income.Upgrades:OfflineMinutes(p, 480) == 1440)
 	for _ = 1, 10 do
 		commerce:Apply(player, service.Owned[player])
 	end
-	assert(p.DisplaySlots == 8)
+	assert(p.DisplaySlots == 3)
 	e.Data:Close(player)
 	player.Parent = nil
 	local joined, restored = e:Join(656)
-	assert(restored.DisplaySlots == 8 and restored.Monetization.Passes.UltimateBundle)
+	assert(restored.DisplaySlots == 3 and restored.Monetization.Passes.UltimateBundle)
 	e:Fire("BuyPass", joined, "VIPStar")
 	assert(not e.Marketplace.LastPrompt)
 end)

@@ -21,7 +21,6 @@ local Assets = {
 		LuckyFlush20 = "",
 		DoubleCash = "",
 		AutoCollect = "",
-		ExtraSlots = "",
 		OfflinePlus = "",
 		VIPPack = "",
 		CoinPack = "",

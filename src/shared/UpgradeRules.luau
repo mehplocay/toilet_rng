@@ -43,14 +43,11 @@ function Rules:Restore(profile, raw, version)
 	profile.UpgradeVersion = self.Config.Version
 	profile.DisplaySlots = math.max(
 		profile.DisplaySlots,
-		math.min(
-			self.Config.DisplayCapacity,
-			self.Config.BaseDisplaySlots + profile.Upgrades.DisplaySlots + Paid.Slots(profile)
-		)
+		math.min(self.Config.DisplayCapacity, self.Config.BaseDisplaySlots + profile.Upgrades.DisplaySlots)
 	)
 end
 function Rules:IndexSlots(profile, minimum)
-	return math.min(self.Config.DisplayCapacity, minimum + self:Level(profile, "DisplaySlots") + Paid.Slots(profile))
+	return math.min(self.Config.DisplayCapacity, minimum + self:Level(profile, "DisplaySlots"))
 end
 function Rules:Price(id, level)
 	local track = if type(id) == "string" then self.ById[id] else nil

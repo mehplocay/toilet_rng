@@ -1,33 +1,31 @@
 -- Additional production-module scenarios; all earlier audit cases still execute.
-test("merged rebirth/catalog: bundle and overlapping VIP/Extra Slots preserve R10 capacity exactly once", function()
+test("merged rebirth/catalog: bundle and overlapping VIP grant only the free R10 capacity exactly once", function()
 	for _, bundle in ipairs({ false, true }) do
 		local e, player, p, commerce, config = catalogPlayer(if bundle then 727 else 726)
 		local service = e:Load("src/server/Services/MonetizationService")
 		-- Geometry is covered by audit-cosmetic-merge; this fixture exercises server entitlements and saves.
 		service.Cosmetics = nil
-		local owned = if bundle
-			then { UltimateBundle = true, VIPPack = true, ExtraSlots = true }
-			else { VIPPack = true, ExtraSlots = true }
+		local owned = if bundle then { UltimateBundle = true, VIPPack = true } else { VIPPack = true }
 		for key in pairs(owned) do
 			config.Gamepasses[key].Id = 8800 + table.find(config.PassOrder, key)
 		end
 		service.Owned[player] = owned
 		commerce:Apply(player, owned)
-		assert(p.DisplaySlots == 8 and p.Monetization.AppliedSlots == 5)
+		assert(p.DisplaySlots == 3)
 		local rebirth = e:Load("src/shared/Config/Rebirth")
 		p.RebirthLevel, p.RunFlushes, p.Coins = 9, rebirth.RequiredFlushes, rebirth.Levels[10].RequiredCoins
-		p.Inventory.Rat, p.Displays["8"] = 1, "Rat"
+		p.Inventory.Rat, p.Displays["3"] = 1, "Rat"
 		e:Fire("Rebirth", player, 9)
 		p = e.Data:Get(player)
-		assert(p.RebirthLevel == 10 and p.DisplaySlots == 10 and p.RebirthAppliedSlots == 2)
+		assert(p.RebirthLevel == 10 and p.DisplaySlots == 5 and p.RebirthAppliedSlots == 2)
 		for _ = 1, 10 do
 			commerce:Apply(player, owned)
 		end
-		assert(p.DisplaySlots == 10 and p.Monetization.AppliedSlots == 5 and p.Displays["8"] == "Rat")
+		assert(p.DisplaySlots == 5 and p.Displays["3"] == "Rat")
 		e.Data:Close(player)
 		player.Parent = nil
 		local _, restored = e:Join(player.UserId)
-		assert(restored.DisplaySlots == 10 and restored.RebirthAppliedSlots == 2 and restored.Displays["8"] == "Rat")
+		assert(restored.DisplaySlots == 5 and restored.RebirthAppliedSlots == 2 and restored.Displays["3"] == "Rat")
 	end
 end)
 

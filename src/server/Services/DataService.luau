@@ -105,6 +105,7 @@ local function sanitize(raw, withoutAdmin)
 	end
 	profile.RewardLuckExpires = integer(raw.RewardLuckExpires, 0)
 	profile.ToiletTier = math.clamp(integer(raw.ToiletTier, 1), 1, #Toilets)
+	-- Retain saved capacity, including legacy purchases; only free progression adds slots.
 	profile.DisplaySlots = math.clamp(integer(raw.DisplaySlots, 3), 1, 100)
 	profile.RebirthLevel = rebirth:Level(raw)
 	upgrades:Restore(profile, raw.Upgrades, if raw.UpgradeVersion == 2 then 2 else 1)

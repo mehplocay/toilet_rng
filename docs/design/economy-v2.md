@@ -59,7 +59,7 @@ Base rarity rates stay 1/3/10/40/200/1000/6000/100000 coins per second. Toilet p
 
 ## Upgrade milestones and legacy target interpretation
 
-All six tracks remain permanent. Cash/Tank cap at 100, Luck at 50, Speed/Auto at 10; display purchases stop at ten physical slots, normally seven purchases from the three-slot start. Piecewise exponential cost anchors and all effects remain unchanged. Every ten levels earns a title; maximum is Master. Index/paid/free-rebirth slots can fill the plot earlier without selling useless capacity or minting refunds; legacy 100-slot plots remain valid.
+All six tracks remain permanent. Cash/Tank cap at 100, Luck at 50, Speed/Auto at 10; display purchases stop at ten physical slots, normally seven purchases from the three-slot start. Piecewise exponential cost anchors and all effects remain unchanged. Every ten levels earns a title; maximum is Master. Index/free-rebirth slots can fill the plot earlier without selling useless capacity or minting refunds; legacy 100-slot plots remain valid.
 
 | Track / level | Casual p50 / p90 h | Normal p50 / p90 h | Grinder p50 / p90 h |
 |---|---:|---:|---:|

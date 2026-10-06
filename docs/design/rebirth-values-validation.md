@@ -50,4 +50,4 @@ The local art manifest contains unuploaded catalog entries. check-ui permits pas
 
 All working-tree conflict markers are removed. Git could not mark the 13 conflicted paths resolved: creating the linked worktree index lock at C:/Users/mehme/Toilet rng/.git/worktrees/toilet-balance/index.lock was denied by the sandbox. The merge remains open and uncommitted; the manager must stage the resolved files from a writable Git environment. No branch switch, commit, push or abort was attempted.
 
-The merge also retains all 16 passes, eight products, premium VIP slots/tank/pad/cosmetics and Lucky Flush policy/replay safeguards. The VIP card's automatically merged stale 10x copy was corrected and covered by a UI assertion. [Integration source review](../research/catalog-cash-merge.md).
+The merge also retains all 15 passes, eight products, premium VIP tank/pad/cosmetics and Lucky Flush policy/replay safeguards. The VIP card's automatically merged stale 10x copy was corrected and covered by a UI assertion. [Integration source review](../research/catalog-cash-merge.md).

@@ -20,7 +20,7 @@ Wallet and Earned each remain at most 9e15 **coins**. The complete passive ledge
 
 - The audit runner includes economy, all owner-admin cases, catalog/path cases and four new merge cases. UI runs economy and catalog checks together; world/visual bundles load NumberFormat, Admin and paid dependencies together. The product quote fixture now expects the shared compact text `4.3K Coins`, while the remote still sends the exact 4321 quote.
 - Admin Speed now publishes the absolute override used by PathBoostService and clears it when its lease expires. Initialization during an active admin override retains the unmodified speed baseline, so it cannot become the permanent base. Both startup orders are tested.
-- Owner Reset/Import retain the current account's commerce data: verified passes, AppliedSlots, receipt history, saved quote, path expiry and VIP day. Reset still clears progression and saves its backup; imports still replace sanitized test progression. Old exports cannot rewind purchase deduplication or reopen today's VIP chest. External DataStore rollback remains outside this guarantee.
+- Owner Reset/Import retain the current account's commerce data: verified active passes, receipt history, saved quote, path expiry and VIP day. Reset still clears progression and saves its backup; imports still replace sanitized test progression. Old exports cannot rewind purchase deduplication or reopen today's VIP chest. External DataStore rollback remains outside this guarantee.
 
 ## Verification
 

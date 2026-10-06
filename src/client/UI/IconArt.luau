@@ -20,7 +20,6 @@ function Art.Draw(C, parent, kind, tint)
 		LuckyFlush20 = "Gem",
 		DoubleCash = "Coins",
 		AutoCollect = "Shop",
-		ExtraSlots = "Collection",
 		OfflinePlus = "Daily",
 		VIPPack = "Crown",
 		CoinPack = "Coins",

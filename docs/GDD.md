@@ -34,7 +34,7 @@ FLUSH → RNG-Drop → Collect → SELL oder DISPLAY → Toilette upgraden → b
 11. **HUD**: linke Button-Leiste (Shop, Collection, Upgrades, Teleport, Settings), Coins-Anzeige, Rarity-Farben (Common grau, Uncommon grün, Rare blau, Epic lila, Legendary orange/gold, Mythic magenta, Godly rot, Secret schwarz/regenbogen).
 
 ## Features v2 (später, nicht jetzt)
-Clog/Plunger/Super Flush/Mystery Flush (Coin-Sinks & Multiplayer-Chaos, anti-grief), Auto-Flush & Luck-Gamepasses (2x Luck, Auto Flush, VIP Toilet, mehr Display-Slots, Developer Products für Server-Luck), Rebirths, Sewer World, Trading, Daily Rewards, Index-Belohnungen.
+Clog/Plunger/Super Flush/Mystery Flush (Coin-Sinks & Multiplayer-Chaos, anti-grief), Auto-Flush & Luck-Gamepasses (2x Luck, Auto Flush, VIP Toilet, Developer Products für Server-Luck), Rebirths, Sewer World, Trading, Daily Rewards, Index-Belohnungen.
 
 ## Monetarisierung (Vorbereitung)
 Gamepass/Dev-Product-Hooks als Stubs mit klaren Platzhalter-IDs in Config; keine echten IDs hardcoden.
