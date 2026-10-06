@@ -11,6 +11,11 @@ function IncomeService.Start(data, limiter, remotes, sync, world)
 		if slot ~= nil and (type(slot) ~= "number" or slot % 1 ~= 0 or slot < 1 or slot > Config.MaxSlots) then
 			return
 		end
+		-- Bound remote/prompt/limb traffic before character queries and ledger settlement.
+		-- This admission budget is separate from the existing collection/save budgets.
+		if not limiter:Allow(player, "CollectIncomeRequest") then
+			return
+		end
 		local plot = world.Assigned[player]
 		local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 		local humanoid = player.Character and player.Character:FindFirstChildWhichIsA("Humanoid")

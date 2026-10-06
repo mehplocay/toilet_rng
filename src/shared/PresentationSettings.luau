@@ -23,7 +23,7 @@ function Settings.Sanitize(raw)
 	}
 end
 function Settings.ValidRequest(raw)
-	if type(raw) ~= "table" then
+	if type(raw) ~= "table" or getmetatable(raw) ~= nil then
 		return false
 	end
 	local count = 0

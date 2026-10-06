@@ -39,6 +39,7 @@ return {
 		PresentationSettings = { Capacity = 3, Refill = 1 },
 		BuyUpgrade = { Capacity = 3, Refill = 1 },
 		CollectIncome = { Capacity = 1, Refill = 2 }, -- Shared touch/prompt budget; one durable save at a time.
+		CollectIncomeRequest = { Capacity = 20, Refill = 10 }, -- Bound rejected requests and repeated limb contacts too.
 		CollectIncomeSave = { Capacity = 10, Refill = 0.2 }, -- Internal budget: one ten-pad sweep, 12 writes/minute sustained.
 		ClaimIndexReward = { Capacity = 3, Refill = 0.5 },
 		AnimationSkip = { Capacity = 3, Refill = 1 },

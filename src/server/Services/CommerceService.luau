@@ -141,7 +141,7 @@ function Commerce:Start(limiter, remotes)
 			result(player, false, "Income changed. Review the updated coin amount and try again.")
 			return
 		end
-		self.Prompting[player] = true
+		self.Prompting[player] = product.Id
 		if not quote then
 			local replacement = Profile.Copy(profile)
 			replacement.Monetization.Quote = { Key = key, Coins = coins }
@@ -167,7 +167,7 @@ function Commerce:Start(limiter, remotes)
 	end)
 	Marketplace.PromptProductPurchaseFinished:Connect(function(userId, id, purchased)
 		local player = Players:GetPlayerByUserId(userId)
-		if not player or not self.Prompting[player] then
+		if not player or self.Prompting[player] ~= id then
 			return
 		end
 		self.Prompting[player] = nil

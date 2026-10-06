@@ -2,7 +2,13 @@ local Service = {}
 
 function Service.Start(index, data, limiter, remotes, sync)
 	remotes.ClaimIndexReward.OnServerEvent:Connect(function(player, id, ...)
-		if not limiter:Allow(player, "ClaimIndexReward") or select("#", ...) ~= 0 or type(id) ~= "string" then
+		if
+			not limiter:Allow(player, "ClaimIndexReward")
+			or select("#", ...) ~= 0
+			or type(id) ~= "string"
+			or #id > 64
+			or not index.ById[id]
+		then
 			return
 		end
 		local profile = data:Get(player)

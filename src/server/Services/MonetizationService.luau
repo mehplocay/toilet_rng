@@ -114,9 +114,21 @@ end
 
 function Service:CanAuto(player)
 	local plot = self.World.Assigned[player]
+	local profile = self.Data:Get(player)
+	-- A guarded save pauses awards through Get; it does not revoke an enabled mode.
+	-- Inspect only unlock eligibility here, never mutate the hidden replacement.
+	if
+		not profile
+		and self.Data.Replacing[player]
+		and not self.Data.Stopping
+		and not self.Data.Closing[player]
+		and (self.Data.NoPersistence[player] or os.time() < (self.Data.LeaseExpires[player] or 0))
+	then
+		profile = self.Data.Profiles[player]
+	end
 	return plot ~= nil
 		and plot.Owner == player
-		and Rules.AutoEnabled(self.Auto[player], self.Data:Get(player), self:Living(player), Config)
+		and Rules.AutoEnabled(self.Auto[player], profile, self:Living(player), Config)
 end
 
 function Service:StopAuto(player)

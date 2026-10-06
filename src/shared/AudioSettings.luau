@@ -19,7 +19,7 @@ function Settings.ValidRequest(raw)
 	if type(raw) == "boolean" then
 		return true -- Older clients can still set the master preference.
 	end
-	if type(raw) ~= "table" then
+	if type(raw) ~= "table" or getmetatable(raw) ~= nil then
 		return false
 	end
 	local count = 0

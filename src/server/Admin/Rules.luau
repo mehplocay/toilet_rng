@@ -12,7 +12,7 @@ function Rules.JsonTree(value, config)
 		end
 		local kind = type(entry)
 		if kind == "table" then
-			if seen[entry] then
+			if seen[entry] or getmetatable(entry) ~= nil then
 				return false
 			end
 			seen[entry] = true
@@ -128,7 +128,7 @@ function Rules.new(config, items, toilets, upgrades, rebirth)
 		World = world,
 		Valid = function(_, action, args)
 			local spec = type(action) == "string" and specs[action]
-			if not spec or type(args) ~= "table" then
+			if not spec or type(args) ~= "table" or getmetatable(args) ~= nil then
 				return false
 			end
 			local n = 0
