@@ -1,0 +1,3451 @@
+{
+  "version": 1,
+  "renderer": "Blender 4.5 / Cycles",
+  "generator": "scripts/build-wave1-icons.ps1",
+  "asset_count": 44,
+  "png_count": 88,
+  "validated": 88,
+  "complete": true,
+  "draft": false,
+  "assets": [
+    {
+      "id": "SudsSlug",
+      "name": "SudsSlug",
+      "display_name": "Suds Slug",
+      "category": "items",
+      "file": "assets/icons/wave1/items/SudsSlug_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "config_key": "ItemIcons.SudsSlug",
+      "intended_assets_key": "Assets.ItemIcons.SudsSlug",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/a/SudsSlug.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.31568,
+        "builder": "assets/blender/wave1_a.py",
+        "builder_sha256": "e3ce188fe7fe560de2eaf62abca7b4940c15f8281d639ca04091924a01a1053b"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "fbcb47883773793bcb1a1c51ea32a04fa774dd162b9d71ec9ca1cbbf295ba5fa",
+        "bytes": 90664,
+        "solid_bounds": [
+          52,
+          143,
+          460,
+          369
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "SudsSlug",
+      "name": "SudsSlug",
+      "display_name": "Suds Slug",
+      "category": "items",
+      "file": "assets/icons/wave1/items/SudsSlug_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "config_key": "ItemIcons.SudsSlug",
+      "intended_assets_key": "Assets.ItemIcons.SudsSlug",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/a/SudsSlug.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.31568,
+        "builder": "assets/blender/wave1_a.py",
+        "builder_sha256": "e3ce188fe7fe560de2eaf62abca7b4940c15f8281d639ca04091924a01a1053b"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "a1e17efed94b36a77249a7a1d6a417ecc6d4289f42aafb31aa70f06002500f51",
+        "bytes": 11246,
+        "solid_bounds": [
+          13,
+          36,
+          115,
+          92
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "PocketPuddle",
+      "name": "PocketPuddle",
+      "display_name": "Pocket Puddle",
+      "category": "items",
+      "file": "assets/icons/wave1/items/PocketPuddle_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "config_key": "ItemIcons.PocketPuddle",
+      "intended_assets_key": "Assets.ItemIcons.PocketPuddle",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/a/PocketPuddle.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.266986,
+        "builder": "assets/blender/wave1_a.py",
+        "builder_sha256": "e3ce188fe7fe560de2eaf62abca7b4940c15f8281d639ca04091924a01a1053b"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "1ad76815998161dc0f18bfddb4a7768cadefad866851ed00d34552f398fdbd1b",
+        "bytes": 117354,
+        "solid_bounds": [
+          52,
+          111,
+          460,
+          401
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "PocketPuddle",
+      "name": "PocketPuddle",
+      "display_name": "Pocket Puddle",
+      "category": "items",
+      "file": "assets/icons/wave1/items/PocketPuddle_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "config_key": "ItemIcons.PocketPuddle",
+      "intended_assets_key": "Assets.ItemIcons.PocketPuddle",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/a/PocketPuddle.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.266986,
+        "builder": "assets/blender/wave1_a.py",
+        "builder_sha256": "e3ce188fe7fe560de2eaf62abca7b4940c15f8281d639ca04091924a01a1053b"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "063f3c5b192b4d113e38d96f2771769d3eadc98cb4b028f13f584dff6cc510c3",
+        "bytes": 13527,
+        "solid_bounds": [
+          13,
+          28,
+          115,
+          100
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "LoopyLoofah",
+      "name": "LoopyLoofah",
+      "display_name": "Loopy Loofah",
+      "category": "items",
+      "file": "assets/icons/wave1/items/LoopyLoofah_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "config_key": "ItemIcons.LoopyLoofah",
+      "intended_assets_key": "Assets.ItemIcons.LoopyLoofah",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/a/LoopyLoofah.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.295733,
+        "builder": "assets/blender/wave1_a.py",
+        "builder_sha256": "e3ce188fe7fe560de2eaf62abca7b4940c15f8281d639ca04091924a01a1053b"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "e6e8822ec4aeb4bd3704ebe6a4bf01af768cf00400facb1a976c7b386cb6f0d7",
+        "bytes": 135361,
+        "solid_bounds": [
+          82,
+          52,
+          430,
+          460
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "LoopyLoofah",
+      "name": "LoopyLoofah",
+      "display_name": "Loopy Loofah",
+      "category": "items",
+      "file": "assets/icons/wave1/items/LoopyLoofah_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "config_key": "ItemIcons.LoopyLoofah",
+      "intended_assets_key": "Assets.ItemIcons.LoopyLoofah",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/a/LoopyLoofah.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.295733,
+        "builder": "assets/blender/wave1_a.py",
+        "builder_sha256": "e3ce188fe7fe560de2eaf62abca7b4940c15f8281d639ca04091924a01a1053b"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "260e7a23152700a43591ff7dc30b6d353d3381ff068240a9086b7ac6f41d10f0",
+        "bytes": 16451,
+        "solid_bounds": [
+          20,
+          13,
+          108,
+          115
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "SoggySock",
+      "name": "SoggySock",
+      "display_name": "Soggy Sock",
+      "category": "items",
+      "file": "assets/icons/wave1/items/SoggySock_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "config_key": "ItemIcons.SoggySock",
+      "intended_assets_key": "Assets.ItemIcons.SoggySock",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/a/SoggySock.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.525121,
+        "builder": "assets/blender/wave1_a.py",
+        "builder_sha256": "e3ce188fe7fe560de2eaf62abca7b4940c15f8281d639ca04091924a01a1053b"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "a6f55addeddee257e458fbdcc90767ff98b7edeb9b93b169188b1d021b41e79d",
+        "bytes": 110277,
+        "solid_bounds": [
+          112,
+          52,
+          400,
+          460
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "SoggySock",
+      "name": "SoggySock",
+      "display_name": "Soggy Sock",
+      "category": "items",
+      "file": "assets/icons/wave1/items/SoggySock_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "config_key": "ItemIcons.SoggySock",
+      "intended_assets_key": "Assets.ItemIcons.SoggySock",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/a/SoggySock.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.525121,
+        "builder": "assets/blender/wave1_a.py",
+        "builder_sha256": "e3ce188fe7fe560de2eaf62abca7b4940c15f8281d639ca04091924a01a1053b"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "e37c0e895364e31806e21817e1d72e74e49ca484360bfef26e83573c4bbf21d7",
+        "bytes": 13008,
+        "solid_bounds": [
+          28,
+          13,
+          100,
+          115
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "TubTadpole",
+      "name": "TubTadpole",
+      "display_name": "Tub Tadpole",
+      "category": "items",
+      "file": "assets/icons/wave1/items/TubTadpole_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "config_key": "ItemIcons.TubTadpole",
+      "intended_assets_key": "Assets.ItemIcons.TubTadpole",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/a/TubTadpole.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.406765,
+        "builder": "assets/blender/wave1_a.py",
+        "builder_sha256": "e3ce188fe7fe560de2eaf62abca7b4940c15f8281d639ca04091924a01a1053b"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "ec62045240162219c842a38cc87a42e23755849042476f5a4dec9e83d7958570",
+        "bytes": 130410,
+        "solid_bounds": [
+          52,
+          110,
+          460,
+          402
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "TubTadpole",
+      "name": "TubTadpole",
+      "display_name": "Tub Tadpole",
+      "category": "items",
+      "file": "assets/icons/wave1/items/TubTadpole_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "config_key": "ItemIcons.TubTadpole",
+      "intended_assets_key": "Assets.ItemIcons.TubTadpole",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/a/TubTadpole.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.406765,
+        "builder": "assets/blender/wave1_a.py",
+        "builder_sha256": "e3ce188fe7fe560de2eaf62abca7b4940c15f8281d639ca04091924a01a1053b"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "95426fb5df08394104ff3b8459151062350ee169c4d237dfa91f6eedba2e9e0f",
+        "bytes": 14440,
+        "solid_bounds": [
+          13,
+          28,
+          115,
+          101
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "BrushBristle",
+      "name": "BrushBristle",
+      "display_name": "Brush Bristle",
+      "category": "items",
+      "file": "assets/icons/wave1/items/BrushBristle_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "config_key": "ItemIcons.BrushBristle",
+      "intended_assets_key": "Assets.ItemIcons.BrushBristle",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/a/BrushBristle.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.569202,
+        "builder": "assets/blender/wave1_a.py",
+        "builder_sha256": "e3ce188fe7fe560de2eaf62abca7b4940c15f8281d639ca04091924a01a1053b"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "8bd34c1330e5a45a557f97ca287529f71ab7dd2d3a7aaf13bd2bcfd4f03643a2",
+        "bytes": 100177,
+        "solid_bounds": [
+          146,
+          52,
+          367,
+          460
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "BrushBristle",
+      "name": "BrushBristle",
+      "display_name": "Brush Bristle",
+      "category": "items",
+      "file": "assets/icons/wave1/items/BrushBristle_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "config_key": "ItemIcons.BrushBristle",
+      "intended_assets_key": "Assets.ItemIcons.BrushBristle",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/a/BrushBristle.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.569202,
+        "builder": "assets/blender/wave1_a.py",
+        "builder_sha256": "e3ce188fe7fe560de2eaf62abca7b4940c15f8281d639ca04091924a01a1053b"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "97fcf92604243faa36fdd1e1a027cc688baa0ea5e17441346f4b358458a467b3",
+        "bytes": 11343,
+        "solid_bounds": [
+          36,
+          13,
+          92,
+          115
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "RollMole",
+      "name": "RollMole",
+      "display_name": "Roll Mole",
+      "category": "items",
+      "file": "assets/icons/wave1/items/RollMole_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "config_key": "ItemIcons.RollMole",
+      "intended_assets_key": "Assets.ItemIcons.RollMole",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/a/RollMole.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.770393,
+        "builder": "assets/blender/wave1_a.py",
+        "builder_sha256": "e3ce188fe7fe560de2eaf62abca7b4940c15f8281d639ca04091924a01a1053b"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "d54ba344c465d51684869a14bed57f5fd2f9ece440bad73b4aa879424b16b402",
+        "bytes": 100063,
+        "solid_bounds": [
+          52,
+          130,
+          460,
+          382
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "RollMole",
+      "name": "RollMole",
+      "display_name": "Roll Mole",
+      "category": "items",
+      "file": "assets/icons/wave1/items/RollMole_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "config_key": "ItemIcons.RollMole",
+      "intended_assets_key": "Assets.ItemIcons.RollMole",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/a/RollMole.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.770393,
+        "builder": "assets/blender/wave1_a.py",
+        "builder_sha256": "e3ce188fe7fe560de2eaf62abca7b4940c15f8281d639ca04091924a01a1053b"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "5c587a179bf6301ee2b8718291e533e5033ad9e3a3782737080ed327348a58ca",
+        "bytes": 11577,
+        "solid_bounds": [
+          13,
+          32,
+          115,
+          96
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "CapybaraCap",
+      "name": "CapybaraCap",
+      "display_name": "Capybara Cap",
+      "category": "items",
+      "file": "assets/icons/wave1/items/CapybaraCap_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "config_key": "ItemIcons.CapybaraCap",
+      "intended_assets_key": "Assets.ItemIcons.CapybaraCap",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/a/CapybaraCap.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.377392,
+        "builder": "assets/blender/wave1_a.py",
+        "builder_sha256": "e3ce188fe7fe560de2eaf62abca7b4940c15f8281d639ca04091924a01a1053b"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "3c4aec1254bde8a79cf330d502725e4d4313299d47a60cc427454a81cd7b6ec9",
+        "bytes": 137172,
+        "solid_bounds": [
+          52,
+          80,
+          460,
+          432
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "CapybaraCap",
+      "name": "CapybaraCap",
+      "display_name": "Capybara Cap",
+      "category": "items",
+      "file": "assets/icons/wave1/items/CapybaraCap_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "config_key": "ItemIcons.CapybaraCap",
+      "intended_assets_key": "Assets.ItemIcons.CapybaraCap",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/a/CapybaraCap.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.377392,
+        "builder": "assets/blender/wave1_a.py",
+        "builder_sha256": "e3ce188fe7fe560de2eaf62abca7b4940c15f8281d639ca04091924a01a1053b"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "577a8c89ca94e5d1509bee953a4bc3d719fa5c4dd5660e90170a6cdbc08e59f5",
+        "bytes": 15672,
+        "solid_bounds": [
+          13,
+          20,
+          115,
+          108
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "DrainCrab",
+      "name": "DrainCrab",
+      "display_name": "Drain Crab",
+      "category": "items",
+      "file": "assets/icons/wave1/items/DrainCrab_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "config_key": "ItemIcons.DrainCrab",
+      "intended_assets_key": "Assets.ItemIcons.DrainCrab",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/a/DrainCrab.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.593511,
+        "builder": "assets/blender/wave1_a.py",
+        "builder_sha256": "e3ce188fe7fe560de2eaf62abca7b4940c15f8281d639ca04091924a01a1053b"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "fec9c54185436bc4003be50a7b990c583a93876ac6edce1c798d5edac6180e4b",
+        "bytes": 141282,
+        "solid_bounds": [
+          52,
+          104,
+          460,
+          408
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "DrainCrab",
+      "name": "DrainCrab",
+      "display_name": "Drain Crab",
+      "category": "items",
+      "file": "assets/icons/wave1/items/DrainCrab_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "config_key": "ItemIcons.DrainCrab",
+      "intended_assets_key": "Assets.ItemIcons.DrainCrab",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/a/DrainCrab.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.593511,
+        "builder": "assets/blender/wave1_a.py",
+        "builder_sha256": "e3ce188fe7fe560de2eaf62abca7b4940c15f8281d639ca04091924a01a1053b"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "82c678068cbde8613e61cfbc42e4308a13a576255b4c17bb76ef98e6ddff2450",
+        "bytes": 15989,
+        "solid_bounds": [
+          13,
+          26,
+          115,
+          102
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "ToothpasteGoose",
+      "name": "ToothpasteGoose",
+      "display_name": "Toothpaste Goose",
+      "category": "items",
+      "file": "assets/icons/wave1/items/ToothpasteGoose_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "config_key": "ItemIcons.ToothpasteGoose",
+      "intended_assets_key": "Assets.ItemIcons.ToothpasteGoose",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/a/ToothpasteGoose.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.316636,
+        "builder": "assets/blender/wave1_a.py",
+        "builder_sha256": "e3ce188fe7fe560de2eaf62abca7b4940c15f8281d639ca04091924a01a1053b"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "f3e9f6632d5ba73d9f31779300cd9513d88ffd464c1783a2296e6015f6a20e8d",
+        "bytes": 130585,
+        "solid_bounds": [
+          52,
+          54,
+          460,
+          458
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "ToothpasteGoose",
+      "name": "ToothpasteGoose",
+      "display_name": "Toothpaste Goose",
+      "category": "items",
+      "file": "assets/icons/wave1/items/ToothpasteGoose_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "config_key": "ItemIcons.ToothpasteGoose",
+      "intended_assets_key": "Assets.ItemIcons.ToothpasteGoose",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/a/ToothpasteGoose.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.316636,
+        "builder": "assets/blender/wave1_a.py",
+        "builder_sha256": "e3ce188fe7fe560de2eaf62abca7b4940c15f8281d639ca04091924a01a1053b"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "850c15f7bd13b3248086448205ebfc9e5259ebc265a3ca54c6d2272e13a235bb",
+        "bytes": 15347,
+        "solid_bounds": [
+          13,
+          13,
+          115,
+          115
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "SpongeKnight",
+      "name": "SpongeKnight",
+      "display_name": "Sponge Knight",
+      "category": "items",
+      "file": "assets/icons/wave1/items/SpongeKnight_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "config_key": "ItemIcons.SpongeKnight",
+      "intended_assets_key": "Assets.ItemIcons.SpongeKnight",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/a/SpongeKnight.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.457139,
+        "builder": "assets/blender/wave1_a.py",
+        "builder_sha256": "e3ce188fe7fe560de2eaf62abca7b4940c15f8281d639ca04091924a01a1053b"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "91e18c0f050f1a8cf8507fecef3f357ca2576c8b1c33a0750fa368a0c5b381db",
+        "bytes": 165927,
+        "solid_bounds": [
+          76,
+          52,
+          436,
+          460
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "SpongeKnight",
+      "name": "SpongeKnight",
+      "display_name": "Sponge Knight",
+      "category": "items",
+      "file": "assets/icons/wave1/items/SpongeKnight_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "config_key": "ItemIcons.SpongeKnight",
+      "intended_assets_key": "Assets.ItemIcons.SpongeKnight",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/a/SpongeKnight.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.457139,
+        "builder": "assets/blender/wave1_a.py",
+        "builder_sha256": "e3ce188fe7fe560de2eaf62abca7b4940c15f8281d639ca04091924a01a1053b"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "8cfb324391930ee7fab5aa8641c1a5b5f9ed4bd6146139ad04855954b4696363",
+        "bytes": 18089,
+        "solid_bounds": [
+          19,
+          13,
+          109,
+          115
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "BubbleBeard",
+      "name": "BubbleBeard",
+      "display_name": "Bubble Beard",
+      "category": "items",
+      "file": "assets/icons/wave1/items/BubbleBeard_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "config_key": "ItemIcons.BubbleBeard",
+      "intended_assets_key": "Assets.ItemIcons.BubbleBeard",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/a/BubbleBeard.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.487838,
+        "builder": "assets/blender/wave1_a.py",
+        "builder_sha256": "e3ce188fe7fe560de2eaf62abca7b4940c15f8281d639ca04091924a01a1053b"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "8e9093781daa3f0b540d333ee6f51bc29c012d944a15a1afb179b7d5c823e1a9",
+        "bytes": 139090,
+        "solid_bounds": [
+          107,
+          52,
+          405,
+          460
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "BubbleBeard",
+      "name": "BubbleBeard",
+      "display_name": "Bubble Beard",
+      "category": "items",
+      "file": "assets/icons/wave1/items/BubbleBeard_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "config_key": "ItemIcons.BubbleBeard",
+      "intended_assets_key": "Assets.ItemIcons.BubbleBeard",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/a/BubbleBeard.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.487838,
+        "builder": "assets/blender/wave1_a.py",
+        "builder_sha256": "e3ce188fe7fe560de2eaf62abca7b4940c15f8281d639ca04091924a01a1053b"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "1a5f9247d6f208f900d55f7dbbde45116c8046584216c616cb604ab443d9dc15",
+        "bytes": 16175,
+        "solid_bounds": [
+          27,
+          13,
+          101,
+          115
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "PlungerPogo",
+      "name": "PlungerPogo",
+      "display_name": "Plunger Pogo",
+      "category": "items",
+      "file": "assets/icons/wave1/items/PlungerPogo_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "config_key": "ItemIcons.PlungerPogo",
+      "intended_assets_key": "Assets.ItemIcons.PlungerPogo",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/b/PlungerPogo.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.895251,
+        "builder": "assets/blender/wave1_b.py",
+        "builder_sha256": "e8d20d7f8a2358fdfdc956a9ddfee99d6d69886d66ce7d66e6d88ad22092755b"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "e9f4dbdd8bf288cf63399e96a46d6bee48e7d80fe532477b4ae9153f75185186",
+        "bytes": 124729,
+        "solid_bounds": [
+          118,
+          52,
+          394,
+          460
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "PlungerPogo",
+      "name": "PlungerPogo",
+      "display_name": "Plunger Pogo",
+      "category": "items",
+      "file": "assets/icons/wave1/items/PlungerPogo_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "config_key": "ItemIcons.PlungerPogo",
+      "intended_assets_key": "Assets.ItemIcons.PlungerPogo",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/b/PlungerPogo.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.895251,
+        "builder": "assets/blender/wave1_b.py",
+        "builder_sha256": "e8d20d7f8a2358fdfdc956a9ddfee99d6d69886d66ce7d66e6d88ad22092755b"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "f7b972fa09972f7e9af6ce0d2bf4158fc7e42e8ed8b9896b007b8755d619be52",
+        "bytes": 14226,
+        "solid_bounds": [
+          30,
+          13,
+          99,
+          115
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "BathMatBat",
+      "name": "BathMatBat",
+      "display_name": "Bath Mat Bat",
+      "category": "items",
+      "file": "assets/icons/wave1/items/BathMatBat_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "config_key": "ItemIcons.BathMatBat",
+      "intended_assets_key": "Assets.ItemIcons.BathMatBat",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/b/BathMatBat.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.653832,
+        "builder": "assets/blender/wave1_b.py",
+        "builder_sha256": "e8d20d7f8a2358fdfdc956a9ddfee99d6d69886d66ce7d66e6d88ad22092755b"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "30f899363c66b518906a6eaaffbc66f68889dfbd015940030e1b1e052bfc9a73",
+        "bytes": 134942,
+        "solid_bounds": [
+          52,
+          117,
+          460,
+          395
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "BathMatBat",
+      "name": "BathMatBat",
+      "display_name": "Bath Mat Bat",
+      "category": "items",
+      "file": "assets/icons/wave1/items/BathMatBat_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "config_key": "ItemIcons.BathMatBat",
+      "intended_assets_key": "Assets.ItemIcons.BathMatBat",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/b/BathMatBat.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.653832,
+        "builder": "assets/blender/wave1_b.py",
+        "builder_sha256": "e8d20d7f8a2358fdfdc956a9ddfee99d6d69886d66ce7d66e6d88ad22092755b"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "5570a545e79e84642fe3dfd09e70e03bcbfef3c6c498974c211be78b90b56fa7",
+        "bytes": 14567,
+        "solid_bounds": [
+          13,
+          29,
+          115,
+          99
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "DiscoBidet",
+      "name": "DiscoBidet",
+      "display_name": "Disco Bidet",
+      "category": "items",
+      "file": "assets/icons/wave1/items/DiscoBidet_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "config_key": "ItemIcons.DiscoBidet",
+      "intended_assets_key": "Assets.ItemIcons.DiscoBidet",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/b/DiscoBidet.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.575755,
+        "builder": "assets/blender/wave1_b.py",
+        "builder_sha256": "e8d20d7f8a2358fdfdc956a9ddfee99d6d69886d66ce7d66e6d88ad22092755b"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "7372c13b362fcf63ba564f36184722aa2382855a020ab5638f8bc6b5d2baa2b6",
+        "bytes": 150167,
+        "solid_bounds": [
+          72,
+          52,
+          441,
+          460
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "DiscoBidet",
+      "name": "DiscoBidet",
+      "display_name": "Disco Bidet",
+      "category": "items",
+      "file": "assets/icons/wave1/items/DiscoBidet_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "config_key": "ItemIcons.DiscoBidet",
+      "intended_assets_key": "Assets.ItemIcons.DiscoBidet",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/b/DiscoBidet.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.575755,
+        "builder": "assets/blender/wave1_b.py",
+        "builder_sha256": "e8d20d7f8a2358fdfdc956a9ddfee99d6d69886d66ce7d66e6d88ad22092755b"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "e925be9721b3b6b9d219f5a675542c032ff18ba929c5c38946c1dcfe143e8647",
+        "bytes": 16697,
+        "solid_bounds": [
+          18,
+          13,
+          110,
+          115
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "TowelTornado",
+      "name": "TowelTornado",
+      "display_name": "Towel Tornado",
+      "category": "items",
+      "file": "assets/icons/wave1/items/TowelTornado_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "config_key": "ItemIcons.TowelTornado",
+      "intended_assets_key": "Assets.ItemIcons.TowelTornado",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/b/TowelTornado.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.828952,
+        "builder": "assets/blender/wave1_b.py",
+        "builder_sha256": "e8d20d7f8a2358fdfdc956a9ddfee99d6d69886d66ce7d66e6d88ad22092755b"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "ca5891d7e46566afb0c43f76ed51417815b631f8bb7d66be34b251dff01d3227",
+        "bytes": 117247,
+        "solid_bounds": [
+          106,
+          52,
+          406,
+          460
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "TowelTornado",
+      "name": "TowelTornado",
+      "display_name": "Towel Tornado",
+      "category": "items",
+      "file": "assets/icons/wave1/items/TowelTornado_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "config_key": "ItemIcons.TowelTornado",
+      "intended_assets_key": "Assets.ItemIcons.TowelTornado",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/b/TowelTornado.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.828952,
+        "builder": "assets/blender/wave1_b.py",
+        "builder_sha256": "e8d20d7f8a2358fdfdc956a9ddfee99d6d69886d66ce7d66e6d88ad22092755b"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "6dff5d0947dde1389facd5e543ab6539471e8957179d9eeaf268eb6a21c89d66",
+        "bytes": 13551,
+        "solid_bounds": [
+          27,
+          13,
+          101,
+          115
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "PorcelainPoodle",
+      "name": "PorcelainPoodle",
+      "display_name": "Porcelain Poodle",
+      "category": "items",
+      "file": "assets/icons/wave1/items/PorcelainPoodle_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "config_key": "ItemIcons.PorcelainPoodle",
+      "intended_assets_key": "Assets.ItemIcons.PorcelainPoodle",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/b/PorcelainPoodle.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.433043,
+        "builder": "assets/blender/wave1_b.py",
+        "builder_sha256": "e8d20d7f8a2358fdfdc956a9ddfee99d6d69886d66ce7d66e6d88ad22092755b"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "4a808239ccc79939397eef3c570d41a35bc073b6f878c3de9b7ff2be5bfc3060",
+        "bytes": 139080,
+        "solid_bounds": [
+          60,
+          52,
+          452,
+          460
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "PorcelainPoodle",
+      "name": "PorcelainPoodle",
+      "display_name": "Porcelain Poodle",
+      "category": "items",
+      "file": "assets/icons/wave1/items/PorcelainPoodle_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "config_key": "ItemIcons.PorcelainPoodle",
+      "intended_assets_key": "Assets.ItemIcons.PorcelainPoodle",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/b/PorcelainPoodle.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.433043,
+        "builder": "assets/blender/wave1_b.py",
+        "builder_sha256": "e8d20d7f8a2358fdfdc956a9ddfee99d6d69886d66ce7d66e6d88ad22092755b"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "8bba78b43b5d8ecbbfbcc108f1cdfd023b24fc1ce5c6dada948c64bca4eeafd8",
+        "bytes": 16418,
+        "solid_bounds": [
+          15,
+          13,
+          113,
+          115
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "FaucetPharaoh",
+      "name": "FaucetPharaoh",
+      "display_name": "Faucet Pharaoh",
+      "category": "items",
+      "file": "assets/icons/wave1/items/FaucetPharaoh_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "config_key": "ItemIcons.FaucetPharaoh",
+      "intended_assets_key": "Assets.ItemIcons.FaucetPharaoh",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/b/FaucetPharaoh.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.938215,
+        "builder": "assets/blender/wave1_b.py",
+        "builder_sha256": "e8d20d7f8a2358fdfdc956a9ddfee99d6d69886d66ce7d66e6d88ad22092755b"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "d830cc7f2f8ee1602eaae5584b07787a8aa4480bf1a69fbd6ff1b1f28fe24844",
+        "bytes": 140780,
+        "solid_bounds": [
+          94,
+          52,
+          418,
+          460
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "FaucetPharaoh",
+      "name": "FaucetPharaoh",
+      "display_name": "Faucet Pharaoh",
+      "category": "items",
+      "file": "assets/icons/wave1/items/FaucetPharaoh_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "config_key": "ItemIcons.FaucetPharaoh",
+      "intended_assets_key": "Assets.ItemIcons.FaucetPharaoh",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/b/FaucetPharaoh.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.938215,
+        "builder": "assets/blender/wave1_b.py",
+        "builder_sha256": "e8d20d7f8a2358fdfdc956a9ddfee99d6d69886d66ce7d66e6d88ad22092755b"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "23d5198aa76fc96a35ffd9b84823781c51b583d5731dcae1b304f7b826fbd456",
+        "bytes": 15065,
+        "solid_bounds": [
+          23,
+          13,
+          105,
+          115
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "RoyalFlushFrog",
+      "name": "RoyalFlushFrog",
+      "display_name": "Royal Flush Frog",
+      "category": "items",
+      "file": "assets/icons/wave1/items/RoyalFlushFrog_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "config_key": "ItemIcons.RoyalFlushFrog",
+      "intended_assets_key": "Assets.ItemIcons.RoyalFlushFrog",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/b/RoyalFlushFrog.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.475116,
+        "builder": "assets/blender/wave1_b.py",
+        "builder_sha256": "e8d20d7f8a2358fdfdc956a9ddfee99d6d69886d66ce7d66e6d88ad22092755b"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "ef6de1d7aa79aabc9d2335d712f16a6ddd43c524663869d73c01b1d3c471c9a7",
+        "bytes": 148939,
+        "solid_bounds": [
+          55,
+          52,
+          457,
+          460
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "RoyalFlushFrog",
+      "name": "RoyalFlushFrog",
+      "display_name": "Royal Flush Frog",
+      "category": "items",
+      "file": "assets/icons/wave1/items/RoyalFlushFrog_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "config_key": "ItemIcons.RoyalFlushFrog",
+      "intended_assets_key": "Assets.ItemIcons.RoyalFlushFrog",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/b/RoyalFlushFrog.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.475116,
+        "builder": "assets/blender/wave1_b.py",
+        "builder_sha256": "e8d20d7f8a2358fdfdc956a9ddfee99d6d69886d66ce7d66e6d88ad22092755b"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "37eb63492ba7f61a9e7da09d084a18720101402ec2582feaa519acf98d2dce9b",
+        "bytes": 17093,
+        "solid_bounds": [
+          14,
+          13,
+          114,
+          115
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "GoldenGargler",
+      "name": "GoldenGargler",
+      "display_name": "Golden Gargler",
+      "category": "items",
+      "file": "assets/icons/wave1/items/GoldenGargler_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "config_key": "ItemIcons.GoldenGargler",
+      "intended_assets_key": "Assets.ItemIcons.GoldenGargler",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/b/GoldenGargler.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.579609,
+        "builder": "assets/blender/wave1_b.py",
+        "builder_sha256": "e8d20d7f8a2358fdfdc956a9ddfee99d6d69886d66ce7d66e6d88ad22092755b"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "5060890d01e469428203cbd9beda64fa135448880a3ce0720565051da23e9b98",
+        "bytes": 122125,
+        "solid_bounds": [
+          101,
+          52,
+          411,
+          460
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "GoldenGargler",
+      "name": "GoldenGargler",
+      "display_name": "Golden Gargler",
+      "category": "items",
+      "file": "assets/icons/wave1/items/GoldenGargler_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "config_key": "ItemIcons.GoldenGargler",
+      "intended_assets_key": "Assets.ItemIcons.GoldenGargler",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/b/GoldenGargler.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.579609,
+        "builder": "assets/blender/wave1_b.py",
+        "builder_sha256": "e8d20d7f8a2358fdfdc956a9ddfee99d6d69886d66ce7d66e6d88ad22092755b"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "7d7d8b2e97ebb6b19a9657ceec8ce78542530b3f8783dc237a0c7d0fd727a8eb",
+        "bytes": 13754,
+        "solid_bounds": [
+          25,
+          13,
+          103,
+          115
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "Clogtopus",
+      "name": "Clogtopus",
+      "display_name": "Clogtopus",
+      "category": "items",
+      "file": "assets/icons/wave1/items/Clogtopus_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "config_key": "ItemIcons.Clogtopus",
+      "intended_assets_key": "Assets.ItemIcons.Clogtopus",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/b/Clogtopus.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 24,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 4.110765,
+        "builder": "assets/blender/wave1_b.py",
+        "builder_sha256": "e8d20d7f8a2358fdfdc956a9ddfee99d6d69886d66ce7d66e6d88ad22092755b"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "562e0070c06bfa109235092012785b84a336ea60f76706e9649cee9761348077",
+        "bytes": 151423,
+        "solid_bounds": [
+          52,
+          75,
+          460,
+          437
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "Clogtopus",
+      "name": "Clogtopus",
+      "display_name": "Clogtopus",
+      "category": "items",
+      "file": "assets/icons/wave1/items/Clogtopus_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "config_key": "ItemIcons.Clogtopus",
+      "intended_assets_key": "Assets.ItemIcons.Clogtopus",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/b/Clogtopus.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 24,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 4.110765,
+        "builder": "assets/blender/wave1_b.py",
+        "builder_sha256": "e8d20d7f8a2358fdfdc956a9ddfee99d6d69886d66ce7d66e6d88ad22092755b"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "ba174b1104d955f304f563efff7e9b1c645b2431bc8224ff87a908cb88b5e9e3",
+        "bytes": 16659,
+        "solid_bounds": [
+          13,
+          19,
+          115,
+          109
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "LaundryYeti",
+      "name": "LaundryYeti",
+      "display_name": "Laundry Yeti",
+      "category": "items",
+      "file": "assets/icons/wave1/items/LaundryYeti_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "config_key": "ItemIcons.LaundryYeti",
+      "intended_assets_key": "Assets.ItemIcons.LaundryYeti",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/b/LaundryYeti.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.725022,
+        "builder": "assets/blender/wave1_b.py",
+        "builder_sha256": "e8d20d7f8a2358fdfdc956a9ddfee99d6d69886d66ce7d66e6d88ad22092755b"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "f42fb3fb99f1afdd7e798e9d8e91eb289d41663b5ba5319a0d49a935087da821",
+        "bytes": 159065,
+        "solid_bounds": [
+          69,
+          52,
+          443,
+          460
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "LaundryYeti",
+      "name": "LaundryYeti",
+      "display_name": "Laundry Yeti",
+      "category": "items",
+      "file": "assets/icons/wave1/items/LaundryYeti_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "config_key": "ItemIcons.LaundryYeti",
+      "intended_assets_key": "Assets.ItemIcons.LaundryYeti",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/b/LaundryYeti.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.725022,
+        "builder": "assets/blender/wave1_b.py",
+        "builder_sha256": "e8d20d7f8a2358fdfdc956a9ddfee99d6d69886d66ce7d66e6d88ad22092755b"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "50a4d2d1d8e2d82414fd9aae633be1a37dbd790cac86699dfd4494b4333ec283",
+        "bytes": 18638,
+        "solid_bounds": [
+          17,
+          13,
+          111,
+          115
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "SteamGenie",
+      "name": "SteamGenie",
+      "display_name": "Steam Genie",
+      "category": "items",
+      "file": "assets/icons/wave1/items/SteamGenie_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "config_key": "ItemIcons.SteamGenie",
+      "intended_assets_key": "Assets.ItemIcons.SteamGenie",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/b/SteamGenie.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.887466,
+        "builder": "assets/blender/wave1_b.py",
+        "builder_sha256": "e8d20d7f8a2358fdfdc956a9ddfee99d6d69886d66ce7d66e6d88ad22092755b"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "7a94259fc662f0ade58028c257c3f8f345bdf614598aa446d942c9fdf27e6e37",
+        "bytes": 129890,
+        "solid_bounds": [
+          76,
+          52,
+          436,
+          460
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "SteamGenie",
+      "name": "SteamGenie",
+      "display_name": "Steam Genie",
+      "category": "items",
+      "file": "assets/icons/wave1/items/SteamGenie_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "config_key": "ItemIcons.SteamGenie",
+      "intended_assets_key": "Assets.ItemIcons.SteamGenie",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/b/SteamGenie.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.887466,
+        "builder": "assets/blender/wave1_b.py",
+        "builder_sha256": "e8d20d7f8a2358fdfdc956a9ddfee99d6d69886d66ce7d66e6d88ad22092755b"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "a0ddf78fe180e1ea0c8592137719c6c2b66ca54bea94d64a529f66d14158bc02",
+        "bytes": 14886,
+        "solid_bounds": [
+          19,
+          13,
+          109,
+          115
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "BathBombBehemoth",
+      "name": "BathBombBehemoth",
+      "display_name": "Bath Bomb Behemoth",
+      "category": "items",
+      "file": "assets/icons/wave1/items/BathBombBehemoth_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "config_key": "ItemIcons.BathBombBehemoth",
+      "intended_assets_key": "Assets.ItemIcons.BathBombBehemoth",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/b/BathBombBehemoth.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.790965,
+        "builder": "assets/blender/wave1_b.py",
+        "builder_sha256": "e8d20d7f8a2358fdfdc956a9ddfee99d6d69886d66ce7d66e6d88ad22092755b"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "2758b42daf5926ed4aa1a97d93b378d0d16d87cf25f3415ca2f6cf0eef4512eb",
+        "bytes": 141744,
+        "solid_bounds": [
+          63,
+          52,
+          449,
+          460
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "BathBombBehemoth",
+      "name": "BathBombBehemoth",
+      "display_name": "Bath Bomb Behemoth",
+      "category": "items",
+      "file": "assets/icons/wave1/items/BathBombBehemoth_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "config_key": "ItemIcons.BathBombBehemoth",
+      "intended_assets_key": "Assets.ItemIcons.BathBombBehemoth",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/b/BathBombBehemoth.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.790965,
+        "builder": "assets/blender/wave1_b.py",
+        "builder_sha256": "e8d20d7f8a2358fdfdc956a9ddfee99d6d69886d66ce7d66e6d88ad22092755b"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "708674230ac1ebf302af3d12fa4304c09110b417df8beb16ab95611522df1473",
+        "bytes": 16806,
+        "solid_bounds": [
+          16,
+          13,
+          112,
+          115
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "DrainKraken",
+      "name": "DrainKraken",
+      "display_name": "Drain Kraken",
+      "category": "items",
+      "file": "assets/icons/wave1/items/DrainKraken_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "config_key": "ItemIcons.DrainKraken",
+      "intended_assets_key": "Assets.ItemIcons.DrainKraken",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/c/DrainKraken.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.557158,
+        "builder": "assets/blender/wave1_c.py",
+        "builder_sha256": "bff9d3f17aaa51b9dd23b8cf0279aa62a6a56cd5ec2753db7c8629797c37a11a"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "eab9fb3a9ca64c937988ae10a72e0702a749b6bf0b548c795dbc13236a9a6ed1",
+        "bytes": 150315,
+        "solid_bounds": [
+          52,
+          69,
+          460,
+          443
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "DrainKraken",
+      "name": "DrainKraken",
+      "display_name": "Drain Kraken",
+      "category": "items",
+      "file": "assets/icons/wave1/items/DrainKraken_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "config_key": "ItemIcons.DrainKraken",
+      "intended_assets_key": "Assets.ItemIcons.DrainKraken",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/c/DrainKraken.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.557158,
+        "builder": "assets/blender/wave1_c.py",
+        "builder_sha256": "bff9d3f17aaa51b9dd23b8cf0279aa62a6a56cd5ec2753db7c8629797c37a11a"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "8b119ef383c96d170c0f868b430a0732f8cfc40ed7c53b0ef26544b3c8e48a69",
+        "bytes": 16454,
+        "solid_bounds": [
+          13,
+          17,
+          115,
+          111
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "GeyserGorilla",
+      "name": "GeyserGorilla",
+      "display_name": "Geyser Gorilla",
+      "category": "items",
+      "file": "assets/icons/wave1/items/GeyserGorilla_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "config_key": "ItemIcons.GeyserGorilla",
+      "intended_assets_key": "Assets.ItemIcons.GeyserGorilla",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/c/GeyserGorilla.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.946966,
+        "builder": "assets/blender/wave1_c.py",
+        "builder_sha256": "bff9d3f17aaa51b9dd23b8cf0279aa62a6a56cd5ec2753db7c8629797c37a11a"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "4c7cb4832ab3d1d6bad126486a89c23aa5030d266f3e926105cba589549baf50",
+        "bytes": 151565,
+        "solid_bounds": [
+          77,
+          52,
+          435,
+          460
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "GeyserGorilla",
+      "name": "GeyserGorilla",
+      "display_name": "Geyser Gorilla",
+      "category": "items",
+      "file": "assets/icons/wave1/items/GeyserGorilla_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "config_key": "ItemIcons.GeyserGorilla",
+      "intended_assets_key": "Assets.ItemIcons.GeyserGorilla",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/c/GeyserGorilla.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.946966,
+        "builder": "assets/blender/wave1_c.py",
+        "builder_sha256": "bff9d3f17aaa51b9dd23b8cf0279aa62a6a56cd5ec2753db7c8629797c37a11a"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "53405fab025974c7955926d0b43cc2727efb4ed4fa6403585ac5a75ec46907c0",
+        "bytes": 16775,
+        "solid_bounds": [
+          19,
+          13,
+          109,
+          115
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "ThroneColossus",
+      "name": "ThroneColossus",
+      "display_name": "Throne Colossus",
+      "category": "items",
+      "file": "assets/icons/wave1/items/ThroneColossus_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "config_key": "ItemIcons.ThroneColossus",
+      "intended_assets_key": "Assets.ItemIcons.ThroneColossus",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/c/ThroneColossus.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.517432,
+        "builder": "assets/blender/wave1_c.py",
+        "builder_sha256": "bff9d3f17aaa51b9dd23b8cf0279aa62a6a56cd5ec2753db7c8629797c37a11a"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "cbe7505bce8717df1754275b2d90d6a5e64583649b891a32b92c4f16b81e4aa5",
+        "bytes": 165556,
+        "solid_bounds": [
+          52,
+          72,
+          460,
+          440
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "ThroneColossus",
+      "name": "ThroneColossus",
+      "display_name": "Throne Colossus",
+      "category": "items",
+      "file": "assets/icons/wave1/items/ThroneColossus_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "config_key": "ItemIcons.ThroneColossus",
+      "intended_assets_key": "Assets.ItemIcons.ThroneColossus",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/c/ThroneColossus.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.517432,
+        "builder": "assets/blender/wave1_c.py",
+        "builder_sha256": "bff9d3f17aaa51b9dd23b8cf0279aa62a6a56cd5ec2753db7c8629797c37a11a"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "3d9d5ae4bf41a6cc3da0b285fb9011d7b8cb17fa115ad1f471a630f3a4c6a2f4",
+        "bytes": 18423,
+        "solid_bounds": [
+          13,
+          18,
+          115,
+          110
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "PlungerPaladin",
+      "name": "PlungerPaladin",
+      "display_name": "Plunger Paladin",
+      "category": "items",
+      "file": "assets/icons/wave1/items/PlungerPaladin_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "config_key": "ItemIcons.PlungerPaladin",
+      "intended_assets_key": "Assets.ItemIcons.PlungerPaladin",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/c/PlungerPaladin.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.952117,
+        "builder": "assets/blender/wave1_c.py",
+        "builder_sha256": "bff9d3f17aaa51b9dd23b8cf0279aa62a6a56cd5ec2753db7c8629797c37a11a"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "47b2ae33cbe74ea368a4ec4aa168e719ddcb23bd0aa71e6c70da3c7a8db79e49",
+        "bytes": 144206,
+        "solid_bounds": [
+          65,
+          52,
+          447,
+          460
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "PlungerPaladin",
+      "name": "PlungerPaladin",
+      "display_name": "Plunger Paladin",
+      "category": "items",
+      "file": "assets/icons/wave1/items/PlungerPaladin_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "config_key": "ItemIcons.PlungerPaladin",
+      "intended_assets_key": "Assets.ItemIcons.PlungerPaladin",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/c/PlungerPaladin.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.952117,
+        "builder": "assets/blender/wave1_c.py",
+        "builder_sha256": "bff9d3f17aaa51b9dd23b8cf0279aa62a6a56cd5ec2753db7c8629797c37a11a"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "f30bb60d419662aebe8ae352d2a1ca78a2c75e362818dee78a640d5c2ca4a318",
+        "bytes": 16239,
+        "solid_bounds": [
+          16,
+          13,
+          112,
+          115
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "HaloHamster",
+      "name": "HaloHamster",
+      "display_name": "Halo Hamster",
+      "category": "items",
+      "file": "assets/icons/wave1/items/HaloHamster_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "config_key": "ItemIcons.HaloHamster",
+      "intended_assets_key": "Assets.ItemIcons.HaloHamster",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/c/HaloHamster.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.979776,
+        "builder": "assets/blender/wave1_c.py",
+        "builder_sha256": "bff9d3f17aaa51b9dd23b8cf0279aa62a6a56cd5ec2753db7c8629797c37a11a"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "7c61a9628de4a285864d990e139ffa60054b2586ef296c8dfef2ef77d6ba3b7c",
+        "bytes": 122448,
+        "solid_bounds": [
+          124,
+          52,
+          388,
+          460
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "HaloHamster",
+      "name": "HaloHamster",
+      "display_name": "Halo Hamster",
+      "category": "items",
+      "file": "assets/icons/wave1/items/HaloHamster_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "config_key": "ItemIcons.HaloHamster",
+      "intended_assets_key": "Assets.ItemIcons.HaloHamster",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/c/HaloHamster.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.979776,
+        "builder": "assets/blender/wave1_c.py",
+        "builder_sha256": "bff9d3f17aaa51b9dd23b8cf0279aa62a6a56cd5ec2753db7c8629797c37a11a"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "83cfc6157cbb7bbfd29e9405befe1eb878e05de052423613f29a39285963f184",
+        "bytes": 14615,
+        "solid_bounds": [
+          31,
+          13,
+          97,
+          115
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "CometCommode",
+      "name": "CometCommode",
+      "display_name": "Comet Commode",
+      "category": "items",
+      "file": "assets/icons/wave1/items/CometCommode_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "config_key": "ItemIcons.CometCommode",
+      "intended_assets_key": "Assets.ItemIcons.CometCommode",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/c/CometCommode.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 4.04835,
+        "builder": "assets/blender/wave1_c.py",
+        "builder_sha256": "bff9d3f17aaa51b9dd23b8cf0279aa62a6a56cd5ec2753db7c8629797c37a11a"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "3801b71a8b68df441c3e345bd732a9358613767cf4ef323451b0ae9359600c13",
+        "bytes": 108786,
+        "solid_bounds": [
+          52,
+          86,
+          460,
+          427
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "CometCommode",
+      "name": "CometCommode",
+      "display_name": "Comet Commode",
+      "category": "items",
+      "file": "assets/icons/wave1/items/CometCommode_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "config_key": "ItemIcons.CometCommode",
+      "intended_assets_key": "Assets.ItemIcons.CometCommode",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/c/CometCommode.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 4.04835,
+        "builder": "assets/blender/wave1_c.py",
+        "builder_sha256": "bff9d3f17aaa51b9dd23b8cf0279aa62a6a56cd5ec2753db7c8629797c37a11a"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "2796bc3b7c2d4594414156bb13d866a082abeabf31ac3b5b76f0ad5fe12675bb",
+        "bytes": 13000,
+        "solid_bounds": [
+          13,
+          21,
+          115,
+          107
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "ConstellationClam",
+      "name": "ConstellationClam",
+      "display_name": "Constellation Clam",
+      "category": "items",
+      "file": "assets/icons/wave1/items/ConstellationClam_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "config_key": "ItemIcons.ConstellationClam",
+      "intended_assets_key": "Assets.ItemIcons.ConstellationClam",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/c/ConstellationClam.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.655431,
+        "builder": "assets/blender/wave1_c.py",
+        "builder_sha256": "bff9d3f17aaa51b9dd23b8cf0279aa62a6a56cd5ec2753db7c8629797c37a11a"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "d9ca5927ab20e1efb770b7592a532b39bc67681326c09f6bd521357378ba27ce",
+        "bytes": 129194,
+        "solid_bounds": [
+          52,
+          86,
+          460,
+          426
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "ConstellationClam",
+      "name": "ConstellationClam",
+      "display_name": "Constellation Clam",
+      "category": "items",
+      "file": "assets/icons/wave1/items/ConstellationClam_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "config_key": "ItemIcons.ConstellationClam",
+      "intended_assets_key": "Assets.ItemIcons.ConstellationClam",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/c/ConstellationClam.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.655431,
+        "builder": "assets/blender/wave1_c.py",
+        "builder_sha256": "bff9d3f17aaa51b9dd23b8cf0279aa62a6a56cd5ec2753db7c8629797c37a11a"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "6fd69d53a3f66c9395bdcc016a17eab3899f7493c533f2dcc7b49a85ecc3bbe2",
+        "bytes": 15087,
+        "solid_bounds": [
+          13,
+          22,
+          115,
+          107
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "StarlightSeraph",
+      "name": "StarlightSeraph",
+      "display_name": "Starlight Seraph",
+      "category": "items",
+      "file": "assets/icons/wave1/items/StarlightSeraph_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "config_key": "ItemIcons.StarlightSeraph",
+      "intended_assets_key": "Assets.ItemIcons.StarlightSeraph",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/c/StarlightSeraph.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.670028,
+        "builder": "assets/blender/wave1_c.py",
+        "builder_sha256": "bff9d3f17aaa51b9dd23b8cf0279aa62a6a56cd5ec2753db7c8629797c37a11a"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "e125380526926d707710e4de2d0367f6bc7a79fbbd8d4fd767b518175133a2c3",
+        "bytes": 164975,
+        "solid_bounds": [
+          52,
+          63,
+          460,
+          449
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "StarlightSeraph",
+      "name": "StarlightSeraph",
+      "display_name": "Starlight Seraph",
+      "category": "items",
+      "file": "assets/icons/wave1/items/StarlightSeraph_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "config_key": "ItemIcons.StarlightSeraph",
+      "intended_assets_key": "Assets.ItemIcons.StarlightSeraph",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/c/StarlightSeraph.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.670028,
+        "builder": "assets/blender/wave1_c.py",
+        "builder_sha256": "bff9d3f17aaa51b9dd23b8cf0279aa62a6a56cd5ec2753db7c8629797c37a11a"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "b388976c09687b550cb452727d9093e3648a76771ca37294a7599cf98e6d475a",
+        "bytes": 18871,
+        "solid_bounds": [
+          13,
+          16,
+          115,
+          112
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "TheLastToilet",
+      "name": "TheLastToilet",
+      "display_name": "The Last Toilet",
+      "category": "items",
+      "file": "assets/icons/wave1/items/TheLastToilet_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "config_key": "ItemIcons.TheLastToilet",
+      "intended_assets_key": "Assets.ItemIcons.TheLastToilet",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/c/TheLastToilet.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 4.047892,
+        "builder": "assets/blender/wave1_c.py",
+        "builder_sha256": "bff9d3f17aaa51b9dd23b8cf0279aa62a6a56cd5ec2753db7c8629797c37a11a"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "9439318aa789175e89a3db7b45e258bc085f38bcff542ea0d03c6bd2cec7d6b3",
+        "bytes": 144042,
+        "solid_bounds": [
+          80,
+          52,
+          432,
+          460
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "TheLastToilet",
+      "name": "TheLastToilet",
+      "display_name": "The Last Toilet",
+      "category": "items",
+      "file": "assets/icons/wave1/items/TheLastToilet_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "config_key": "ItemIcons.TheLastToilet",
+      "intended_assets_key": "Assets.ItemIcons.TheLastToilet",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/c/TheLastToilet.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 4.047892,
+        "builder": "assets/blender/wave1_c.py",
+        "builder_sha256": "bff9d3f17aaa51b9dd23b8cf0279aa62a6a56cd5ec2753db7c8629797c37a11a"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "6e0c61dbb52312a9dd4362ddbaafcc29063e09b52f1612875c26fc2ef9b077e7",
+        "bytes": 16487,
+        "solid_bounds": [
+          20,
+          13,
+          108,
+          115
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "EmergencyUniverse",
+      "name": "EmergencyUniverse",
+      "display_name": "Emergency Universe",
+      "category": "items",
+      "file": "assets/icons/wave1/items/EmergencyUniverse_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "config_key": "ItemIcons.EmergencyUniverse",
+      "intended_assets_key": "Assets.ItemIcons.EmergencyUniverse",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/c/EmergencyUniverse.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.954513,
+        "builder": "assets/blender/wave1_c.py",
+        "builder_sha256": "bff9d3f17aaa51b9dd23b8cf0279aa62a6a56cd5ec2753db7c8629797c37a11a"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "be0e091893c48e311205c2cc5abac032e52469e9fc56748ddde800ba24397ec0",
+        "bytes": 184730,
+        "solid_bounds": [
+          52,
+          53,
+          460,
+          459
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "EmergencyUniverse",
+      "name": "EmergencyUniverse",
+      "display_name": "Emergency Universe",
+      "category": "items",
+      "file": "assets/icons/wave1/items/EmergencyUniverse_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "config_key": "ItemIcons.EmergencyUniverse",
+      "intended_assets_key": "Assets.ItemIcons.EmergencyUniverse",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/c/EmergencyUniverse.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.954513,
+        "builder": "assets/blender/wave1_c.py",
+        "builder_sha256": "bff9d3f17aaa51b9dd23b8cf0279aa62a6a56cd5ec2753db7c8629797c37a11a"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "6299baf57ebd0e8f368db094fa609c18798aa37a81fa28db2cf67dff552db848",
+        "bytes": 18364,
+        "solid_bounds": [
+          13,
+          13,
+          115,
+          115
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "InfiniteOccupied",
+      "name": "InfiniteOccupied",
+      "display_name": "Infinite Occupied",
+      "category": "items",
+      "file": "assets/icons/wave1/items/InfiniteOccupied_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "config_key": "ItemIcons.InfiniteOccupied",
+      "intended_assets_key": "Assets.ItemIcons.InfiniteOccupied",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/c/InfiniteOccupied.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.948175,
+        "builder": "assets/blender/wave1_c.py",
+        "builder_sha256": "bff9d3f17aaa51b9dd23b8cf0279aa62a6a56cd5ec2753db7c8629797c37a11a"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "6c82862fad623e23838371bf444236ed6bc0a8187c6960a05213aaf665db2270",
+        "bytes": 174816,
+        "solid_bounds": [
+          129,
+          52,
+          383,
+          460
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "InfiniteOccupied",
+      "name": "InfiniteOccupied",
+      "display_name": "Infinite Occupied",
+      "category": "items",
+      "file": "assets/icons/wave1/items/InfiniteOccupied_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "config_key": "ItemIcons.InfiniteOccupied",
+      "intended_assets_key": "Assets.ItemIcons.InfiniteOccupied",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/c/InfiniteOccupied.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.948175,
+        "builder": "assets/blender/wave1_c.py",
+        "builder_sha256": "bff9d3f17aaa51b9dd23b8cf0279aa62a6a56cd5ec2753db7c8629797c37a11a"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "6286827a21949195ef0806d06ff7f5193f706078da1d96e384a8038375f733de",
+        "bytes": 16795,
+        "solid_bounds": [
+          32,
+          13,
+          96,
+          115
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "CosmicCourtesy",
+      "name": "CosmicCourtesy",
+      "display_name": "Cosmic Courtesy",
+      "category": "items",
+      "file": "assets/icons/wave1/items/CosmicCourtesy_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "config_key": "ItemIcons.CosmicCourtesy",
+      "intended_assets_key": "Assets.ItemIcons.CosmicCourtesy",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/c/CosmicCourtesy.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.556724,
+        "builder": "assets/blender/wave1_c.py",
+        "builder_sha256": "bff9d3f17aaa51b9dd23b8cf0279aa62a6a56cd5ec2753db7c8629797c37a11a"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "e7df66bec6fac05aa319ec7a202c2856ff86b169f7d6d420da3220512e7dae1b",
+        "bytes": 160456,
+        "solid_bounds": [
+          52,
+          73,
+          460,
+          439
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "CosmicCourtesy",
+      "name": "CosmicCourtesy",
+      "display_name": "Cosmic Courtesy",
+      "category": "items",
+      "file": "assets/icons/wave1/items/CosmicCourtesy_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "config_key": "ItemIcons.CosmicCourtesy",
+      "intended_assets_key": "Assets.ItemIcons.CosmicCourtesy",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/c/CosmicCourtesy.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 3.556724,
+        "builder": "assets/blender/wave1_c.py",
+        "builder_sha256": "bff9d3f17aaa51b9dd23b8cf0279aa62a6a56cd5ec2753db7c8629797c37a11a"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "0e6bbb159a762d69e5b73a14bddcd466f9f54f267ba698d437a02a09e7493377",
+        "bytes": 18671,
+        "solid_bounds": [
+          13,
+          18,
+          115,
+          110
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "CoralCommode",
+      "name": "CoralCommode",
+      "display_name": "Coral Commode",
+      "category": "toilets",
+      "file": "assets/icons/wave1/toilets/CoralCommode_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "config_key": "ToiletIcons.CoralCommode",
+      "intended_assets_key": "Assets.ToiletIcons.CoralCommode",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/t/CoralCommode.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 6.511755,
+        "builder": "assets/blender/wave1_t.py",
+        "builder_sha256": "25b78d82dad000cf21339d6f8c518ed6b774fa5ddf5a1829f759050e07956d8e"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "575f558ecfeebce9f256dbbe9e086102bdeaf8bdcf4890a039f51976e37ee15f",
+        "bytes": 127599,
+        "solid_bounds": [
+          125,
+          52,
+          387,
+          460
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "CoralCommode",
+      "name": "CoralCommode",
+      "display_name": "Coral Commode",
+      "category": "toilets",
+      "file": "assets/icons/wave1/toilets/CoralCommode_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "config_key": "ToiletIcons.CoralCommode",
+      "intended_assets_key": "Assets.ToiletIcons.CoralCommode",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/t/CoralCommode.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 6.511755,
+        "builder": "assets/blender/wave1_t.py",
+        "builder_sha256": "25b78d82dad000cf21339d6f8c518ed6b774fa5ddf5a1829f759050e07956d8e"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "08a19c3dc7f25b60189c7b3d712a15924ace1197d5e19107a8e6932f66b570e0",
+        "bytes": 13563,
+        "solid_bounds": [
+          31,
+          13,
+          97,
+          115
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "CloudCushion",
+      "name": "CloudCushion",
+      "display_name": "Cloud Cushion",
+      "category": "toilets",
+      "file": "assets/icons/wave1/toilets/CloudCushion_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "config_key": "ToiletIcons.CloudCushion",
+      "intended_assets_key": "Assets.ToiletIcons.CloudCushion",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/t/CloudCushion.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 6.363511,
+        "builder": "assets/blender/wave1_t.py",
+        "builder_sha256": "25b78d82dad000cf21339d6f8c518ed6b774fa5ddf5a1829f759050e07956d8e"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "1a211c23618e284d299c693c5285ecd7288cba0f74c46fcaa20571dda9ddcbaa",
+        "bytes": 113221,
+        "solid_bounds": [
+          122,
+          52,
+          390,
+          460
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "CloudCushion",
+      "name": "CloudCushion",
+      "display_name": "Cloud Cushion",
+      "category": "toilets",
+      "file": "assets/icons/wave1/toilets/CloudCushion_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "config_key": "ToiletIcons.CloudCushion",
+      "intended_assets_key": "Assets.ToiletIcons.CloudCushion",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/t/CloudCushion.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 6.363511,
+        "builder": "assets/blender/wave1_t.py",
+        "builder_sha256": "25b78d82dad000cf21339d6f8c518ed6b774fa5ddf5a1829f759050e07956d8e"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "49944612e1ad3fbe6bb85adad16c8d6c7fb92c386b147a1c3fa553a611d6855c",
+        "bytes": 13187,
+        "solid_bounds": [
+          31,
+          13,
+          98,
+          115
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "ClockworkCloset",
+      "name": "ClockworkCloset",
+      "display_name": "Clockwork Closet",
+      "category": "toilets",
+      "file": "assets/icons/wave1/toilets/ClockworkCloset_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "config_key": "ToiletIcons.ClockworkCloset",
+      "intended_assets_key": "Assets.ToiletIcons.ClockworkCloset",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/t/ClockworkCloset.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 6.696649,
+        "builder": "assets/blender/wave1_t.py",
+        "builder_sha256": "25b78d82dad000cf21339d6f8c518ed6b774fa5ddf5a1829f759050e07956d8e"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "374e1fabe36dd1997f38efd12dd899f6e6076e52ce09e87d48b4708228a7da7c",
+        "bytes": 136519,
+        "solid_bounds": [
+          120,
+          52,
+          392,
+          460
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "ClockworkCloset",
+      "name": "ClockworkCloset",
+      "display_name": "Clockwork Closet",
+      "category": "toilets",
+      "file": "assets/icons/wave1/toilets/ClockworkCloset_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "config_key": "ToiletIcons.ClockworkCloset",
+      "intended_assets_key": "Assets.ToiletIcons.ClockworkCloset",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/t/ClockworkCloset.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 6.696649,
+        "builder": "assets/blender/wave1_t.py",
+        "builder_sha256": "25b78d82dad000cf21339d6f8c518ed6b774fa5ddf5a1829f759050e07956d8e"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "00012551bd65baf3d4738ff1cc1212240203fd64fbe16c21b45b02b0a3bd6283",
+        "bytes": 14722,
+        "solid_bounds": [
+          30,
+          13,
+          98,
+          115
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "DragonKiln",
+      "name": "DragonKiln",
+      "display_name": "Dragon Kiln",
+      "category": "toilets",
+      "file": "assets/icons/wave1/toilets/DragonKiln_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "config_key": "ToiletIcons.DragonKiln",
+      "intended_assets_key": "Assets.ToiletIcons.DragonKiln",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/t/DragonKiln.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 6.973469,
+        "builder": "assets/blender/wave1_t.py",
+        "builder_sha256": "25b78d82dad000cf21339d6f8c518ed6b774fa5ddf5a1829f759050e07956d8e"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "915b863f11cb200ac927bb1e0e0ab1e60f2ed2c2577c48a89f44b0aa363169e3",
+        "bytes": 117990,
+        "solid_bounds": [
+          127,
+          52,
+          385,
+          460
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "DragonKiln",
+      "name": "DragonKiln",
+      "display_name": "Dragon Kiln",
+      "category": "toilets",
+      "file": "assets/icons/wave1/toilets/DragonKiln_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "config_key": "ToiletIcons.DragonKiln",
+      "intended_assets_key": "Assets.ToiletIcons.DragonKiln",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/t/DragonKiln.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 6.973469,
+        "builder": "assets/blender/wave1_t.py",
+        "builder_sha256": "25b78d82dad000cf21339d6f8c518ed6b774fa5ddf5a1829f759050e07956d8e"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "6035f980e7dd1dffdf201970f4dc4eafcdcad5070650ce3d7aaa527b8d52fac5",
+        "bytes": 12953,
+        "solid_bounds": [
+          32,
+          13,
+          96,
+          115
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "AuroraThrone",
+      "name": "AuroraThrone",
+      "display_name": "Aurora Throne",
+      "category": "toilets",
+      "file": "assets/icons/wave1/toilets/AuroraThrone_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "config_key": "ToiletIcons.AuroraThrone",
+      "intended_assets_key": "Assets.ToiletIcons.AuroraThrone",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/t/AuroraThrone.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 7.357491,
+        "builder": "assets/blender/wave1_t.py",
+        "builder_sha256": "25b78d82dad000cf21339d6f8c518ed6b774fa5ddf5a1829f759050e07956d8e"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "790d546ac128068eaaf3ab5b2262e3fa33252881ab4eab758ac6074cbda22379",
+        "bytes": 120952,
+        "solid_bounds": [
+          130,
+          52,
+          382,
+          460
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "AuroraThrone",
+      "name": "AuroraThrone",
+      "display_name": "Aurora Throne",
+      "category": "toilets",
+      "file": "assets/icons/wave1/toilets/AuroraThrone_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "config_key": "ToiletIcons.AuroraThrone",
+      "intended_assets_key": "Assets.ToiletIcons.AuroraThrone",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/t/AuroraThrone.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 7.357491,
+        "builder": "assets/blender/wave1_t.py",
+        "builder_sha256": "25b78d82dad000cf21339d6f8c518ed6b774fa5ddf5a1829f759050e07956d8e"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "d72bf56ae917cd33421eec30cb491954e8360219dd7e71a9e2cb45371a74b251",
+        "bytes": 14048,
+        "solid_bounds": [
+          32,
+          13,
+          95,
+          115
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "AstralAltar",
+      "name": "AstralAltar",
+      "display_name": "Astral Altar",
+      "category": "toilets",
+      "file": "assets/icons/wave1/toilets/AstralAltar_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "config_key": "ToiletIcons.AstralAltar",
+      "intended_assets_key": "Assets.ToiletIcons.AstralAltar",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/t/AstralAltar.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 7.569414,
+        "builder": "assets/blender/wave1_t.py",
+        "builder_sha256": "25b78d82dad000cf21339d6f8c518ed6b774fa5ddf5a1829f759050e07956d8e"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "9aa7e0fe5400acf5992ba894bb19ae95fa30e1afb88e7a3e9e92de479c6fa70f",
+        "bytes": 110990,
+        "solid_bounds": [
+          136,
+          52,
+          376,
+          460
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "AstralAltar",
+      "name": "AstralAltar",
+      "display_name": "Astral Altar",
+      "category": "toilets",
+      "file": "assets/icons/wave1/toilets/AstralAltar_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "config_key": "ToiletIcons.AstralAltar",
+      "intended_assets_key": "Assets.ToiletIcons.AstralAltar",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/t/AstralAltar.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 7.569414,
+        "builder": "assets/blender/wave1_t.py",
+        "builder_sha256": "25b78d82dad000cf21339d6f8c518ed6b774fa5ddf5a1829f759050e07956d8e"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "a6fee8fa4d56f1f74a25e043a17c19e9ac6e7e696deb0a93da60deec752417d1",
+        "bytes": 13192,
+        "solid_bounds": [
+          34,
+          13,
+          94,
+          115
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "ParadoxPotty",
+      "name": "ParadoxPotty",
+      "display_name": "Paradox Potty",
+      "category": "toilets",
+      "file": "assets/icons/wave1/toilets/ParadoxPotty_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "config_key": "ToiletIcons.ParadoxPotty",
+      "intended_assets_key": "Assets.ToiletIcons.ParadoxPotty",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/t/ParadoxPotty.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 7.705257,
+        "builder": "assets/blender/wave1_t.py",
+        "builder_sha256": "25b78d82dad000cf21339d6f8c518ed6b774fa5ddf5a1829f759050e07956d8e"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "d7e5b43d8423941c56f7a61f43c8f57a9fbe6455fb6e9d77163e00c0f0a949b6",
+        "bytes": 117957,
+        "solid_bounds": [
+          145,
+          52,
+          367,
+          460
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "ParadoxPotty",
+      "name": "ParadoxPotty",
+      "display_name": "Paradox Potty",
+      "category": "toilets",
+      "file": "assets/icons/wave1/toilets/ParadoxPotty_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "config_key": "ToiletIcons.ParadoxPotty",
+      "intended_assets_key": "Assets.ToiletIcons.ParadoxPotty",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/t/ParadoxPotty.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 7.705257,
+        "builder": "assets/blender/wave1_t.py",
+        "builder_sha256": "25b78d82dad000cf21339d6f8c518ed6b774fa5ddf5a1829f759050e07956d8e"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "0135f516a240a5bb70fc33b5971a33e7f634e96092d7652f779afbea8c0099e2",
+        "bytes": 12175,
+        "solid_bounds": [
+          36,
+          13,
+          92,
+          115
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "InfinityFlush",
+      "name": "InfinityFlush",
+      "display_name": "Infinity Flush",
+      "category": "toilets",
+      "file": "assets/icons/wave1/toilets/InfinityFlush_512.png",
+      "size": [
+        512,
+        512
+      ],
+      "config_key": "ToiletIcons.InfinityFlush",
+      "intended_assets_key": "Assets.ToiletIcons.InfinityFlush",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/t/InfinityFlush.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 7.486795,
+        "builder": "assets/blender/wave1_t.py",
+        "builder_sha256": "25b78d82dad000cf21339d6f8c518ed6b774fa5ddf5a1829f759050e07956d8e"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "d75171c4c330d86ce5286a131f1dd72ba5271ed29cb4ae82b520309c431af663",
+        "bytes": 109216,
+        "solid_bounds": [
+          133,
+          52,
+          379,
+          460
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    },
+    {
+      "id": "InfinityFlush",
+      "name": "InfinityFlush",
+      "display_name": "Infinity Flush",
+      "category": "toilets",
+      "file": "assets/icons/wave1/toilets/InfinityFlush_128.png",
+      "size": [
+        128,
+        128
+      ],
+      "config_key": "ToiletIcons.InfinityFlush",
+      "intended_assets_key": "Assets.ToiletIcons.InfinityFlush",
+      "transparent": true,
+      "source": "assets/blender/generated/wave1/t/InfinityFlush.blend",
+      "integration_status": "Not uploaded; manager-owned runtime integration",
+      "render": {
+        "samples": 64,
+        "render_resolution": 1024,
+        "azimuth": 25,
+        "elevation": 17,
+        "sculpture_fill": 0.78,
+        "ortho_scale": 7.486795,
+        "builder": "assets/blender/wave1_t.py",
+        "builder_sha256": "25b78d82dad000cf21339d6f8c518ed6b774fa5ddf5a1829f759050e07956d8e"
+      },
+      "validation": {
+        "passed": true,
+        "sha256": "8f70def86119f044a5d9d0a28649226d6425f822adc62afc89bcc9f4281379eb",
+        "bytes": 12263,
+        "solid_bounds": [
+          33,
+          13,
+          95,
+          115
+        ],
+        "longest_axis_percent": 79.69,
+        "alpha": "straight RGBA; zero RGB at zero alpha"
+      }
+    }
+  ],
+  "notes": [
+    "36 new items and 8 new toilets; exact Wave 1 IDs and display names.",
+    "512px upload candidates; 128px inspection alternatives share the same intended key.",
+    "No rarity framing, uploads, runtime changes or mesh exports.",
+    "Shared studio lights, enamel, contour and soft alpha shadow from render_icons.py.",
+    "Geometry rebuilt at icon density in memory; sources and original pipeline are read-only."
+  ]
+}

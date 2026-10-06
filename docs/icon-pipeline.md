@@ -110,3 +110,44 @@ Final pass checks: 21 new sculptures rendered at 64 Cycles samples, 1024px befor
 Repository checks for this task on `feature/passicons`: `rojo build -o build.rbxl`, `stylua --check --line-endings Windows src scripts`, Python syntax checks, manifest coverage/key checks and `git diff --check` pass. Selene was attempted but cannot run because its `roblox` standard library is missing. Changes are restricted to assets, docs and scripts; `src/` was not edited. No commit, push, upload or live integration was performed, as requested.
 
 Original UI/art batch checks on `feature/icons`: `rojo build -o build.rbxl` succeeded. Selene's configured `roblox` standard library was missing. That batch's `stylua --check src` reported formatting/line-ending differences; no runtime files were formatted. Its Git staging attempt was denied by worktree permissions. This is historical context, not a commit attempt in the pass-icon task.
+
+## Wave 1 item and toilet icons
+
+The isolated entry point is `assets/blender/render_wave1_icons.py`, launched by `scripts/build-wave1-icons.ps1`. It imports `render_icons.py`, `icon_models.py`, `pass_models.py`, shared geometry helpers and the four `wave1_*.py` builders read-only. It never calls the mesh-export entry points or the original icon build's `main()`. No existing icon, model, `.blend`, atlas, manifest or `src/` file is rewritten.
+
+```powershell
+# Full quality: 64 Cycles samples at 1024px, reduced with premultiplied alpha.
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-wave1-icons.ps1
+
+# Focused iteration; both comma-separated IDs and PowerShell arrays are accepted.
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-wave1-icons.ps1 -Only Clogtopus,InfinityFlush
+
+# Low-cost review files and separate sheets in assets/icons/.scratch/wave1/draft/.
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-wave1-icons.ps1 -Draft -Samples 16
+
+# Check all 88 deliverables, then recompose the three sheets.
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-wave1-icons.ps1 -ValidateOnly
+
+# Only recompose sheets; this does not validate PNGs.
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-wave1-icons.ps1 -SheetsOnly
+```
+
+`-Blender` overrides the executable as in the existing pipeline. Draft renders never overwrite final outputs. `-Only` preserves other render metadata and checks all currently present output files; absent files leave `complete: false`. A full build or `-ValidateOnly` without `-Only` requires the entire set. Unknown IDs fail before any rendering. Blender exits explicitly after successful synchronous validation to avoid the local background-shutdown hang already observed in the Group C build.
+
+Outputs are 72 transparent PNGs in `assets/icons/wave1/items/` and 16 in `assets/icons/wave1/toilets/`, named `<Id>_512.png` and `<Id>_128.png`. `assets/icons/manifest-wave1.json` records exact JSON IDs/display names, file paths, dimensions, intended `Assets.ItemIcons.<Id>` / `Assets.ToiletIcons.<Id>` keys, source paths, render provenance, image hashes and validation. Both resolutions share one intended key; normally upload only 512px. Comet Commode and The Last Toilet remain **items**. There are no uploaded IDs or runtime integrations in this batch.
+
+`_sheet_wave1_items.png` and `_sheet_wave1_toilets.png` show every icon on both light and dark cards. `_sheet_wave1_small.png` displays all 44 exported 128px images at native resolution on both backgrounds. Sheets carry labels; individual PNGs have no labels or rarity framing.
+
+The render uses the existing glossy enamel, Standard color transform, exposure, four studio lights, rim light, dark contour and soft transparent silhouette shadow. Source builders are reconstructed at the existing pipeline's render density; local one-segment trim is given the same rounded icon bevel. Group A/B proportions follow their model manifests; C keeps uniform sizing; toilets preserve the common bowl proportions. UV swatches are translated to enamel per face, retaining Drain Crab's four dark slots and Group C's Celestial silver remap. This produces smooth icon sculptures without changing the gameplay meshes.
+
+The standard camera is the original item/toilet 25-degree azimuth and 17-degree elevation. Clogtopus uses 24-degree elevation to expose its rear cups. Actual evaluated vertices determine each model's orthographic scale and centering: the sculpture fills 78% along its longer axis, approximately 80% including the contour. Shorter dimensions follow each silhouette naturally. No crop cuts off decorative tips.
+
+Validation requires all expected dimensions, nonblank RGBA, fully transparent borders, zero RGB at zero alpha and a 76-86% solid silhouette span. The manifest stores measured bounds rather than treating alpha-shadow tails as sculpture. See [Wave 1 rendering source checks](research/wave1-icon-rendering.md).
+
+### Wave 1 review and acceptance, 2026-10-06
+
+All 44 models received a 16-sample composition pass, a light/dark native-128px review, and a final 64-sample/1024px render. Each final 128px PNG was also inspected individually. Refinements preserved per-face drain slots, replaced budget-oriented trim bevels with the existing icon bevel, fitted actual projected geometry instead of loose object boxes, raised Clogtopus's view to separate eight cup tips, and restored the Celestial gray-to-silver remap used by the model exporter. The final small and category sheets were inspected against the original item/toilet/pass sheets. There is no rarity frame or added particle haze.
+
+All **88/88** PNGs pass dimensions, transparent borders, straight-alpha hygiene, nonblank coverage and framing checks. Every final solid silhouette spans **79.69%** of its longer canvas axis at both sizes. Independent System.Drawing decoding confirms RGBA dimensions; all PNG hashes and all 44 IDs, display names and intended keys match the manifest and authoritative JSON. All records identify 64-sample, 1024px final renders, not drafts. `rojo build -o build.rbxl`, `stylua --check --line-endings Windows src scripts`, PowerShell syntax parsing and `git diff --check` pass. Selene was attempted but the configured `roblox` standard library is missing; no lint-pass claim. The existing renderer, builders, textures, model sources, icons and `src/` remain unchanged. No commit, push or upload was made.
+
+Remaining visual limits: Bath Bomb Behemoth deliberately retains its tiny face; small stitches, bristle separations, stars and shell ribs soften at 128px. Angular geometry remains on authored flat surfaces, including Behemoth and Cosmic Courtesy's arcs. Rear toilet ornaments are partly occluded by the raised lids, and the three Cosmic Courtesy arcs overlap in the shared three-quarter view. Main silhouettes, faces, openings and handles remain identifiable on the reviewed light/dark cards. These are icons of the supplied current sculptures, including the revised Sponge Knight, rather than redesigns of older brief details. The task's `wave1/` output prefix takes precedence over the generic icon paths in the design JSON; intended Assets keys are unchanged. Final uploaded-image permissions and appearance in the live game UI remain manager-owned integration work.
