@@ -37,15 +37,25 @@ end
 local C = require(script.UI.Components)
 C.PreloadIcons()
 local audio = require(script.Audio.AudioService).Start()
-C.SoundHook = function(key)
-	audio:Play(key)
+local upgradeRules = require(game.ReplicatedStorage.Shared.UpgradeRules).new(require(Config.Upgrades))
+local feedback = require(script.Audio.Feedback).new(
+	audio,
+	require(Config.Upgrades),
+	require(Config.Rewards),
+	require(Config.Monetization)
+)
+C.SoundHook = function(key, amount)
+	audio:Play(key, amount)
+end
+C.StopSoundHook = function(key)
+	audio:Stop(key)
 end
 C.AudioHook = function(key, duration)
 	audio:Duck(key, duration)
 end
 script.Destroying:Connect(function()
 	audio:Destroy()
-	C.SoundHook, C.AudioHook = nil, nil
+	C.SoundHook, C.AudioHook, C.StopSoundHook = nil, nil, nil
 end)
 local prompts = require(script.UI.FlushPrompt).Start()
 require(script.VisualIdle).Start()
@@ -60,6 +70,8 @@ local screen = C.New("ScreenGui", player:WaitForChild("PlayerGui"), {
 	ZIndexBehavior = Enum.ZIndexBehavior.Sibling,
 })
 local root = C.New("Frame", screen, { Name = "SafeArea", Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1 })
+C.StartAudioInput(screen.Parent, screen)
+local toast = C.Toast(root)
 local collection = require(script.UI.Collection).Create(root, remotes)
 local upgrades = require(script.UI.Upgrades).Create(root, remotes)
 local rewards = require(script.UI.Rewards).Create(root, remotes)
@@ -147,6 +159,7 @@ local function travelHome()
 		end)
 		if player.Character then
 			player.Character:PivotTo(cf)
+			audio:Play("Teleport")
 		end
 	end
 end
@@ -176,7 +189,7 @@ local function open(name)
 end
 hud = require(script.UI.HUD).Create(root, remotes, open, prompts)
 require(script.WorldLabels).Start(hud.Frame)
-require(script.WorldNavigation).Start(open)
+require(script.WorldNavigation).Start(open, toast)
 local function syncModal()
 	local any = false
 	for _, panel in ipairs(panels) do
@@ -201,7 +214,6 @@ require(script.UI.Tutorial).Create(player, remotes, hud, prompts)
 local effects = require(script.Effects).Create(hud.Frame, audio.SFX, hud)
 local presentation = require(script.Presentation.Controller).Start(root, hud, remotes, audio, settingsList)
 local showServiceCoins = require(script.UI.CoinPopup).Create(hud.Frame)
-local toast = C.Toast(root)
 local incomeChip = require(script.UI.IncomeChip).Create(hud.Frame)
 local PromptService = game:GetService("ProximityPromptService")
 PromptService.PromptTriggered:Connect(function(prompt)
@@ -221,14 +233,31 @@ remotes.Event.OnClientEvent:Connect(function(payload)
 		hud.Best(payload.PlayerName, item)
 	end
 end)
-remotes.ServerLuck.OnClientEvent:Connect(hud.Luck)
+remotes.ServerLuck.OnClientEvent:Connect(function(expires)
+	hud.Luck(expires)
+	feedback:ServerLuck(expires, workspace:GetServerTimeNow())
+end)
+local audioClock = 0
+local audioHeartbeat = RunService.Heartbeat:Connect(function(dt)
+	audioClock += dt
+	if audioClock >= 0.25 then
+		audioClock = 0
+		feedback:Tick(workspace:GetServerTimeNow())
+	end
+end)
+script.Destroying:Connect(function()
+	audioHeartbeat:Disconnect()
+end)
 remotes.Result.OnClientEvent:Connect(function(action, payload)
+	if not feedback:Result(action, payload) then
+		return
+	end
 	if action == "Flush" then
 		local item = byId[payload.ItemId]
 		if not item then
 			return
 		end
-		audio:Flush(autoFlush)
+		audio:Flush(autoFlush, upgradeRules:Animation(payload.Cooldown or 1.5))
 		hud.Flushed(payload)
 		hud.Best(player.DisplayName, item)
 		showServiceCoins(payload.ServiceCoins)
@@ -245,17 +274,11 @@ remotes.Result.OnClientEvent:Connect(function(action, payload)
 			toast("Upgrade unlocked! Your next great flush awaits.", C.Green)
 		end
 	end
-	if payload.Success == false then
-		audio:Play("Error")
-	elseif payload.Success == true and (action == "BuyToilet" or action == "BuyPass" or action == "BuyUpgrade") then
-		audio:Play("PurchaseSuccess")
-	elseif payload.Success == true and action == "Sell" then
-		audio:Play("CoinCollect")
-	end
 end)
 remotes.State.OnClientEvent:Connect(function(state)
 	skipAnimation, autoFlush = state.Settings.SkipAnimation == true, state.AutoFlush == true
 	audioSettings.Update(state.Settings)
+	feedback:State(state, workspace:GetServerTimeNow())
 	presentation.Update(state.Settings)
 	skipToggle.Text = if skipAnimation then "Quick reveals: ON" else "Quick reveals: OFF"
 	effects.SetSkip(

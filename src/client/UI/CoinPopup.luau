@@ -10,7 +10,7 @@ function CoinPopup.Create(parent)
 			return
 		end
 		if C.SoundHook then
-			C.SoundHook("CoinCollect")
+			C.SoundHook("CoinPopup")
 		end
 		-- Each award owns its group/tween so overlapping awards fade independently.
 		local layout = Layout.Compute(parent.AbsoluteSize.X, parent.AbsoluteSize.Y, UserInputService.TouchEnabled)

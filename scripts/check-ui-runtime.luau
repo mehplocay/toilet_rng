@@ -578,7 +578,7 @@ otherPlot.Parent = H.Workspace
 local otherFlush = H.Instance.new("Sound")
 otherFlush.SoundId, otherFlush.Parent = "rbxassetid://500", otherPlot
 H.Workspace.DescendantAdded:Fire(otherFlush)
-assert(otherFlush.SoundGroup == audio.SFX, "Other players' spatial flush was muted")
+assert(otherFlush.SoundGroup == audio.WorldSFX and audio.WorldSFX.Parent == audio.SFX, "Nearby flush bypassed SFX mix")
 Assets.Sounds.Flush = ""
 audio:ApplySettings(AudioConfig.Defaults)
 local allocated, requests = #H.Objects, #H.Preloads
@@ -627,7 +627,7 @@ ownPlot:Destroy()
 otherPlot:Destroy()
 Assets.Sounds.Click, Assets.Sounds.CoinCollect, Assets.Sounds.Hover = "", "", ""
 Assets.Music = { "201", "202", "203", "204", "205" }
-H.Services.Players.LocalPlayer.Character = {}
+H.Services.Players.LocalPlayer.Character = H.Instance.new("Model")
 local music = AudioService.Start()
 music:ApplySettings(AudioConfig.Defaults)
 H.StartTasks() -- Playlist waits for first preload.

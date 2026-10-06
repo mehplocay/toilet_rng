@@ -98,6 +98,7 @@ function UI.Create(parent, remote, audio)
 				dragging = input
 				parent.ScrollingEnabled = false
 				pointer(input)
+				audio:Play("Click")
 			end
 		end)
 		local moved = UserInputService.InputChanged:Connect(function(input)

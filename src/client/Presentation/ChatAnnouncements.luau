@@ -34,6 +34,7 @@ function Announcements.Start(remote)
 						),
 						"ToiletRebirth"
 					)
+					C.Sound("ChatAnnouncement")
 				end)
 			end
 			return
@@ -58,6 +59,10 @@ function Announcements.Start(remote)
 		)
 		pcall(function()
 			channel:DisplaySystemMessage(text, "ToiletDrop")
+			-- World-event drops already have the server fanfare.
+			if not item.Event then
+				C.Sound("ChatAnnouncement")
+			end
 		end)
 	end)
 	function self:Destroy()

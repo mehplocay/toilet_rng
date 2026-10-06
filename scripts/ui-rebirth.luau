@@ -1,4 +1,17 @@
 do
+	local C = H.Load("src/client/UI/Components")
+	local soundHook, stopHook = C.SoundHook, C.StopSoundHook
+	local holdActive = false
+	C.SoundHook = function(key)
+		if key == "RebirthHold" then
+			holdActive = true
+		end
+	end
+	C.StopSoundHook = function(key)
+		if key == "RebirthHold" then
+			holdActive = false
+		end
+	end
 	local root, remotes = H.Root(1280, 684), H.Remotes()
 	local config = H.Load("src/shared/Config/Rebirth")
 	local ui = H.Load("src/client/UI/Rebirth").Create(root, remotes)
@@ -36,25 +49,31 @@ do
 	input.InputEnded:Fire(click)
 	H.Advance(1)
 	assert(calls() == before, "Short hold committed")
+	assert(not holdActive, "Short hold leaked its audio loop")
 	button.InputBegan:Fire(click)
+	assert(holdActive, "Confirmed hold has no loop")
 	input.WindowFocusReleased:Fire()
 	H.Advance(3)
 	assert(calls() == before, "Focus loss retained destructive hold")
+	assert(not holdActive, "Focus loss retained hold audio")
 	button.Activated:Fire()
 	button.InputBegan:Fire(click)
 	ui.Panel.Visible = false
+	assert(not holdActive, "Closing panel retained hold audio")
 	H.Advance(3)
 	assert(calls() == before)
 	ui.Panel.Visible = true
 	button.Activated:Fire()
 	button.InputBegan:Fire(click)
 	button.MouseLeave:Fire()
+	assert(not holdActive, "Pointer leave retained hold audio")
 	H.Advance(3)
 	assert(calls() == before)
 	local touch = { UserInputType = Enum.UserInputType.Touch }
 	button.InputBegan:Fire(touch)
 	H.Advance(config.HoldSeconds + 0.1)
 	assert(calls() == before + 1 and H.Calls[#H.Calls].Args[1] == 0 and H.Calls[#H.Calls].Count == 1)
+	assert(not holdActive, "Submitted rebirth retained hold audio")
 	button.Activated:Fire()
 	button.InputBegan:Fire(touch)
 	H.Advance(5)
@@ -108,6 +127,8 @@ do
 	H.Advance(3)
 	assert(calls() == after, "Destroyed panel kept input listeners")
 	H.Services.GuiService.SelectedObject = nil
+	assert(not holdActive, "Destroyed rebirth retained hold audio")
+	C.SoundHook, C.StopSoundHook = soundHook, stopHook
 	print(
 		"Rebirth UI passed: review/hold, mouse/touch/gamepad, early release, focus/close/leave cancellation, pending lock, max state, celebration expiry, two-column mobile layout and cleanup"
 	)

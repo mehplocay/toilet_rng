@@ -156,6 +156,9 @@ local defaults = {
 	Size = UDim2.new(),
 }
 local methods, Instance = {}, {}
+function methods:GetGuiObjectsAtPosition()
+	return H.HitObjects or {}
+end
 function methods:IsA(class)
 	return self.ClassName == class
 		or (class == "BasePart" and (self.ClassName == "Part" or self.ClassName == "MeshPart"))

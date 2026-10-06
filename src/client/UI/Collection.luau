@@ -42,7 +42,7 @@ function Collection.Create(gui, remotes)
 		UDim2.new(1, -96, 0, 0),
 		function() end,
 		C.Gold,
-		{ TextSize = 18 }
+		{ TextSize = 18, Sound = "TabSwitch" }
 	)
 	local filter, state, cards = "All", nil, {}
 	local names, colors = { "All" }, {}
@@ -115,7 +115,7 @@ function Collection.Create(gui, remotes)
 			elseif freeSlot() then
 				remotes.Display:FireServer(item.Id, freeSlot())
 			end
-		end, C.Blue, { TextSize = 17 })
+		end, C.Blue, { TextSize = 17, DisabledSound = "DisplayLocked" })
 		return { Frame = frame, Name = name, Odds = odds, Count = count, Sell = sell, All = all, Display = display }
 	end
 	render = function()

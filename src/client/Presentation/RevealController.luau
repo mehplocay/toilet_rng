@@ -46,6 +46,7 @@ function Controller.Create(root, hud, audio)
 		end
 	end
 	local function compact(entry)
+		audio:Play(entry.Item.Rarity)
 		toast.Text = entry.Item.Name .. "  •  1 in " .. C.Commas(entry.Item.Chance)
 		toast.TextColor3 = colorFor(entry.Item)
 		toast.Visible, layer.Visible, toastUntil = true, true, os.clock() + Config.Duration.Toast
@@ -207,10 +208,7 @@ function Controller.Create(root, hud, audio)
 				cleanup = Effects.Start(color, cinematic)
 			end
 		end
-		if Rarities[item.Rarity].Order >= 4 and self.Intensity ~= "Off" then
-			audio:Play(item.Rarity)
-			audio:Duck("Reveal", Config.Duration[tier])
-		end
+		audio:Play(item.Rarity)
 		tick = function(t)
 			if animate then
 				animate(t)

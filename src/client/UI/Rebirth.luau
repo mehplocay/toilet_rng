@@ -38,6 +38,7 @@ function Rebirth.Create(root, remotes)
 	local confirm, update
 	local holdBar = C.ProgressBar(body, UDim2.new(1, -8, 0, 10), UDim2.fromOffset(4, 782), C.Gold)
 	local function cancel()
+		C.StopSound("RebirthHold")
 		armedLevel, held = nil, nil
 		holdBar.Set(0)
 		if update then
@@ -120,6 +121,7 @@ function Rebirth.Create(root, remotes)
 			or input.KeyCode == Enum.KeyCode.Space
 		then
 			held, heldAt = input, os.clock()
+			C.Sound("RebirthHold")
 		end
 	end
 	local connections = {}
@@ -143,6 +145,7 @@ function Rebirth.Create(root, remotes)
 		connections,
 		Input.InputEnded:Connect(function(input)
 			if input == held then
+				C.StopSound("RebirthHold")
 				held = nil
 				holdBar.Set(0)
 			end
@@ -151,6 +154,7 @@ function Rebirth.Create(root, remotes)
 	table.insert(
 		connections,
 		confirm.MouseLeave:Connect(function()
+			C.StopSound("RebirthHold")
 			held = nil
 			holdBar.Set(0)
 		end)
@@ -178,6 +182,7 @@ function Rebirth.Create(root, remotes)
 			local progress = (os.clock() - heldAt) / Config.HoldSeconds
 			holdBar.Set(progress)
 			if progress >= 1 then
+				C.StopSound("RebirthHold")
 				local expected = armedLevel
 				pending, held, armedLevel = true, nil, nil
 				pendingAt = os.clock()
@@ -223,6 +228,7 @@ function Rebirth.Create(root, remotes)
 		end)
 	)
 	panel.Destroying:Connect(function()
+		C.StopSound("RebirthHold")
 		for _, connection in ipairs(connections) do
 			connection:Disconnect()
 		end
