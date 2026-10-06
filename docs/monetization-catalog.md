@@ -28,9 +28,9 @@ Icon paths below are creation targets for the separate art session, not claims o
 | 18 | Developer product | Coin Pack Large | 6 hours of current display income, quoted before purchase. | 249 | DeveloperProducts.Coins6Hours | assets/icons/passes/CoinPackLarge.png / CoinPackLarge |
 | 19 | Developer product | Path Boost: 10 Minutes | 4x speed on blue paths for 10 minutes. VIP: 5x. Timer runs offline. | 29 | DeveloperProducts.PathBoost10Minutes | assets/icons/passes/PathBoost.png / PathBoost |
 | 20 | Developer product | Coin Pack Huge | 24 hours of current display income, quoted before purchase. | 799 | DeveloperProducts.Coins24Hours | assets/icons/passes/CoinPackHuge.png / CoinPackHuge |
-| 21 | Developer product | Lucky Flush | 1 single-use 10x luck charge. Total luck capped at 10x with rare diminishing returns. Review all odds before purchase and use. | 25 | DeveloperProducts.LuckyFlush1 | assets/icons/passes/LuckyFlush1.png / LuckyFlush1 |
-| 22 | Developer product | Lucky Flush 5-Pack | 5 single-use 10x luck charges. Total luck capped at 10x with rare diminishing returns. Review all odds before purchase and use. | 99 | DeveloperProducts.LuckyFlush5 | assets/icons/passes/LuckyFlush5.png / LuckyFlush5 |
-| 23 | Developer product | Lucky Flush 20-Pack | 20 single-use 10x luck charges. Total luck capped at 10x with rare diminishing returns. Review all odds before purchase and use. | 349 | DeveloperProducts.LuckyFlush20 | assets/icons/passes/LuckyFlush20.png / LuckyFlush20 |
+| 21 | Developer product | Lucky Flush | 1 single-use 10x luck charge. Total luck capped at 10x. Review all odds before purchase and use. | 25 | DeveloperProducts.LuckyFlush1 | assets/icons/passes/LuckyFlush1.png / LuckyFlush1 |
+| 22 | Developer product | Lucky Flush 5-Pack | 5 single-use 10x luck charges. Total luck capped at 10x. Review all odds before purchase and use. | 99 | DeveloperProducts.LuckyFlush5 | assets/icons/passes/LuckyFlush5.png / LuckyFlush5 |
+| 23 | Developer product | Lucky Flush 20-Pack | 20 single-use 10x luck charges. Total luck capped at 10x. Review all odds before purchase and use. | 349 | DeveloperProducts.LuckyFlush20 | assets/icons/passes/LuckyFlush20.png / LuckyFlush20 |
 
 ## Entitlements and limits
 
