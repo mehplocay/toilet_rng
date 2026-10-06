@@ -1,3 +1,5 @@
+Rebirth click follow-up (2026-10-06, `feature/rebirth-click`): **255 audit scenarios pass**. Shared UI regressions and the actual button-to-handler bridge verify immediate submission, one saved rebirth on a double click, unmet gates, pending lock through timeout/reopen/state refresh, stale-generation rejection and 1,000-request spam. Coin/flush validation, one-token / 0.2-per-second limiter and atomic lease-checked replacement remain server-owned. [Interaction and limitations](design/rebirth.md), [current API research](research/rebirth-click.md). No commit/push.
+
 Permanent progression follow-up (2026-10-06, `feature/permanent`): **148 audit scenarios pass**, including legacy/new-cap migration, permanent tiers/tracks/slots, strict loose-inventory reset, coin-gate boundaries, pending exclusion, level-100 response-loss/replay and reset/purchase/collection races. Existing announcement queues and persistence lease/save machinery are unchanged. [Current contract, measured pacing and limits](design/economy-v2.md) supersede historical reset/tuning statements below.
 
 # Full-game security, exploit and performance audit

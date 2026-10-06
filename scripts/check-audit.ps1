@@ -59,6 +59,11 @@ if (!$Baseline -and !$Audit2Baseline -and !$DisplayCollectBaseline) {
 }
 $parts.Add('do')
 $parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'ui-harness.luau')))
+if (!$Baseline -and !$Audit2Baseline -and !$DisplayCollectBaseline) {
+    $parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'rebirth-click-ui-checks.luau')))
+    $parts.Add('test("rebirth click: UI gates and pending lock", H.CheckRebirthClick)')
+    $parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'audit-rebirth-click.luau')))
+}
 $parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'audit2-client.luau')))
 $parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'audit-display-client.luau')))
 if (!$Baseline -and !$Audit2Baseline -and !$DisplayCollectBaseline) {

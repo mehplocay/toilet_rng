@@ -3,6 +3,7 @@ local Config = require(Shared.Config.Rebirth)
 local rules = require(Shared.RebirthRules).new(Config)
 local Service = {}
 function Service.Start(data, limiter, remotes, sync, events)
+	-- One activation sends only a generation; eligibility is always server-owned.
 	remotes.Rebirth.OnServerEvent:Connect(function(player, expectedLevel, ...)
 		if not limiter:Allow(player, "Rebirth") or select("#", ...) ~= 0 then
 			return
