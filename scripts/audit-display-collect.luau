@@ -53,7 +53,14 @@ test("collect: exact pad authorization rejects forged slots, geometry, dead owne
 		end,
 	})
 	player.Character.FindFirstChild = function(_, name)
-		return if name == "HumanoidRootPart" then { Position = position } else nil
+		return if name == "HumanoidRootPart"
+			then {
+				Position = position,
+				FindFirstChild = function()
+					return nil
+				end,
+			}
+			else nil
 	end
 	plot.CollectSlots =
 		{ [1] = { Position = padPosition, Parent = plot }, [2] = { Position = otherPosition, Parent = plot } }

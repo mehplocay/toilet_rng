@@ -5,6 +5,7 @@ $generatedPath = Join-Path $workspaceRoot '.ui-check.generated.luau'
 $parts = [System.Collections.Generic.List[string]]::new()
 $parts.Add('local sources = {}')
 $parts.Add('local expectedIcons = {}')
+$parts.Add('local expectedPlaceholderIcons = {}')
 $parts.Add('local expectedAudio = {}')
 $audioCount = 0
 $audioSeen = @{}
@@ -29,6 +30,10 @@ foreach ($asset in $manifest.assets) {
     if ($asset.config_key -and $asset.size[0] -eq 512) {
         $section, $key = $asset.config_key.Split('.')
         $id = $uploads.($asset.category).($asset.name)
+        if (!$id -and $asset.category -in @('passes', 'products')) {
+            $parts.Add("table.insert(expectedPlaceholderIcons, { Group = '$section', Key = '$key' })")
+            continue
+        }
         if (!$id) { throw "Missing uploaded icon: $($asset.name)" }
         $parts.Add("table.insert(expectedIcons, { Group = '$section', Key = '$key', Id = 'rbxassetid://$id' })")
     }
@@ -47,6 +52,8 @@ $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-upgrades.luau')))
 $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-rebirth.luau')))
 $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-economy-v2.luau')))
 $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-path-catalog.luau')))
+$parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-catalog2.luau')))
+$parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'audit-cosmetic-merge.luau')))
 $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'audio-coverage-checks.luau')))
 $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-admin.luau')))
 $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-flushanywhere.luau')))

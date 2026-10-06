@@ -4,7 +4,7 @@
 
 ## Stronger rewards review (2026-10-06)
 
-**This worktree is not ready for acceptance:** the requested R15 x16 cash reward conflicts with the existing catalog's 10x total cash cap. The cap remains unchanged pending an owner decision. Stronger rewards with unchanged gates also fail the requested rebirth pacing. No timing assertion was relaxed. See [current validation](rebirth-values-validation.md) and [three-archetype report](rebirth-values-simulations.txt). Historical pacing and validation numbers below describe the previous reward table unless explicitly identified as current.
+The catalog/rebirth integration retains the nominal stronger reward table under the existing 10x total cash cap, as required by the merge task. R3/R4/R5/R15 coin gates are now 100M/400M/900M/7.5T to restore pacing without loosening balance assertions. See [the latest merge report](catalog2-rebirth-merge.md). Earlier tables and timing measurements below are historical; they predate this gate retuning. The [reward-only validation](rebirth-values-validation.md) records the failures that motivated it.
 
 ## Reset contract
 
@@ -18,7 +18,7 @@
 
 `Rebirth(expectedLevel)` accepts exactly one finite integer generation. Server rules require the current saved level, sufficient wallet coins, and at least **300 successful flushes since the last rebirth**. No toilet-tier requirement remains. Maximum is 15. The entire wallet resets, rather than deducting the gate and retaining excess coins; the window discloses the current wallet and pending loss before its review/hold action.
 
-| Next rebirth | Wallet coin gate | Previous-reward normal cumulative p50 / p90 hours |
+| Next rebirth | Historical wallet coin gate | Previous-reward normal cumulative p50 / p90 hours |
 |---|---:|---:|
 | 1 | 3M | 0.40 / 0.52 |
 | 2 | 12M | 0.57 / 0.76 |
@@ -56,13 +56,13 @@ All gates and rewards live in an explicit 15-row Config/Rebirth table. Cumulativ
 | 14 | +1350% | +92% | 45% |
 | 15 | +1500% | +100% | 50% |
 
-Cash adds to Cash Boost before paid factors: `min(10, (1 + CashBoostEffect + RebirthCash) * DoubleCash * VIP)`. Toilet display factors multiply this result; collection never applies another multiplier. The current 10x total cap clips the upper rewards, including the requested R15 x16. Luck retains the 10x global cap and diminishing returns beyond 5x for odds strictly rarer than 1/25K. Speed retains the 0.4s floor, including Fast Flush. Starter coins and all coin gates are unchanged.
+Cash adds to Cash Boost before paid factors: `min(10, (1 + CashBoostEffect + RebirthCash) * DoubleCash * VIP)`. Toilet display factors multiply this result; collection never applies another multiplier. The current 10x total cap clips the upper rewards, including the requested R15 x16. Luck retains the 10x global cap and diminishing returns beyond 5x for odds strictly rarer than 1/25K. Speed retains the 0.4s floor, including Fast Flush. Starter coins are unchanged; the four retuned gates are listed in the latest merge report.
 
 R5 grants free Auto Collect through the same server method, five-second scheduler, living-owner plot bounds, save guard and fractional ledger used by the pass. It never marks the pass owned or grants coins independently. R10 adds two slots once, up to the ten-slot physical capacity; already-full and legacy larger plots retain capacity without refunds. The saved RebirthAppliedSlots marker prevents repeated grants on rejoin or rebirth. Existing R10+ saves receive the slot allowance on migration while retaining their level.
 
 Config cosmetics unlock at R2 (overhead title), R4 (violet trail), R6 (emerald sign trim), R8 (chat tag), R10 (cyan trail), R12 (gold sign trim), R14 (Eternal chat tag), and R15 (Legend toilet glow, golden title and character aura). The latest unlocked style per category is automatic. They do not modify the toilet tier or economic stats. Effects are reused on refresh and removed on reset/reassignment; respawn uses the existing cosmetic lifecycle. No new assets, remote requests or animation loops are introduced.
 
-Each gate is much larger than its starter grant, so resets cannot print money. Fresh flushes provide a separate minimum even for inherited jackpot displays/offline wallets. The previous p50 95.67h result is superseded by the current 65.25h normal median with unchanged gates; the requested 96h target has not been met. See the 64-seed/archetype simulation and its discretization limits in economy-v2.md.
+Each gate is much larger than its starter grant, so resets cannot print money. Fresh flushes provide a separate minimum even for inherited jackpot displays/offline wallets. The previous p50 95.67h result is superseded by the reward-only 65.25h normal median with the earlier gates. The latest merge report measures the retuned gates. See the 64-seed/archetype simulation and its discretization limits in economy-v2.md.
 
 ## Transaction, replay and migration
 

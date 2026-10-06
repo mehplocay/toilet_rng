@@ -41,7 +41,7 @@ function Service:IdlePaused(player)
 end
 
 function Service:EffectiveOwned(player)
-	local owned = self.Owned[player] or {}
+	local owned = Rules.Entitlements(self.Owned[player], Config)
 	return if self.AdminTestOwnership then self.AdminTestOwnership(player, owned) else owned
 end
 function Service:EffectiveCosmetics(player, original)
@@ -62,6 +62,13 @@ function Service:Load(player)
 		return false
 	end
 	self.Loading[player] = true
+	if self.Lucky then
+		self.Lucky:Refresh(player)
+	end
+	if player.Parent ~= Players then
+		self.Loading[player] = nil
+		return false
+	end
 	local profile = self.Data:Get(player)
 	local owned = self.Owned[player] or (profile and table.clone(profile.Monetization.Passes)) or {}
 	self.Owned[player] = owned
@@ -85,7 +92,7 @@ function Service:Load(player)
 	return complete
 end
 function Service:Luck(player)
-	return 1 -- Paid randomness is not enabled.
+	return 1 -- Passes never grant luck; LuckyService handles explicitly reviewed single-use charges.
 end
 function Service:Cooldown(player, base)
 	return Rules.Cooldown(base, self:EffectiveOwned(player), Config)
@@ -226,7 +233,7 @@ function Service:Start(limiter, remotes, sync, data, world)
 		end
 		if not complete then
 			result(player, "BuyPass", false, "Pass ownership is unavailable. Please try again shortly.")
-		elseif (self.Owned[player] or {})[key] then
+		elseif self:EffectiveOwned(player)[key] then
 			result(player, "BuyPass", true, "You already own this pass.")
 		else
 			self.Pending[player] = { Id = pass.Id, Expires = os.clock() + Config.PromptTimeout }

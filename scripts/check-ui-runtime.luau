@@ -39,6 +39,14 @@ H.Viewports = {
 	{ 640, 303 },
 }
 assert(#expectedIcons == 37, "Incomplete icon manifest")
+for _, icon in ipairs(expectedPlaceholderIcons) do
+	local value = Assets[icon.Group][icon.Key]
+	local verified = value == nil or value == ""
+	for _, uploaded in ipairs(expectedIcons) do
+		verified = verified or (uploaded.Group == icon.Group and uploaded.Key == icon.Key and uploaded.Id == value)
+	end
+	assert(verified, "Unverified catalog icon ID: " .. icon.Key)
+end
 for _, icon in ipairs(expectedIcons) do
 	assert(Assets[icon.Group][icon.Key] == icon.Id, "Wrong upload mapping: " .. icon.Group .. "." .. icon.Key)
 end
@@ -296,6 +304,7 @@ state.OwnedPasses.SparkleTrail = true
 passes.Update(state)
 assert(not offer.Buy.Interactable and offer.Buy.Text == "Owned" and offer.CheckIcon.Visible)
 state.OwnedPasses.SparkleTrail = nil
+passes.Update(state)
 for _, info in ipairs({ { IsForSale = false, PriceInRobux = 79 }, false, { IsForSale = true, PriceInRobux = -1 } }) do
 	productInfo = info
 	passes.Panel.Visible = false

@@ -1,3 +1,5 @@
+> Superseded catalog: the owner-authorized extended catalog now includes premium VIP, cosmetics, eight products and policy-gated Lucky Flush. [Authoritative creation list and current transaction contract](../monetization-catalog.md). Historical implementation notes below describe the prior catalog, including obsolete no-paid-luck statements.
+
 # Fair monetization: implemented catalog
 
 Current integration: [income-first/catalog merge](merge-economy-catalog.md). Income-first rates and ledger caps apply; owner Reset/Import preserve live commerce history. The merged suite has 140 passing audit scenarios. Branch-specific validation below records the earlier catalog implementation.

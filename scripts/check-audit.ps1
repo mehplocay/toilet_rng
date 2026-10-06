@@ -3,7 +3,7 @@ param([switch]$Baseline, [switch]$Audit2Baseline, [switch]$DisplayCollectBaselin
 $ErrorActionPreference = 'Stop'
 $workspaceRoot = Split-Path $PSScriptRoot -Parent
 if (!$Baseline -and !$Audit2Baseline -and !$DisplayCollectBaseline) {
-    $chatConfig = (Get-Content -Raw -LiteralPath (Join-Path $workspaceRoot 'default.project.json') | ConvertFrom-Json).tree.TextChatService
+    $chatConfig = (Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $workspaceRoot 'default.project.json') | ConvertFrom-Json).tree.TextChatService
     if ($chatConfig.'$properties'.ChatVersion -ne 'TextChatService' -or !$chatConfig.'$properties'.CreateDefaultTextChannels -or !$chatConfig.ChatWindowConfiguration.'$properties'.Enabled) {
         throw 'Modern default chat channels and window must be enabled in the built place'
     }
@@ -28,38 +28,40 @@ foreach ($file in (Get-ChildItem -LiteralPath (Join-Path $workspaceRoot 'src') -
         $source = (& git show "${revision}:$relative") -join "`n"
         if ($LASTEXITCODE -ne 0) { throw "Cannot read baseline $relative" }
     } else {
-        $source = Get-Content -Raw -LiteralPath $file.FullName
+        $source = Get-Content -Raw -Encoding UTF8 -LiteralPath $file.FullName
     }
     $parts.Add("sources['$moduleName'] = [====[`n$source`n]====]")
 }
-$parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'audit-harness.luau')))
-$parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'presentation-audit.luau')))
-$parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'check-audit.luau')))
-$parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'audit-upgrades.luau')))
-$parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'audit-rebirth.luau')))
-$parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'audit2-server.luau')))
-$parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'audit-display-collect.luau')))
-$parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'audit-economy-v2.luau')))
+$parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'audit-harness.luau')))
+$parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'presentation-audit.luau')))
+$parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'check-audit.luau')))
+$parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'audit-upgrades.luau')))
+$parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'audit-rebirth.luau')))
+$parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'audit2-server.luau')))
+$parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'audit-display-collect.luau')))
+$parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'audit-economy-v2.luau')))
 if (!$Baseline -and !$Audit2Baseline -and !$DisplayCollectBaseline) {
-    $parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'audit-admin.luau')))
-    $parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'audit-chat-native.luau')))
+    $parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'audit-admin.luau')))
+    $parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'audit-chat-native.luau')))
 }
-$parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'audit-path-catalog.luau')))
+$parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'audit-path-catalog.luau')))
 if (!$Baseline -and !$Audit2Baseline -and !$DisplayCollectBaseline) {
-    $parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'audit-merge-catalog.luau')))
-    $parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'audit-flushanywhere.luau')))
+    $parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'audit-merge-catalog.luau')))
+    $parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'audit-flushanywhere.luau')))
 }
 if (!$Baseline -and !$Audit2Baseline -and !$DisplayCollectBaseline) {
-    $parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'audit-permanent.luau')))
-    $parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'audit-rebirth-values.luau')))
+    $parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'audit-permanent.luau')))
+    $parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'audit-rebirth-values.luau')))
+    $parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'audit-catalog2.luau')))
 }
 $parts.Add('do')
-$parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'ui-harness.luau')))
-$parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'audit2-client.luau')))
-$parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'audit-display-client.luau')))
+$parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'ui-harness.luau')))
+$parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'audit2-client.luau')))
+$parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'audit-display-client.luau')))
 if (!$Baseline -and !$Audit2Baseline -and !$DisplayCollectBaseline) {
-    $parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'ui-flushanywhere.luau')))
-    $parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'audit-chat-client.luau')))
+    $parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'ui-flushanywhere.luau')))
+    $parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'audit-chat-client.luau')))
+    $parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'audit-cosmetic-merge.luau')))
 }
 $parts.Add('end')
 $parts.Add('print(string.format("Audit regressions: %d passed, %d failed", passed, #failures)); assert(#failures == 0, table.concat(failures, "\n"))')

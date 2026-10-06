@@ -4,10 +4,10 @@
 
 ## Stronger rewards review (2026-10-06)
 
-**This worktree is not ready for acceptance:** the requested R15 x16 cash reward conflicts with the existing catalog's 10x total cash cap. The cap remains unchanged pending an owner decision. Stronger rewards with unchanged gates also fail the requested rebirth pacing. No timing assertion was relaxed. See [current validation](rebirth-values-validation.md) and [three-archetype report](rebirth-values-simulations.txt). Historical pacing and validation numbers below describe the previous reward table unless explicitly identified as current.
+The catalog/rebirth integration retains the nominal stronger reward table under the existing 10x total cash cap, as required by the merge task. R3/R4/R5/R15 coin gates are now 100M/400M/900M/7.5T to restore pacing without loosening balance assertions. See [the latest merge report](catalog2-rebirth-merge.md). Earlier tables and timing measurements below are historical; they predate this gate retuning. The [reward-only validation](rebirth-values-validation.md) records the failures that motivated it.
 
 
-## Current seeded medians (hours)
+## Historical reward-only seeded medians (hours)
 
 | Archetype | R1 | R5 | R10 | R15 |
 |---|---:|---:|---:|---:|

@@ -67,6 +67,7 @@ function Runtime.new(data, world, events, remotes)
 		)
 		return {
 			Coins = profile.Coins,
+			LuckyFlushes = profile.Monetization.LuckyFlushes,
 			ToiletTier = profile.ToiletTier,
 			RebirthLevel = profile.RebirthLevel,
 			Flushes = profile.Stats.Flushes,

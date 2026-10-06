@@ -416,10 +416,22 @@ local function server(options)
 		})
 		player.Character = {
 			FindFirstChild = function(_, name)
-				return if name == "HumanoidRootPart" then { Position = position } else nil
+				return if name == "HumanoidRootPart"
+					then {
+						Position = position,
+						FindFirstChild = function()
+							return nil
+						end,
+					}
+					else nil
 			end,
 			FindFirstChildWhichIsA = function()
-				return { Health = player.Health or 100 }
+				return {
+					Health = player.Health or 100,
+					GetAttribute = function()
+						return nil
+					end,
+				}
 			end,
 		}
 		world.Assigned[player] = {
@@ -844,7 +856,14 @@ test("income accepts a live owned collect pad but rejects a removed pad and supp
 		end,
 	})
 	player.Character.FindFirstChild = function(_, name)
-		return if name == "HumanoidRootPart" then { Position = position } else nil
+		return if name == "HumanoidRootPart"
+			then {
+				Position = position,
+				FindFirstChild = function()
+					return nil
+				end,
+			}
+			else nil
 	end
 	local pad = { Position = padPosition }
 	plot.CollectPoints = { pad }

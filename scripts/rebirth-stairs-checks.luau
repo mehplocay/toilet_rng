@@ -82,7 +82,13 @@ do
 	World:Refresh(replacementOwner, profile)
 	assert(plot.StairsOwnerId == replacementOwner.UserId)
 	assert(plot.Sign.Text == "New Owner's Plot\nRebirth 2")
-	assert(plot.RebirthSteps[3].Label.Text == "Rebirth 3:\n300 flushes + 35M Coins" .. bonusText(3))
+	assert(
+		plot.RebirthSteps[3].Label.Text
+			== "Rebirth 3:\n300 flushes + "
+				.. loadModule(node("src/shared/NumberFormat")).Compact(config.Levels[3].RequiredCoins)
+				.. " Coins"
+				.. bonusText(3)
+	)
 	World.Assigned[replacementOwner] = nil
 	plot.Model:Destroy()
 	print(

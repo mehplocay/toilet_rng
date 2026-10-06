@@ -1,4 +1,36 @@
 -- Additional production-module scenarios; all earlier audit cases still execute.
+test("merged rebirth/catalog: bundle and overlapping VIP/Extra Slots preserve R10 capacity exactly once", function()
+	for _, bundle in ipairs({ false, true }) do
+		local e, player, p, commerce, config = catalogPlayer(if bundle then 727 else 726)
+		local service = e:Load("src/server/Services/MonetizationService")
+		-- Geometry is covered by audit-cosmetic-merge; this fixture exercises server entitlements and saves.
+		service.Cosmetics = nil
+		local owned = if bundle
+			then { UltimateBundle = true, VIPPack = true, ExtraSlots = true }
+			else { VIPPack = true, ExtraSlots = true }
+		for key in pairs(owned) do
+			config.Gamepasses[key].Id = 8800 + table.find(config.PassOrder, key)
+		end
+		service.Owned[player] = owned
+		commerce:Apply(player, owned)
+		assert(p.DisplaySlots == 8 and p.Monetization.AppliedSlots == 5)
+		local rebirth = e:Load("src/shared/Config/Rebirth")
+		p.RebirthLevel, p.RunFlushes, p.Coins = 9, rebirth.RequiredFlushes, rebirth.Levels[10].RequiredCoins
+		p.Inventory.Rat, p.Displays["8"] = 1, "Rat"
+		e:Fire("Rebirth", player, 9)
+		p = e.Data:Get(player)
+		assert(p.RebirthLevel == 10 and p.DisplaySlots == 10 and p.RebirthAppliedSlots == 2)
+		for _ = 1, 10 do
+			commerce:Apply(player, owned)
+		end
+		assert(p.DisplaySlots == 10 and p.Monetization.AppliedSlots == 5 and p.Displays["8"] == "Rat")
+		e.Data:Close(player)
+		player.Parent = nil
+		local _, restored = e:Join(player.UserId)
+		assert(restored.DisplaySlots == 10 and restored.RebirthAppliedSlots == 2 and restored.Displays["8"] == "Rat")
+	end
+end)
+
 test("rebirth rewards: exact targets, all rows, lookup and existing-level migration", function()
 	local e = server()
 	local config = e:Load("src/shared/Config/Rebirth")
@@ -134,7 +166,7 @@ test("rebirth rewards: additive upgrades, toilet multiplication, paid cap, luck 
 					+ math.min(cash, 10) * 0.1
 					+ math.max(0, cash - 10) * 0.025
 					+ (if level == 0 then 0 else config.Levels[level].Cash)
-				local factor = (if passes.DoubleCash then 2 else 1) * (if passes.VIPPack then 1.25 else 1)
+				local factor = (if passes.DoubleCash then 2 else 1) * (if passes.VIPPack then 1.5 else 1)
 				assert(math.abs(u:Cash(p) - math.min(cap, base * factor)) < 1e-10)
 				assert(u:Luck(p, 1.3, 2, 2, 1e300) == 10 and u:Cooldown(p, 1.8 * 0.8) >= 0.4)
 			end
@@ -188,6 +220,7 @@ test("rebirth rewards: configured chat tag composes with VIP and preserves filte
 	local free = chat.OnChatWindowAdded(message).PrefixText
 	assert(free:find("Bowl Champion", 1, true) and free:sub(-13) == "FilteredName:")
 	player:SetAttribute("VIPStar", true)
+	player:SetAttribute("VIPPack", true)
 	local both = chat.OnChatWindowAdded(message).PrefixText
 	assert(
 		both:find("Bowl Champion", 1, true) and both:find(e:Load("src/shared/Config/Monetization").VIPLabel, 1, true)

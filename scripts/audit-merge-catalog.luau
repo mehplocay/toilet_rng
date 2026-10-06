@@ -145,7 +145,7 @@ test(
 						+ math.max(0, level - 10) * 0.025
 						+ (if bonus then bonus.Cash else 0)
 					local expected =
-						math.min(10, base * (if paid.DoubleCash then 2 else 1) * (if paid.VIPPack then 1.25 else 1))
+						math.min(10, base * (if paid.DoubleCash then 2 else 1) * (if paid.VIPPack then 1.5 else 1))
 					assert(math.abs(u:Cash(p) - expected) < 1e-12 and u:Cash(p) <= 10)
 				end
 			end

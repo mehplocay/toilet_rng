@@ -1,6 +1,6 @@
 # Stronger rebirth rewards validation
 
-2026-10-06, feature/rebirthvalues. Uncommitted; no push.
+2026-10-06, feature/rebirthvalues. Historical reward-only validation; see [the later catalog/rebirth integration](catalog2-rebirth-merge.md) for gate retuning and merged checks. Uncommitted; no push.
 
 ## Unresolved owner decisions
 

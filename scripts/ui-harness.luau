@@ -84,6 +84,9 @@ end
 local frameMT = {}
 local CFrame = {}
 function CFrame.new(x, y, z)
+	if type(x) == "table" then
+		x, y, z = x.X, x.Y, x.Z
+	end
 	return setmetatable({ Position = Vector3.new(x, y, z) }, frameMT)
 end
 function CFrame.Angles()
@@ -119,6 +122,13 @@ end
 local Color3, colorMT = {}, {}
 function Color3.new(r, g, b)
 	return setmetatable({ R = r or 0, G = g or 0, B = b or 0 }, colorMT)
+end
+function Color3.fromHSV(h, s, v)
+	local i = math.floor(h * 6)
+	local f = h * 6 - i
+	local p, q, t = v * (1 - s), v * (1 - f * s), v * (1 - (1 - f) * s)
+	local rgb = { { v, t, p }, { q, v, p }, { p, v, t }, { p, q, v }, { t, p, v }, { v, p, q } }
+	return Color3.new(table.unpack(rgb[i % 6 + 1]))
 end
 function Color3.fromRGB(r, g, b)
 	return Color3.new(r / 255, g / 255, b / 255)
@@ -250,6 +260,9 @@ end
 function methods:WaitForChild(name)
 	return assert(self:FindFirstChild(name), name)
 end
+function methods:PivotTo(cf)
+	self.LastPivot = cf
+end
 function methods:Play()
 	self.IsPlaying = true
 	self.Plays = (self.Plays or 0) + 1
@@ -347,6 +360,8 @@ function Instance.new(class)
 		"DescendantRemoving",
 		"Ended",
 		"Loaded",
+		"CharacterAdded",
+		"CharacterRemoving",
 	}) do
 		object._props[event] = signal()
 	end
@@ -368,7 +383,7 @@ local services = {
 	GuiService = {},
 	TweenService = {},
 	ContentProvider = {},
-	Players = {},
+	Players = { PlayerAdded = signal(), PlayerRemoving = signal() },
 	ContextActionService = {},
 }
 function services.StarterGui:GetCoreGuiEnabled(kind)
@@ -509,6 +524,7 @@ local globals = {
 	ColorSequence = sequence,
 	ColorSequenceKeypoint = sequence,
 	NumberSequence = sequence,
+	NumberRange = sequence,
 	NumberSequenceKeypoint = sequence,
 	TweenInfo = sequence,
 	os = {
@@ -540,6 +556,10 @@ loadModule = function(module)
 	local result = fn()
 	cache[path] = result
 	return result
+end
+function H.Reload(path)
+	cache[path] = nil
+	return loadModule(path)
 end
 function H.Root(w, h)
 	local root = Instance.new("Frame")
@@ -573,6 +593,7 @@ function H.Remotes()
 		"BuyPass",
 		"BuyProduct",
 		"ClaimVIP",
+		"LuckyFlush",
 		"RefreshPasses",
 		"DevGrant",
 		"TutorialDone",

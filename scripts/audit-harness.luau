@@ -135,6 +135,17 @@ local function environment(options)
 			end,
 		},
 		MarketplaceService = marketplace,
+		PolicyService = {
+			GetPolicyInfoForPlayerAsync = function(_, player)
+				if env.PolicyError then
+					error("Policy unavailable")
+				end
+				if env.PolicyLookup then
+					return env.PolicyLookup(player)
+				end
+				return { ArePaidRandomItemsRestricted = false }
+			end,
+		},
 		TweenService = {
 			Create = function(_, object, _, target)
 				return {
@@ -175,6 +186,7 @@ local function environment(options)
 	end
 	local globals = {
 		Enum = {
+			Material = { Neon = "Neon" },
 			ProductPurchaseDecision = { NotProcessedYet = "NotProcessedYet", PurchaseGranted = "PurchaseGranted" },
 			EasingStyle = { Sine = "Sine" },
 			EasingDirection = { InOut = "InOut" },
@@ -256,6 +268,9 @@ local function environment(options)
 		new = function(class)
 			local object = if class == "RemoteEvent" then env:Remote() else {}
 			object.ClassName = class
+			if class == "ProximityPrompt" then
+				object.Triggered = signal()
+			end
 			function object:Destroy()
 				self.Parent = nil
 				self.Destroyed = true

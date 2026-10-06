@@ -217,7 +217,7 @@ test("catalog cash: sales, service, passive, daily and offline caps honor paid f
 	service.Commerce:Apply(player, service.Owned[player])
 	local rules = e:Load("src/shared/UpgradeRules").new(e:Load("src/shared/Config/Upgrades"))
 	local paid = e:Load("src/shared/PaidBenefits")
-	assert(rules:Cash(p) == 2.5 and service:Luck(player) == 1 and paid.Cash(p, 1e300) == config.CashMultiplierCap)
+	assert(rules:Cash(p) == 3 and service:Luck(player) == 1 and paid.Cash(p, 1e300) == config.CashMultiplierCap)
 	p.RebirthLevel, p.Upgrades.CashBoost = 15, 10
 	assert(math.abs(rules:Cash(p) - 10) < 1e-9)
 	p.Inventory.Rat = 3
@@ -237,7 +237,7 @@ test("catalog cash: sales, service, passive, daily and offline caps honor paid f
 			return e.Now
 		end)
 	local base = daily.Schedule.Coins(1, p.ToiletTier, daily.Config)
-	assert(daily:Claim(p).Coins == math.floor(base * 2.5))
+	assert(daily:Claim(p).Coins == math.floor(base * 3))
 	local income = service.Commerce.Income
 	p.Displays["1"] = "Rat"
 	local rate = income:Rates(p)["1"]

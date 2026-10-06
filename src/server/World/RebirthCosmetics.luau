@@ -89,6 +89,7 @@ function Cosmetics.Plot(plot, level)
 		stroke = stroke or Instance.new("UIStroke")
 		stroke.Name, stroke.Thickness = "RebirthTrim", 3
 		stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+		stroke.BorderStrokePosition, stroke.ZIndex = Enum.BorderStrokePosition.Inner, 2
 		stroke.Color, stroke.Parent = Color3.fromRGB(table.unpack(trim.RGB)), plot.Sign
 	else
 		remove(plot.Sign, "RebirthTrim")

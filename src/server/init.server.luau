@@ -31,6 +31,7 @@ for _, key in ipairs({
 	"BuyPass",
 	"BuyProduct",
 	"ClaimVIP",
+	"LuckyFlush",
 	"RefreshPasses",
 	"DevGrant",
 	"TutorialDone",

@@ -3,7 +3,11 @@ local Config = require(if script then script.Parent.Config.Monetization else "./
 local Benefits = {}
 function Benefits.Owns(profile, key)
 	local passes = profile and (if profile.Monetization then profile.Monetization.Passes else profile.OwnedPasses)
-	return passes ~= nil and passes[key] == true
+	return passes ~= nil
+		and (
+			passes[key] == true
+			or (key ~= "UltimateBundle" and Config.Gamepasses[key] ~= nil and passes.UltimateBundle == true)
+		)
 end
 function Benefits.Cash(profile, base)
 	local factor = 1
@@ -17,9 +21,11 @@ end
 function Benefits.Offline(profile, minutes)
 	return minutes
 		* (if Benefits.Owns(profile, "OfflinePlus") then Config.Gamepasses.OfflinePlus.OfflineMultiplier else 1)
+		* (if Benefits.Owns(profile, "VIPPack") then Config.Gamepasses.VIPPack.OfflineMultiplier else 1)
 end
 function Benefits.Slots(profile)
-	return if Benefits.Owns(profile, "ExtraSlots") then Config.Gamepasses.ExtraSlots.Slots else 0
+	return (if Benefits.Owns(profile, "ExtraSlots") then Config.Gamepasses.ExtraSlots.Slots else 0)
+		+ (if Benefits.Owns(profile, "VIPPack") then Config.Gamepasses.VIPPack.Slots else 0)
 end
 function Benefits.CoinGrant(rate, seconds)
 	if type(rate) ~= "number" or rate ~= rate or rate < 0 or rate == math.huge then

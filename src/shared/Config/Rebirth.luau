@@ -21,7 +21,7 @@ local levels = {
 		Perks = { "Bowl Apprentice title" },
 	},
 	{
-		RequiredCoins = 35000000,
+		RequiredCoins = 100000000,
 		Cash = 1.8,
 		Luck = 0.15,
 		Speed = 0.07,
@@ -31,7 +31,7 @@ local levels = {
 		Perks = { "Porcelain Keeper title" },
 	},
 	{
-		RequiredCoins = 100000000,
+		RequiredCoins = 400000000,
 		Cash = 2.4,
 		Luck = 0.2,
 		Speed = 0.09,
@@ -41,7 +41,7 @@ local levels = {
 		Perks = { "Royal Cleaner title" },
 	},
 	{
-		RequiredCoins = 500000000,
+		RequiredCoins = 900000000,
 		Cash = 3,
 		Luck = 0.25,
 		Speed = 0.1,
@@ -141,7 +141,7 @@ local levels = {
 		Perks = { "Eternal Cleaner title" },
 	},
 	{
-		RequiredCoins = 2500000000000,
+		RequiredCoins = 7500000000000,
 		Cash = 15,
 		Luck = 1,
 		Speed = 0.5,

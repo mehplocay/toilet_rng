@@ -98,7 +98,9 @@ do
 		root:GetPropertyChangedSignal("AbsoluteSize"):Fire()
 		H.Layout(root)
 		for _, key in ipairs(config.ProductOrder) do
-			local card = boosts[key].OfferCard
+			local card = (if config.DeveloperProducts[key].LuckyCharges
+				then ui.Panel:FindFirstChild("LuckyGrid", true)
+				else boosts)[key].OfferCard
 			assert(card.Buy.Text == "Coming soon" and not card.Buy.Interactable)
 			assert(card.Buy.AbsoluteSize.X >= 100 and card.Buy.AbsoluteSize.Y >= 44)
 			local calls = #H.Calls
@@ -109,6 +111,9 @@ do
 	end
 	local original = H.Services.MarketplaceService.GetProductInfoAsync
 	H.Services.MarketplaceService.GetProductInfoAsync = function(_, id, kind)
+		if kind == "InfoType.GamePass" then
+			return { IsForSale = false, PriceInRobux = 59 }
+		end
 		assert(id == 234 and kind == "InfoType.Product")
 		return { IsForSale = true, PriceInRobux = 45 }
 	end

@@ -7,23 +7,62 @@ local RebirthCosmetics = require(script.Parent.Parent.World.RebirthCosmetics)
 local CosmeticService = {}
 CosmeticService.__index = CosmeticService
 
+local function remove(parent, name)
+	local child = parent and parent:FindFirstChild(name)
+	if child then
+		child:Destroy()
+	end
+end
+
+local function clearPaidTrail(root)
+	for _, name in ipairs({ "PassSparkleTrail", "PassTrailLeft", "PassTrailRight", "PassSparkles" }) do
+		remove(root, name)
+	end
+end
+
+function CosmeticService:ClearCharacter(character)
+	if not character then
+		return
+	end
+	local root, head = character:FindFirstChild("HumanoidRootPart"), character:FindFirstChild("Head")
+	clearPaidTrail(root)
+	for _, name in ipairs({ "RebirthTrail", "RebirthTrailLeft", "RebirthTrailRight" }) do
+		remove(root, name)
+	end
+	for _, name in ipairs({ "RebirthTitle", "PassVIPStar", "PassName" }) do
+		remove(head, name)
+	end
+	remove(character, "RebirthAura")
+	local humanoid = character:FindFirstChildWhichIsA("Humanoid")
+	local prior = humanoid and humanoid:GetAttribute("PassNameDistance")
+	if prior ~= nil then
+		humanoid.NameDisplayDistance = prior
+		humanoid:SetAttribute("PassNameDistance", nil)
+	end
+end
+
 function CosmeticService.new(world)
-	return setmetatable({ World = world, Colors = {}, PlayerPlots = {} }, CosmeticService)
+	return setmetatable({ World = world, Colors = {}, PlayerPlots = {}, Connections = {} }, CosmeticService)
 end
 
 function CosmeticService:Apply(player, owned, profile)
 	RebirthCosmetics.Character(player, profile)
+	owned = Rules.Entitlements(owned, Config)
+	for _, key in ipairs({ "RainbowName", "GoldenName", "ConfettiReveal", "DancePack", "Companion", "VIPPack" }) do
+		player:SetAttribute(key, owned[key] == true)
+	end
 	local character = player.Character
 	local root = character and character:FindFirstChild("HumanoidRootPart")
 	local head = character and character:FindFirstChild("Head")
 	local vip = owned.VIPStar == true or owned.VIPPack == true
 	local gold = Color3.fromRGB(table.unpack(Config.VIPTrailRGB))
 	local trailColor = if owned.VIPPack then gold else Color3.fromRGB(table.unpack(Config.SparkleRGB))
-	if
-		root
-		and (owned.SparkleTrail == true or owned.VIPPack == true)
-		and not root:FindFirstChild("PassSparkleTrail")
-	then
+	-- No trail selector exists. Rebirth (including Legend) > VIP gold > Sparkle.
+	local paidTrail = (owned.SparkleTrail or owned.VIPPack) and root and not root:FindFirstChild("RebirthTrail")
+	if not paidTrail then
+		clearPaidTrail(root)
+	end
+	if root and paidTrail and not root:FindFirstChild("PassSparkleTrail") then
 		local left, right = Instance.new("Attachment"), Instance.new("Attachment")
 		left.Name, right.Name = "PassTrailLeft", "PassTrailRight"
 		left.Position, right.Position = Vector3.new(-0.65, -1, 0), Vector3.new(0.65, -1, 0)
@@ -41,7 +80,7 @@ function CosmeticService:Apply(player, owned, profile)
 			SpreadAngle = Vector2.new(180, 180),
 		})
 	end
-	if root and (owned.SparkleTrail == true or owned.VIPPack == true) and root:FindFirstChild("PassSparkleTrail") then
+	if paidTrail and root:FindFirstChild("PassSparkleTrail") then
 		root.PassSparkleTrail.Color = ColorSequence.new(trailColor)
 		local sparkles = root:FindFirstChild("PassSparkles")
 		if sparkles then
@@ -49,6 +88,9 @@ function CosmeticService:Apply(player, owned, profile)
 		end
 	end
 	player:SetAttribute("VIPStar", vip)
+	if not vip then
+		remove(head, "PassVIPStar")
+	end
 	if head and vip and not head:FindFirstChild("PassVIPStar") then
 		local tag = Instance.new("BillboardGui")
 		tag.Name, tag.Adornee = "PassVIPStar", head
@@ -58,16 +100,74 @@ function CosmeticService:Apply(player, owned, profile)
 		tag.Parent = head
 		local label = Instance.new("TextLabel")
 		label.Size, label.BackgroundTransparency = UDim2.fromScale(1, 1), 1
-		label.Text, label.TextColor3 = Config.VIPLabel, gold
+		label.Text, label.TextColor3 = if owned.VIPPack then Config.VIPLabel else "\u{2605}", gold
 		label.Font, label.TextSize = Enum.Font.GothamBold, 22
 		label.TextStrokeTransparency = 0.3
 		label.Parent = tag
+	end
+	if head then
+		local humanoid = character:FindFirstChildWhichIsA("Humanoid")
+		if humanoid then
+			if owned.RainbowName or owned.GoldenName then
+				if humanoid:GetAttribute("PassNameDistance") == nil then
+					humanoid:SetAttribute("PassNameDistance", humanoid.NameDisplayDistance)
+				end
+				humanoid.NameDisplayDistance = 0
+			else
+				local prior = humanoid:GetAttribute("PassNameDistance")
+				if prior ~= nil then
+					humanoid.NameDisplayDistance = prior
+					humanoid:SetAttribute("PassNameDistance", nil)
+				end
+				local old = head:FindFirstChild("PassName")
+				if old then
+					old:Destroy()
+				end
+			end
+		end
+		local star = head:FindFirstChild("PassVIPStar")
+		if star then
+			star:FindFirstChildWhichIsA("TextLabel").Text = if owned.VIPPack then Config.VIPLabel else "\u{2605}"
+		end
+		if (owned.RainbowName or owned.GoldenName) and not head:FindFirstChild("PassName") then
+			local tag = Instance.new("BillboardGui")
+			tag.Name, tag.Adornee, tag.Size, tag.StudsOffset, tag.MaxDistance =
+				"PassName", head, UDim2.fromOffset(220, 32), Vector3.new(0, 2.4, 0), 70
+			tag.Parent = head
+			local label = Instance.new("TextLabel")
+			label.Name, label.Size, label.BackgroundTransparency = "NameColor", UDim2.fromScale(1, 1), 1
+			label.Text, label.TextColor3, label.RichText = player.DisplayName, gold, false
+			label.Font, label.TextSize, label.TextStrokeTransparency, label.Parent = Enum.Font.GothamBold, 20, 0.3, tag
+		end
 	end
 	local plot = self.World.Assigned[player]
 	if not plot then
 		return
 	end
 	self.PlayerPlots[player] = plot
+	if not owned.ToiletGlow then
+		remove(plot.PromptAnchor, "PassToiletGlow")
+	end
+	if not owned.VIPPack then
+		remove(plot.Sign, "VIPTrim")
+		remove(plot.Model, "VIPPlotSign")
+	end
+	if owned.ToiletGlow and plot.PromptAnchor and not plot.PromptAnchor:FindFirstChild("PassToiletGlow") then
+		P.Particles(
+			plot.PromptAnchor,
+			"PassToiletGlow",
+			gold,
+			5,
+			{ Speed = NumberRange.new(1, 2), SpreadAngle = Vector2.new(180, 180) }
+		)
+	end
+	if owned.VIPPack and plot.Sign and not plot.Sign:FindFirstChild("VIPTrim") then
+		local trim = Instance.new("UIStroke")
+		trim.Name, trim.Color, trim.Thickness, trim.ApplyStrokeMode, trim.Parent =
+			"VIPTrim", gold, 4, Enum.ApplyStrokeMode.Border, plot.Sign
+		-- VIP frames the outside; the earned rebirth trim remains visible inside.
+		trim.BorderStrokePosition, trim.BorderOffset, trim.ZIndex = Enum.BorderStrokePosition.Outer, UDim.new(0, 2), 1
+	end
 	if owned.VIPPack and plot.IncomePoint and not plot.Model:FindFirstChild("VIPPlotSign") then
 		local tag = Instance.new("BillboardGui")
 		tag.Name, tag.Adornee = "VIPPlotSign", plot.IncomePoint
@@ -101,6 +201,12 @@ end
 
 function CosmeticService:ResetPlot(plot)
 	RebirthCosmetics.Plot(plot, 0)
+	for _, name in ipairs({ "PassToiletGlow", "VIPTrim" }) do
+		local effect = plot.Model:FindFirstChild(name, true)
+		if effect then
+			effect:Destroy()
+		end
+	end
 	local sign = plot.Model:FindFirstChild("VIPPlotSign")
 	if sign then
 		sign:Destroy()
@@ -112,15 +218,32 @@ end
 
 function CosmeticService:Remove(player)
 	local plot = self.PlayerPlots[player]
-	if plot then
+	if plot and (not plot.Owner or plot.Owner == player) then
 		self:ResetPlot(plot)
 	end
+	self:ClearCharacter(player.Character)
+	for _, key in ipairs({
+		"VIPStar",
+		"RainbowName",
+		"GoldenName",
+		"ConfettiReveal",
+		"DancePack",
+		"Companion",
+		"VIPPack",
+	}) do
+		player:SetAttribute(key, false)
+	end
+	player:SetAttribute("RebirthChatLevel", 0)
+	for _, connection in ipairs(self.Connections[player] or {}) do
+		connection:Disconnect()
+	end
+	self.Connections[player] = nil
 	self.PlayerPlots[player] = nil
 end
 
 function CosmeticService:Start(owned, profile)
 	local function connect(player)
-		player.CharacterAdded:Connect(function(character)
+		local added = player.CharacterAdded:Connect(function(character)
 			task.spawn(function()
 				character:WaitForChild("HumanoidRootPart", 10)
 				character:WaitForChild("Head", 10)
@@ -129,6 +252,10 @@ function CosmeticService:Start(owned, profile)
 				end
 			end)
 		end)
+		local removing = player.CharacterRemoving:Connect(function(character)
+			self:ClearCharacter(character)
+		end)
+		self.Connections[player] = { added, removing }
 		self:Apply(player, owned[player] or {}, profile(player))
 	end
 	Players.PlayerAdded:Connect(connect)
