@@ -4,9 +4,11 @@ local Items = require("../src/shared/Config/Items")
 local Inventory = require("../src/shared/SafeInventory")
 local U = require("../src/shared/UpgradeRules").new(require("../src/shared/Config/Upgrades"))
 local Income = require("../src/shared/IncomeAccrual").new(require("../src/shared/Config/Income"), Items, U)
+local Config = require("../src/shared/Config/Income")
 local ordered = table.clone(Items)
 table.sort(ordered, function(a, b)
-	return a.Value > b.Value
+	local ar, br = Config.RarityRates[a.Rarity], Config.RarityRates[b.Rarity]
+	return if ar ~= br then ar > br elseif a.Value ~= b.Value then a.Value > b.Value else a.Id < b.Id
 end)
 local D = {}
 function D.Settle(p, seconds)

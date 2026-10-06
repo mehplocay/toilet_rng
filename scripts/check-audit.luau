@@ -584,19 +584,19 @@ test("manual, prompt and auto flush share cooldown and server-owned RNG", functi
 	e.World.Flush(player)
 	local autoThread = e.Threads[1]
 	e:Resume(autoThread)
-	assert(profile.Stats.Flushes == 101 and profile.Inventory.Poop == 1 and profile.Coins == 1)
+	assert(profile.Stats.Flushes == 101 and profile.Inventory.Poop == 1 and profile.Coins == 40)
 	e.Now += cooldown - 0.01
 	e:Resume(autoThread)
 	assert(profile.Stats.Flushes == 101)
 	e.Now += 0.02
 	e:Resume(autoThread)
-	assert(profile.Stats.Flushes == 102 and profile.Inventory.Poop == 2 and profile.Coins == 2)
-	assert(profile.Stats.Earned == 2 and profile.Collection.Poop == 2)
+	assert(profile.Stats.Flushes == 102 and profile.Inventory.Poop == 2 and profile.Coins == 80)
+	assert(profile.Stats.Earned == 80 and profile.Collection.Poop == 2)
 	local results = 0
 	for _, result in ipairs(e.Results) do
 		if result.Payload[1] == "Flush" then
 			results += 1
-			assert(result.Payload[2].ServiceCoins == 1 and result.Payload[2].Cooldown == cooldown)
+			assert(result.Payload[2].ServiceCoins == 40 and result.Payload[2].Cooldown == cooldown)
 		end
 	end
 	assert(results == 2)
@@ -650,7 +650,7 @@ test("manual and automatic flush reject foreign plots and non-finite distances",
 	e.World.Assigned[player] = plot
 	e.Now += 3
 	e:Fire("Flush", player)
-	assert(profile.Stats.Flushes == 101 and profile.Coins == 1 and profile.Inventory.Poop == 1)
+	assert(profile.Stats.Flushes == 101 and profile.Coins == 40 and profile.Inventory.Poop == 1)
 end)
 
 test("auto flush shares manual rate limits and stops on character removal", function()
@@ -669,12 +669,12 @@ test("auto flush shares manual rate limits and stops on character removal", func
 	assert(profile.Stats.Flushes == 100 and profile.Coins == 0)
 	e.Now += 1
 	e:Resume(autoThread)
-	assert(profile.Stats.Flushes == 101 and profile.Coins == 1)
+	assert(profile.Stats.Flushes == 101 and profile.Coins == 40)
 	player.CharacterRemoving:Fire(player.Character)
 	assert(not monetization.Auto[player])
 	e.Now += 3
 	e:Resume(autoThread)
-	assert(profile.Stats.Flushes == 101 and profile.Coins == 1)
+	assert(profile.Stats.Flushes == 101 and profile.Coins == 40)
 end)
 
 test("duplicate daily claim during a yielding save credits only once", function()
@@ -756,11 +756,11 @@ test("income migration, offline cap and ambiguous acquisition consume time once"
 	e.Store.After = nil
 	e:Resume(load)
 	p = data:Get(joined)
-	assert(p.Income.Pending["1"] == 5 * 240 * 6000 and p.Income.UpdatedAt == e.Now)
+	assert(p.Income.Pending["1"] == 40 * 480 * 60 * 6000 and p.Income.UpdatedAt == e.Now)
 	data:Close(joined)
 	local third = e:Player(50)
 	data:Load(third)
-	assert(data:Get(third).Income.Pending["1"] == 5 * 240 * 6000, "Reconnect duplicated offline credit")
+	assert(data:Get(third).Income.Pending["1"] == 40 * 480 * 60 * 6000, "Reconnect duplicated offline credit")
 end)
 
 test("income settles before display removal, replacement and tier change; reservations remain", function()
@@ -770,11 +770,11 @@ test("income settles before display removal, replacement and tier change; reserv
 	e:Fire("Display", player, "Duck", 1)
 	e.Now += 60
 	e:Fire("Display", player, nil, 1)
-	assert(p.Income.Pending["1"] == 30000)
+	assert(p.Income.Pending["1"] == 14400000)
 	e:Fire("Display", player, "Poop", 1)
 	e.Now += 60
 	e:Fire("State", player)
-	assert(p.Income.Pending["1"] == 54000)
+	assert(p.Income.Pending["1"] == 14760000)
 	e:Fire("Sell", player, "Poop", 2)
 	assert(p.Inventory.Poop == 2, "Sale consumed reserved/first copy")
 	e:Fire("Sell", player, "Poop", 1)
@@ -782,17 +782,17 @@ test("income settles before display removal, replacement and tier change; reserv
 	e:Fire("Display", player, nil, 1)
 	e.Now += 10
 	e:Fire("State", player)
-	assert(p.Income.Pending["1"] == 54000, "Empty slot earned income")
+	assert(p.Income.Pending["1"] == 14760000, "Empty slot earned income")
 	e:Fire("Sell", player, "Poop", 1)
 	assert(p.Inventory.Poop == 1, "First-copy protection changed")
 	e:Fire("Display", player, "Duck", 1)
-	p.Coins = 1000
+	p.Coins = 100000
 	e.Now += 10
 	e:Fire("BuyToilet", player, "Dirty")
-	assert(p.ToiletTier == 2 and p.Income.Pending["1"] == 59000)
+	assert(p.ToiletTier == 2 and p.Income.Pending["1"] == 17160000)
 	e.Now += 20
 	e:Fire("State", player)
-	assert(p.Income.Pending["1"] == 73000, "New tier cap applied retroactively")
+	assert(p.Income.Pending["1"] == 24360000, "New tier cap applied retroactively")
 end)
 
 test("income collect validates geometry, ownership, life, arguments and shared rate limit", function()
@@ -956,11 +956,11 @@ test("income departure timestamp freezes before a queued final save yields", fun
 	e:Resume(save)
 	e:Resume(close)
 	local saved = e.Store.Records.Player_56.Data.Income
-	assert(saved.UpdatedAt == departure and saved.Pending["1"] == 15000)
+	assert(saved.UpdatedAt == departure and saved.Pending["1"] == 7200000)
 	e.Now += 86400
 	local joined = e:Player(56)
 	data:Load(joined)
-	assert(data:Get(joined).Income.Pending["1"] == 15000 + 5 * 240 * 6000)
+	assert(data:Get(joined).Income.Pending["1"] == 7200000 + 40 * 480 * 60 * 6000)
 end)
 
 runPresentationAudit(test, environment, server)

@@ -1,6 +1,7 @@
 local C = require(script.Parent.Components)
 local Shared = game.ReplicatedStorage.Shared
 local Config = require(Shared.Config.Upgrades)
+local Income = require(Shared.Config.Income)
 local Assets = require(Shared.Config.Assets)
 local rules = require(Shared.UpgradeRules).new(Config)
 local Tracks = {}
@@ -16,7 +17,7 @@ function Tracks.Create(body, remotes)
 		FlushSpeed = "Shorter shared cooldown. Always at least " .. Config.CooldownFloor .. " seconds.",
 		AutoFlushSpeed = "Faster auto interval, never below your flush cooldown. Free at 100 flushes.",
 		DisplaySlots = "+1 display slot per purchase. Ten physical slots; index rewards kept.",
-		OfflineTank = "More offline display income time. Pending coin limits still apply.",
+		OfflineTank = "8 hours offline at base; upgrades extend time. Storage limits apply.",
 	}
 	for order, track in ipairs(Config.Tracks) do
 		local card = C.Card(row, colors[order], false)
@@ -66,7 +67,8 @@ function Tracks.Create(body, remotes)
 					FlushSpeed = string.format("%.2fs current cooldown", stats.Cooldown or 1.5),
 					AutoFlushSpeed = string.format("%.2fs current auto interval", stats.AutoInterval or 3),
 					DisplaySlots = tostring(state.DisplaySlots or 3) .. " slots unlocked",
-					OfflineTank = tostring(stats.OfflineMinutes or 240) .. " minutes offline cap",
+					OfflineTank = tostring((stats.OfflineMinutes or Income.OfflineMinutes) / 60)
+						.. " hours offline cap",
 				}
 				card.Effect.Text = effects[track.Id]
 				card.Price.Text = if full then "PLOT FULL" elseif price then C.Commas(price) .. " Coins" else "MAX LEVEL"

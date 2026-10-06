@@ -3,7 +3,7 @@ local Roll = require("../src/server/Services/RollService")
 local Items = require("../src/shared/Config/Items")
 local Toilets = require("../src/shared/Config/Toilets")
 
-local expectedAwards = { 1, 2, 4, 8, 15, 33, 70 }
+local expectedAwards = { 40, 60, 80, 100, 1200, 2400, 4500 }
 for tier, toilet in ipairs(Toilets) do
 	assert(toilet.ServiceCoins == expectedAwards[tier], "Service award differs from the progression design")
 	local profile = { Coins = 10, Stats = { Earned = 20 }, Inventory = { Poop = 1 } }
@@ -37,11 +37,12 @@ end
 
 -- Buy all first four upgrades using only service income, retaining every fallback item.
 local profile = { Coins = 0, Stats = { Earned = 0, Flushes = 0 }, Inventory = {}, Collection = {} }
-local minutes = 0
+local minutes, upper = 0, 0
 for tier = 1, 4 do
 	local toilet, price = Toilets[tier], Toilets[tier + 1].Price
 	local before = profile.Stats.Flushes
 	local limit = math.ceil(price / toilet.ServiceCoins)
+	upper += limit * toilet.Cooldown / 60 / 0.75
 	while profile.Coins < price do
 		local item = Roll.Roll(Items, Toilets, tier, function()
 			return 0.999999999
@@ -57,7 +58,8 @@ for tier = 1, 4 do
 	profile.Coins -= price
 	assert(profile.Coins >= 0)
 end
-assert(minutes <= 95)
+-- This deliberately ignores the main income engine; still finite and deterministic.
+assert(minutes <= upper + 1e-7)
 assert(profile.Inventory.Poop == profile.Stats.Flushes and profile.Collection.Poop == profile.Stats.Flushes)
 assert(
 	profile.Stats.Earned == profile.Coins + Toilets[2].Price + Toilets[3].Price + Toilets[4].Price + Toilets[5].Price

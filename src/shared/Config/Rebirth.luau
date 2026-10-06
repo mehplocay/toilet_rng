@@ -33,9 +33,8 @@ for level = 1, 15 do
 	}
 end
 return {
-	-- The original 1,200 proposal takes ~28 minutes with today's faster toilets.
-	-- 3,600 targets ~71 minutes at 75% active uptime; see scripts/balance.luau.
-	RequiredFlushes = 3600,
+	-- Income-first cohort: about 60 minutes; currency cannot bypass fresh flushes.
+	RequiredFlushes = 3300,
 	RequiredTier = 4, -- Diamond (one-based runtime tiers).
 	ResetTier = 1,
 	BaseDisplaySlots = 3,

@@ -40,68 +40,28 @@ function B.Showcase(p, tier, slots)
 	return passive, active, table.concat(description, ", ")
 end
 function B.Print()
-	local common = { ToiletTier = 1, DisplaySlots = 10, Displays = {} }
-	for slot = 1, 10 do
-		common.Displays[tostring(slot)] = "Poop"
-	end
-	local commonRate = 0
-	for _, units in pairs(Income:Rates(common)) do
-		commonRate += units * 60 / Config.UnitsPerCoin
-	end
-	local commonRatio = commonRate / B.Active(common, 1)
-	assert(commonRatio >= 0.20 and commonRatio <= 0.35, "Even an all-Common Basic plot should feel useful")
 	print(
-		string.format("Basic, ten Common Poop: $%.2f/s = %.2f%% of active income.", commonRate / 60, commonRatio * 100)
+		"Steady display rates: ten best floored expected drops from 60 minutes at current tier; acquisition/slot costs excluded."
 	)
-	print("Display income: coins/second UI; ten reasonable retained copies from 60 active minutes; 75% manual uptime.")
-	print(
-		"No-track and normal stage tracks (Cash/Luck/Speed through L4); acquisition/slot costs excluded from steady-state rates."
-	)
-	for tier, t in ipairs(Toilets) do
-		for _, tracks in ipairs({ false, true }) do
-			local level = if tracks then math.min(tier, 4) else 0
-			local p = { Upgrades = { CashBoost = level, LuckBoost = level, FlushSpeed = level } }
-			local passive, active, description = B.Showcase(p, tier, 10)
-			local ratio = passive / active
-			assert(ratio >= 0.20 and ratio <= 0.35, "Ten-slot target missed: " .. t.Id .. " " .. ratio)
-			print(
-				string.format(
-					"  %-12s L%d: $%.2f/s / active $%.2f/s = %.2f%%; %s",
-					t.Id,
-					level,
-					passive / 60,
-					active / 60,
-					ratio * 100,
-					description
-				)
+	print("Tier          Passive/s   Active/s   Share   Items")
+	for tier, toilet in ipairs(Toilets) do
+		local level = math.min(tier, 4)
+		local p = { Upgrades = { CashBoost = level, LuckBoost = level, FlushSpeed = level } }
+		local passive, active, description = B.Showcase(p, tier, 10)
+		if tier >= 4 then
+			local share = passive / (passive + active)
+			assert(share >= 0.70 and share <= 0.90, "Mid/late steady income share missed")
+		end
+		print(
+			string.format(
+				"%-12s %10.2f %10.2f %7.2f%% %s",
+				toilet.Id,
+				passive / 60,
+				active / 60,
+				100 * passive / (passive + active),
+				description
 			)
-			local three = B.Showcase(p, tier, 3)
-			assert(three <= passive and three / active <= 0.40)
-		end
-	end
-	local highest = 0
-	-- Least luck is the conservative active comparator; extra luck only increases expected sale value.
-	for rebirth = 0, 15 do
-		for tier in ipairs(Toilets) do
-			for cash = 0, 10 do
-				for speed = 0, 10 do
-					local p = { RebirthLevel = rebirth, Upgrades = { CashBoost = cash, FlushSpeed = speed } }
-					local active = B.Active(p, tier)
-					local cap = Config.PlayerRateCaps[tier] * U:Cash(p)
-					highest = math.max(highest, cap / active)
-					assert(cap <= active * 0.40, "Absolute passive cap exceeds 40% of same-stage active flush income")
-				end
-			end
-		end
-	end
-	print(
-		string.format(
-			"Absolute 100-jackpot-slot ceiling: %.2f%% maximum across 0..15 rebirths and independent Cash/Speed 0..10.",
-			highest * 100
 		)
-	)
-	print(
-		"Base tank: 240 minutes; upgraded tank: 480. Storage/rates scale with cash; persisted 6000 units/coin unchanged."
-	)
+	end
 end
 return B

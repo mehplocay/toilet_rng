@@ -521,6 +521,32 @@ if checkWorld then
 	end
 end
 
+-- Exercise production world currency text at the actual v2 upper income scale.
+do
+	local plot = Plot.Build(root, CFrame.new(), 1)
+	local owner = { UserId = 981, DisplayName = "Income fixture" }
+	local profile =
+		{ ToiletTier = 7, DisplaySlots = 10, Displays = {}, RebirthLevel = 15, Upgrades = { CashBoost = 10 } }
+	for slot = 1, 10 do
+		profile.Displays[tostring(slot)] = "Mystery"
+	end
+	plot.Owner, plot.Profile, World.Assigned[owner] = owner, profile, plot
+	World:Refresh(owner, profile)
+	local names = 0
+	for _, object in ipairs(plot.Displays:GetDescendants()) do
+		if object.Name == "IncomeNametag" then
+			names += 1
+			assert(object:GetChildren()[1]:GetChildren()[1].Text:find("$4.3M/s", 1, true))
+		end
+	end
+	assert(names == 10)
+	loadModule(node("src/server/World/IncomeDisplay")).Refresh(plot, owner, 34560000000)
+	assert(plot.IncomeLabel.Text == "COLLECT ALL\n$34.5B")
+	World.Assigned[owner] = nil
+	plot.Model:Destroy()
+	print("Economy world text passed: ten $4.3M/s nametags and $34.5B collection jar")
+end
+
 if snapshot then
 	local Layout = loadModule(node("src/shared/Config/MapLayout"))
 	-- Clearly named fixtures exercise the production board formatter in offline previews.

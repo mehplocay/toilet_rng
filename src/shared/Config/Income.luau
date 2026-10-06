@@ -1,11 +1,23 @@
 return {
-	PassiveRate = 2, -- Item sell value per minute, before caps; UI shows coins/second.
-	OfflineMinutes = 240,
-	-- Tier order matches Toilets. These bound even retained jackpot items.
-	SlotRateCaps = { 5, 7, 11, 18, 34, 67, 141 },
-	PlayerRateCaps = { 50, 70, 110, 180, 340, 670, 1410 },
-	SlotPendingCap = 33840, -- Highest slot cap * base offline minutes; never shrink old storage.
-	PlayerPendingCap = 338400,
+	-- Coins/second at Basic, before cash and toilet multipliers.
+	RarityRates = {
+		Common = 1,
+		Uncommon = 3,
+		Rare = 10,
+		Epic = 40,
+		Legendary = 200,
+		Mythic = 1000,
+		Godly = 6000,
+		Secret = 100000,
+	},
+	TierMultipliers = { 1, 1.5, 2.2, 3.3, 5, 8, 12 },
+	OfflineMinutes = 480,
+	-- Coins/minute; ten maximum-rate Secrets fit at each tier.
+	SlotRateCaps = { 6000000, 9000000, 13200000, 19800000, 30000000, 48000000, 72000000 },
+	PlayerRateCaps = { 60000000, 90000000, 132000000, 198000000, 300000000, 480000000, 720000000 },
+	SlotPendingCap = 34560000000,
+	PlayerPendingCap = 345600000000,
+	MaxLedgerUnits = 9e15, -- Integer subcoins, NOT coins; exact accumulation.
 	MaxSlots = 100, -- Includes legacy saved capacities.
 	UnitsPerCoin = 6000, -- Persisted scale: do not change without a ledger migration.
 	MaxBalance = 9e15,

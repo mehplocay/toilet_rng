@@ -1,91 +1,111 @@
+local C = require("./economy-cohort")
 local Items = require("../src/shared/Config/Items")
 local Toilets = require("../src/shared/Config/Toilets")
-local Cohort = require("./upgrade-cohort")
-require("./rebirth-balance").Print()
-local Rewards = require("../src/shared/Config/Rewards")
-local Index = require("../src/shared/IndexProgress").new(Items, require("../src/shared/Config/IndexRewards"))
-local uptime, cohortSize = 0.75, 2000
-local targets = { 1.40, 4.48, 9.36, 17.87, 37.11, 47.29 }
-print("Minutes per next toilet; 75% manual cooldown uptime, sequential tiers, carryover, protected first copies.")
-print("Buy one level of Cash/Luck/Flush Speed per tier through level 4; buy each as affordable before the toilet.")
-print("Auto speed, display slots and tank are optional utility purchases, excluded from this active cohort.")
-print("No daily/index/tutorial/offline starting income or timed boosts. Legacy targets are pre-change stage medians.")
-local stages, cumulative = Cohort.Run(Items, Toilets, cohortSize, true)
-local noTracks = Cohort.Run(Items, Toilets, cohortSize, false)
-print("Toilet        Price  Target  Stage p50  Stage p90  Cumulative p50/p90  No-track p50")
-for tier, values in ipairs(stages) do
-	local median = Cohort.Percentile(values, 0.5)
-	local p90 = Cohort.Percentile(values, 0.9)
-	assert(
-		math.abs(median - targets[tier]) <= targets[tier] * 0.05,
-		"Upgrade-aware stage median drift: " .. Toilets[tier + 1].Id
-	)
-	print(
-		string.format(
-			"%-12s %6d %7.2f %10.2f %10.2f %10.2f / %-8.2f %10.2f",
-			Toilets[tier + 1].Id,
-			Toilets[tier + 1].Price,
-			targets[tier],
-			median,
-			p90,
-			Cohort.Percentile(cumulative[tier], 0.5),
-			Cohort.Percentile(cumulative[tier], 0.9),
-			Cohort.Percentile(noTracks[tier], 0.5)
-		)
-	)
+local Income = require("../src/shared/Config/Income")
+local Upgrades = require("../src/shared/Config/Upgrades")
+local Rebirth = require("../src/shared/Config/Rebirth")
+local U = require("../src/shared/UpgradeRules").new(Upgrades)
+print(
+	"INCOME-FIRST v2: 200 seeded accounts per archetype; fresh wallet/inventory, real protected sales and purchased slots."
+)
+print("Uptime: casual 30%, normal 75%, grinder 100%; collect every 120/30/15 seconds, passive runs throughout.")
+print(
+	"Buy Dirty first; then 5 slots, 10 at Diamond; one Cash/Luck/Speed level per tier through L4. No index/daily/pass/event/offline grants."
+)
+print(
+	"Times are cumulative wall-clock minutes. Galaxy run defers rebirth; separate two-run cohort rebirths immediately."
+)
+print(
+	"Cash Boost / rebirth bonuses add; toilet display multipliers multiply. Counts use unchanged rare-first probabilities."
+)
+print("Base rarity income per item ($/s): Basic / Dirty / Golden / Diamond / Radioactive / Demon / Galaxy")
+for _, rarity in ipairs({ "Common", "Uncommon", "Rare", "Epic", "Legendary", "Mythic", "Godly", "Secret" }) do
+	local row = {}
+	for _, factor in ipairs(Income.TierMultipliers) do
+		table.insert(row, (string.format("%.4f", Income.RarityRates[rarity] * factor):gsub("0+$", ""):gsub("%.$", "")))
+	end
+	print(rarity .. " | " .. table.concat(row, " | "))
 end
-local serviceTotal, poopTotal = 0, 0
-print("Conservative no-upgrade route: every item retained or only Poop duplicates sold; zero luck required.")
-for tier = 1, 4 do
-	local t, nextToilet = Toilets[tier], Toilets[tier + 1]
-	local service = math.ceil(nextToilet.Price / t.ServiceCoins) * t.Cooldown / 60 / uptime
-	local poop = (1 + math.ceil(nextToilet.Price / (Items[1].Value + t.ServiceCoins))) * t.Cooldown / 60 / uptime
-	serviceTotal += service
-	poopTotal += poop
-	assert(service <= 50, "Deterministic stage bound exceeded")
-	print(string.format("  %-12s service-only %.2f min; Poop-only %.2f min", nextToilet.Id, service, poop))
-end
-assert(serviceTotal <= 95 and poopTotal <= 70, "Fair-start four-tier bound exceeded")
-print(string.format("First four cumulative bounds: service-only %.2f min; Poop-only %.2f min", serviceTotal, poopTotal))
-print("Daily rewards: unchanged fixed grants (Cash Boost does not multiply them); day-one / day-seven Coins:")
-for tier, t in ipairs(Toilets) do
-	local first, last =
-		Rewards.BaseCoins[1] * Rewards.TierMultipliers[tier], Rewards.BaseCoins[7] * Rewards.TierMultipliers[tier]
-	assert(first > 0 and last <= 9e15)
-	print(string.format("  %-12s %d / %d", t.Id, first, last))
-end
-local indexProfile = { Coins = 0, Stamps = 0, DisplaySlots = 3, Collection = {}, IndexClaims = {} }
+print("Sell values (before cash):")
 for _, item in ipairs(Items) do
-	indexProfile.Collection[item.Id] = 1
+	print(item.Id, item.Value)
 end
-assert(Index:Claim(indexProfile, "total:5").Success and indexProfile.DisplaySlots == 4 and indexProfile.Coins == 0)
-assert(not Index:Claim(indexProfile, "total:5").Success)
-print("Index: once-only fourth slot retained; no Coins or luck minted. Fair start and stage medians passed.")
-require("./income-balance").Print()
-print("Display-enabled 200-player cohorts: actual retained copies, collection once/minute, no starting offline wallet.")
-for _, slots in ipairs({ 3, 10 }) do
-	local displayStages = Cohort.Run(Items, Toilets, 200, true, nil, slots)
-	for tier, values in ipairs(displayStages) do
-		local median = Cohort.Percentile(values, 0.5)
-		assert(
-			median >= targets[tier] * 0.70 and median <= targets[tier] * 1.25,
-			"Display retention/earnings exceeded the measured progression envelope"
-		)
+print("Upgrade costs: first / last; exponential growth; max level")
+for _, t in ipairs(Upgrades.Tracks) do
+	print(t.Id, t.BaseCost, U:Price(t.Id, t.MaxLevel - 1), t.Growth, t.MaxLevel)
+end
+local target = { 0, 1.25, 3, 8, 20, 45, 90 }
+for _, archetype in ipairs({ { "Casual", 0.3 }, { "Normal", 0.75 }, { "Grinder", 1 } }) do
+	local r = C.Run(200, archetype[2], false)
+	local b = C.Run(200, archetype[2], true)
+	print(archetype[1] .. " | Tier | Price | target | p50 | p90 (minutes)")
+	for tier = 2, #Toilets do
+		local median, tail = C.Percentile(r.Tiers[tier], 0.5), C.Percentile(r.Tiers[tier], 0.9)
 		print(
 			string.format(
-				"  %d slots -> %-12s p50 %.2f min (original active target %.2f)",
-				slots,
-				Toilets[tier + 1].Id,
+				"%-7s | %-12s | %9d | %5.2f | %7.2f | %7.2f",
+				archetype[1],
+				Toilets[tier].Id,
+				Toilets[tier].Price,
+				target[tier],
 				median,
-				targets[tier]
+				tail
 			)
 		)
+		if archetype[1] == "Normal" then
+			assert(
+				median >= (if tier == 2 then 1 else target[tier] * 0.8)
+					and median <= (if tier == 2 then 1.5 else target[tier] * 1.2),
+				"Cumulative tier target missed: " .. Toilets[tier].Id
+			)
+		end
 	end
-	local first, second =
-		require("./rebirth-balance").Run(require("../src/shared/Config/Rebirth").RequiredFlushes, 200, slots)
-	print(string.format("  %d slots rebirth: first %.2f min, second %.2f min", slots, first, second))
-	assert(
-		first >= 60 and first <= 90 and second < first * 0.92 and second > 10,
-		"Display-enabled rebirth left its timing targets"
+	local early, mid = C.Percentile(r.EarlyShare, 0.5), C.Percentile(r.MidShare, 0.5)
+	print(
+		string.format(
+			"%s passive share: first 10 min %.2f%%; 10 min after Diamond %.2f%%",
+			archetype[1],
+			early * 100,
+			mid * 100
+		)
 	)
+	local first, second = C.Percentile(b.Runs[1], 0.5), C.Percentile(b.Runs[2], 0.5)
+	print(
+		string.format(
+			"%s rebirth %d flushes: first p50 %.2f / p90 %.2f; second p50 %.2f / p90 %.2f",
+			archetype[1],
+			Rebirth.RequiredFlushes,
+			first,
+			C.Percentile(b.Runs[1], 0.9),
+			second,
+			C.Percentile(b.Runs[2], 0.9)
+		)
+	)
+	assert(
+		second < first * 0.92 and second > 10,
+		"Retained income should accelerate the next run without instant rebirth"
+	)
+	if archetype[1] == "Normal" then
+		assert(early >= 0.4 and early <= 0.6 and mid >= 0.7 and mid <= 0.9, "Earned-income mix missed")
+		assert(first >= 54 and first <= 66, "First rebirth must remain about 60 minutes")
+	end
 end
+local five = C.Run(200, 0.75, false, 5, 600)
+local share = C.Percentile(five.EarlyShare, 0.5)
+print(
+	string.format(
+		"Normal, five-slot limit: first 10-minute passive share %.2f%% (slots purchased, no free inventory)",
+		share * 100
+	)
+)
+assert(share >= 0.4 and share <= 0.6, "Five-slot early target missed")
+-- Exact seed replay through every production mutation, including two complete resets.
+local a, b = C.Run(3, 0.75, true), C.Run(3, 0.75, true)
+for run = 1, 2 do
+	for i = 1, 3 do
+		assert(a.Runs[run][i] == b.Runs[run][i], "Seeded simulation drift")
+	end
+end
+require("./income-balance").Print()
+print("Offline: 8 hours base / 12 hours max tank; wallet <=9e15 coins; entire ledger <=9e15 integer subcoins.")
+print("All v2 balance targets and deterministic replay passed. Rare jackpot tails can exceed typical income shares.")

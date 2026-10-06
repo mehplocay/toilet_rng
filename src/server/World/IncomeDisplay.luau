@@ -1,6 +1,7 @@
 -- Each pad targets its saved slot; the central jar drains the complete ledger.
 local Kit = require(script.Parent.Kit)
 local Config = require(game.ReplicatedStorage.Shared.Config.Income)
+local NumberFormat = require(game.ReplicatedStorage.Shared.NumberFormat)
 local Layout = require(game.ReplicatedStorage.Shared.Config.MapLayout)
 local IncomeDisplay = {}
 function IncomeDisplay.Refresh(plot, player, pending)
@@ -50,8 +51,8 @@ function IncomeDisplay.Refresh(plot, player, pending)
 		glow:SetAttribute("IncomeReady", false)
 		glow.Parent = point
 	end
-	plot.IncomePrompt.ObjectText = "All display income: " .. pending .. " coins"
-	plot.IncomeLabel.Text = "COLLECT ALL\n$" .. pending
+	plot.IncomePrompt.ObjectText = "All display income: " .. NumberFormat.Compact(pending) .. " coins"
+	plot.IncomeLabel.Text = "COLLECT ALL\n$" .. NumberFormat.Compact(pending)
 	for _, point in ipairs(plot.CollectPoints) do
 		local slot = point:GetAttribute("CollectSlot")
 		local ledger = plot.Profile and plot.Profile.Income
@@ -64,7 +65,7 @@ function IncomeDisplay.Refresh(plot, player, pending)
 		end
 		local prompt = point:FindFirstChild("IncomePrompt")
 		if prompt and slot then
-			prompt.ObjectText = "Display " .. slot .. ": $" .. coins
+			prompt.ObjectText = "Display " .. slot .. ": $" .. NumberFormat.Compact(coins)
 		end
 	end
 end

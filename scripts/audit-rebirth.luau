@@ -209,7 +209,7 @@ test(
 		assert(p.Inventory.Rat == 2 and p.Coins == 2500)
 		p.Inventory.Rat += 1
 		e:Fire("Sell", player, "Rat", 1)
-		assert(p.Inventory.Rat == 2 and p.Coins == 2531 and p.Collection.Rat == 10)
+		assert(p.Inventory.Rat == 2 and p.Coins == 3750 and p.Collection.Rat == 10)
 		e:Fire("ClaimIndexReward", player, "total:5")
 		assert(p.Stamps == 33 and p.DisplaySlots == 4)
 		e.Data:Close(player)
@@ -221,8 +221,8 @@ test(
 			e:Load("src/shared/UpgradeRules").new(e:Load("src/shared/Config/Upgrades"))
 		)
 		assert(
-			income:PendingCoins(restored) == 1200,
-			"Expected only retained Poop at Basic rebirth rate for 240 minutes"
+			income:PendingCoins(restored) == 36000,
+			"Expected only retained Poop at Basic rebirth rate for 480 minutes"
 		)
 		assert(restored.RebirthLevel == 1 and restored.RunFlushes == 0 and restored.ProtectedInventory.Rat == 2)
 		local units = income:TotalUnits(restored)

@@ -4,6 +4,12 @@ $ErrorActionPreference = 'Stop'
 $workspaceRoot = Split-Path $PSScriptRoot -Parent
 $generatedPath = Join-Path $workspaceRoot '.audit-check.generated.luau'
 $parts = [System.Collections.Generic.List[string]]::new()
+$revision = if ($DisplayCollectBaseline) { 'b91a3bb82be41ef7507f88ef46b0f8b50caf3404' } elseif ($Audit2Baseline) { 'f0597c1ee64279a462d1ce25380c7e96de798ee1' } else { 'b08b852' }
+$baselinePaths = @()
+if ($Baseline -or $Audit2Baseline -or $DisplayCollectBaseline) {
+    $baselinePaths = @(& git ls-tree -r --name-only $revision -- src)
+    if ($LASTEXITCODE -ne 0) { throw "Cannot enumerate baseline $revision" }
+}
 $parts.Add('local sources = {}')
 $parts.Add('local displayCollectBaseline = ' + $DisplayCollectBaseline.IsPresent.ToString().ToLower())
 foreach ($file in (Get-ChildItem -LiteralPath (Join-Path $workspaceRoot 'src') -Recurse -Filter '*.luau')) {
@@ -11,7 +17,8 @@ foreach ($file in (Get-ChildItem -LiteralPath (Join-Path $workspaceRoot 'src') -
     $moduleName = $relative.Substring(0, $relative.Length - 5)
     if ($moduleName -eq 'src/server/init.server') { $moduleName = 'src/server' }
     if ($Baseline -or $Audit2Baseline -or $DisplayCollectBaseline) {
-        $revision = if ($DisplayCollectBaseline) { 'b91a3bb82be41ef7507f88ef46b0f8b50caf3404' } elseif ($Audit2Baseline) { 'f0597c1ee64279a462d1ce25380c7e96de798ee1' } else { 'b08b852' }
+        # New v2-only helpers are not dependencies of the pinned baseline source.
+        if ($relative -notin $baselinePaths) { continue }
         $source = (& git show "${revision}:$relative") -join "`n"
         if ($LASTEXITCODE -ne 0) { throw "Cannot read baseline $relative" }
     } else {
@@ -26,6 +33,7 @@ $parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'audit-upgrad
 $parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'audit-rebirth.luau')))
 $parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'audit2-server.luau')))
 $parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'audit-display-collect.luau')))
+$parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'audit-economy-v2.luau')))
 $parts.Add('do')
 $parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'ui-harness.luau')))
 $parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'audit2-client.luau')))

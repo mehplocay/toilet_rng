@@ -1,5 +1,7 @@
 # Permanent upgrades and faster flushes
 
+2026-10-06 income-first update: [Economy v2](economy-v2.md) supersedes the historical rates, prices, offline cap and timing assertions below. Collection, protection, lease and reset contracts remain.
+
 2026-10-06: [Display/collection follow-up](display-collect.md) retunes passive rates/storage and replaces the old service-only passive bound. Original active-only stage targets and upgrade prices remain unchanged; additional display-enabled cohorts are reported separately.
 
 Rebirth follow-up: coin tracks now last for the current run and reset on rebirth.

@@ -1,5 +1,7 @@
 # Rebirth implementation and review
 
+2026-10-06 income-first update: [Economy v2](economy-v2.md) supersedes the historical rates, prices, offline cap and timing assertions below. Collection, protection, lease and reset contracts remain.
+
 2026-10-06: [Display/collection follow-up](display-collect.md) retunes passive income and extends balance cohorts with retained displays. Reset/protection rules and the 60–90-minute first-rebirth target remain; the old passive fraction below is superseded.
 
 2026-10-05, `feature/rebirth`. Uncommitted; no pushes. This implementation supersedes the old Galaxy/fee/all-inventory proposal in progression.md. [Current API research](../research/rebirth.md).

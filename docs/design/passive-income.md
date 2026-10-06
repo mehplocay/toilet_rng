@@ -1,42 +1,37 @@
 # Passive display income
 
-2026-10-06 follow-up: [Display/collection fix](display-collect.md) supersedes the rates, aggregate-only pads, input cadence and feedback contract below. Ledger and lease/save guarantees remain. Historical implementation record follows.
+2026-10-06, income-first economy. [Economy v2](economy-v2.md) owns current tuning and measured progression. [Display/collect](display-collect.md) records the unchanged placement, authorization and durable collection contract. [Research](../research/income-first-economy.md).
 
-Implemented on `feature/income`; uncommitted as requested. Research: [timestamp and persistence findings](../research/passive-income.md).
+## Rates and presentation
 
-Displayed copies earn `Value * 0.01` Coins/minute before the per-slot and per-player tier caps in `src/shared/Config/Income.luau`. Both online and offline time use server `os.time()`. Offline accrual is limited to 240 minutes per absence; pending storage is capped at 33,600 Coins per slot and 100,800 per player. Full storage stops earning; elapsed excess time is consumed, not banked for a later collect.
+Each displayed copy earns its rarity rate per second, multiplied by its owner's current toilet tier and additive cash bonuses:
 
-Each plot has one central **Collect** pedestal by the display row, with three primitive coins appearing at 1/10/100 pending Coins. Use F, gamepad Y or the native touch prompt. The small pending chip receives server updates every five seconds; successful durable collection uses the existing toast component. Collect transfers whole Coins across all slots, retaining fractions. This avoids charging the full UI refresh path for income ticks.
+rate = rarityRate * toiletMultiplier * (1 + 0.1 * CashBoostLevel + rebirthCashBonus).
 
-The ledger stores integer 1/6000-Coin units per slot plus a high-water timestamp. That serialization scale must not be changed without migration. Unknown/malformed fields default safely; finite oversized balances are capped. Missing timestamps start now, with no retroactive pre-feature award. Removed items and reduced display capacities retain already-pending earnings. Changes settle the old display/tier before mutation through the lease-gated `DataService:Get` path; saves settle too. Departure freezes its timestamp before waiting for a final save.
+Base rates: Common $1/s, Uncommon $3/s, Rare $10/s, Epic $40/s, Legendary $200/s, Mythic $1K/s, Godly $6K/s, Secret $100K/s. Tier factors: 1 / 1.5 / 2.2 / 3.3 / 5 / 8 / 12. King Poop follows its existing Mythic classification; Rat/Fish and both Secrets share their respective rarity rates. Sell value no longer determines income.
 
-The no-argument `CollectIncome` remote validates ownership, a living character, finite distance <=10 studs and the current lease. Its bucket allows one request per five seconds. Collection rejects an already-running save, atomically debits pending/credits Coins and Earned, then saves before announcing success. Wallet/stat ceiling pressure retains uncollected units. Offline settlement runs inside the replay-safe lease-acquisition transform. Existing session tokens, save serialization, retries and expiry rejection remain intact.
+Config/Income owns the ladder, factors, rate/storage caps, timestamp bound and offline allowance. Cash Boost and rebirth affect both rates and capacities. Nametags show actual post-cap $/s, including proportional sharing for legacy displays. Coins use a shared K/M/B/T/Qa/Qi formatter across HUD, collection, shops/upgrades, rebirth, player list, boards, pending jar/pads and popups. Qi is supported by presentation but is unreachable under the wallet's 9Qa ceiling. The Offline Tank card clearly reports hours: 8 at base, 12 at maximum.
 
-## Balance evidence
+## Accounting and limits
 
-`luau scripts/balance.luau` prints all tiers for 3 and 10 slots. A realistic upper showcase uses the most valuable copies from the floored expected drops over 60 minutes at the current tier and 75% flush uptime. It ignores acquisition/retention costs, so it overstates immediate availability. Runtime item Values (currently five times the old GDD table) and existing prices are used. No item prices, service awards or upgrade prices changed.
+- Keep the persisted 6,000 integer units per coin; no schema conversion. Each per-second rate is quantized once to the nearest unit. Existing rates/factors are representable at this scale. Settle/collect retain all fractional units.
+- Wallet/Earned remain bounded by 9e15 coins. Separately, the ENTIRE pending ledger is bounded by 9e15 subcoins = 1.5T coins. Multiplying a 9e15-coin bound by 6,000 would be unsafe.
+- A single Secret sets the per-slot rate ceiling at each tier; ten such slots set the player's rate ceiling. Extra legacy slots proportionally share that same total, with deterministic integer residual allocation. Divide before multiplying to avoid oversized intermediate products.
+- Base storage is 34.56B coins/slot and 345.6B/player, multiplied by cash * offlineMinutes / 480 and then limited by the subcoin ceiling. At maximum cash and tank, the total hard limit clips a ten-Secret Galaxy tank before 12 hours. Full storage stops earning.
+- Offline time uses server os.time, limited to 480 minutes per absence, +24 minutes per Offline Tank level. Capped elapsed time is consumed. Backward clock adjustments retain the high-water timestamp. New/missing timestamps grant no retroactive time.
+- Before multiplying a rate by elapsed seconds, compare against available room. Storage, additions and totals stay within the exact-integer range. Collection corrects division that could otherwise round (9e15 - 1)/6000 up to a whole coin.
+- Settle the OLD display, toilet and cash state before mutations via DataService:Get. Save and departure settle too. Removing items or capacity leaves earned pending units available to Collect All. Rebirth deliberately clears the ledger and retains its timestamp high-water mark.
 
-| Tier | 3-slot passive / active | 10-slot passive / active | Absolute cap / service-only active |
-|---|---:|---:|---:|
-| Basic | 1.91% | 1.91% | 20.00% |
-| Dirty | 3.91% | 3.91% | 18.67% |
-| Golden | 4.28% | 5.99% | 17.33% |
-| Diamond | 4.04% | 7.03% | 16.00% |
-| Radioactive | 2.22% | 3.86% | 14.67% |
-| Demon | 1.15% | 2.14% | 13.33% |
-| Galaxy | 0.55% | 1.08% | 12.00% |
+## Durable collection
 
-The stronger absolute bound covers even 100 legacy slots containing retained jackpots. Active means 75% cooldown uptime with no boost. Even against guaranteed service-only earnings, passive stays below one third; the cap shortens that empty-wallet upgrade bound by at most one sixth. Existing legacy timing assertions and the 2,000-player cohort still pass (median Dirty 1.40 minutes); realistic display income reduces each expected stage duration by at most 6.6%. Stored offline earnings intentionally accelerate return visits and are excluded from empty-wallet timing comparisons.
+CollectIncome() collects all slots; CollectIncome(integerSlot) collects that visible unlocked pad. Whole coins only; per-pad fractions remain and Collect All may pool fractions. Server ownership, lease, living-character, finite-distance, argument and shared rate-limit checks remain. Input capacity/refill is 1/2 per second; durable write capacity/refill is 10/0.2 per second. Empty contacts do not consume either budget.
 
-## Changed files and validation
+Debit pending, credit Coins/Earned and capture the immutable save snapshot without yielding. Busy saves reject additional collections. Announce success only after acknowledgement and a current profile. Retries and rejoin cannot repeat a committed transfer; ambiguous failures remain fail-closed. Wallet/Earned ceiling pressure leaves unpaid pending intact. Existing outage/crash loss of unsaved progress is not eliminated.
 
-- Accounting/config: `src/shared/IncomeAccrual.luau`, `Config/Income.luau`, `Config/Remotes.luau`.
-- Server: `Services/IncomeService.luau`, `Services/DataService.luau`, `init.server.luau`; only a small world hook plus new `World/IncomeDisplay.luau`. No Builders or MeshLoader edits.
-- Client: `init.client.luau`, additive `UI/IncomeChip.luau`, four layout lines and one FlushPrompt filter so collection prompts cannot become flush targets.
-- Checks: new `scripts/check-income.luau`; extended balance, audit, UI and world harness coverage.
+## Evidence and deployment
 
-Passed: all `scripts/check-*.luau` (audit/UI runtime through their PS1 bundlers); 35 audit scenarios; `check-ui.ps1` including seven safe-area layouts; `check-visuals.ps1` through all six `check-world.ps1` modes; `rojo build -o build.rbxl`; `stylua --check --line-endings Windows src scripts`; `git diff --check`. Headless phone portrait/landscape images were also inspected. The full primitive world stays within its part budget (worst plot plus drop: 352).
+The normal fresh-account cohort earns 53.62% of its first-ten-minute income passively when limited to five purchased slots. With ten slots purchased at Diamond, passive accounts for 80.38% of the following ten minutes. Full tables, archetypes and assumptions are in [economy-v2.md](economy-v2.md) and [reproducible output](economy-v2-balance.txt).
 
-Selene was attempted but cannot run without the repository's missing `roblox` standard library. Live Studio multiplayer/DataStore/device QA was not available; headless mocks do not establish live backend durability. Existing crash/outage loss of unsaved progress remains (audit L3); this feature does not claim exactly-once durability across an indefinite backend failure.
+Tests cover exact units near the ledger ceiling, fractional cash/rebirth/tier rates, partitioned settlement, malformed saved data, offline/storage caps, clock rollback, billion-coin save retries, idempotent collect, rejoin, lease loss and unchanged remote protections. No live backend/device guarantee is implied by headless checks.
 
-Assumptions: use the requested displayed-item formula in place of the proposal's separate `2 * B_best` offline tank; add no second offline faucet. Display slots do not bypass the shared cap, including legacy capacities. Future purchasable display capacity would now have a bounded income benefit and must be described truthfully before release. Rewards, Auto-Flush, events, first-copy protection and display reservations retain their existing behavior.
+Deploy by retiring old binaries before enabling this economy. Old sanitizers have much smaller pending caps and would truncate v2 savings. Existing pending units retain their value; an absence first settled by v2 uses v2 rates and the new offline allowance. No compensation, reset of existing wallets, or cross-version rollback migration is included.
