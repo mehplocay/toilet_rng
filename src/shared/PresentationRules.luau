@@ -66,7 +66,7 @@ function Rules.Name(name)
 	return if clean == "" then "Player" else clean
 end
 function Rules.Audience(rarity)
-	return if rarity == "Legendary"
+	return if rarity == "Epic" or rarity == "Legendary"
 		then "Friends"
 		elseif rarity == "Mythic" or rarity == "Godly" or rarity == "Secret" then "Server"
 		else nil

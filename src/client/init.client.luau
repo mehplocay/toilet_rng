@@ -38,6 +38,8 @@ for _, name in ipairs({
 }) do
 	remotes[name] = folder:WaitForChild(definitions[name])
 end
+-- Subscribe before UI construction/preloading so an early authoritative find is retained.
+local dropChat = require(script.Presentation.ChatAnnouncements).Start(remotes.DropAnnouncement)
 local C = require(script.UI.Components)
 C.PreloadIcons()
 local audio = require(script.Audio.AudioService).Start()
@@ -228,7 +230,7 @@ ContextActionService:BindAction("CloseToiletPanel", function(_, state)
 end, false, Enum.KeyCode.ButtonB)
 require(script.UI.Tutorial).Create(player, remotes, hud, prompts)
 local effects = require(script.Effects).Create(hud.Frame, audio.SFX, hud)
-local presentation = require(script.Presentation.Controller).Start(root, hud, remotes, audio, settingsList)
+local presentation = require(script.Presentation.Controller).Start(root, hud, remotes, audio, settingsList, dropChat)
 local showServiceCoins = require(script.UI.CoinPopup).Create(hud.Frame)
 local showCollectedCoins = require(script.UI.CoinPopup).Create(root)
 local incomeChip = require(script.UI.IncomeChip).Create(hud.Frame)

@@ -15,7 +15,11 @@ local function runPresentationAudit(test, environment, server)
 			for _, message in ipairs(e.Results) do
 				if message.Payload[1] == "Flush" then
 					result = message.Payload[2]
-				elseif type(message.Payload[1]) == "table" and message.Payload[1].ItemId == item.Id then
+				elseif
+					type(message.Payload[1]) == "table"
+					and message.Payload[1].ItemId == item.Id
+					and not message.Payload[1].Self
+				then
 					banners += 1
 				end
 			end
@@ -29,9 +33,9 @@ local function runPresentationAudit(test, environment, server)
 			assert(banners == 1)
 			local before = #e.Results
 			e:Resume(e.Threads[2]) -- Single announcement worker, after the autoflush loop.
-			assert(#e.Results == before + 1 and e.Results[#e.Results].Payload[1].ItemId == item.Id)
+			assert(#e.Results == before, "Solo finder must not receive a second server line")
 			e:Resume(e.Threads[2])
-			assert(#e.Results == before + 1 and profile.Inventory[item.Id] == 1)
+			assert(#e.Results == before and profile.Inventory[item.Id] == 1)
 		end
 	)
 	test("presentation patches reject extra/unknown/oversized input; rate limit and persist independently", function()
@@ -111,17 +115,17 @@ local function runPresentationAudit(test, environment, server)
 			assert(#queue.Pending == 0)
 			events.Observe(players[1], items[6], 1)
 			e:Resume(worker)
-			assert(#e.Results == 1 and e.Results[1].Player == players[2])
-			assert(e.Results[1].Payload[1].PlayerName == "bTester")
-			assert(e.Results[1].Payload[1].Coins == nil)
+			assert(#e.Results == 2 and e.Results[1].Player == players[1] and e.Results[1].Payload[1].Self)
+			assert(e.Results[2].Player == players[2] and e.Results[2].Payload[1].PlayerName == "bTester")
+			assert(e.Results[2].Payload[1].Coins == nil)
 			events.Observe(players[1], items[9], 2)
 			e.Now += 5
 			events.Observe(players[1], items[9], 2)
 			assert(#queue.Pending == 0, "Suppressed ID replayed")
 			events.Observe(players[1], items[9], 3)
 			e:Resume(worker)
-			assert(#e.Results == 4)
-			for i = 2, 4 do
+			assert(#e.Results == 6)
+			for i = 3, 6 do
 				assert(e.Results[i].Player ~= players[4])
 			end
 		end
@@ -141,7 +145,7 @@ local function runPresentationAudit(test, environment, server)
 			end
 			events.Observe(players[1], items[6], 1)
 			e:Resume(worker)
-			assert(#e.Results == 0)
+			assert(#e.Results == 1 and e.Results[1].Player == players[1], "Finder must not wait on friendship")
 			if mutation == "Leave" then
 				players[1].Parent = nil
 				e.Players.PlayerRemoving:Fire(players[1])
@@ -153,7 +157,7 @@ local function runPresentationAudit(test, environment, server)
 				e.Now += 20
 			end
 			e:Resume(worker)
-			assert(#e.Results == 0, mutation)
+			assert(#e.Results == 1, mutation)
 			if mutation == "Leave" then
 				assert(queue.Seen[players[1]] == nil and queue.Sent[players[1]] == nil)
 			end
@@ -184,11 +188,11 @@ local function runPresentationAudit(test, environment, server)
 				end
 			end
 			assert(folder.Parent == player and coins.Value == 1234 and rarest.Value == "Mythic")
-			assert(#e.Objects == 5)
+			assert(#e.Objects == 8)
 			profile.Coins = 1e6
 			assert(coins.Value == 1234)
 			service.Refresh()
-			assert(coins.Value == 1e6 and #e.Objects == 5)
+			assert(coins.Value == 1e6 and #e.Objects == 8)
 			profile.Coins, profile.Stats.RarestItemId = math.huge, "forged"
 			service.Refresh()
 			assert(coins.Value == 0 and rarest.Value == "None")

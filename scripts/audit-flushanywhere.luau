@@ -32,7 +32,7 @@ test("anywhere: compact jackpot still records the item, server luck and existing
 	e:Fire("AutoFlush", player, true)
 	e.World.Flush(player, true)
 	assert(p.Inventory[item.Id] == 1 and p.Collection[item.Id] == 1)
-	local compact, luck = false, false
+	local compact, luck, chat = false, false, 0
 	for _, message in ipairs(e.Results) do
 		if message.Payload[1] == "Flush" then
 			compact = message.Payload[2].Compact
@@ -40,11 +40,17 @@ test("anywhere: compact jackpot still records the item, server luck and existing
 		if type(message.Payload[1]) == "number" and message.Payload[1] > e.Now then
 			luck = true
 		end
+		local payload = message.Payload[1]
+		if type(payload) == "table" and payload.Self then
+			assert(message.Player == player and payload.ItemId == item.Id and payload.Count == 1)
+			chat += 1
+		end
 	end
-	assert(compact and luck)
+	assert(compact and luck and chat == 1, "Compact jackpot must deliver its finder chat immediately")
 	local before = #e.Results
 	e:Resume(e.Threads[2])
-	assert(#e.Results == before + 1 and e.Results[#e.Results].Payload[1].ItemId == item.Id)
+	e:Resume(e.Threads[2])
+	assert(#e.Results == before, "Announcement worker duplicated the solo finder line")
 end)
 
 test("anywhere: unlock and living owner authorize hub/path/plot auto, manual proximity stays enforced", function()

@@ -12,6 +12,9 @@ function Service.Start(data, limiter, remotes, sync, events)
 		local profile = data:Get(player)
 		if profile then
 			Settings.Apply(profile.Settings, patch)
+			if (patch.ChatMessages ~= nil or patch.ChatAnnouncements ~= nil) and events.ChatSettingsChanged then
+				events.ChatSettingsChanged(player)
+			end
 			sync(player)
 		end
 	end)

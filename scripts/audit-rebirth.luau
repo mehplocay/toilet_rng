@@ -280,7 +280,13 @@ test("rebirth: high-level announcements share drop cooldown, friend/server audie
 	profiles[stranger].Settings.ChatAnnouncements = false
 	events.Rebirth(owner, 5)
 	e:Resume(worker)
-	assert(#e.Results == 3 and e.Results[2].Player == owner and e.Results[3].Player == friend)
+	assert(
+		#e.Results == 4
+			and e.Results[2].Player == owner
+			and e.Results[2].Payload[1].Self
+			and e.Results[3].Player == owner
+			and e.Results[4].Player == friend
+	)
 	e.Players.PlayerRemoving:Fire(owner)
 	assert(queue.RebirthSeen[owner] == nil and queue.Seen[owner] == nil and queue.Busy[owner] == nil)
 end)

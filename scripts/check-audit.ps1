@@ -2,6 +2,12 @@
 param([switch]$Baseline, [switch]$Audit2Baseline, [switch]$DisplayCollectBaseline)
 $ErrorActionPreference = 'Stop'
 $workspaceRoot = Split-Path $PSScriptRoot -Parent
+if (!$Baseline -and !$Audit2Baseline -and !$DisplayCollectBaseline) {
+    $chatConfig = (Get-Content -Raw -LiteralPath (Join-Path $workspaceRoot 'default.project.json') | ConvertFrom-Json).tree.TextChatService
+    if ($chatConfig.'$properties'.ChatVersion -ne 'TextChatService' -or !$chatConfig.'$properties'.CreateDefaultTextChannels -or !$chatConfig.ChatWindowConfiguration.'$properties'.Enabled) {
+        throw 'Modern default chat channels and window must be enabled in the built place'
+    }
+}
 $generatedPath = Join-Path $workspaceRoot '.audit-check.generated.luau'
 $parts = [System.Collections.Generic.List[string]]::new()
 $revision = if ($DisplayCollectBaseline) { 'b91a3bb82be41ef7507f88ef46b0f8b50caf3404' } elseif ($Audit2Baseline) { 'f0597c1ee64279a462d1ce25380c7e96de798ee1' } else { 'b08b852' }
@@ -36,6 +42,7 @@ $parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'audit-displa
 $parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'audit-economy-v2.luau')))
 if (!$Baseline -and !$Audit2Baseline -and !$DisplayCollectBaseline) {
     $parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'audit-admin.luau')))
+    $parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'audit-chat-native.luau')))
 }
 $parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'audit-path-catalog.luau')))
 if (!$Baseline -and !$Audit2Baseline -and !$DisplayCollectBaseline) {
@@ -48,6 +55,7 @@ $parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'audit2-clien
 $parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'audit-display-client.luau')))
 if (!$Baseline -and !$Audit2Baseline -and !$DisplayCollectBaseline) {
     $parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'ui-flushanywhere.luau')))
+    $parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'audit-chat-client.luau')))
 }
 $parts.Add('end')
 $parts.Add('print(string.format("Audit regressions: %d passed, %d failed", passed, #failures)); assert(#failures == 0, table.concat(failures, "\n"))')

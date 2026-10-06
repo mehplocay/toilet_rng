@@ -76,7 +76,11 @@ end
 assert(#announcements.Pending == Config.AnnouncementCap)
 announcements:Remove(player)
 assert(not announcements.Seen[player] and #announcements.Pending == Config.AnnouncementCap - 1)
-assert(Rules.Audience("Legendary") == "Friends" and Rules.Audience("Mythic") == "Server" and not Rules.Audience("Epic"))
+assert(
+	Rules.Audience("Legendary") == "Friends"
+		and Rules.Audience("Mythic") == "Server"
+		and Rules.Audience("Epic") == "Friends"
+)
 local Event = require("../src/server/Services/EventService").new(require("../src/shared/Config/Events"), function()
 	return 0
 end, function() end, function() end)
