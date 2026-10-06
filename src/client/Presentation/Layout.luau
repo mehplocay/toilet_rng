@@ -1,10 +1,9 @@
 local Layout = {}
 function Layout.Compute(w, h)
 	w, h = math.max(1, w), math.max(1, h)
-	local short = h < 450
 	local compactHUD = h < 500
 	local portrait = w < 760 and h > w
-	local model = math.min(w * 0.78, h * (if short then 0.43 else 0.48), 390)
+	local model = math.min(w * 0.78, h * 0.43, 390)
 	local center = h * 0.38
 	return {
 		Model = { X = (w - model) / 2, Y = center - model / 2, W = model, H = model },

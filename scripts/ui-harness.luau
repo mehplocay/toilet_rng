@@ -834,7 +834,7 @@ function H.BootClient(remotes)
 		Start = function()
 			return {
 				Near = function()
-					return true
+					return not H.FarFromPlot
 				end,
 			}
 		end,

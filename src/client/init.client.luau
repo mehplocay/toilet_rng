@@ -259,10 +259,14 @@ for _, item in ipairs(Items) do
 	byId[item.Id] = item
 end
 remotes.Event.OnClientEvent:Connect(function(payload)
-	if not (autoFlush and not prompts.Near() and payload.PlayerName == player.Name and not payload.Admin) then
+	local item = byId[payload.ItemId]
+	-- Secret is a shared server moment even when the finder's auto result is compact.
+	if
+		(item and item.Rarity == "Secret")
+		or not (autoFlush and not prompts.Near() and payload.PlayerName == player.Name and not payload.Admin)
+	then
 		effects.Event(payload)
 	end
-	local item = byId[payload.ItemId]
 	if item and not payload.Admin then
 		hud.Best(payload.PlayerName, item)
 	end
@@ -323,7 +327,7 @@ remotes.State.OnClientEvent:Connect(function(state)
 	skipAnimation, autoFlush = state.Settings.SkipAnimation == true, state.AutoFlush == true
 	audioSettings.Update(state.Settings)
 	feedback:State(state, workspace:GetServerTimeNow())
-	presentation.Update(state.Settings)
+	presentation.Update(state.Settings, state.Collection)
 	skipToggle.Text = if skipAnimation then "Quick reveals: ON" else "Quick reveals: OFF"
 	effects.SetSkip(
 		skipAnimation or state.Settings.RevealIntensity == "Reduced" or state.Settings.RevealIntensity == "Off"

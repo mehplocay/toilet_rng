@@ -1,17 +1,8 @@
 local Rules = {}
 local NumberFormat = require(if script then script.Parent.NumberFormat else "./NumberFormat")
-local tiers = {
-	Common = "Pop",
-	Uncommon = "Pop",
-	Rare = "Burst",
-	Epic = "Sparkle",
-	Legendary = "Banner",
-	Mythic = "Banner",
-	Godly = "Cinematic",
-	Secret = "Cinematic",
-}
+local RevealConfig = require(if script then script.Parent.Config.Reveals else "./Config/Reveals")
 function Rules.Tier(rarity, intensity)
-	if not tiers[rarity] then
+	if not RevealConfig.Tiers[rarity] then
 		return nil
 	end
 	if intensity == "Off" then
@@ -20,7 +11,7 @@ function Rules.Tier(rarity, intensity)
 	if intensity == "Reduced" then
 		return "Pop"
 	end
-	return tiers[rarity]
+	return RevealConfig.Tiers[rarity].Tier
 end
 function Rules.Big(tier)
 	return tier == "Banner" or tier == "Cinematic"
