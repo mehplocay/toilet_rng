@@ -3,6 +3,11 @@ return {
 	Defaults = { MusicVolume = 0.25, SFXVolume = 0.7, MusicMuted = false, SFXMuted = false },
 	Crossfade = 3,
 	FadeIn = 2.5,
+	StopFade = 0.02,
+	LoopAttack = 0.02,
+	PreloadMaxLength = 3,
+	-- Source mastering is louder for fanfares; keep their class below ordinary SFX.
+	ClassGains = { UI = 1, action = 1, reward = 0.8, stinger = 0.45, ambient = 1 },
 	DuckGain = 0.4,
 	DuckAttack = 0.15,
 	DuckRelease = 1.2,

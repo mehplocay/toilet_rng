@@ -1,4 +1,5 @@
 local Feedback = require("../src/client/Audio/Feedback")
+require("./audio-id-checks")(require("../src/shared/Config/Assets"), require("../src/shared/Config/Audio"))
 local Upgrades = require("../src/shared/Config/Upgrades")
 local Rewards = require("../src/shared/Config/Rewards")
 local calls = {}

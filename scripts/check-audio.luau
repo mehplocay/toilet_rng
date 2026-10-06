@@ -70,13 +70,7 @@ near(Mix.Pitch(0, -0.05), 0.95)
 near(Mix.Pitch(0, 0.05), 1.05)
 assert(Mix.Pitch(4, 0) > Mix.Pitch(3, 0))
 near(Mix.Pitch(99, 0), Mix.Pitch(8, 0))
-assert(#Assets.Music == 5)
-for _, id in ipairs(Assets.Music) do
-	assert(id == "")
-end
-for key in pairs(Audio.Cues) do
-	assert(Assets.Sounds[key] == "", key)
-end
+require("./audio-id-checks")(Assets, Audio)
 -- Admission is shared by production playback. A hover storm cannot steal a stinger.
 local voices = { epic = { Key = "Epic", Started = 0 } }
 local allowed, victim = Mix.Admit(Audio, "Secret", 1, {}, voices)

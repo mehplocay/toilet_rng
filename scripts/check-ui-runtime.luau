@@ -1,6 +1,26 @@
 -- Bundled by check-ui.ps1 with the production modules and ui-harness.luau.
 local C = H.Load("src/client/UI/Components")
 local Assets = H.Load("src/shared/Config/Assets")
+local shippedMusic, shippedSounds = table.clone(Assets.Music), table.clone(Assets.Sounds)
+local audioSlots = H.Load("src/shared/Config/Audio").Cues
+for index, id in ipairs(Assets.Music) do
+	assert(id == expectedAudio["Music" .. index], "Wrong uploaded music ID: Music" .. index)
+end
+for key in pairs(audioSlots) do
+	assert(Assets.Sounds[key] == expectedAudio[key], "Slot without uploaded ID or wrong mapping: " .. key)
+end
+for key in pairs(Assets.Sounds) do
+	assert(audioSlots[key], "Configured ID without runtime slot: " .. key)
+end
+for key in pairs(expectedAudio) do
+	local index = key:match("^Music([1-5])$")
+	assert(index or audioSlots[key], "Uploaded ID without slot: " .. key)
+end
+-- UI suites intentionally use empty-safe fixtures; restore shipped IDs after lifecycle checks.
+Assets.Music = { "", "", "", "", "" }
+for key in pairs(Assets.Sounds) do
+	Assets.Sounds[key] = ""
+end
 local Items = H.Load("src/shared/Config/Items")
 local root, remotes = H.Root(1280, 684), H.Remotes()
 -- Shared by the shop, upgrade and presentation suites bundled by check-ui.ps1.
@@ -651,6 +671,7 @@ assert(math.abs(audio.Music.Volume - 0.2) < 1e-10 and audio.SFX.Volume == 0)
 H.Advance(2.6)
 assert(audio.Music.Volume == 0.5 and audio.Equalizer.HighGain == 0)
 audio:Destroy()
+H.Advance(AudioConfig.StopFade)
 assert(#audio.Voices == 0 and audio.Music._dead and audio.SFX._dead)
 ownPlot:Destroy()
 otherPlot:Destroy()
@@ -663,9 +684,12 @@ H.StartTasks() -- Playlist waits for first preload.
 H.StartTasks() -- First preload resolves.
 H.ResumeTasks() -- First deck starts; next deck preloads.
 assert(music.Current and music.Current.IsPlaying and music.Current.Volume == 1)
+assert(music.Current.SoundId == "rbxassetid://201", "Startup preload was not reused as the first track")
+local first = music.Current
+first.TimePosition = 110
+H.ResumeTasks() -- Next track fetch begins only near the transition.
 H.StartTasks()
 H.ResumeTasks() -- Second deck ready, waiting for crossfade position.
-local first = music.Current
 first.TimePosition = 117
 H.ResumeTasks()
 assert(music.Current ~= first and music.Current.Volume == 1 and first.Volume == 0, "Crossfade did not swap decks")
@@ -699,6 +723,8 @@ failed:ApplySettings(AudioConfig.Defaults)
 H.StartTasks()
 H.StartTasks()
 H.ResumeTasks()
+H.StartTasks() -- Startup failure falls through to the normal bounded playlist retry.
+H.ResumeTasks()
 assert(not failed.Current and not failed.Loading, "Failed music played or leaked")
 failed:Destroy()
 H.ResumeTasks()
@@ -713,8 +739,29 @@ local current, preloads = single.Current, #H.Preloads
 H.ResumeTasks()
 H.StartTasks()
 assert(single.Current == current and #H.Preloads == preloads, "Single track reloaded itself")
+current.TimePosition = 42
+single:ApplySettings({ MusicVolume = 0.25, MusicMuted = true, SFXVolume = 0.7, SFXMuted = false })
+assert(current.IsPlaying, "Music paused before its release finished")
+H.Advance(AudioConfig.StopFade / 2)
+assert(current.IsPlaying)
+H.Advance(AudioConfig.StopFade / 2 + 0.001)
+assert(not current.IsPlaying and current.TimePosition == 42, "Pause lost the playback position")
+single:ApplySettings(AudioConfig.Defaults)
+assert(current.IsPlaying and current.TimePosition == 42 and current.Resumes == 1, "Unmute restarted music")
+single:ApplySettings({ MusicVolume = 0.25, MusicMuted = true, SFXVolume = 0.7, SFXMuted = false })
+single:ApplySettings(AudioConfig.Defaults)
+H.Advance(AudioConfig.StopFade + 0.001)
+assert(current.IsPlaying, "Rapid unmute retained a stale pause callback")
+single:ApplySettings({ MusicVolume = 0, MusicMuted = false, SFXVolume = 0.7, SFXMuted = false })
+H.Advance(AudioConfig.StopFade + 0.001)
+assert(not current.IsPlaying, "Zero music slider did not pause")
+single:ApplySettings(AudioConfig.Defaults)
 single:Destroy()
+assert(not current._dead and single.Releasing[current], "Music teardown hard-cut the deck")
+H.Advance(AudioConfig.StopFade + 0.001)
+assert(current._dead and single.Music._dead and single.SFX._dead, "Faded teardown leaked a deck or group")
 Assets.Music = { "", "", "", "", "" }
+Assets.Music, Assets.Sounds = shippedMusic, shippedSounds
 print(
 	"Audio runtime checks passed: silent placeholders, controls, stale snapshots, voice cap, cleanup, crossfades and ducking"
 )

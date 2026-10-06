@@ -5,6 +5,23 @@ $generatedPath = Join-Path $workspaceRoot '.ui-check.generated.luau'
 $parts = [System.Collections.Generic.List[string]]::new()
 $parts.Add('local sources = {}')
 $parts.Add('local expectedIcons = {}')
+$parts.Add('local expectedAudio = {}')
+$audioCount = 0
+$audioSeen = @{}
+foreach ($batchName in @('uploaded-ids.json', 'uploaded-ids-2.json')) {
+    $batch = Get-Content -Raw -LiteralPath (Join-Path $workspaceRoot "assets/audio/$batchName") | ConvertFrom-Json
+    foreach ($section in @('music', 'sounds')) {
+        foreach ($slot in $batch.$section.PSObject.Properties) {
+            $id = [string]$slot.Value
+            if ($id -notmatch '^[1-9][0-9]{11,16}$') { throw "Invalid uploaded audio ID: $($slot.Name)" }
+            if ($audioSeen.ContainsKey($id)) { throw "Duplicate uploaded audio ID: $($slot.Name) / $($audioSeen[$id])" }
+            $audioSeen[$id] = $slot.Name
+            $audioCount++
+            $parts.Add("expectedAudio['$($slot.Name)'] = 'rbxassetid://$id'")
+        }
+    }
+}
+if ($audioCount -ne 53) { throw "Expected 53 uploaded audio IDs, got $audioCount" }
 $parts.Add('local previewIcons = ' + ([bool]$SnapshotDirectory).ToString().ToLower())
 $manifest = Get-Content -Raw -LiteralPath (Join-Path $workspaceRoot 'assets/icons/manifest.json') | ConvertFrom-Json
 $uploads = Get-Content -Raw -LiteralPath (Join-Path $workspaceRoot 'assets/icons/uploaded-ids.json') | ConvertFrom-Json

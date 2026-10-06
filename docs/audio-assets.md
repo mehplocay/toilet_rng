@@ -1,5 +1,15 @@
 # Original Toilet RNG audio assets
 
+## Runtime integration — 2026-10-06
+
+All 53 IDs from `assets/audio/uploaded-ids.json` and `uploaded-ids-2.json` are now wired into `Assets.Music[1..5]` and the 48 exact `Assets.Sounds` keys on `feature/audio-wiring`. Both manifests identify Dreadlight Studio as uploader; the synthesis manifest remains the source/provenance inventory. No audio files were regenerated or changed. Checks report no missing IDs, orphan uploads or duplicates, including the Ambience/RebirthHold loops.
+
+The mixer preloads Music1 and short SFX without blocking startup, warms UI first, reuses the first deck and loads later music near transitions. Loop attacks and cancelled voices have a 20 ms runtime fade; music fades before pause and retains its position. Ambience is a quiet SFX bed that requires Music and SFX to be unmuted. Default class gains and effective mix values are in the [sound map](design/sound-map.md#default-runtime-volume-sanity); [current API research](research/audio-wiring.md) records privacy/access requirements. Generation-only reports below describe the earlier handoff and are retained for provenance.
+
+Studio/published-device validation remains necessary for actual audible fades and mix, Roblox transcoding/seams, moderation, effective production universe permissions, and desktop/iOS/Android interruption behavior. Numeric ID coverage does not establish any of those.
+
+Integration validation: all 20 `check-*.luau` files pass (18 standalone; audit/runtime files through their PowerShell harnesses), `check-audit.ps1` passes 93 regressions, and `check-ui.ps1`, `check-visuals.ps1`, all six `check-world.ps1` modes, `rojo build -o build.rbxl`, StyLua on edited Luau files and `git diff --check` pass. A full-repository default StyLua check reports pre-existing CRLF differences outside this change. Selene was attempted but its configured `roblox` standard library is missing locally. Integration changes remain uncommitted as requested.
+
 Branch: `feature/sound-assets-2`. **53 files: 48 SFX slots plus five music tracks**, in [assets/audio/final](../assets/audio/final). The original 21 **32 kHz OGG Vorbis** files remain byte-identical; the additional 32 are **48 kHz mono OGG Vorbis**. No `src/` changes, uploads, assigned Roblox IDs, commits or pushes.
 
 Open [the local review player](../assets/audio/review.html) to audition every file. [manifest.json](../assets/audio/manifest.json) is the machine-readable inventory and exact `Assets.luau` mapping; [quality-report.md](../assets/audio/quality-report.md) contains measurements and upload batches. Each file has its own waveform/spectrogram PNG in [previews](../assets/audio/previews).

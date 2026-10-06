@@ -9,6 +9,7 @@ local H = {
 	Timers = {},
 	Threads = {},
 	Preloads = {},
+	AudioTweens = {},
 	Warnings = {},
 }
 local function signal()
@@ -240,6 +241,14 @@ function methods:Play()
 	self.IsPlaying = true
 	self.Plays = (self.Plays or 0) + 1
 end
+function methods:Pause()
+	self.IsPlaying = false
+	self.Pauses = (self.Pauses or 0) + 1
+end
+function methods:Resume()
+	self.IsPlaying = true
+	self.Resumes = (self.Resumes or 0) + 1
+end
 local function baseSize(object)
 	if object._fixed then
 		return object._fixed
@@ -324,6 +333,7 @@ function Instance.new(class)
 		"AttributeChanged",
 		"DescendantRemoving",
 		"Ended",
+		"Loaded",
 	}) do
 		object._props[event] = signal()
 	end
@@ -373,15 +383,32 @@ function services.ContentProvider:PreloadAsync(values, callback)
 		end
 	end
 end
-function services.TweenService:Create(object, _, props)
+function services.TweenService:Create(object, info, props)
+	local audioTween = object:IsA("Sound") or object:IsA("SoundGroup")
+	if audioTween then
+		table.insert(H.AudioTweens, { Object = object, Info = info, Props = props })
+	end
+	local completed, cancelled = signal(), false
 	return {
-		Completed = signal(),
+		Completed = completed,
 		Play = function()
 			for key, value in pairs(props) do
 				object[key] = value
 			end
+			if audioTween then
+				table.insert(H.Timers, {
+					At = H.Now + info[1],
+					Fn = function()
+						if not cancelled then
+							completed:Fire()
+						end
+					end,
+				})
+			end
 		end,
-		Cancel = function() end,
+		Cancel = function()
+			cancelled = true
+		end,
 		Pause = function() end,
 		Destroy = function() end,
 	}
