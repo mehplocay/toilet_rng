@@ -1,0 +1,128 @@
+﻿[
+    {
+        "key":  "Click",
+        "sha256":  "a0ad8710c0ab465084e459d281eb140bfe8cfc028e610f4439c1622e2f17440d",
+        "synthesis_pcm_sha256":  "e7389560d20d94f7d10052dc35c3d0a3f3c5bd86ff4413f5e75485083ad89b3a",
+        "pcm_sha256":  "0162b2ed1c3c16e494f2fc1ab4838f3fa22c83ef686724d2bb4775efd12fffda"
+    },
+    {
+        "key":  "Hover",
+        "sha256":  "bfb53634e15e90f199b0d6ebd3be97f56a7a5238b21fc69bb74867604e31a679",
+        "synthesis_pcm_sha256":  "39f907974fb241f88109ccefd60cc85cd2b7f68cc53e1fe0f025f26612ca0fab",
+        "pcm_sha256":  "1773a0f94044bf658b82cc6e31a0b913a49286fa96316ec09a6b1afa99146606"
+    },
+    {
+        "key":  "Open",
+        "sha256":  "73317edee1d5171880b465b518e8d6ec841c420d3b78a7de82d4d10fb75347ce",
+        "synthesis_pcm_sha256":  "86d3ee87858eeffaed53b31178c262d74412c79de7c41f29aa9d0a57ab707109",
+        "pcm_sha256":  "3e16c9c480583d3e78a9ce5c9b06c1efb562bb7a1216c95c5bc10c29757e5dd6"
+    },
+    {
+        "key":  "Close",
+        "sha256":  "688cbcf24527b502197f4ae86995f5639ccbc920e1c196caf443229f521800ca",
+        "synthesis_pcm_sha256":  "5ca7913d91c527abb7472fa15fd56c47fa1a1b49474c646ccab5c340f7751a7d",
+        "pcm_sha256":  "c8a598bb6de15b42ae5bc8f2b505979fb2a9a8a722548d962a07fedea61e37b2"
+    },
+    {
+        "key":  "CoinCollect",
+        "sha256":  "6616b394b94afb4d2b8d9ef3f5c702ce44f7a259fbe48005627e8a8722213236",
+        "synthesis_pcm_sha256":  "40759e4c204d571c0ce36cb717a1f78416c88351a42e4fbd4e0884a3455350f1",
+        "pcm_sha256":  "c791cb56a5a1b9651cd2d170938405ae84c664dc73a516d3fa1ff5d6c0d2d8d7"
+    },
+    {
+        "key":  "Flush",
+        "sha256":  "95646d2509e4cfa6fd1cfe8ce188593e09a7f065a8dea29a261a0cf7691b25b3",
+        "synthesis_pcm_sha256":  "7fca6196350de56003af1f0e6570a2d1bc5b09f2a34e5d311001772c8e55d3c0",
+        "pcm_sha256":  "42e2b8aa1ccaff3c6a801dbb2c734d9b2a512bd196d55189be6610b6491f40d1"
+    },
+    {
+        "key":  "FlushRumble",
+        "sha256":  "edd44a5dd15e376123d0c54f0227416a84c7b3bccd658e7f97d2c80b952bdbd1",
+        "synthesis_pcm_sha256":  "8851fffd1848a64856d74932f2cd0006b8901eb8f924383a71aac596a962bb6d",
+        "pcm_sha256":  "8053cb6790d67ef27e0617c989e8fa7180ac7f4ef4c53a51521198b264c76403"
+    },
+    {
+        "key":  "Epic",
+        "sha256":  "e0f76fd9407370404637f552c5aec19ac5e768cd1221c860869b083a2e48d2df",
+        "synthesis_pcm_sha256":  "f7b1a376a592f5bebf9670a2bcec0b6aa10d3d9e517c4e65ba8cb00191f12437",
+        "pcm_sha256":  "27cd244e25dc1c15d11f198dea764bc56ba8932149daca550758fc93dc10304c"
+    },
+    {
+        "key":  "Legendary",
+        "sha256":  "2402cd83dd8e0c9fe66c304f76dc009895b93f60f38e44586a787c78b390eb12",
+        "synthesis_pcm_sha256":  "09975ff2ff254b460f5ab5fa9264d3eff575093ab4f767cef55ea1870aad04ed",
+        "pcm_sha256":  "91cbba087611e4a6485792293b211b277388b201442cfe175b2f172fdbd2923c"
+    },
+    {
+        "key":  "Mythic",
+        "sha256":  "eb508f019964667ec619365960b277291702cdfc3a34128b87d7256c488b3e70",
+        "synthesis_pcm_sha256":  "6195a2b2c6625b864ccbbb96b5d300cb70440927f4a5a874488f1209a362924c",
+        "pcm_sha256":  "52c03c3b7825ea525e0cd4ce7bb10a886ebd88b310dcd694b758176c34d46d39"
+    },
+    {
+        "key":  "Godly",
+        "sha256":  "2590a3b2c7f0fc4e3b47aa0bcf6237e4fb828774a8a817f5abc3f8c633b9b90d",
+        "synthesis_pcm_sha256":  "4c59a9b247434794bfa755722294b514b318c2a417aaf3f982c5f07daff95bda",
+        "pcm_sha256":  "0cabe6f968960296447281a83d6b01049a0a3047c0c6ed311094082f4da24151"
+    },
+    {
+        "key":  "Secret",
+        "sha256":  "3e619ff46ad5a0352f4e3dc39ae26f64ae6f229167305ccf6f00d404babda0ab",
+        "synthesis_pcm_sha256":  "99ef969114347d2f9603b173bf74d31b9be403298d72e4a31a615e3ae8b3a491",
+        "pcm_sha256":  "d894d30fa137230e944107f82d482065deb77b9624975bcfbc0847064e46faed"
+    },
+    {
+        "key":  "ServerEvent",
+        "sha256":  "2d414d2452b47f0ee9aa11df05f60d15b60a8130c3710e73e6ad072ed9f37f7f",
+        "synthesis_pcm_sha256":  "7948f48a496a42749ffbf2c5b3265985e8bae88454b08702f36469fac929dfc1",
+        "pcm_sha256":  "6704d73a62df8ce88f46a02a2c8e48d3c85cfbdfbb9951f5918711baaa909bec"
+    },
+    {
+        "key":  "PurchaseSuccess",
+        "sha256":  "5d58b0b39f41863e3e90e120e8d51e0481d5464a5d43f52564521ad65c8b0117",
+        "synthesis_pcm_sha256":  "797420c88d11f38a38156729d803bd31f2e9e5e1399f4c3602d47c07668ae6f8",
+        "pcm_sha256":  "eb6649937570969e9c5233c8511c750c421a5f4b0412d2deec93308bf22a88e5"
+    },
+    {
+        "key":  "Error",
+        "sha256":  "28dec6b7d27a7123c0fe1fd14d5350dc251e9ebf943c024c4eb73dc11d7a2eef",
+        "synthesis_pcm_sha256":  "0eef79600219838862051b13c359b0a281a1815b72fa7ae8b15f6ceab472a225",
+        "pcm_sha256":  "efc2a6a4be1d65b7a500e27599bef02efd9760bb875a1ad27f5c31ee33f7514e"
+    },
+    {
+        "key":  "AutoFlushTick",
+        "sha256":  "1a0dfcccd2fc1b1e13a95fb7338720477b6daf572d2fcde3c784363b6286afd1",
+        "synthesis_pcm_sha256":  "026cf4be4e516b24ce668f752bb32ba77ec2468194dfe1c87c97ed58ed6ecdef",
+        "pcm_sha256":  "5bc85bfdbd9ec2eb7387e32371fa08f2cf16fcfbc193163fded12c7cfa2996dc"
+    },
+    {
+        "key":  "Music1",
+        "sha256":  "167967f2e4db16ca6085bd588b61da5253d0738744a98ca1f7f6187371e7facd",
+        "synthesis_pcm_sha256":  "66b5632e4216cce926a32d3f659cb0f4629e10064bd398388c79d8ba1378fe0f",
+        "pcm_sha256":  "bc70314f12ed94b3da58567415306e4619934f9eec4b0c39646cfc5098d68700"
+    },
+    {
+        "key":  "Music2",
+        "sha256":  "1f7c46f7c47f272d96c7b79fc0b8d57af182833df55c88bbcaed92f49c2b8dcf",
+        "synthesis_pcm_sha256":  "85c467a6916ca6fba3866ef09f3f2029bde4462287700f49c4bcc58f5f9b9af3",
+        "pcm_sha256":  "d96cc4d820c39fd5b0e2a171f3b76288f29f268975f192105978e26b36ac3562"
+    },
+    {
+        "key":  "Music3",
+        "sha256":  "1ea71e987e64ee60145b4dc83f2c012588de8a17a337883d4ca7f5405ee3856c",
+        "synthesis_pcm_sha256":  "064c669a3f342857769498ae27c0ca8439b78051d1926c4a8cd0201e36d87565",
+        "pcm_sha256":  "3e4cce961b643c1bd69054b3b9875fc514ff9adece198c3a3e3e2f1d3628bf53"
+    },
+    {
+        "key":  "Music4",
+        "sha256":  "be06e5675bfcb9971fdf10f11239918010a646f915e05313171b73bd7b5cc15d",
+        "synthesis_pcm_sha256":  "96dadc1f3af319ea035d7c5ffe02ae5bda0d2332b4bb49df7c6859942754d3d7",
+        "pcm_sha256":  "abbe855aa4c17eed6ea51d5cc0e272d49f156c892f5315ff954c8019cf5da34b"
+    },
+    {
+        "key":  "Music5",
+        "sha256":  "3850fbb9fd3cf742b542772ee5fb3221bc6138258db98e972b1cd2aa01691407",
+        "synthesis_pcm_sha256":  "3f216db8c0b38e9c4c509b7cefa5c4afa36f5d053e84e5e11b88bda0db46ed7a",
+        "pcm_sha256":  "05bd35d4a5ff960a1c27a1b31560be7158c26c0a04438917022f9c248b0746ea"
+    }
+]

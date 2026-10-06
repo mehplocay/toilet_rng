@@ -58,11 +58,11 @@ class Codec:
             raise RuntimeError(self.lib.sf_strerror(None).decode())
         return handle
 
-    def write(self, path, samples, quality=0.5):
+    def write(self, path, samples, quality=0.5, sample_rate=SR):
         data = np.ascontiguousarray(samples, dtype=np.float32)
         if data.ndim == 1:
             data = data[:, None]
-        info = SFInfo(0, SR, data.shape[1], 0x200000 | 0x0060, 0, 0)
+        info = SFInfo(0, sample_rate, data.shape[1], 0x200000 | 0x0060, 0, 0)
         handle = self._open(path, 0x20, info)
         try:
             q = ct.c_double(quality)
@@ -135,8 +135,9 @@ def spectrum_filter(x, low=20, high=7000, periodic=False):
     return np.fft.irfft(np.fft.rfft(x, n=n, axis=0) * gain, n=n, axis=0)[:len(x)].astype(np.float32)
 
 
-def k_weighted(x):
+def k_weighted(x, sample_rate=SR):
     """RBJ shelf + high-pass estimate; not a certified BS.1770 meter."""
+    SR = sample_rate
     # Evaluate causal biquad transfer functions on a zero-padded FFT grid.
     n = 1 << (len(x) + SR).bit_length()
     z = np.exp(-2j * np.pi * np.fft.rfftfreq(n))
@@ -154,9 +155,10 @@ def k_weighted(x):
     return np.fft.irfft(np.fft.rfft(x, n=n, axis=0) * h[:, None], n=n, axis=0)[:len(x)]
 
 
-def loudness(x):
+def loudness(x, sample_rate=SR):
+    SR = sample_rate
     x = x[:, None] if x.ndim == 1 else x
-    weighted = k_weighted(x)
+    weighted = k_weighted(x, sample_rate)
     energy = np.sum(weighted * weighted, axis=1)
     if len(x) < int(.4 * SR):
         return None, float(-.691 + 10*np.log10(max(np.mean(energy), 1e-15)))
@@ -172,8 +174,9 @@ def loudness(x):
     return result, result
 
 
-def measure(x):
-    lufs, short = loudness(x)
+def measure(x, sample_rate=SR):
+    SR = sample_rate
+    lufs, short = loudness(x, sample_rate)
     block = max(1, int(.01 * SR))
     levels = np.sqrt(np.mean(x[:len(x)//block*block].reshape(-1, block, x.shape[1])**2, axis=(1, 2)))
     silent = levels < 10**(-60/20)
@@ -255,7 +258,8 @@ def png(path, canvas):
     Path(path).write_bytes(b'\x89PNG\r\n\x1a\n' + chunk(b'IHDR', struct.pack('>IIBBBBB', w,h,8,2,0,0,0)) + chunk(b'IDAT',zlib.compress(rows,8)) + chunk(b'IEND',b''))
 
 
-def preview(path, key, x, stats, loop):
+def preview(path, key, x, stats, loop, sample_rate=SR):
+    SR = sample_rate
     canvas = np.full((770, 1200, 3), (15, 24, 40), dtype=np.uint8)
     label(canvas, 36, 24, f'{key} / DECODED OGG', scale=3)
     level = stats['lufs_estimate'] if stats['lufs_estimate'] is not None else stats['short_k_weighted_db']
@@ -293,5 +297,6 @@ def preview(path, key, x, stats, loop):
         xx = left+int(part*(width-40)/4)
         label(canvas,xx,653,f'{len(x)/SR*part/4:.2f} S',scale=1)
     label(canvas,36,689,f'DC {stats["dc_offset"]:.6f}   CLIPS {stats["clipped_samples"]}   SEAM {stats["seam_delta"]:.6f}')
-    label(canvas,36,726,'LOOP: WRAPPED TAIL / EXACT FRAME COUNT' if loop else 'ONE-SHOT: SMOOTH ATTACK AND RELEASE')
+    loop_text='LOOP: PERIODIC SOURCE / EXACT FRAME COUNT' if key in ('RebirthHold','Ambience') else 'LOOP: WRAPPED TAIL / EXACT FRAME COUNT'
+    label(canvas,36,726,loop_text if loop else 'ONE-SHOT: SMOOTH ATTACK AND RELEASE')
     png(path,canvas)

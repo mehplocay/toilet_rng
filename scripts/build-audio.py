@@ -1,4 +1,4 @@
-"""Build all 21 original Toilet RNG audio assets. Requires NumPy and libsndfile.
+"""Build 53 Toilet RNG audio assets, preserving the original 21 final files.
 
 Run with Blender's bundled python.exe, or any Python with NumPy; --sndfile can
 point to Blender's blender.shared/sndfile.dll. Nothing is downloaded at runtime.
@@ -18,6 +18,7 @@ sys.dont_write_bytecode = True
 import numpy as np
 
 from audio_support import Codec, SR, db, loudness, measure, preview, spectrum_filter
+import audio_new
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "assets/audio"
@@ -395,9 +396,10 @@ def make_music(song, index):
 
 def inspect(codec, path, entry):
     samples,info=codec.read(path)
-    stats=measure(samples)
+    rate=info.samplerate
+    stats=measure(samples,rate)
     entry.update(stats)
-    entry.update(duration=round(len(samples)/SR,6),frames=len(samples),sample_rate=info.samplerate,
+    entry.update(duration=round(len(samples)/rate,6),frames=len(samples),sample_rate=info.samplerate,
                  channels=info.channels,bytes=path.stat().st_size,
                  sha256=hashlib.sha256(path.read_bytes()).hexdigest())
     failures=[]
@@ -407,9 +409,16 @@ def inspect(codec, path, entry):
     require(len(samples)==entry['expected_frames'],"sample count mismatch")
     require(info.format==0x200060,"not OGG Vorbis")
     require(info.sections==1,"multiple logical streams")
-    require(info.samplerate==SR,"unexpected sample rate")
-    require(entry['min_duration']<=len(samples)/SR<=entry['max_duration'],"slot duration")
-    require(path.stat().st_size<20_000_000 and len(samples)/SR<420,"Roblox import limits")
+    is_new=entry['key'] in audio_new.SLOTS
+    if is_new:
+        duration,lo,hi,level,_=audio_new.SLOTS[entry['key']]
+        require((entry['min_duration'],entry['max_duration'],entry['target_k_level'])==(lo,hi,level),"manifest differs from slot contract")
+        require(entry['expected_frames']==round(duration*audio_new.RATE),"manifest frame count differs from generator")
+        require(entry['loop']==(entry['key'] in audio_new.LOOPS),"manifest loop flag differs from slot")
+    require(info.samplerate==(audio_new.RATE if is_new else SR),"unexpected sample rate")
+    require(info.channels==(1 if is_new else (2 if entry['key'].startswith('Music') else SFX[entry['key']][4])),"unexpected channel count")
+    require(entry['min_duration']<=len(samples)/rate<=entry['max_duration'],"slot duration")
+    require(path.stat().st_size<20_000_000 and len(samples)/rate<420,"Roblox import limits")
     require(stats['clipped_samples']==0 and stats['true_peak_estimate_dbtp']<-1,"clipping/headroom")
     require(stats['dc_offset']<.0005,"DC offset")
     require(stats['rms_dbfs']>-55,"silent or nearly silent asset")
@@ -417,16 +426,19 @@ def inspect(codec, path, entry):
     if entry['loop']:
         require(stats['seam_delta']<.003,"loop seam exceeds 0.003 FS")
         require(stats['longest_silence_seconds']<.12,"music has silent gap")
-        require(-7.2<stats['peak_dbfs']<-5.2,"music peak outside target")
-        require(-26<stats['lufs_estimate']<-15,"music loudness outside quiet mix range")
+        if not is_new:
+            require(-7.2<stats['peak_dbfs']<-5.2,"music peak outside target")
+            require(-26<stats['lufs_estimate']<-15,"music loudness outside quiet mix range")
     else:
         require(stats['edge_peak']<.003,"one-shot endpoint click risk")
         require(stats['longest_silence_seconds']<.16,"excess one-shot silence")
         if entry['key'] in ('Epic','Legendary','Mythic','Godly','Secret','ServerEvent'):
             require(abs(stats['lufs_estimate']+14)<2,"stinger loudness outside target")
+    if is_new:
+        audio_new.inspect_extra(samples,rate,entry,require)
     entry['checks_passed']=not failures
     entry['failures']=failures
-    preview(OUT/'previews'/f"{entry['key']}.png",entry['key'],samples,stats,entry['loop'])
+    preview(OUT/'previews'/f"{entry['key']}.png",entry['key'],samples,stats,entry['loop'],rate)
     return samples
 
 
@@ -437,34 +449,39 @@ def player_page(entries):
         cards.append(f'''<article><h2>{key} <small>{html.escape(e.get('title',e.get('style','')))}</small></h2>
 <p>{e['duration']:.3f}s / {e['peak_dbfs']:.1f} dBFS / {e['bytes']/1000:.0f} kB / {'loop' if e['loop'] else 'one-shot'}</p>
 <audio controls preload="none" {'loop' if e['loop'] else ''} src="final/{key}.ogg"></audio>
+{'<label> Sale speed <select onchange="this.parentElement.previousElementSibling.playbackRate=Number(this.value);this.parentElement.previousElementSibling.preservesPitch=false"><option>1.00</option><option>1.12</option><option>1.24</option></select></label>' if key in ('Sell','SellAll') else ''}
 <details><summary>Waveform and spectrogram</summary><img loading="lazy" alt="{key} diagnostics" src="previews/{key}.png"></details></article>''')
     (OUT/'review.html').write_text('''<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Toilet RNG - original audio review</title><style>body{background:#0f1828;color:#dce9f3;font:16px system-ui;max-width:1000px;margin:40px auto;padding:0 20px}h1{color:#71e5c6}article{border-top:1px solid #395067;padding:20px 0}small{font-size:16px;font-weight:400;color:#aabed0}audio{width:min(100%,600px)}img{max-width:100%}summary{cursor:pointer;padding:14px 0}p{line-height:1.6}</style>
-<h1>Toilet RNG / original audio</h1><p>16 synthesized effects and 5 original instrumental loops. Play at comfortable volume. Music controls loop the complete file. For sample-accurate transition audition in a DAW, repeat the decoded OGG without gaps; browser controls do not prove Roblox timing. Automated QA is not human listening approval.</p>'''+''.join(cards)+'</html>',encoding='utf-8')
+<h1>Toilet RNG / original audio</h1><p>48 synthesized effects and 5 original instrumental loops. Original 21 files remain unchanged; 32 new effects are 48 kHz mono. Play at comfortable volume. Loop controls repeat the complete file. For sample-accurate transition audition in a DAW, repeat the decoded OGG without gaps; browser controls do not prove Roblox timing. RebirthHold and Ambience need a 20 ms runtime release for click-free arbitrary stops; browser pause is abrupt. Automated QA is not human listening approval.</p>'''+''.join(cards)+'</html>',encoding='utf-8')
 
 
 def report(entries, codec, write_manifest=True):
     batches=[]
     for e in entries:
-        if not batches or sum(v['bytes'] for v in batches[-1])+e['bytes']>=8_500_000:
+        if not batches or (e['key'] in audio_new.SLOTS)!=(batches[-1][0]['key'] in audio_new.SLOTS) or sum(v['bytes'] for v in batches[-1])+e['bytes']>=8_500_000:
             batches.append([])
         batches[-1].append(e)
     batch_records=[dict(batch=i+1,keys=[e['key'] for e in group],bytes=sum(e['bytes'] for e in group)) for i,group in enumerate(batches)]
-    data=dict(schema_version=1,seed=SEED,sample_rate=SR,codec='Ogg Vorbis',encoder=codec.version,
+    if any(b['bytes']>=9_000_000 for b in batch_records):
+        raise RuntimeError('Upload batch must remain below 9 MB')
+    data=dict(schema_version=2,seed=SEED,sample_rates=[SR,audio_new.RATE],codec='Ogg Vorbis',encoder=codec.version,
               numpy=np.__version__,source='100% original numerical synthesis; no recordings, sample packs, MIDI imports or third-party melodies',
               meter='Estimated K-weighted gated loudness, 400 ms / 75% overlap. Under 400 ms: LUFS null, short_k_weighted_db is an ungated proxy. Not a certified BS.1770 meter.',
               loop_seam_threshold=.003,batch_limit_bytes=9_000_000,upload_batches=batch_records,assets=entries)
     if write_manifest:
         (OUT/'manifest.json').write_text(json.dumps(data,indent=2)+'\n',encoding='utf-8')
-    lines=['# Audio quality report','',f'Encoder: {codec.version}; NumPy {np.__version__}; rate: {SR} Hz.',
+    lines=['# Audio quality report','',f'Encoder: {codec.version}; NumPy {np.__version__}; original rate: {SR} Hz; new SFX: {audio_new.RATE} Hz mono.',
            'Measurements are from decoded final OGGs. LUFS values are estimates; short UI clips use the documented ungated K-weighted proxy. No human listening or Roblox import approval is claimed.','',
            '| Key | Seconds | Peak dBFS | Est. LUFS / short proxy | DC | Seam delta | kB | QA |',
            '| --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |']
     for e in entries:
         level=e['lufs_estimate'] if e['lufs_estimate'] is not None else e['short_k_weighted_db']
         lines.append(f"| {e['key']} | {e['duration']:.3f} | {e['peak_dbfs']:.2f} | {level:.2f}{'*' if e['lufs_estimate'] is None else ''} | {e['dc_offset']:.7f} | {e['seam_delta']:.6f} | {e['bytes']/1000:.1f} | {'PASS' if e['checks_passed'] else ', '.join(e['failures'])} |")
-    lines+=['','*Short-clip proxy, not integrated LUFS. Seam delta is an acceptance check only for music; one-shots are checked against silence at both endpoints.','',
+    lines+=['','*Short-clip proxy, not integrated LUFS. Seam delta is an acceptance check for all loops; one-shots are checked against silence at both endpoints.','',
             'Checks: finite samples; exact frames; one Vorbis stream; slot duration; Roblox duration/size/rate; zero clipped samples; estimated 4x true peak < -1 dBTP; DC < 0.0005 FS; non-silence; energy above 10 kHz < 0.2%; music seam < 0.003 FS; no music silence >= 120 ms; music peak -7.2..-5.2 dBFS; music estimated loudness -26..-15; stingers -16..-12 LUFS estimate; one-shot endpoint < 0.003 FS and silence < 160 ms.','',
+            'New SFX additionally require 48 kHz mono, estimated true peak <= -3 dBTP, level within 1.5 dB of authored class target, onset within 10 ms, one-shot edge <= 0.001 FS, exact spec/runtime key and duration/loop agreement. Loops: seam <= 0.001 FS, slope mismatch <= 0.001 FS/sample, boundary energy within 3 dB of nearby windows; 64 arbitrary stop phases tested with a 20 ms cosine release. Sell/SellAll: decoded playback-speed probes at 1.00, 1.06, 1.12, 1.18 and 1.24x. See per-file manifest fields. Original files are also verified against original-21-hashes.json.','',
+            'A nonzero loop cannot guarantee click-free abrupt stops at every phase. The source code currently destroys stopped voices without a release; the 20 ms runtime fade is a handoff requirement, not an implemented src change. No live playback or human audition approval is claimed.','',
             'The spectral high-band check detects excess ultrasonic/near-Nyquist content, not every possible alias or an unpleasant timbre. The peak interpolation and loudness meter are engineering estimates. PNG spectrograms sample overlapping windows across the file and may miss very short events between plotted columns.','', '## Upload batches','']
     for b in batch_records:
         lines.append(f"- Batch {b['batch']}: {', '.join(b['keys'])}; {b['bytes']:,} bytes ({b['bytes']/1e6:.3f} MB), below 9,000,000 bytes.")
@@ -478,15 +495,27 @@ def main():
     parser.add_argument('--sndfile',help='Path to existing libsndfile library')
     parser.add_argument('--check',action='store_true',help='Decode, measure and verify existing deliverables without rendering')
     parser.add_argument('--only',nargs='+',help='Render selected keys; preserve other manifest entries')
+    parser.add_argument('--new',action='store_true',help='Render/check only the 32 new cues; retain original files')
     args=parser.parse_args()
     codec=Codec(args.sndfile)
     (OUT/'final').mkdir(parents=True,exist_ok=True)
     (OUT/'previews').mkdir(parents=True,exist_ok=True)
     previous={}
     if (OUT/'manifest.json').exists():
-        previous={e['key']:e for e in json.loads((OUT/'manifest.json').read_text())['assets']}
+        previous_entries=json.loads((OUT/'manifest.json').read_text())['assets']
+        previous={e['key']:e for e in previous_entries}
+        if len(previous)!=len(previous_entries):
+            raise RuntimeError('Duplicate manifest keys')
     entries=[]
-    keys=list(SFX)+[s['key'] for s in SONGS]
+    keys=list(SFX)+[s['key'] for s in SONGS]+list(audio_new.SLOTS)
+    if set(previous)-set(keys) or (args.check and set(previous)!=set(keys)):
+        raise RuntimeError('Manifest key set differs from configured slots')
+    runtime=audio_new.contracts(ROOT,SFX)
+    frozen=json.loads((OUT/'original-21-hashes.json').read_text(encoding='utf-8-sig'))
+    audio_new.verify_originals(OUT,frozen)
+    if args.new:
+        if args.only: parser.error('--new and --only are mutually exclusive')
+        args.only=list(audio_new.SLOTS)
     if args.only and set(args.only)-set(keys):
         parser.error('Unknown keys: '+', '.join(set(args.only)-set(keys)))
     for index,key in enumerate(keys):
@@ -500,9 +529,20 @@ def main():
             entry=previous[key].copy()
             expected_hash=entry['sha256']
         else:
-            entry=dict(key=key,file=f'final/{key}.ogg',loop=key.startswith('Music'),
+            # Never rewrite the finished original batch in a normal full build.
+            if key not in audio_new.SLOTS and path.exists() and not args.only:
+                if key not in previous: raise RuntimeError(f'{key}: missing original metadata')
+                entries.append(previous[key])
+                continue
+            entry=dict(key=key,file=f'final/{key}.ogg',loop=key.startswith('Music') or key in audio_new.LOOPS,
                        intended_assets_luau_path=f'src/shared/Config/Assets.luau:Music[{key[-1]}]' if key.startswith('Music') else f'src/shared/Config/Assets.luau:Sounds.{key}')
-            if key.startswith('Music'):
+            if key in audio_new.SLOTS:
+                samples=audio_new.make(key,sys.modules[__name__])
+                _,lo,hi,target,style=audio_new.SLOTS[key]
+                entry.update(min_duration=lo,max_duration=hi,target_k_level=target,style=style,
+                             runtime_class=runtime[key]['class'],runtime_gain=runtime[key]['gain'],
+                             stop_release_seconds=.020 if key in audio_new.LOOPS else None)
+            elif key.startswith('Music'):
                 song=SONGS[int(key[-1])-1]
                 samples,shift=make_music(song,int(key[-1])-1)
                 entry.update(title=song['title'],style=song['style'],tempo_bpm=song['bpm'],musical_key=song['tonic'],bars=40,
@@ -512,16 +552,21 @@ def main():
                 samples=make_sfx(key,index)
                 entry.update(min_duration=SFX[key][1],max_duration=SFX[key][2],target_k_level=SFX[key][3])
             entry['expected_frames']=len(samples)
+            if key in audio_new.LOOPS:
+                samples,shift=audio_new.encode_loop(codec,path,samples)
+                entry['codec_boundary_rotation_samples']=shift
+            else:
+                codec.write(path,samples,.5,audio_new.RATE if key in audio_new.SLOTS else SR)
             entry['synthesis_pcm_sha256']=hashlib.sha256(samples.astype('<f4').tobytes()).hexdigest()
-            codec.write(path,samples,.5)
         inspect(codec,path,entry)
         if args.check and entry['sha256']!=expected_hash:
             entry['failures'].append('file hash differs from manifest')
             entry['checks_passed']=False
         entries.append(entry)
         print(f"  {entry['duration']:.3f}s  peak {entry['peak_dbfs']:.2f}  LUFS {entry['lufs_estimate']}  seam {entry['seam_delta']:.6f}  {entry['failures'] or 'PASS'}",flush=True)
+    audio_new.verify_originals(OUT,frozen)
+    audio_new.verify_inventory(OUT,entries,keys)
     passed=report(entries,codec,write_manifest=not args.check)
-    if not args.only and len(entries)!=21: raise RuntimeError('Expected 21 assets')
     print(f'{len(entries)} assets; {sum(e["bytes"] for e in entries)/1e6:.3f} MB; QA {"PASS" if passed else "FAIL"}',flush=True)
     return 0 if passed else 1
 
