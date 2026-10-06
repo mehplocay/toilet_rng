@@ -1,0 +1,280 @@
+{
+  "schema_version": 1,
+  "generator": "assets/blender/build_wave1_b.py",
+  "group": "Wave 1 B",
+  "units": "stud",
+  "coordinate_system": "Y-up/Z-forward export; Z-up/-Y-front author; size order Roblox X/Y/Z",
+  "import_settings": {
+    "scale_unit": "Stud",
+    "scale_factor": 1,
+    "world_forward": "Front",
+    "world_up": "Top"
+  },
+  "atlas_sha256": "1f1b2d5b903956746c7d92e25389fa3bd2c40c3b4deb6fa91ed669a0bb2d56f3",
+  "assets": [
+    {
+      "id": "PlungerPogo",
+      "name": "Plunger Pogo",
+      "category": "items",
+      "rarity": "Epic",
+      "file": "assets/models/wave1/b/PlungerPogo.fbx",
+      "tris": 1908,
+      "budget": 2000,
+      "size_studs": [
+        2.2,
+        2.9,
+        1.6
+      ],
+      "pivot": "base-center",
+      "mesh_count": 1,
+      "material_count": 1,
+      "texture": "assets/textures/ToyPalette.png",
+      "fbx_sha256": "0cf0862fb826b2282a09cdcc58a95a6168152139d14037f4deb6665db7bf8272",
+      "source": "assets/blender/generated/wave1/b/PlungerPogo.blend",
+      "preview": "assets/previews/wave1/b/PlungerPogo.png",
+      "front_preview": "assets/previews/wave1/b/PlungerPogo_front.png"
+    },
+    {
+      "id": "BathMatBat",
+      "name": "Bath Mat Bat",
+      "category": "items",
+      "rarity": "Epic",
+      "file": "assets/models/wave1/b/BathMatBat.fbx",
+      "tris": 1132,
+      "budget": 1800,
+      "size_studs": [
+        3,
+        1.8,
+        1.1
+      ],
+      "pivot": "base-center",
+      "mesh_count": 1,
+      "material_count": 1,
+      "texture": "assets/textures/ToyPalette.png",
+      "fbx_sha256": "40f1fe56f6e9e0f1f355cb288e22be80a34901fb0b151a17cc61a3f0a8a63348",
+      "source": "assets/blender/generated/wave1/b/BathMatBat.blend",
+      "preview": "assets/previews/wave1/b/BathMatBat.png",
+      "front_preview": "assets/previews/wave1/b/BathMatBat_front.png"
+    },
+    {
+      "id": "DiscoBidet",
+      "name": "Disco Bidet",
+      "category": "items",
+      "rarity": "Epic",
+      "file": "assets/models/wave1/b/DiscoBidet.fbx",
+      "tris": 2316,
+      "budget": 2400,
+      "size_studs": [
+        2.4,
+        2.5,
+        2
+      ],
+      "pivot": "base-center",
+      "mesh_count": 1,
+      "material_count": 1,
+      "texture": "assets/textures/ToyPalette.png",
+      "fbx_sha256": "ece8000a15e1a1ce675a250bd89884ef8c047629c09b053823b3c3e600faeec6",
+      "source": "assets/blender/generated/wave1/b/DiscoBidet.blend",
+      "preview": "assets/previews/wave1/b/DiscoBidet.png",
+      "front_preview": "assets/previews/wave1/b/DiscoBidet_front.png"
+    },
+    {
+      "id": "TowelTornado",
+      "name": "Towel Tornado",
+      "category": "items",
+      "rarity": "Epic",
+      "file": "assets/models/wave1/b/TowelTornado.fbx",
+      "tris": 2272,
+      "budget": 2300,
+      "size_studs": [
+        2.3,
+        2.8,
+        2
+      ],
+      "pivot": "base-center",
+      "mesh_count": 1,
+      "material_count": 1,
+      "texture": "assets/textures/ToyPalette.png",
+      "fbx_sha256": "692b9971b436f583cca2c2cc583dbebf911e479b333da7f779ecdcfb128eaf30",
+      "source": "assets/blender/generated/wave1/b/TowelTornado.blend",
+      "preview": "assets/previews/wave1/b/TowelTornado.png",
+      "front_preview": "assets/previews/wave1/b/TowelTornado_front.png"
+    },
+    {
+      "id": "PorcelainPoodle",
+      "name": "Porcelain Poodle",
+      "category": "items",
+      "rarity": "Legendary",
+      "file": "assets/models/wave1/b/PorcelainPoodle.fbx",
+      "tris": 2100,
+      "budget": 2400,
+      "size_studs": [
+        2.7,
+        2.5,
+        1.6
+      ],
+      "pivot": "base-center",
+      "mesh_count": 1,
+      "material_count": 1,
+      "texture": "assets/textures/ToyPalette.png",
+      "fbx_sha256": "b1f7f3c5e6927c695893817389820e244221a10d8556d4382fa53e67cc717ee0",
+      "source": "assets/blender/generated/wave1/b/PorcelainPoodle.blend",
+      "preview": "assets/previews/wave1/b/PorcelainPoodle.png",
+      "front_preview": "assets/previews/wave1/b/PorcelainPoodle_front.png"
+    },
+    {
+      "id": "FaucetPharaoh",
+      "name": "Faucet Pharaoh",
+      "category": "items",
+      "rarity": "Legendary",
+      "file": "assets/models/wave1/b/FaucetPharaoh.fbx",
+      "tris": 2348,
+      "budget": 2400,
+      "size_studs": [
+        2.6,
+        2.9,
+        1.6
+      ],
+      "pivot": "base-center",
+      "mesh_count": 1,
+      "material_count": 1,
+      "texture": "assets/textures/ToyPalette.png",
+      "fbx_sha256": "c230dea54c0a008e7297deb765e6b10b3768d4d93ff7e286a61d880abac9612b",
+      "source": "assets/blender/generated/wave1/b/FaucetPharaoh.blend",
+      "preview": "assets/previews/wave1/b/FaucetPharaoh.png",
+      "front_preview": "assets/previews/wave1/b/FaucetPharaoh_front.png"
+    },
+    {
+      "id": "RoyalFlushFrog",
+      "name": "Royal Flush Frog",
+      "category": "items",
+      "rarity": "Legendary",
+      "file": "assets/models/wave1/b/RoyalFlushFrog.fbx",
+      "tris": 2000,
+      "budget": 2300,
+      "size_studs": [
+        2.8,
+        2.5,
+        2
+      ],
+      "pivot": "base-center",
+      "mesh_count": 1,
+      "material_count": 1,
+      "texture": "assets/textures/ToyPalette.png",
+      "fbx_sha256": "abe25a98fb354b6a4d73f8a8bcc4d76dca86366f956f8ac6d14fe18578471864",
+      "source": "assets/blender/generated/wave1/b/RoyalFlushFrog.blend",
+      "preview": "assets/previews/wave1/b/RoyalFlushFrog.png",
+      "front_preview": "assets/previews/wave1/b/RoyalFlushFrog_front.png"
+    },
+    {
+      "id": "GoldenGargler",
+      "name": "Golden Gargler",
+      "category": "items",
+      "rarity": "Legendary",
+      "file": "assets/models/wave1/b/GoldenGargler.fbx",
+      "tris": 2096,
+      "budget": 2100,
+      "size_studs": [
+        2.3,
+        2.8,
+        1.8
+      ],
+      "pivot": "base-center",
+      "mesh_count": 1,
+      "material_count": 1,
+      "texture": "assets/textures/ToyPalette.png",
+      "fbx_sha256": "0e752cad6c9fee060e5480b4a61ca0e44fcddcc11fd7bee8c83f9d6e50453e35",
+      "source": "assets/blender/generated/wave1/b/GoldenGargler.blend",
+      "preview": "assets/previews/wave1/b/GoldenGargler.png",
+      "front_preview": "assets/previews/wave1/b/GoldenGargler_front.png"
+    },
+    {
+      "id": "Clogtopus",
+      "name": "Clogtopus",
+      "category": "items",
+      "rarity": "Mythic",
+      "file": "assets/models/wave1/b/Clogtopus.fbx",
+      "tris": 2008,
+      "budget": 2500,
+      "size_studs": [
+        3,
+        2.5,
+        2.5
+      ],
+      "pivot": "base-center",
+      "mesh_count": 1,
+      "material_count": 1,
+      "texture": "assets/textures/ToyPalette.png",
+      "fbx_sha256": "9e63e6387b28ece0734a9ec8fcee4318dea17a6c9f305fb56e72a11387a40440",
+      "source": "assets/blender/generated/wave1/b/Clogtopus.blend",
+      "preview": "assets/previews/wave1/b/Clogtopus.png",
+      "front_preview": "assets/previews/wave1/b/Clogtopus_front.png"
+    },
+    {
+      "id": "LaundryYeti",
+      "name": "Laundry Yeti",
+      "category": "items",
+      "rarity": "Mythic",
+      "file": "assets/models/wave1/b/LaundryYeti.fbx",
+      "tris": 2364,
+      "budget": 2400,
+      "size_studs": [
+        2.8,
+        2.9,
+        2
+      ],
+      "pivot": "base-center",
+      "mesh_count": 1,
+      "material_count": 1,
+      "texture": "assets/textures/ToyPalette.png",
+      "fbx_sha256": "21a89221f12e46f167b02c7baf7e5a04815bf8c8ebe2e600256cd620d2acf541",
+      "source": "assets/blender/generated/wave1/b/LaundryYeti.blend",
+      "preview": "assets/previews/wave1/b/LaundryYeti.png",
+      "front_preview": "assets/previews/wave1/b/LaundryYeti_front.png"
+    },
+    {
+      "id": "SteamGenie",
+      "name": "Steam Genie",
+      "category": "items",
+      "rarity": "Mythic",
+      "file": "assets/models/wave1/b/SteamGenie.fbx",
+      "tris": 1960,
+      "budget": 2400,
+      "size_studs": [
+        2.8,
+        2.9,
+        1.8
+      ],
+      "pivot": "base-center",
+      "mesh_count": 1,
+      "material_count": 1,
+      "texture": "assets/textures/ToyPalette.png",
+      "fbx_sha256": "953318b14f6ad04ae09042dc9bb0a999ead71a329de9755708e3b5270a094931",
+      "source": "assets/blender/generated/wave1/b/SteamGenie.blend",
+      "preview": "assets/previews/wave1/b/SteamGenie.png",
+      "front_preview": "assets/previews/wave1/b/SteamGenie_front.png"
+    },
+    {
+      "id": "BathBombBehemoth",
+      "name": "Bath Bomb Behemoth",
+      "category": "items",
+      "rarity": "Mythic",
+      "file": "assets/models/wave1/b/BathBombBehemoth.fbx",
+      "tris": 1924,
+      "budget": 2200,
+      "size_studs": [
+        2.8,
+        2.8,
+        2.6
+      ],
+      "pivot": "base-center",
+      "mesh_count": 1,
+      "material_count": 1,
+      "texture": "assets/textures/ToyPalette.png",
+      "fbx_sha256": "ac0fd77ff93d471ef7b28e27756deea63dc61a5dd1985b91e431ea3a4b5ce3a0",
+      "source": "assets/blender/generated/wave1/b/BathBombBehemoth.blend",
+      "preview": "assets/previews/wave1/b/BathBombBehemoth.png",
+      "front_preview": "assets/previews/wave1/b/BathBombBehemoth_front.png"
+    }
+  ]
+}
