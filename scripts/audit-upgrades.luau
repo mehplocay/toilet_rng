@@ -9,7 +9,9 @@ test("merge: capped RNG odds, cash, lifetime collection and animation survive ma
 		assert(owner == player and skip == false)
 		table.insert(animations, { Item = item, Duration = duration })
 	end
-	local lastId = 0
+	p.Stats.Flushes = 100
+	e:Fire("AutoFlush", player, true)
+	local lastId = 100
 	for _, upgraded in ipairs({ false, true }) do
 		if upgraded then
 			p.ToiletTier = 7
@@ -42,15 +44,15 @@ test("merge: capped RNG odds, cash, lifetime collection and animation survive ma
 			assert(animation.Duration > 0 and animation.Duration < cooldown)
 			assert(payload.ServiceCoins == toilets[p.ToiletTier].ServiceCoins * (if upgraded then 2 else 1))
 			assert(p.Coins == coins + payload.ServiceCoins and p.Stats.Earned == p.Coins)
-			assert(p.Inventory.Poop == lastId and p.Collection.Poop == lastId)
+			assert(p.Inventory.Poop == lastId - 100 and p.Collection.Poop == lastId - 100)
 			e.World.Flush(player, not automatic)
-			assert(p.Stats.Flushes == lastId and #animations == lastId, "Manual/auto overlap awarded twice")
+			assert(p.Stats.Flushes == lastId and #animations == lastId - 100, "Manual/auto overlap awarded twice")
 		end
 	end
 	e:Fire("Sell", player, "Poop", p.Inventory.Poop)
-	assert(p.Inventory.Poop == lastId, "Upgrade cash bypassed first-copy protection")
+	assert(p.Inventory.Poop == lastId - 100, "Upgrade cash bypassed first-copy protection")
 	e:Fire("Sell", player, "Poop", p.Inventory.Poop - 1)
-	assert(p.Inventory.Poop == 1 and p.Collection.Poop == lastId, "Sale erased lifetime index progress")
+	assert(p.Inventory.Poop == 1 and p.Collection.Poop == lastId - 100, "Sale erased lifetime index progress")
 end)
 
 test("upgrades: remote fuzz, server price and token bucket", function()
@@ -348,9 +350,9 @@ test("upgrades: maximum offline tank survives ambiguous load and cannot be recla
 		e:Load("src/shared/UpgradeRules").new(e:Load("src/shared/Config/Upgrades"))
 	)
 	local restored = e.Data:Get(second)
-	assert(income:PendingCoins(restored) == 1036800000000 and restored.Upgrades.OfflineTank == 10)
+	assert(income:PendingCoins(restored) == 518400000000 and restored.Upgrades.OfflineTank == 10)
 	e.Data:Close(second)
 	local third = e:Player(80)
 	e.Data:Load(third)
-	assert(income:PendingCoins(e.Data:Get(third)) == 1036800000000, "Reconnect repeated maximum tank")
+	assert(income:PendingCoins(e.Data:Get(third)) == 518400000000, "Reconnect repeated maximum tank")
 end)

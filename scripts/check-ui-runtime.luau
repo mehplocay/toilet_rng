@@ -479,7 +479,7 @@ H.Services.ProximityPromptService.PromptTriggered:Fire(prompt)
 assert(#H.Calls == requests, "Foreign collect prompt sent a request")
 bootRemotes.Result.OnClientEvent:Fire("CollectIncome", { Success = true, Coins = 123 })
 local flights = 0
-for _, object in ipairs(clientRoot.HUD:GetChildren()) do
+for _, object in ipairs(clientRoot:GetChildren()) do
 	if object.Name == "IncomeCoinFlight" then
 		flights += 1
 	end
@@ -569,6 +569,22 @@ assert(
 	clientRoot.HUD.FlushReveal.Visible and clientRoot.HUD:FindFirstChild("ServiceCoinPopup"),
 	"Flush result presentation missing"
 )
+do
+	local audioService = H.Load("src/client/Audio/AudioService")
+	local originalFlush, water = audioService.Flush, 0
+	audioService.Flush = function()
+		water += 1
+	end
+	local before = #clientRoot.HUD:GetChildren()
+	bootRemotes.Result.OnClientEvent:Fire(
+		"Flush",
+		{ ItemId = "Mystery", FlushId = 100000, Cooldown = 0.4, ServiceCoins = 4500, Compact = true }
+	)
+	audioService.Flush = originalFlush
+	assert(water == 0 and #clientRoot.HUD:GetChildren() == before, "Far award played water or allocated a coin popup")
+	assert(not clientRoot.HUD.FlushReveal.Visible and clientRoot.RareReveal.CompactDrop.Visible)
+	assert(not clientRoot.RareReveal:FindFirstChild("RevealContent"), "Far jackpot opened a cinematic")
+end
 local indexPanel = clientRoot["My Collection"]
 indexPanel.Visible = true
 indexPanel.ContentScroll.Body.Rewards.Activated:Fire()

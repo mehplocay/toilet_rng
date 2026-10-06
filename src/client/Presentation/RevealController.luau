@@ -2,6 +2,7 @@ local RunService = game:GetService("RunService")
 local Input = game:GetService("UserInputService")
 local Shared = game.ReplicatedStorage.Shared
 local Config = require(Shared.Config.Presentation)
+local AutoConfig = require(Shared.Config.AutoFlush)
 local Rules = require(Shared.PresentationRules)
 local Rarities = require(Shared.Config.Rarities)
 local C = require(script.Parent.Parent.UI.Components)
@@ -22,6 +23,8 @@ function Controller.Create(root, hud, audio)
 	local toast = C.Text(layer, "", UDim2.new(), nil, 18)
 	toast.Name, toast.Visible, toast.ZIndex = "CompactDrop", false, 110
 	local content, cleanup, tick, elapsed, toastUntil = nil, nil, nil, 0, 0
+	local lastCompact, compactCount = -math.huge, 0
+	local pendingCompact
 	local function colorFor(item)
 		return if item.Rarity == "Secret" then Color3.fromRGB(189, 127, 255) else Rarities[item.Rarity].Color
 	end
@@ -66,6 +69,21 @@ function Controller.Create(root, hud, audio)
 		hud.SetHintVisible(not toast.Visible)
 	end
 	local play
+	local function flushCompact()
+		if not pendingCompact or os.clock() - lastCompact < AutoConfig.ToastInterval then
+			return
+		end
+		local item = pendingCompact
+		self.Queue:Clear()
+		clear()
+		audio:Play(item.Rarity, nil, AutoConfig.ToastGain)
+		toast.Text = item.Name .. (if compactCount > 1 then "  +" .. (compactCount - 1) .. " more finds" else "")
+		toast.TextColor3 = colorFor(item)
+		toast.Visible, layer.Visible, toastUntil = true, true, os.clock() + AutoConfig.ToastInterval
+		lastCompact, compactCount, pendingCompact = os.clock(), 0, nil
+		hud.SetHintVisible(false)
+		resize()
+	end
 	function self:Skip()
 		clear()
 		local nextEntry = self.Queue:Next()
@@ -233,6 +251,17 @@ function Controller.Create(root, hud, audio)
 			self.LastId = payload.FlushId
 		end
 		local tier = Rules.Tier(item.Rarity, self.Intensity)
+		if payload and payload.Compact then
+			-- One reused toast, at most one visual/audio change per interval. Every
+			-- award remains in inventory; chat announcements stay server controlled.
+			compactCount += 1
+			if not pendingCompact or Rarities[item.Rarity].Order >= Rarities[pendingCompact.Rarity].Order then
+				pendingCompact = item
+			end
+			flushCompact()
+			return
+		end
+		pendingCompact, compactCount = nil, 0
 		if not tier then
 			return
 		end
@@ -287,6 +316,7 @@ function Controller.Create(root, hud, audio)
 	table.insert(
 		self.Connections,
 		RunService.Heartbeat:Connect(function(dt)
+			flushCompact()
 			if toast.Visible and os.clock() >= toastUntil then
 				toast.Visible = false
 				layer.Visible = self.Queue.Active ~= nil and Rules.Big(self.Queue.Active.Tier)

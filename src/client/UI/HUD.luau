@@ -3,6 +3,7 @@ local Layout = require(script.Parent.Layout)
 local UserInputService = game:GetService("UserInputService")
 local Shared = game.ReplicatedStorage.Shared
 local Monetization = require(Shared.Config.Monetization)
+local AutoConfig = require(Shared.Config.AutoFlush)
 local Toilets = require(Shared.Config.Toilets)
 local Rewards = require(Shared.Config.Rewards)
 local Schedule = require(Shared.RewardSchedule)
@@ -87,6 +88,7 @@ function HUD.Create(root, remotes, open, prompts)
 	local action = C.New("Frame", gui, { Name = "FlushActions", BackgroundTransparency = 1 })
 	local state, untilAt, cooldown, lastRequest = nil, 0, 3, -math.huge
 	local autoEnabled, autoUnlocked = false, false
+	local autoStatus, statusAt = {}, 0
 	local flush
 	flush = C.Button(action, "FLUSH", UDim2.new(1, -96, 1, 0), nil, function()
 		if state and not prompts.Near() then
@@ -129,6 +131,19 @@ function HUD.Create(root, remotes, open, prompts)
 	auto.Label.UITextSizeConstraint.MaxTextSize = 14
 	auto.Interactable = false
 	local autoProgress = C.ProgressBar(auto, UDim2.new(1, -14, 0, 5), UDim2.new(0, 7, 1, -9), C.Gold)
+	auto.Name = "AutoFlushSwitch"
+	local idle = C.Button(
+		action,
+		"Still there? Tap to continue",
+		UDim2.new(1, 0, 0, 44),
+		UDim2.fromOffset(0, -50),
+		function()
+			remotes.PlayerActivity:FireServer()
+		end,
+		C.Gold,
+		{ TextSize = 20 }
+	)
+	idle.Name, idle.Visible = "IdleGuard", false
 	local offers = C.New("Frame", gui, { Name = "Offers", BackgroundTransparency = 1 })
 	local function offer(y, title, detail, icon, color, target)
 		local card = C.Button(offers, "", UDim2.new(1, 0, 0, 130), UDim2.fromOffset(0, y), function()
@@ -176,6 +191,24 @@ function HUD.Create(root, remotes, open, prompts)
 		end
 		local remaining = math.max(0, untilAt - os.clock())
 		local near = prompts.Near()
+		local elapsed = math.max(0, os.clock() - statusAt)
+		local idleLeft = math.max(0, math.ceil((autoStatus.IdleRemaining or 0) - elapsed))
+		local paused = autoStatus.Paused == true
+		idle.Visible = autoEnabled and paused
+		if autoUnlocked then
+			local uptime = math.floor((autoStatus.Uptime or 0) + (if autoEnabled and not paused then elapsed else 0))
+			auto.Text = "AUTO\n"
+				.. (if autoEnabled
+					then (if paused then "PAUSED\n" .. timer(uptime) else "ON " .. timer(uptime))
+					else "OFF")
+				.. (
+					if autoEnabled
+							and not paused
+							and idleLeft <= AutoConfig.IdleWarningSeconds
+						then "\nIdle " .. timer(idleLeft)
+						else ""
+				)
+		end
 		flush.Interactable = state ~= nil and (not near or remaining <= 0)
 		flush.Text = if not state
 			then "LOADING..."
@@ -199,7 +232,7 @@ function HUD.Create(root, remotes, open, prompts)
 			)
 		end
 		flush.Position = UDim2.fromOffset(0, if pointer.Visible then math.sin(os.clock() * 4) * 2 else 0)
-		if state and not tutorial and not near and os.clock() - lastAwayHint > 30 then
+		if state and not tutorial and not autoEnabled and not near and os.clock() - lastAwayHint > 30 then
 			lastAwayHint = os.clock()
 			showHint("Find your toilet", "Tap Home to return")
 		end
@@ -256,6 +289,7 @@ function HUD.Create(root, remotes, open, prompts)
 		end,
 		Update = function(snapshot)
 			state = snapshot
+			autoStatus, statusAt = state.AutoStatus or {}, os.clock()
 			rebirthBadge.Set(if rebirth:Eligible(state, rebirth:Level(state)) then 1 else 0)
 			if coinTarget ~= state.Coins then
 				coinTarget = state.Coins

@@ -46,7 +46,35 @@ function Income:Sanitize(raw, profile)
 			remaining -= units
 		end
 	end
+	if type(raw.Offline) == "table" then
+		local total = self:StorageUnits(profile, false) - remaining
+		local units = math.min(total, bounded(raw.Offline.Units, c.MaxLedgerUnits))
+		if units > 0 then
+			result.Offline = {
+				Units = units,
+				EarnedUnits = math.max(units, bounded(raw.Offline.EarnedUnits, c.MaxLedgerUnits)),
+				AwaySeconds = bounded(raw.Offline.AwaySeconds, c.MaxTimestamp),
+				FullSeconds = math.min(
+					bounded(raw.Offline.FullSeconds, c.MaxTimestamp),
+					bounded(raw.Offline.AwaySeconds, c.MaxTimestamp)
+				),
+			}
+		end
+	end
 	return result
+end
+
+function Income:OfflineSnapshot(profile)
+	local report = profile.Income.Offline
+	if not report or self:WholeCoins(report.Units) < 1 then
+		return nil
+	end
+	return {
+		Coins = self:WholeCoins(report.Units),
+		Earned = self:WholeCoins(report.EarnedUnits),
+		AwaySeconds = report.AwaySeconds,
+		FullSeconds = report.FullSeconds,
+	}
 end
 function Income:TotalUnits(profile)
 	local total = 0
@@ -112,21 +140,29 @@ function Income:Settle(profile, now, offline)
 		return -- Keep the high-water mark through backward clock adjustments.
 	end
 	local elapsed = now - ledger.UpdatedAt
+	local away = elapsed
 	if offline then
 		local minutes = if self.Upgrades
 			then self.Upgrades:OfflineMinutes(profile, c.OfflineMinutes)
 			else c.OfflineMinutes
-		elapsed = math.min(elapsed, minutes * 60)
+		elapsed = math.min(elapsed, math.min(minutes, c.MaxOfflineMinutes) * 60)
 	end
 	ledger.UpdatedAt = now -- Consume capped time too; reconnecting cannot reclaim it.
 	local rates = self:Rates(profile)
-	local room = self:StorageUnits(profile, false) - self:TotalUnits(profile)
+	local before = self:TotalUnits(profile)
+	local room = self:StorageUnits(profile, false) - before
 	local slotStorage = self:StorageUnits(profile, true)
+	local potential, hasRate = if offline then {} else nil, false
 	for slot = 1, math.min(profile.DisplaySlots, c.MaxSlots) do
 		local key = tostring(slot)
 		local pending = ledger.Pending[key] or 0
 		local limit = math.max(0, math.min(slotStorage - pending, room))
 		local rate = rates[key] or 0
+		if offline then
+			rate = math.floor(rate * math.clamp(c.OfflineRate, 0, 1))
+			hasRate = hasRate or rate > 0
+			potential[key] = { Rate = rate, Room = math.max(0, slotStorage - pending) }
+		end
 		-- Compare before multiplying: even decades elapsed cannot overflow subcoins.
 		local grant = if rate > math.floor(limit / elapsed) then limit else rate * elapsed
 		if grant > 0 then
@@ -134,8 +170,40 @@ function Income:Settle(profile, now, offline)
 			room -= grant
 		end
 	end
+	if offline then
+		local grant = self:TotalUnits(profile) - before
+		local old = ledger.Offline
+		if grant > 0 or old then
+			-- Earliest whole second when all credited income had fit. This accounts for
+			-- individual tanks and the shared hard cap without overflowing multiplication.
+			local low, high = 0, elapsed
+			while low < high do
+				local middle = math.floor((low + high) / 2)
+				local sum = 0
+				for _, entry in pairs(potential) do
+					local limit = math.min(entry.Room, grant - sum)
+					sum += if middle > 0 and entry.Rate > math.floor(limit / middle) then limit else entry.Rate * middle
+				end
+				if sum >= grant then
+					high = middle
+				else
+					low = middle + 1
+				end
+			end
+			ledger.Offline = {
+				Units = math.min(c.MaxLedgerUnits, (if old then old.Units else 0) + grant),
+				EarnedUnits = (if old then old.EarnedUnits else 0)
+					+ math.min(c.MaxLedgerUnits - (if old then old.EarnedUnits else 0), grant),
+				AwaySeconds = math.min(c.MaxTimestamp, (if old then old.AwaySeconds else 0) + away),
+				FullSeconds = math.min(
+					c.MaxTimestamp,
+					(if old then old.FullSeconds else 0) + (if hasRate then away - low else 0)
+				),
+			}
+		end
+	end
 end
-function Income:Collect(profile, slot)
+function Income:Collect(profile, slot, maximum)
 	local c = self.Config
 	if slot ~= nil and (type(slot) ~= "number" or slot % 1 ~= 0 or slot < 1 or slot > c.MaxSlots) then
 		return 0
@@ -143,7 +211,8 @@ function Income:Collect(profile, slot)
 	local available = if slot
 		then self:WholeCoins(profile.Income.Pending[tostring(slot)] or 0)
 		else self:PendingCoins(profile)
-	local coins = math.min(available, c.MaxBalance - profile.Coins, c.MaxBalance - profile.Stats.Earned)
+	local coins =
+		math.min(available, maximum or c.MaxBalance, c.MaxBalance - profile.Coins, c.MaxBalance - profile.Stats.Earned)
 	if coins <= 0 then
 		return 0
 	end
@@ -157,6 +226,14 @@ function Income:Collect(profile, slot)
 	end
 	profile.Coins += coins
 	profile.Stats.Earned += coins
+	-- Coins are fungible: every pad/jar/away collection consumes offline credit first.
+	local report = profile.Income.Offline
+	if report then
+		report.Units = math.max(0, report.Units - coins * c.UnitsPerCoin)
+		if report.Units == 0 then
+			profile.Income.Offline = nil
+		end
+	end
 	return coins
 end
 return Income

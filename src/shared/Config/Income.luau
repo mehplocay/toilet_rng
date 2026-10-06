@@ -12,6 +12,8 @@ return {
 	},
 	TierMultipliers = { 1, 1.5, 2.2, 3.3, 5, 8, 12 },
 	OfflineMinutes = 480,
+	OfflineRate = 0.5,
+	MaxOfflineMinutes = 24 * 60,
 	-- Coins/minute; ten maximum-rate Secrets fit at each tier.
 	SlotRateCaps = { 6000000, 9000000, 13200000, 19800000, 30000000, 48000000, 72000000 },
 	PlayerRateCaps = { 60000000, 90000000, 132000000, 198000000, 300000000, 480000000, 720000000 },

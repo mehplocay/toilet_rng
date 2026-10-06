@@ -2,7 +2,43 @@ local MarketplaceService = game:GetService("MarketplaceService")
 local Players = game:GetService("Players")
 local Config = require(game.ReplicatedStorage.Shared.Config.Monetization)
 local Rules = require(game.ReplicatedStorage.Shared.MonetizationRules)
+local AutoConfig = require(game.ReplicatedStorage.Shared.Config.AutoFlush)
 local Service = { Owned = {}, Auto = {}, Loading = {}, Pending = {}, Checking = {} }
+Service.Activity = {}
+
+function Service:Living(player)
+	local character = player.Character
+	local root = character and character:FindFirstChild("HumanoidRootPart")
+	local humanoid = character and character:FindFirstChildWhichIsA("Humanoid")
+	return player.Parent == Players
+		and root ~= nil
+		and humanoid ~= nil
+		and humanoid.Health > 0
+		and humanoid.Health < math.huge
+end
+
+function Service:AutoStatus(player)
+	local activity = self.Activity[player]
+	local now = os.clock()
+	return {
+		Paused = activity ~= nil and activity.Paused == true,
+		IdleRemaining = if activity then math.max(0, AutoConfig.IdleSeconds - (now - activity.Last)) else 0,
+		Uptime = if activity then activity.Uptime + (if activity.Since then now - activity.Since else 0) else 0,
+	}
+end
+
+function Service:IdlePaused(player)
+	local activity = self.Activity[player]
+	if not activity then
+		return true
+	end -- Missing activity state fails closed.
+	if not activity.Paused and os.clock() - activity.Last >= AutoConfig.IdleSeconds then
+		activity.Uptime += math.max(0, activity.Last + AutoConfig.IdleSeconds - (activity.Since or os.clock()))
+		activity.Since, activity.Paused = nil, true
+		self.Sync(player)
+	end
+	return activity.Paused
+end
 
 function Service:EffectiveOwned(player)
 	local owned = self.Owned[player] or {}
@@ -69,12 +105,16 @@ function Service:Distance(player)
 end
 
 function Service:CanAuto(player)
-	return Rules.AutoEnabled(self.Auto[player], self.Data:Get(player), self:Distance(player), Config)
+	local plot = self.World.Assigned[player]
+	return plot ~= nil
+		and plot.Owner == player
+		and Rules.AutoEnabled(self.Auto[player], self.Data:Get(player), self:Living(player), Config)
 end
 
 function Service:StopAuto(player)
 	if self.Auto[player] then
 		self.Auto[player] = false
+		self.Activity[player] = nil
 		self.Sync(player)
 	end
 end
@@ -105,7 +145,31 @@ function Service:Start(limiter, remotes, sync, data, world)
 		if select("#", ...) ~= 0 or type(enabled) ~= "boolean" or not limiter:Allow(player, "AutoFlush") then
 			return
 		end
-		self.Auto[player] = Rules.AutoEnabled(enabled, data:Get(player), self:Distance(player), Config)
+		local wasEnabled = self.Auto[player]
+		self.Auto[player] = Rules.AutoEnabled(enabled, data:Get(player), self:Living(player), Config)
+		if self.Auto[player] and not wasEnabled then
+			self.Activity[player] = { Last = os.clock(), Since = os.clock(), Uptime = 0, Paused = false }
+		elseif not self.Auto[player] then
+			self.Activity[player] = nil
+		end
+		sync(player)
+	end)
+	remotes.PlayerActivity.OnServerEvent:Connect(function(player, ...)
+		if select("#", ...) ~= 0 or not limiter:Allow(player, "PlayerActivity") then
+			return
+		end
+		if not self:CanAuto(player) then
+			return
+		end
+		local activity = self.Activity[player]
+		if not activity then
+			return
+		end
+		self:IdlePaused(player)
+		activity.Last = os.clock() -- Never accept a client clock, duration or reward.
+		if activity.Paused then
+			activity.Paused, activity.Since = false, os.clock()
+		end
 		sync(player)
 	end)
 	remotes.AnimationSkip.OnServerEvent:Connect(function(player, enabled, ...)
@@ -210,6 +274,7 @@ function Service:Start(limiter, remotes, sync, data, world)
 		self.Cosmetics:Remove(player)
 		self.Owned[player] = nil
 		self.Auto[player] = nil
+		self.Activity[player] = nil
 		self.Loading[player], self.Checking[player], self.Pending[player] = nil, nil, nil
 	end)
 	task.spawn(function()

@@ -1,5 +1,19 @@
 # Passive display income
 
+## Offline return window (2026-10-06)
+
+Offline accrual is now **50% of the active display rate**, configured by `Config/Income.OfflineRate` and clamped to 0..1 before per-slot subcoin quantization. The allowance remains eight hours plus 24 minutes per Offline Tank level (maximum twelve hours); a verified Offline Plus doubles this to 16..24 hours. `MaxOfflineMinutes` hard-caps accrual at 24 hours even if later entitlement configuration grows. Existing storage limits and the 9e15-subcoin global ceiling still apply; active income rates and progression prices do not change.
+
+The lease acquisition's existing UpdateAsync transform consumes capped time and persists both pending units and `Income.Offline` in one record. The latter holds bounded remaining offline units, original earned units, cumulative time away and time for which income could no longer accrue. Sanitization bounds remaining offline credit by actual pending units. It is a designation of existing coins, never a second balance. Stored reports survive callback replay, lost responses and uncollected rejoins. Multiple uncollected absences combine their report; full-tank time accounts for both time allowance and storage exhaustion to whole-second precision. Missing timestamps, empty displays and backward clocks grant no retroactive credit.
+
+Migration assumption: existing unlabelled pending units remain collectable on pads. Their historical online/offline origin cannot be reconstructed, so only newly settled offline earnings populate the new window designation. A fraction-only offline remainder waits for enough future offline credit or ordinary pooled collection.
+
+The responsive **While you were away** window shows time away, available earnings, original earnings after partial collection and the full-tank upgrade message. It opens once per client session when at least one whole offline coin is available. Dismissing it leaves coins on the pads; repeated State updates do not reopen it. Collect waits for authoritative State/Result, disables duplicate clicks, and requests fresh State after a 15-second timeout without retrying automatically. Successful transfers use the existing five-coin fly animation and collect sounds.
+
+`CollectOffline()` accepts no client amount, timestamp, slot or position. It requires the living owner, assigned plot and live lease, and shares CollectIncome's 1/2 input and 10/0.2 durable-save budgets. The window can transfer the remaining whole **offline portion** without proximity; fresh active income still requires normal pads/jar/authorized Auto Collect. Ordinary pad/jar collections consume the same offline credit first because wallet coins are fungible, including when the touched pad contains newer income. Fractional tails remain in pending storage and do not advertise an uncollectable window.
+
+Debit pending, reduce offline designation, credit wallet/Earned and save one immutable snapshot before success. Busy saves reject, failed/ambiguous saves fail closed, and post-yield identity checks prevent stale success. Rebirth clears the complete income ledger/report. Headless tests cover window/pad races, replay, acquisition response loss, pre/post-commit outages, overlapping rejoin, foreign lease takeover, caps and exact fractions. This preserves the audit's existing crash/outage durability limits rather than promising exactly-once notifications or unlimited backend recovery. Retire older server binaries on rollout: their sanitizer cannot preserve this report. [Research](../research/offline-window.md).
+
 2026-10-06, income-first economy. [Economy v2](economy-v2.md) owns current tuning and measured progression. [Display/collect](display-collect.md) records the unchanged placement, authorization and durable collection contract. [Research](../research/income-first-economy.md).
 
 ## Rates and presentation

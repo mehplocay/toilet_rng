@@ -40,11 +40,15 @@ if (!$Baseline -and !$Audit2Baseline -and !$DisplayCollectBaseline) {
 $parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'audit-path-catalog.luau')))
 if (!$Baseline -and !$Audit2Baseline -and !$DisplayCollectBaseline) {
     $parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'audit-merge-catalog.luau')))
+    $parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'audit-flushanywhere.luau')))
 }
 $parts.Add('do')
 $parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'ui-harness.luau')))
 $parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'audit2-client.luau')))
 $parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'audit-display-client.luau')))
+if (!$Baseline -and !$Audit2Baseline -and !$DisplayCollectBaseline) {
+    $parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'ui-flushanywhere.luau')))
+}
 $parts.Add('end')
 $parts.Add('print(string.format("Audit regressions: %d passed, %d failed", passed, #failures)); assert(#failures == 0, table.concat(failures, "\n"))')
 try {

@@ -1,0 +1,10 @@
+# Offline window accounting and verification
+
+Checked 2026-10-06.
+
+- [GlobalDataStore.UpdateAsync](https://create.roblox.com/docs/reference/engine/classes/GlobalDataStore#UpdateAsync) may invoke a transform again after concurrent writes. [Player data/session locking](https://create.roblox.com/docs/cloud-services/data-stores/player-data-purchasing) motivates keeping lease acquisition, consumed elapsed time, pending coins and notification metadata in the same record. Never grant coins in response to a UI notification or callback side effect.
+- [DataStore best practices](https://create.roblox.com/docs/cloud-services/data-stores/best-practices) recommends bounded retries and autosaving within lease expiry. Existing immutable snapshots, lease checks and fail-closed saves remain. Notification delivery itself is not exactly once; returning with uncollected credit shows the window again without generating that credit again.
+- [Remote security](https://create.roblox.com/docs/scripting/security/client-server-boundary): CollectOffline accepts zero arguments, requires a living plot owner and live profile lease, and uses the normal CollectIncome input/save budgets. Its only proximity exception transfers the server-recorded offline portion; it cannot collect fresh active income from anywhere.
+- [Rojo build documentation](https://rojo.space/docs/v7/getting-started/new-game/): `.rbxl` selects binary output. [StyLua](https://github.com/JohnnyMorganz/StyLua) provides check mode and Windows line-ending configuration. [Selene Roblox guide](https://kampfkarren.github.io/selene/roblox.html) requires the Roblox standard library; validation must report if it is unavailable.
+
+Headless regression tests exercise actual Luau production modules, controlled UpdateAsync retries/replay and held-save interleavings. They cannot establish live DataStore availability, real multiple-server timing, device rendering or native audio gain perception. Existing audit L3 crash/outage durability limits remain.

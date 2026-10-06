@@ -6,7 +6,9 @@ function Presentation.Publish(player, profile, item, payload, world, events, rem
 	else
 		events:Trigger(player, item, payload.FlushId)
 	end
-	world:Animate(player, item, profile.Settings.SkipAnimation, duration, payload.Admin == true)
+	if not payload.Compact then
+		world:Animate(player, item, profile.Settings.SkipAnimation, duration, payload.Admin == true)
+	end
 	remotes.Result:FireClient(player, "Flush", payload)
 end
 return Presentation

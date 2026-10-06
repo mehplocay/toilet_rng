@@ -117,7 +117,7 @@ function Service:ApplySettings(raw)
 		end)
 	end
 end
-function Service:Play(key, amount)
+function Service:Play(key, amount, volumeScale)
 	if self.Destroyed or not self.Ready or self.Settings.SFXMuted or self.Settings.SFXVolume <= 0 then
 		return
 	end
@@ -148,7 +148,7 @@ function Service:Play(key, amount)
 		variation = self.CoinVariation
 		self.LastCoin, combo = now, self.Combo
 	end
-	local gain = cue.Gain * Audio.ClassGains[cue.Class]
+	local gain = cue.Gain * Audio.ClassGains[cue.Class] * math.clamp(volumeScale or 1, 0, 1)
 	local sound = self:_sound(id, self.Buses[cue.Bus], if cue.Looped then 0 else gain, cue.Looped)
 	sound.Name = key
 	sound.PlaybackSpeed = if cue.AmountPitch then Mix.AmountPitch(amount) else Mix.Pitch(combo, variation)
@@ -171,7 +171,7 @@ function Service:Play(key, amount)
 			end
 		end)
 	end
-	if cue.Duck then
+	if cue.Duck and (volumeScale == nil or volumeScale >= 1) then
 		self:Duck(sound, cue.Length / sound.PlaybackSpeed)
 	end
 	pcall(function()

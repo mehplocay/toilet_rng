@@ -18,7 +18,14 @@ function FlushService.Start(data, limiter, remotes, sync, world, events, monetiz
 		end
 		local profile, plot = data:Get(player), world.Assigned[player]
 		local distance = monetization:Distance(player)
-		if not profile or not plot or plot.Owner ~= player or not Rules.InRange(distance, Monetization) then
+		if not profile or not plot or plot.Owner ~= player then
+			return
+		end
+		if automatic then
+			if not monetization:CanAuto(player) or monetization:IdlePaused(player) then
+				return
+			end
+		elseif not Rules.InRange(distance, Monetization) then
 			return
 		end
 		local now = os.clock()
@@ -57,6 +64,7 @@ function FlushService.Start(data, limiter, remotes, sync, world, events, monetiz
 		profile.Inventory[item.Id] = (profile.Inventory[item.Id] or 0) + 1
 		profile.Collection[item.Id] = (profile.Collection[item.Id] or 0) + 1
 		Presentation.Publish(player, profile, item, {
+			Compact = automatic == true and not Rules.InRange(distance, Monetization),
 			ItemId = item.Id,
 			Rarity = item.Rarity,
 			Chance = item.Chance,

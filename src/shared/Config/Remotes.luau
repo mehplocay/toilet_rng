@@ -16,6 +16,8 @@ return {
 	ServerLuck = "ServerLuck",
 	Settings = "Settings",
 	AutoFlush = "AutoFlush",
+	PlayerActivity = "PlayerActivity",
+	CollectOffline = "CollectOffline",
 	AnimationSkip = "AnimationSkip",
 	PlotColor = "PlotColor",
 	BuyPass = "BuyPass",
@@ -27,6 +29,7 @@ return {
 	ClaimReward = "ClaimReward",
 	ClaimIndexReward = "ClaimIndexReward",
 	Limits = {
+		PlayerActivity = { Capacity = 1, Refill = 0.1 },
 		BuyProduct = { Capacity = 1, Refill = 0.1 },
 		ClaimVIP = { Capacity = 1, Refill = 0.2 },
 		Rebirth = { Capacity = 1, Refill = 0.2 },

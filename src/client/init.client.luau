@@ -23,6 +23,8 @@ for _, name in ipairs({
 	"ServerLuck",
 	"Settings",
 	"AutoFlush",
+	"PlayerActivity",
+	"CollectOffline",
 	"AnimationSkip",
 	"PlotColor",
 	"BuyPass",
@@ -72,6 +74,7 @@ local screen = C.New("ScreenGui", player:WaitForChild("PlayerGui"), {
 	ZIndexBehavior = Enum.ZIndexBehavior.Sibling,
 })
 local root = C.New("Frame", screen, { Name = "SafeArea", Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1 })
+require(script.PlayerActivity).Start(root, remotes.PlayerActivity)
 require(script.PathBoostEffects).Start(root, player, remotes)
 C.StartAudioInput(screen.Parent, screen)
 local toast = C.Toast(root)
@@ -80,6 +83,7 @@ local upgrades = require(script.UI.Upgrades).Create(root, remotes)
 local rewards = require(script.UI.Rewards).Create(root, remotes)
 local passes = require(script.UI.Passes).Create(root, remotes)
 local rebirth = require(script.UI.Rebirth).Create(root, remotes)
+local offlineIncome = require(script.UI.OfflineIncome).Create(root, remotes)
 local settings = C.Panel(root, "Settings", C.Blue)
 local skipAnimation, autoFlush = false, false
 local settingsList = C.Scroll(settings.ContentScroll.Body, UDim2.fromScale(1, 1))
@@ -103,8 +107,16 @@ local skipToggle = settingsRow(
 		remotes.AnimationSkip:FireServer(not skipAnimation)
 	end
 )
-local panels =
-	{ collection.Panel, collection.SlotsPanel, upgrades.Panel, rewards.Panel, passes.Panel, rebirth.Panel, settings }
+local panels = {
+	collection.Panel,
+	collection.SlotsPanel,
+	upgrades.Panel,
+	rewards.Panel,
+	passes.Panel,
+	rebirth.Panel,
+	settings,
+	offlineIncome.Panel,
+}
 local dev
 if RunService:IsStudio() then
 	dev = C.Panel(root, "Developer Tools", Color3.fromRGB(219, 78, 105))
@@ -218,6 +230,7 @@ require(script.UI.Tutorial).Create(player, remotes, hud, prompts)
 local effects = require(script.Effects).Create(hud.Frame, audio.SFX, hud)
 local presentation = require(script.Presentation.Controller).Start(root, hud, remotes, audio, settingsList)
 local showServiceCoins = require(script.UI.CoinPopup).Create(hud.Frame)
+local showCollectedCoins = require(script.UI.CoinPopup).Create(root)
 local incomeChip = require(script.UI.IncomeChip).Create(hud.Frame)
 local PromptService = game:GetService("ProximityPromptService")
 PromptService.PromptTriggered:Connect(function(prompt)
@@ -244,7 +257,9 @@ for _, item in ipairs(Items) do
 	byId[item.Id] = item
 end
 remotes.Event.OnClientEvent:Connect(function(payload)
-	effects.Event(payload)
+	if not (autoFlush and not prompts.Near() and payload.PlayerName == player.Name and not payload.Admin) then
+		effects.Event(payload)
+	end
 	local item = byId[payload.ItemId]
 	if item and not payload.Admin then
 		hud.Best(payload.PlayerName, item)
@@ -274,16 +289,21 @@ remotes.Result.OnClientEvent:Connect(function(action, payload)
 		if not item then
 			return
 		end
-		audio:Flush(autoFlush, upgradeRules:Animation(payload.Cooldown or 1.5))
+		if not payload.Compact then
+			audio:Flush(autoFlush, upgradeRules:Animation(payload.Cooldown or 1.5))
+		end
 		hud.Flushed(payload)
 		if not payload.Admin then
 			hud.Best(player.DisplayName, item)
 		end
-		showServiceCoins(payload.ServiceCoins)
+		if not payload.Compact then
+			showServiceCoins(payload.ServiceCoins)
+		end
 		presentation.Reveal(item, payload)
 	elseif action == "CollectIncome" then
+		offlineIncome.Result(payload)
 		if payload.Success then
-			showServiceCoins(payload.Coins, true)
+			showCollectedCoins(payload.Coins, true)
 		end
 		toast(
 			if payload.Success then "+" .. C.Commas(payload.Coins) .. " display coins collected!" else payload.Message,
@@ -308,6 +328,7 @@ remotes.State.OnClientEvent:Connect(function(state)
 	)
 	hud.Update(state)
 	incomeChip.Update(state.PendingCoins or 0)
+	offlineIncome.Update(state)
 	collection.Update(state)
 	upgrades.Update(state)
 	rewards.Update(state)

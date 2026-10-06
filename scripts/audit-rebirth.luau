@@ -221,7 +221,7 @@ test(
 			e:Load("src/shared/UpgradeRules").new(e:Load("src/shared/Config/Upgrades"))
 		)
 		assert(
-			income:PendingCoins(restored) == 36000,
+			income:PendingCoins(restored) == 18000,
 			"Expected only retained Poop at Basic rebirth rate for 480 minutes"
 		)
 		assert(restored.RebirthLevel == 1 and restored.RunFlushes == 0 and restored.ProtectedInventory.Rat == 2)

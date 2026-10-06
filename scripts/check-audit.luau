@@ -759,11 +759,11 @@ test("income migration, offline cap and ambiguous acquisition consume time once"
 	e.Store.After = nil
 	e:Resume(load)
 	p = data:Get(joined)
-	assert(p.Income.Pending["1"] == 40 * 480 * 60 * 6000 and p.Income.UpdatedAt == e.Now)
+	assert(p.Income.Pending["1"] == 20 * 480 * 60 * 6000 and p.Income.UpdatedAt == e.Now)
 	data:Close(joined)
 	local third = e:Player(50)
 	data:Load(third)
-	assert(data:Get(third).Income.Pending["1"] == 40 * 480 * 60 * 6000, "Reconnect duplicated offline credit")
+	assert(data:Get(third).Income.Pending["1"] == 20 * 480 * 60 * 6000, "Reconnect duplicated offline credit")
 end)
 
 test("income settles before display removal, replacement and tier change; reservations remain", function()
@@ -963,7 +963,7 @@ test("income departure timestamp freezes before a queued final save yields", fun
 	e.Now += 86400
 	local joined = e:Player(56)
 	data:Load(joined)
-	assert(data:Get(joined).Income.Pending["1"] == 7200000 + 40 * 480 * 60 * 6000)
+	assert(data:Get(joined).Income.Pending["1"] == 7200000 + 20 * 480 * 60 * 6000)
 end)
 
 runPresentationAudit(test, environment, server)

@@ -7,7 +7,7 @@ local accounting = require(Shared.IncomeAccrual).new(
 )
 local IncomeService = {}
 function IncomeService.Start(data, limiter, remotes, sync, world)
-	local function collect(player, slot, touching)
+	local function collect(player, slot, touching, offline)
 		if slot ~= nil and (type(slot) ~= "number" or slot % 1 ~= 0 or slot < 1 or slot > Config.MaxSlots) then
 			return
 		end
@@ -30,7 +30,7 @@ function IncomeService.Start(data, limiter, remotes, sync, world)
 		end
 		local distance = (root.Position - point.Position).Magnitude
 		local range = if touching then Config.TouchRange elseif slot then Config.PadRange else Config.CollectRange
-		if distance ~= distance or distance < 0 or distance > range then
+		if not offline and (distance ~= distance or distance < 0 or distance > range) then
 			return
 		end
 		-- Get settles using server time only after verifying the acknowledged session lease.
@@ -47,6 +47,18 @@ function IncomeService.Start(data, limiter, remotes, sync, world)
 				)
 			end
 			return -- Never queue unbounded save waiters behind a slow backend.
+		end
+		local report = offline and accounting:OfflineSnapshot(profile)
+		if offline and not report then
+			if limiter:Allow(player, "CollectIncome") then
+				remotes.Result:FireClient(player, "CollectIncome", {
+					Success = false,
+					Offline = true,
+					Message = "Your offline income has already been collected.",
+				})
+				sync(player)
+			end
+			return
 		end
 		if slot and slot > profile.DisplaySlots then
 			return
@@ -69,7 +81,7 @@ function IncomeService.Start(data, limiter, remotes, sync, world)
 			)
 			return
 		end
-		local coins = accounting:Collect(profile, slot)
+		local coins = accounting:Collect(profile, slot, if report then report.Coins else nil)
 		if coins == 0 then
 			remotes.Result:FireClient(
 				player,
@@ -81,10 +93,19 @@ function IncomeService.Start(data, limiter, remotes, sync, world)
 		-- Debit, credit and timestamp are in one immutable profile snapshot before Save yields.
 		if data:Save(player, false) and data:Get(player) == profile then
 			sync(player)
-			remotes.Result:FireClient(player, "CollectIncome", { Success = true, Coins = coins, Slot = slot })
+			remotes.Result:FireClient(
+				player,
+				"CollectIncome",
+				{ Success = true, Coins = coins, Slot = slot, Offline = offline == true }
+			)
 		end
 	end
 	world.CollectIncome = collect
+	remotes.CollectOffline.OnServerEvent:Connect(function(player, ...)
+		if select("#", ...) == 0 then
+			collect(player, nil, false, true)
+		end
+	end)
 	remotes.CollectIncome.OnServerEvent:Connect(function(player, ...)
 		local count, slot = select("#", ...), ...
 		if count > 1 or (count == 1 and slot == nil) then

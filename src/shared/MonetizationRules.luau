@@ -13,8 +13,8 @@ function Rules.InRange(distance, config)
 	return finite(distance) and distance >= 0 and distance <= config.FlushRange
 end
 
-function Rules.AutoEnabled(requested, profile, distance, config)
-	return requested == true and Rules.AutoUnlocked(profile, config) and Rules.InRange(distance, config)
+function Rules.AutoEnabled(requested, profile, living, config)
+	return requested == true and Rules.AutoUnlocked(profile, config) and living == true
 end
 
 function Rules.Cooldown(base, owned, config)

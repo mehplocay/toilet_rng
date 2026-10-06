@@ -9,23 +9,23 @@ assert(not Rules.AutoUnlocked(profile, Config))
 assert(not Rules.AutoUnlocked(nil, Config))
 assert(not Rules.AutoUnlocked({ Stats = { Flushes = 0 / 0 } }, Config))
 assert(not Rules.AutoUnlocked({ Stats = { Flushes = math.huge } }, Config))
-assert(not Rules.AutoEnabled(true, profile, 0, Config))
+assert(not Rules.AutoEnabled(true, profile, true, Config))
 profile.Stats.Flushes = 100
 assert(Rules.AutoUnlocked(profile, Config))
-assert(not Rules.AutoEnabled(nil, profile, 0, Config)) -- Join never enables it.
-assert(not Rules.AutoEnabled(false, profile, 0, Config))
-assert(not Rules.AutoEnabled("true", profile, 0, Config))
-assert(Rules.AutoEnabled(true, profile, Config.FlushRange, Config))
-assert(not Rules.AutoEnabled(true, profile, Config.FlushRange + 0.001, Config))
+assert(not Rules.AutoEnabled(nil, profile, true, Config)) -- Join never enables it.
+assert(not Rules.AutoEnabled(false, profile, true, Config))
+assert(not Rules.AutoEnabled("true", profile, true, Config))
+assert(Rules.AutoEnabled(true, profile, true, Config))
+assert(not Rules.AutoEnabled(true, profile, false, Config))
 assert(not Rules.AutoEnabled(true, profile, nil, Config)) -- Missing/dead character.
-assert(not Rules.AutoEnabled(true, nil, 0, Config)) -- Unloaded/closing data.
+assert(not Rules.AutoEnabled(true, nil, true, Config)) -- Unloaded/closing data.
 for _, distance in ipairs({ -1, 0 / 0, math.huge, "0", {} }) do
 	assert(not Rules.InRange(distance, Config))
 end
-local enabled = Rules.AutoEnabled(true, profile, 0, Config)
-enabled = Rules.AutoEnabled(enabled, profile, 15, Config)
+local enabled = Rules.AutoEnabled(true, profile, true, Config)
+enabled = Rules.AutoEnabled(enabled, profile, false, Config)
 assert(not enabled)
-assert(not Rules.AutoEnabled(enabled, profile, 0, Config)) -- Returning does not resume.
+assert(not Rules.AutoEnabled(enabled, profile, true, Config)) -- Returning does not resume.
 
 for _, toilet in ipairs(Toilets) do
 	assert(Rules.Cooldown(toilet.Cooldown, {}, Config) == toilet.Cooldown)
@@ -131,5 +131,5 @@ end
 limiter:Remove(player)
 assert(limiter.Players[player] == nil)
 print(
-	"Auto-Flush/pass checks passed: unlock, range stop, shared cooldown/awards, speed, ownership recovery, palette/settings, limits"
+	"Auto-Flush/pass checks passed: unlock, living guard, manual range, shared cooldown/awards, speed, ownership recovery, palette/settings, limits"
 )
