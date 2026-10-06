@@ -1,0 +1,2378 @@
+{
+  "SchemaVersion": 1,
+  "Status": "proposal, not production configuration",
+  "Date": "2026-10-06",
+  "RuntimeTierIndexBase": 1,
+  "Scope": {
+    "NewItems": 36,
+    "ExistingItems": 11,
+    "TotalItems": 47,
+    "NewToilets": 8,
+    "TotalToilets": 15,
+    "WorldsAdded": 0,
+    "Mutations": false,
+    "DivineTier": false
+  },
+  "Rules": {
+    "FallbackId": "Poop",
+    "Sort": "Chance descending, Id ascending on ties; Poop forced last",
+    "Check": "min(1, effectiveLuck / Chance)",
+    "LuckCap": 5,
+    "LuckStressTest": 10,
+    "CooldownFloor": 0.4,
+    "BaseCooldown": 1.5,
+    "EventPolicy": "Only legacy Event=true items trigger temporary server luck; rarity announcements are separate",
+    "PoolPolicy": "Cumulative additions, no selected worlds, ownership never relocks on rebirth",
+    "IncomePolicy": "RarityRates * TierMultipliers * merged cash factor; no per-item income overrides",
+    "UnitsPerCoin": 6000,
+    "MaxLedgerUnits": 9000000000000000,
+    "MaxBalance": 9000000000000000
+  },
+  "Palette": {
+    "cream": "FFF3D1",
+    "white": "F4FAFF",
+    "ink": "19213F",
+    "black": "101326",
+    "brown": "AE572A",
+    "caramel": "DC893C",
+    "gold": "FFC51C",
+    "goldLight": "FFE67A",
+    "orange": "FF821E",
+    "pink": "FF699F",
+    "red": "EF3359",
+    "peach": "FFC098",
+    "blue": "278DF1",
+    "cyan": "34DFFF",
+    "ice": "A0F0FF",
+    "navy": "314B9D",
+    "purple": "8850EC",
+    "violet": "C174FF",
+    "magenta": "F74FE7",
+    "mint": "80FFBE",
+    "green": "26BD54",
+    "lime": "ACF52E",
+    "leaf": "10A276",
+    "teal": "078D9C",
+    "wood": "B66B3C",
+    "woodLight": "F3B969",
+    "mud": "76503B",
+    "gray": "8499C3",
+    "slate": "4C6091",
+    "yellow": "FFE331",
+    "water": "29BCD9",
+    "glow": "DBFFAC"
+  },
+  "Rarities": [
+    {
+      "Id": "Common",
+      "Order": 1,
+      "MinChance": 2,
+      "MaxChance": 6,
+      "IncomePerSecond": 1,
+      "ColorRGB": [
+        160,
+        160,
+        160
+      ],
+      "Reveal": "Pop",
+      "Announcement": "None",
+      "IndexStamps": 2,
+      "AudioCue": "Common"
+    },
+    {
+      "Id": "Uncommon",
+      "Order": 2,
+      "MinChance": 8,
+      "MaxChance": 24,
+      "IncomePerSecond": 3,
+      "ColorRGB": [
+        60,
+        220,
+        80
+      ],
+      "Reveal": "Pop",
+      "Announcement": "None",
+      "IndexStamps": 3,
+      "AudioCue": "Uncommon"
+    },
+    {
+      "Id": "Rare",
+      "Order": 3,
+      "MinChance": 25,
+      "MaxChance": 120,
+      "IncomePerSecond": 10,
+      "ColorRGB": [
+        50,
+        140,
+        255
+      ],
+      "Reveal": "Burst",
+      "Announcement": "None",
+      "IndexStamps": 5,
+      "AudioCue": "Rare"
+    },
+    {
+      "Id": "Epic",
+      "Order": 4,
+      "MinChance": 250,
+      "MaxChance": 900,
+      "IncomePerSecond": 40,
+      "ColorRGB": [
+        160,
+        70,
+        240
+      ],
+      "Reveal": "Sparkle",
+      "Announcement": "Friends",
+      "IndexStamps": 8,
+      "AudioCue": "Epic"
+    },
+    {
+      "Id": "Legendary",
+      "Order": 5,
+      "MinChance": 1000,
+      "MaxChance": 4500,
+      "IncomePerSecond": 200,
+      "ColorRGB": [
+        255,
+        180,
+        30
+      ],
+      "Reveal": "Banner",
+      "Announcement": "Friends",
+      "IndexStamps": 10,
+      "AudioCue": "Legendary"
+    },
+    {
+      "Id": "Mythic",
+      "Order": 6,
+      "MinChance": 5000,
+      "MaxChance": 30000,
+      "IncomePerSecond": 1000,
+      "ColorRGB": [
+        255,
+        50,
+        200
+      ],
+      "Reveal": "Banner",
+      "Announcement": "Server",
+      "IndexStamps": 15,
+      "AudioCue": "Mythic"
+    },
+    {
+      "Id": "Godly",
+      "Order": 7,
+      "MinChance": 50000,
+      "MaxChance": 250000,
+      "IncomePerSecond": 6000,
+      "ColorRGB": [
+        240,
+        50,
+        50
+      ],
+      "Reveal": "Cinematic",
+      "Announcement": "Server",
+      "IndexStamps": 20,
+      "AudioCue": "Godly"
+    },
+    {
+      "Id": "Celestial",
+      "Order": 8,
+      "MinChance": 300000,
+      "MaxChance": 900000,
+      "IncomePerSecond": 25000,
+      "ColorRGB": [
+        160,
+        240,
+        255
+      ],
+      "Reveal": "Cinematic",
+      "Announcement": "Server",
+      "IndexStamps": 22,
+      "AudioCue": "Godly"
+    },
+    {
+      "Id": "Secret",
+      "Order": 9,
+      "MinChance": 1000000,
+      "MaxChance": null,
+      "IncomePerSecond": 100000,
+      "ColorRGB": [
+        20,
+        20,
+        20
+      ],
+      "Reveal": "Cinematic",
+      "Announcement": "Server",
+      "IndexStamps": 25,
+      "AudioCue": "Secret"
+    }
+  ],
+  "Items": [
+    {
+      "Id": "Poop",
+      "Name": "Poop",
+      "Rarity": "Common",
+      "Chance": 2,
+      "Value": 80,
+      "IncomePerSecond": 1,
+      "FirstToiletTier": 1,
+      "Event": false,
+      "New": false
+    },
+    {
+      "Id": "ToiletPaper",
+      "Name": "Toilet Paper",
+      "Rarity": "Uncommon",
+      "Chance": 8,
+      "Value": 280,
+      "IncomePerSecond": 3,
+      "FirstToiletTier": 1,
+      "Event": false,
+      "New": false
+    },
+    {
+      "Id": "Rat",
+      "Name": "Rat",
+      "Rarity": "Rare",
+      "Chance": 25,
+      "Value": 1000,
+      "IncomePerSecond": 10,
+      "FirstToiletTier": 1,
+      "Event": false,
+      "New": false
+    },
+    {
+      "Id": "Fish",
+      "Name": "Fish",
+      "Rarity": "Rare",
+      "Chance": 80,
+      "Value": 2480,
+      "IncomePerSecond": 10,
+      "FirstToiletTier": 1,
+      "Event": false,
+      "New": false
+    },
+    {
+      "Id": "Duck",
+      "Name": "Duck",
+      "Rarity": "Epic",
+      "Chance": 250,
+      "Value": 8000,
+      "IncomePerSecond": 40,
+      "FirstToiletTier": 2,
+      "Event": false,
+      "New": false
+    },
+    {
+      "Id": "GoldenPoop",
+      "Name": "Golden Poop",
+      "Rarity": "Legendary",
+      "Chance": 1000,
+      "Value": 30000,
+      "IncomePerSecond": 200,
+      "FirstToiletTier": 3,
+      "Event": false,
+      "New": false
+    },
+    {
+      "Id": "ToiletBaby",
+      "Name": "Toilet Baby",
+      "Rarity": "Mythic",
+      "Chance": 5000,
+      "Value": 150000,
+      "IncomePerSecond": 1000,
+      "FirstToiletTier": 4,
+      "Event": false,
+      "New": false
+    },
+    {
+      "Id": "SewerShark",
+      "Name": "Sewer Shark",
+      "Rarity": "Godly",
+      "Chance": 50000,
+      "Value": 800000,
+      "IncomePerSecond": 6000,
+      "FirstToiletTier": 5,
+      "Event": false,
+      "New": false
+    },
+    {
+      "Id": "KingPoop",
+      "Name": "King Poop",
+      "Rarity": "Godly",
+      "Chance": 100000,
+      "Value": 5000000,
+      "IncomePerSecond": 6000,
+      "FirstToiletTier": 5,
+      "Event": true,
+      "New": false
+    },
+    {
+      "Id": "AlienToilet",
+      "Name": "Alien Toilet",
+      "Rarity": "Secret",
+      "Chance": 1000000,
+      "Value": 40000000,
+      "IncomePerSecond": 100000,
+      "FirstToiletTier": 6,
+      "Event": true,
+      "New": false
+    },
+    {
+      "Id": "Mystery",
+      "Name": "???",
+      "Rarity": "Secret",
+      "Chance": 10000000,
+      "Value": 500000000,
+      "IncomePerSecond": 100000,
+      "FirstToiletTier": 7,
+      "Event": true,
+      "New": false
+    },
+    {
+      "Id": "SudsSlug",
+      "Name": "Suds Slug",
+      "Rarity": "Common",
+      "Chance": 3,
+      "Value": 90,
+      "IncomePerSecond": 1,
+      "FirstToiletTier": 1,
+      "New": true,
+      "Event": false,
+      "Description": "A slug who calls three bubbles a luxury bath.",
+      "Model": {
+        "Brief": "Long mint bean body with a lifted tail, three white foam lobes down its back, two thick stalk eyes; ink pupils stare in opposite directions and a tiny pink tongue sticks out. One cream soap-chip saddle; no slime transparency.",
+        "SizeStuds": [
+          2.5,
+          1.45,
+          1.65
+        ],
+        "TriangleBudget": 1500,
+        "PaletteKeys": [
+          "cream",
+          "white",
+          "ink",
+          "pink",
+          "mint"
+        ],
+        "Pivot": "base-center",
+        "File": "assets/models/items/SudsSlug.fbx"
+      },
+      "Icon": {
+        "File": "assets/icons/items/SudsSlug_512.png",
+        "Key": "Assets.ItemIcons.SudsSlug",
+        "Note": "Show the side curl and all three bubbles; leave a gap between eye stalks."
+      }
+    },
+    {
+      "Id": "PocketPuddle",
+      "Name": "Pocket Puddle",
+      "Rarity": "Common",
+      "Chance": 4,
+      "Value": 120,
+      "IncomePerSecond": 1,
+      "FirstToiletTier": 1,
+      "New": true,
+      "Event": false,
+      "Description": "A spilled puddle proudly wearing its own tiny bucket.",
+      "Model": {
+        "Brief": "Flat water-blue three-lobed puddle with two stubby splash arms; oversized white eyes and a worried ink mouth on its raised center. An orange upside-down pail with a chunky cream handle is its hat.",
+        "SizeStuds": [
+          2.6,
+          1.65,
+          2.2
+        ],
+        "TriangleBudget": 1600,
+        "PaletteKeys": [
+          "cream",
+          "white",
+          "ink",
+          "orange",
+          "blue",
+          "water"
+        ],
+        "Pivot": "base-center",
+        "File": "assets/models/items/PocketPuddle.fbx"
+      },
+      "Icon": {
+        "File": "assets/icons/items/PocketPuddle_512.png",
+        "Key": "Assets.ItemIcons.PocketPuddle",
+        "Note": "Low three-quarter view so the face clears the puddle rim and the bucket handle reads."
+      }
+    },
+    {
+      "Id": "LoopyLoofah",
+      "Name": "Loopy Loofah",
+      "Rarity": "Common",
+      "Chance": 5,
+      "Value": 150,
+      "IncomePerSecond": 1,
+      "FirstToiletTier": 2,
+      "New": true,
+      "Event": false,
+      "Description": "A bath puff that has tied itself in a knot.",
+      "Model": {
+        "Brief": "Pink squat ball assembled from six broad scalloped lobes, cream loop arch over its head and two peach mitten feet. White oval eyes with ink pupils, one eyebrow higher; broad ink grin. Use solid lobes, no woven microgeometry.",
+        "SizeStuds": [
+          2.3,
+          2.5,
+          2
+        ],
+        "TriangleBudget": 1800,
+        "PaletteKeys": [
+          "cream",
+          "white",
+          "ink",
+          "pink",
+          "peach"
+        ],
+        "Pivot": "base-center",
+        "File": "assets/models/items/LoopyLoofah.fbx"
+      },
+      "Icon": {
+        "File": "assets/icons/items/LoopyLoofah_512.png",
+        "Key": "Assets.ItemIcons.LoopyLoofah",
+        "Note": "Frame the hanging loop as a clear empty arch above the pink body."
+      }
+    },
+    {
+      "Id": "SoggySock",
+      "Name": "Soggy Sock",
+      "Rarity": "Common",
+      "Chance": 6,
+      "Value": 180,
+      "IncomePerSecond": 1,
+      "FirstToiletTier": 2,
+      "New": true,
+      "Event": false,
+      "Description": "The missing sock returns with a dramatic wet hairdo.",
+      "Model": {
+        "Brief": "Bent blue boot-shaped sock, white cuff, orange heel patch, three chunky ice droplets as a forelock and two tiny folded-toe feet. Droopy white eyes with ink pupils and a sideways mouth on the ankle; seams are atlas color blocks.",
+        "SizeStuds": [
+          1.8,
+          2.6,
+          1.5
+        ],
+        "TriangleBudget": 1400,
+        "PaletteKeys": [
+          "white",
+          "ink",
+          "orange",
+          "blue",
+          "ice"
+        ],
+        "Pivot": "base-center",
+        "File": "assets/models/items/SoggySock.fbx"
+      },
+      "Icon": {
+        "File": "assets/icons/items/SoggySock_512.png",
+        "Key": "Assets.ItemIcons.SoggySock",
+        "Note": "Turn the bent toe sideways; preserve the silhouette of cuff, heel and forelock."
+      }
+    },
+    {
+      "Id": "TubTadpole",
+      "Name": "Tub Tadpole",
+      "Rarity": "Uncommon",
+      "Chance": 10,
+      "Value": 360,
+      "IncomePerSecond": 3,
+      "FirstToiletTier": 1,
+      "New": true,
+      "Event": false,
+      "Description": "A tadpole practicing for the bathtub swimming finals.",
+      "Model": {
+        "Brief": "Lime pear-shaped head tapering to one wide teal paddle tail; two peach nubs as feet. Huge white eyes with ink pupils behind thick cyan swim-goggle rings, an orange whistle at the neck, pleased ink smile.",
+        "SizeStuds": [
+          2.6,
+          1.8,
+          2
+        ],
+        "TriangleBudget": 1700,
+        "PaletteKeys": [
+          "white",
+          "ink",
+          "orange",
+          "peach",
+          "cyan",
+          "lime",
+          "teal"
+        ],
+        "Pivot": "base-center",
+        "File": "assets/models/items/TubTadpole.fbx"
+      },
+      "Icon": {
+        "File": "assets/icons/items/TubTadpole_512.png",
+        "Key": "Assets.ItemIcons.TubTadpole",
+        "Note": "Keep tail on one side and goggles front; whistle is one large accent."
+      }
+    },
+    {
+      "Id": "BrushBristle",
+      "Name": "Brush Bristle",
+      "Rarity": "Uncommon",
+      "Chance": 14,
+      "Value": 480,
+      "IncomePerSecond": 3,
+      "FirstToiletTier": 2,
+      "New": true,
+      "Event": false,
+      "Description": "A toothbrush with bedhead and very serious brushing advice.",
+      "Model": {
+        "Brief": "Tall teal rounded toothbrush handle with two short arms, cream brush block at top and five oversized white bristle clumps swept like hair. Squinting white eyes and ink pupils on the block; pink toothpaste quiff and orange slippers.",
+        "SizeStuds": [
+          1.6,
+          2.8,
+          1.2
+        ],
+        "TriangleBudget": 1600,
+        "PaletteKeys": [
+          "cream",
+          "white",
+          "ink",
+          "orange",
+          "pink",
+          "teal"
+        ],
+        "Pivot": "base-center",
+        "File": "assets/models/items/BrushBristle.fbx"
+      },
+      "Icon": {
+        "File": "assets/icons/items/BrushBristle_512.png",
+        "Key": "Assets.ItemIcons.BrushBristle",
+        "Note": "Use front three-quarter framing; five bristle clumps must read as hair at 64px."
+      }
+    },
+    {
+      "Id": "RollMole",
+      "Name": "Roll Mole",
+      "Rarity": "Uncommon",
+      "Chance": 18,
+      "Value": 640,
+      "IncomePerSecond": 3,
+      "FirstToiletTier": 2,
+      "New": true,
+      "Event": false,
+      "Description": "A shy mole who has mistaken a paper tube for a tunnel.",
+      "Model": {
+        "Brief": "Brown oval mole emerging horizontally from a cream cardboard cylinder; one white paper flap on top and two peach digging paws. Tiny white eyes with ink pupils, round pink nose, one cheek raised; cylinder hole is dark ink geometry.",
+        "SizeStuds": [
+          2.7,
+          1.7,
+          1.8
+        ],
+        "TriangleBudget": 1900,
+        "PaletteKeys": [
+          "cream",
+          "white",
+          "ink",
+          "brown",
+          "pink",
+          "peach"
+        ],
+        "Pivot": "base-center",
+        "File": "assets/models/items/RollMole.fbx"
+      },
+      "Icon": {
+        "File": "assets/icons/items/RollMole_512.png",
+        "Key": "Assets.ItemIcons.RollMole",
+        "Note": "Show the dark tunnel opening and both paws; paper flap must not cover the nose."
+      }
+    },
+    {
+      "Id": "CapybaraCap",
+      "Name": "Capybara Cap",
+      "Rarity": "Uncommon",
+      "Chance": 24,
+      "Value": 840,
+      "IncomePerSecond": 3,
+      "FirstToiletTier": 3,
+      "New": true,
+      "Event": false,
+      "Description": "A capybara convinced its shower cap is a royal crown.",
+      "Model": {
+        "Brief": "Caramel rectangular bean body, broad peach muzzle, four stub legs, tiny round ears; enormous pink scalloped shower cap with three white spots. Half-closed white eyes with ink pupils and a relaxed ink smile. No bathrobe or brand markings.",
+        "SizeStuds": [
+          2.7,
+          2.1,
+          1.6
+        ],
+        "TriangleBudget": 2100,
+        "PaletteKeys": [
+          "white",
+          "ink",
+          "caramel",
+          "pink",
+          "peach"
+        ],
+        "Pivot": "base-center",
+        "File": "assets/models/items/CapybaraCap.fbx"
+      },
+      "Icon": {
+        "File": "assets/icons/items/CapybaraCap_512.png",
+        "Key": "Assets.ItemIcons.CapybaraCap",
+        "Note": "Cap overhang and flat muzzle distinguish it from Rat; use a calm frontal glance."
+      }
+    },
+    {
+      "Id": "DrainCrab",
+      "Name": "Drain Crab",
+      "Rarity": "Rare",
+      "Chance": 35,
+      "Value": 1200,
+      "IncomePerSecond": 10,
+      "FirstToiletTier": 3,
+      "New": true,
+      "Event": false,
+      "Description": "A crab collecting drain covers like fancy hats.",
+      "Model": {
+        "Brief": "Orange squat crab shell with six short folded legs, two oversized cream faucet-knob claws and gray domed drain-cover hat. Four broad ink drain slots, white eyes on short stalks, ink pupils and a stubborn grin.",
+        "SizeStuds": [
+          2.8,
+          1.8,
+          2
+        ],
+        "TriangleBudget": 2200,
+        "PaletteKeys": [
+          "cream",
+          "white",
+          "ink",
+          "orange",
+          "gray"
+        ],
+        "Pivot": "base-center",
+        "File": "assets/models/items/DrainCrab.fbx"
+      },
+      "Icon": {
+        "File": "assets/icons/items/DrainCrab_512.png",
+        "Key": "Assets.ItemIcons.DrainCrab",
+        "Note": "Raise one knob claw; show the four-slot drain hat without tiny perforations."
+      }
+    },
+    {
+      "Id": "ToothpasteGoose",
+      "Name": "Toothpaste Goose",
+      "Rarity": "Rare",
+      "Chance": 50,
+      "Value": 1760,
+      "IncomePerSecond": 10,
+      "FirstToiletTier": 3,
+      "New": true,
+      "Event": false,
+      "Description": "A goose honking out one perfectly striped toothpaste curl.",
+      "Model": {
+        "Brief": "White flattened toothpaste-tube body with cyan stripe, long curved cream goose neck and orange beak; two orange paddle feet and folded white wings. Unequal white eyes with ink pupils; pink-and-mint solid paste curl forms the tail; no label.",
+        "SizeStuds": [
+          2.6,
+          2.5,
+          1.6
+        ],
+        "TriangleBudget": 2300,
+        "PaletteKeys": [
+          "cream",
+          "white",
+          "ink",
+          "orange",
+          "pink",
+          "cyan",
+          "mint"
+        ],
+        "Pivot": "base-center",
+        "File": "assets/models/items/ToothpasteGoose.fbx"
+      },
+      "Icon": {
+        "File": "assets/icons/items/ToothpasteGoose_512.png",
+        "Key": "Assets.ItemIcons.ToothpasteGoose",
+        "Note": "Neck and paste tail face opposite sides; stripe must remain visible behind wing."
+      }
+    },
+    {
+      "Id": "SpongeKnight",
+      "Name": "Sponge Knight",
+      "Rarity": "Rare",
+      "Chance": 100,
+      "Value": 3200,
+      "IncomePerSecond": 10,
+      "FirstToiletTier": 4,
+      "New": true,
+      "Event": false,
+      "Description": "A tiny knight defending the sink from imaginary crumbs.",
+      "Model": {
+        "Brief": "Yellow beveled rectangular sponge body with six dark caramel inset-looking spots painted by atlas patches. Gray bucket helmet with open face, blue dish-brush lance, round cream soap-dish shield. Large determined white eyes with ink pupils; peach mitten hands.",
+        "SizeStuds": [
+          2.4,
+          2.7,
+          1.5
+        ],
+        "TriangleBudget": 2200,
+        "PaletteKeys": [
+          "cream",
+          "white",
+          "ink",
+          "caramel",
+          "peach",
+          "blue",
+          "gray",
+          "yellow"
+        ],
+        "Pivot": "base-center",
+        "File": "assets/models/items/SpongeKnight.fbx"
+      },
+      "Icon": {
+        "File": "assets/icons/items/SpongeKnight_512.png",
+        "Key": "Assets.ItemIcons.SpongeKnight",
+        "Note": "Shield left and brush lance right; leave the sponge face exposed."
+      }
+    },
+    {
+      "Id": "BubbleBeard",
+      "Name": "Bubble Beard",
+      "Rarity": "Rare",
+      "Chance": 120,
+      "Value": 4000,
+      "IncomePerSecond": 10,
+      "FirstToiletTier": 4,
+      "New": true,
+      "Event": false,
+      "Description": "A soap bar whose magnificent foam beard is mostly air.",
+      "Model": {
+        "Brief": "Cream squat rectangular soap head over a triangular beard made of seven white foam lobes. Mint towel turban, peach slippers, two raised white eyes with ink pupils and a tiny ink smile above the beard. One pink comb tucked sideways into the foam.",
+        "SizeStuds": [
+          2.2,
+          2.6,
+          1.8
+        ],
+        "TriangleBudget": 2100,
+        "PaletteKeys": [
+          "cream",
+          "white",
+          "ink",
+          "pink",
+          "peach",
+          "mint"
+        ],
+        "Pivot": "base-center",
+        "File": "assets/models/items/BubbleBeard.fbx"
+      },
+      "Icon": {
+        "File": "assets/icons/items/BubbleBeard_512.png",
+        "Key": "Assets.ItemIcons.BubbleBeard",
+        "Note": "Keep the triangular beard and horizontal comb legible; avoid merging with a white background."
+      }
+    },
+    {
+      "Id": "PlungerPogo",
+      "Name": "Plunger Pogo",
+      "Rarity": "Epic",
+      "Chance": 350,
+      "Value": 11200,
+      "IncomePerSecond": 40,
+      "FirstToiletTier": 4,
+      "New": true,
+      "Event": false,
+      "Description": "A plunger that insists it is a champion pogo stick.",
+      "Model": {
+        "Brief": "Red bell-shaped suction cup foot with a wood shaft, purple rounded spring sleeve and two cyan handlebar arms. Two enormous white eyes with ink pupils attach to the shaft below an orange crash helmet; ink grin on helmet rim, no thin real spring.",
+        "SizeStuds": [
+          2.2,
+          2.9,
+          1.6
+        ],
+        "TriangleBudget": 2000,
+        "PaletteKeys": [
+          "white",
+          "ink",
+          "orange",
+          "red",
+          "cyan",
+          "purple",
+          "wood"
+        ],
+        "Pivot": "base-center",
+        "File": "assets/models/items/PlungerPogo.fbx"
+      },
+      "Icon": {
+        "File": "assets/icons/items/PlungerPogo_512.png",
+        "Key": "Assets.ItemIcons.PlungerPogo",
+        "Note": "Capture a tilted pogo stance while keeping the suction cup fully in frame."
+      }
+    },
+    {
+      "Id": "BathMatBat",
+      "Name": "Bath Mat Bat",
+      "Rarity": "Epic",
+      "Chance": 450,
+      "Value": 14400,
+      "IncomePerSecond": 40,
+      "FirstToiletTier": 5,
+      "New": true,
+      "Event": false,
+      "Description": "A bath mat trying to become a bat before laundry day.",
+      "Model": {
+        "Brief": "Purple folded rectangular mat body with two scalloped towel wings, pink broad underside panels and cream hem. White eyes with ink pupils above two tiny cream felt fangs, orange clothespin nose; no fabric fibers.",
+        "SizeStuds": [
+          3,
+          1.8,
+          1.1
+        ],
+        "TriangleBudget": 1800,
+        "PaletteKeys": [
+          "cream",
+          "white",
+          "ink",
+          "orange",
+          "pink",
+          "purple"
+        ],
+        "Pivot": "base-center",
+        "File": "assets/models/items/BathMatBat.fbx"
+      },
+      "Icon": {
+        "File": "assets/icons/items/BathMatBat_512.png",
+        "Key": "Assets.ItemIcons.BathMatBat",
+        "Note": "Wings form a wide zigzag outline; eyes and clothespin must clear the central fold."
+      }
+    },
+    {
+      "Id": "DiscoBidet",
+      "Name": "Disco Bidet",
+      "Rarity": "Epic",
+      "Chance": 650,
+      "Value": 20800,
+      "IncomePerSecond": 40,
+      "FirstToiletTier": 5,
+      "New": true,
+      "Event": false,
+      "Description": "A pocket bidet hosting a dance party for exactly one.",
+      "Model": {
+        "Brief": "White hemispherical mini-bidet bowl on two blue platform shoes, short gray nozzle shaped like a microphone and pink rounded rectangular visor with two white eye ovals and ink pupils. Six large cyan/purple checker panels on tank; one raised gold glove.",
+        "SizeStuds": [
+          2.4,
+          2.5,
+          2
+        ],
+        "TriangleBudget": 2400,
+        "PaletteKeys": [
+          "white",
+          "ink",
+          "gold",
+          "pink",
+          "blue",
+          "cyan",
+          "purple",
+          "gray"
+        ],
+        "Pivot": "base-center",
+        "File": "assets/models/items/DiscoBidet.fbx"
+      },
+      "Icon": {
+        "File": "assets/icons/items/DiscoBidet_512.png",
+        "Key": "Assets.ItemIcons.DiscoBidet",
+        "Note": "Show both shoes and the microphone nozzle; use one static cyan sparkle, no bloom washout."
+      }
+    },
+    {
+      "Id": "TowelTornado",
+      "Name": "Towel Tornado",
+      "Rarity": "Epic",
+      "Chance": 900,
+      "Value": 28800,
+      "IncomePerSecond": 40,
+      "FirstToiletTier": 6,
+      "New": true,
+      "Event": false,
+      "Description": "A rolled towel spinning furiously to avoid being folded.",
+      "Model": {
+        "Brief": "Mint tapered spiral formed by three thick folded towel bands, cream hems, orange bath-slipper base and a pink towel corner sticking out like a flag. White eyes with ink pupils and a dizzy offset ink mouth on the upper band.",
+        "SizeStuds": [
+          2.3,
+          2.8,
+          2
+        ],
+        "TriangleBudget": 2300,
+        "PaletteKeys": [
+          "cream",
+          "white",
+          "ink",
+          "orange",
+          "pink",
+          "mint"
+        ],
+        "Pivot": "base-center",
+        "File": "assets/models/items/TowelTornado.fbx"
+      },
+      "Icon": {
+        "File": "assets/icons/items/TowelTornado_512.png",
+        "Key": "Assets.ItemIcons.TowelTornado",
+        "Note": "Keep the flag corner separate from the spiral and the slipper visible below."
+      }
+    },
+    {
+      "Id": "PorcelainPoodle",
+      "Name": "Porcelain Poodle",
+      "Rarity": "Legendary",
+      "Chance": 1500,
+      "Value": 45000,
+      "IncomePerSecond": 200,
+      "FirstToiletTier": 6,
+      "New": true,
+      "Event": false,
+      "Description": "A poodle made of porcelain who refuses to get its paws wet.",
+      "Model": {
+        "Brief": "White toy poodle assembled from a teapot-like round chest, four thick gold-cuffed legs and three spherical white fur puffs. Cream faucet spout snout, gold curled tail and pink bow. Large white eyes with ink pupils edged in gray, prim ink smile.",
+        "SizeStuds": [
+          2.7,
+          2.5,
+          1.6
+        ],
+        "TriangleBudget": 2400,
+        "PaletteKeys": [
+          "cream",
+          "white",
+          "ink",
+          "gold",
+          "pink",
+          "gray"
+        ],
+        "Pivot": "base-center",
+        "File": "assets/models/items/PorcelainPoodle.fbx"
+      },
+      "Icon": {
+        "File": "assets/icons/items/PorcelainPoodle_512.png",
+        "Key": "Assets.ItemIcons.PorcelainPoodle",
+        "Note": "Profile shows the faucet snout and curled tail; gold cuffs must contrast with white body."
+      }
+    },
+    {
+      "Id": "FaucetPharaoh",
+      "Name": "Faucet Pharaoh",
+      "Rarity": "Legendary",
+      "Chance": 2200,
+      "Value": 66000,
+      "IncomePerSecond": 200,
+      "FirstToiletTier": 7,
+      "New": true,
+      "Event": false,
+      "Description": "A faucet ruler who commands precisely one drip at a time.",
+      "Model": {
+        "Brief": "Gold inverted-U faucet body on a wide pedestal, blue-and-gold striped fan headdress, two chunky cross-handle arms and a cyan solid water-drop beard. White eyes with ink pupils beneath the headdress, confident ink smile; no historical symbols copied.",
+        "SizeStuds": [
+          2.6,
+          2.9,
+          1.6
+        ],
+        "TriangleBudget": 2400,
+        "PaletteKeys": [
+          "white",
+          "ink",
+          "gold",
+          "blue",
+          "cyan",
+          "water"
+        ],
+        "Pivot": "base-center",
+        "File": "assets/models/items/FaucetPharaoh.fbx"
+      },
+      "Icon": {
+        "File": "assets/icons/items/FaucetPharaoh_512.png",
+        "Key": "Assets.ItemIcons.FaucetPharaoh",
+        "Note": "Front three-quarter view exposes the arch hole, fan crown and drop beard."
+      }
+    },
+    {
+      "Id": "RoyalFlushFrog",
+      "Name": "Royal Flush Frog",
+      "Rarity": "Legendary",
+      "Chance": 3200,
+      "Value": 96000,
+      "IncomePerSecond": 200,
+      "FirstToiletTier": 8,
+      "New": true,
+      "Event": false,
+      "Description": "A frog surveying its kingdom from a golden toilet seat.",
+      "Model": {
+        "Brief": "Green pear-bodied frog sitting within a gold oval seat ring; two wide webbed feet, puffed cheeks, cream belly and three-point goldLight crown tipped with pink balls. Tall white eyes with ink pupils and a content ink smile; no toilet bowl body.",
+        "SizeStuds": [
+          2.8,
+          2.5,
+          2
+        ],
+        "TriangleBudget": 2300,
+        "PaletteKeys": [
+          "cream",
+          "white",
+          "ink",
+          "gold",
+          "goldLight",
+          "pink",
+          "green"
+        ],
+        "Pivot": "base-center",
+        "File": "assets/models/items/RoyalFlushFrog.fbx"
+      },
+      "Icon": {
+        "File": "assets/icons/items/RoyalFlushFrog_512.png",
+        "Key": "Assets.ItemIcons.RoyalFlushFrog",
+        "Note": "Seat ring stays visibly open around the frog; crown is broad rather than tall."
+      }
+    },
+    {
+      "Id": "GoldenGargler",
+      "Name": "Golden Gargler",
+      "Rarity": "Legendary",
+      "Chance": 4500,
+      "Value": 135000,
+      "IncomePerSecond": 200,
+      "FirstToiletTier": 8,
+      "New": true,
+      "Event": false,
+      "Description": "A mouthwash cup warming up for a very bubbly opera.",
+      "Model": {
+        "Brief": "Gold tapered rinsing cup with broad goldLight rim, two blue mitten arms, purple bow tie and cream feet. White eyes with ink pupils sit on rim above an open ink singing mouth; three cyan bubble spheres arc over one side.",
+        "SizeStuds": [
+          2.3,
+          2.8,
+          1.8
+        ],
+        "TriangleBudget": 2100,
+        "PaletteKeys": [
+          "cream",
+          "white",
+          "ink",
+          "gold",
+          "goldLight",
+          "blue",
+          "cyan",
+          "purple"
+        ],
+        "Pivot": "base-center",
+        "File": "assets/models/items/GoldenGargler.fbx"
+      },
+      "Icon": {
+        "File": "assets/icons/items/GoldenGargler_512.png",
+        "Key": "Assets.ItemIcons.GoldenGargler",
+        "Note": "Open singing mouth and three-bubble arc carry the joke; no readable product label."
+      }
+    },
+    {
+      "Id": "Clogtopus",
+      "Name": "Clogtopus",
+      "Rarity": "Mythic",
+      "Chance": 7500,
+      "Value": 225000,
+      "IncomePerSecond": 1000,
+      "FirstToiletTier": 7,
+      "New": true,
+      "Event": false,
+      "Description": "An octopus with eight plungers and no idea which drain is blocked.",
+      "Model": {
+        "Brief": "Magenta dome head with eight thick curled purple tentacles ending in red suction-cup bells. White eyes with ink pupils, raised brow and tiny worried mouth; cream plumber cap and one gold wrench held in the front tentacle. Use six-sided tube sections.",
+        "SizeStuds": [
+          3,
+          2.5,
+          2.5
+        ],
+        "TriangleBudget": 2500,
+        "PaletteKeys": [
+          "cream",
+          "white",
+          "ink",
+          "gold",
+          "red",
+          "purple",
+          "magenta"
+        ],
+        "Pivot": "base-center",
+        "File": "assets/models/items/Clogtopus.fbx"
+      },
+      "Icon": {
+        "File": "assets/icons/items/Clogtopus_512.png",
+        "Key": "Assets.ItemIcons.Clogtopus",
+        "Note": "Three-quarter overhead view separates all eight cup tips; the front wrench stays large."
+      }
+    },
+    {
+      "Id": "LaundryYeti",
+      "Name": "Laundry Yeti",
+      "Rarity": "Mythic",
+      "Chance": 12000,
+      "Value": 360000,
+      "IncomePerSecond": 1000,
+      "FirstToiletTier": 8,
+      "New": true,
+      "Event": false,
+      "Description": "A shaggy laundry monster terrified of a single missing sock.",
+      "Model": {
+        "Brief": "White trapezoid body built from six large towel tufts, cyan face panel, huge peach mitten hands and purple slipper feet. Wide white eyes with ink pupils and open worried mouth; pink sock stuck to head, gray laundry-basket belt with four broad openings.",
+        "SizeStuds": [
+          2.8,
+          2.9,
+          2
+        ],
+        "TriangleBudget": 2400,
+        "PaletteKeys": [
+          "white",
+          "ink",
+          "pink",
+          "peach",
+          "cyan",
+          "purple",
+          "gray"
+        ],
+        "Pivot": "base-center",
+        "File": "assets/models/items/LaundryYeti.fbx"
+      },
+      "Icon": {
+        "File": "assets/icons/items/LaundryYeti_512.png",
+        "Key": "Assets.ItemIcons.LaundryYeti",
+        "Note": "Broad shoulders, basket belt and lone pink sock are the three readable landmarks."
+      }
+    },
+    {
+      "Id": "SteamGenie",
+      "Name": "Steam Genie",
+      "Rarity": "Mythic",
+      "Chance": 20000,
+      "Value": 600000,
+      "IncomePerSecond": 1000,
+      "FirstToiletTier": 9,
+      "New": true,
+      "Event": false,
+      "Description": "A steam genie offering three wishes and one warm towel.",
+      "Model": {
+        "Brief": "Violet bulb upper body tapering into a single white steam curl rooted in a teal bath tap. Two large floating-looking but joined sleeves, gold cuff bands and cream towel turban. White eyes with ink pupils, curled pink eyebrow strips and a wide ink grin.",
+        "SizeStuds": [
+          2.8,
+          2.9,
+          1.8
+        ],
+        "TriangleBudget": 2400,
+        "PaletteKeys": [
+          "cream",
+          "white",
+          "ink",
+          "gold",
+          "pink",
+          "violet",
+          "teal"
+        ],
+        "Pivot": "base-center",
+        "File": "assets/models/items/SteamGenie.fbx"
+      },
+      "Icon": {
+        "File": "assets/icons/items/SteamGenie_512.png",
+        "Key": "Assets.ItemIcons.SteamGenie",
+        "Note": "Use an S-shaped silhouette with a clearly visible tap base; sleeves leave negative space."
+      }
+    },
+    {
+      "Id": "BathBombBehemoth",
+      "Name": "Bath Bomb Behemoth",
+      "Rarity": "Mythic",
+      "Chance": 30000,
+      "Value": 900000,
+      "IncomePerSecond": 1000,
+      "FirstToiletTier": 9,
+      "New": true,
+      "Event": false,
+      "Description": "A giant bath bomb patiently waiting to become a tiny fizz.",
+      "Model": {
+        "Brief": "Magenta faceted sphere body with four chunky mint stone-like feet, violet shoulder fins and cream fizz-cloud crown of five lobes. Tiny white eyes with ink pupils beside an absurdly small ink smile; gold bath scoop tucked under one arm.",
+        "SizeStuds": [
+          2.8,
+          2.8,
+          2.6
+        ],
+        "TriangleBudget": 2200,
+        "PaletteKeys": [
+          "cream",
+          "white",
+          "ink",
+          "gold",
+          "violet",
+          "magenta",
+          "mint"
+        ],
+        "Pivot": "base-center",
+        "File": "assets/models/items/BathBombBehemoth.fbx"
+      },
+      "Icon": {
+        "File": "assets/icons/items/BathBombBehemoth_512.png",
+        "Key": "Assets.ItemIcons.BathBombBehemoth",
+        "Note": "Very round heavy body and tiny face; keep scoop separate from the feet."
+      }
+    },
+    {
+      "Id": "DrainKraken",
+      "Name": "Drain Kraken",
+      "Rarity": "Godly",
+      "Chance": 75000,
+      "Value": 2400000,
+      "IncomePerSecond": 6000,
+      "FirstToiletTier": 9,
+      "New": true,
+      "Event": false,
+      "Description": "A drain guardian pulling six entire pipes out of its hat.",
+      "Model": {
+        "Brief": "Red armored pear head above six navy squared pipe-loop tentacles with orange flanged ends. Gray drain-cover crown, gold handlebar mustache, two white eyes with ink pupils and theatrical ink scowl. Mouth is toothless; broad red shell plates, no gore.",
+        "SizeStuds": [
+          3,
+          2.8,
+          2.5
+        ],
+        "TriangleBudget": 2500,
+        "PaletteKeys": [
+          "white",
+          "ink",
+          "gold",
+          "orange",
+          "red",
+          "navy",
+          "gray"
+        ],
+        "Pivot": "base-center",
+        "File": "assets/models/items/DrainKraken.fbx"
+      },
+      "Icon": {
+        "File": "assets/icons/items/DrainKraken_512.png",
+        "Key": "Assets.ItemIcons.DrainKraken",
+        "Note": "Six angular pipe arms distinguish it from round Clogtopus; crown sits fully above eyes."
+      }
+    },
+    {
+      "Id": "GeyserGorilla",
+      "Name": "Geyser Gorilla",
+      "Rarity": "Godly",
+      "Chance": 125000,
+      "Value": 4000000,
+      "IncomePerSecond": 6000,
+      "FirstToiletTier": 10,
+      "New": true,
+      "Event": false,
+      "Description": "A gorilla powered by shower pressure and spectacular bad hair.",
+      "Model": {
+        "Brief": "Navy trapezoid torso, oversized red barrel forearms, gray knuckle pads, peach flat muzzle and two thick squat legs. Three cyan solid water jets form a crown; white eyes with ink pupils under heavy brows, pleased ink grin; orange shower-knob belt.",
+        "SizeStuds": [
+          2.9,
+          3,
+          2
+        ],
+        "TriangleBudget": 2500,
+        "PaletteKeys": [
+          "white",
+          "ink",
+          "orange",
+          "red",
+          "peach",
+          "cyan",
+          "navy",
+          "gray",
+          "water"
+        ],
+        "Pivot": "base-center",
+        "File": "assets/models/items/GeyserGorilla.fbx"
+      },
+      "Icon": {
+        "File": "assets/icons/items/GeyserGorilla_512.png",
+        "Key": "Assets.ItemIcons.GeyserGorilla",
+        "Note": "Low camera emphasizes square fists and three water spikes; keep the friendly grin visible."
+      }
+    },
+    {
+      "Id": "ThroneColossus",
+      "Name": "Throne Colossus",
+      "Rarity": "Godly",
+      "Chance": 180000,
+      "Value": 5760000,
+      "IncomePerSecond": 6000,
+      "FirstToiletTier": 10,
+      "New": true,
+      "Event": false,
+      "Description": "A walking bathroom throne politely asking where to sit.",
+      "Model": {
+        "Brief": "White blocky cistern chest on two red pedestal legs; thick gray pipe arms ending in gold seat-shaped fists, navy lid shoulder armor. Two white eyes with ink pupils in a black visor, tiny courteous ink smile; red triangular cape fixed to back.",
+        "SizeStuds": [
+          2.8,
+          3,
+          2
+        ],
+        "TriangleBudget": 2450,
+        "PaletteKeys": [
+          "white",
+          "ink",
+          "black",
+          "gold",
+          "red",
+          "navy",
+          "gray"
+        ],
+        "Pivot": "base-center",
+        "File": "assets/models/items/ThroneColossus.fbx"
+      },
+      "Icon": {
+        "File": "assets/icons/items/ThroneColossus_512.png",
+        "Key": "Assets.ItemIcons.ThroneColossus",
+        "Note": "Broad square shoulders and two ring fists must remain distinct; cape shows as one red wedge."
+      }
+    },
+    {
+      "Id": "PlungerPaladin",
+      "Name": "Plunger Paladin",
+      "Rarity": "Godly",
+      "Chance": 250000,
+      "Value": 8000000,
+      "IncomePerSecond": 6000,
+      "FirstToiletTier": 11,
+      "New": true,
+      "Event": false,
+      "Description": "A solemn plunger knight sworn to protect the last clean tile.",
+      "Model": {
+        "Brief": "Red bell-shaped helmet over a gold cylindrical torso, white rectangular tile shield, gray pipe boots and long wood staff with a gold suction cup tip. Two luminous-looking ice eyes with ink pupils in helmet opening, cheerful white moustache; three red crest fins.",
+        "SizeStuds": [
+          2.6,
+          3,
+          1.8
+        ],
+        "TriangleBudget": 2400,
+        "PaletteKeys": [
+          "white",
+          "ink",
+          "gold",
+          "red",
+          "ice",
+          "wood",
+          "gray"
+        ],
+        "Pivot": "base-center",
+        "File": "assets/models/items/PlungerPaladin.fbx"
+      },
+      "Icon": {
+        "File": "assets/icons/items/PlungerPaladin_512.png",
+        "Key": "Assets.ItemIcons.PlungerPaladin",
+        "Note": "Tile shield, cup helmet and upright cup staff form three different-sized silhouettes."
+      }
+    },
+    {
+      "Id": "HaloHamster",
+      "Name": "Halo Hamster",
+      "Rarity": "Celestial",
+      "Chance": 300000,
+      "Value": 12000000,
+      "IncomePerSecond": 25000,
+      "FirstToiletTier": 11,
+      "New": true,
+      "Event": false,
+      "Description": "A starry hamster using a halo as an emergency towel rail.",
+      "Model": {
+        "Brief": "White round hamster, gray silver-painted cheek patches, cream mitten feet and tiny cyan star nose. Two large white eyes with ink pupils, soft ink smile; horizontal ice torus halo supports a folded cyan towel, three star studs on belly.",
+        "SizeStuds": [
+          2.5,
+          2.8,
+          2
+        ],
+        "TriangleBudget": 2300,
+        "PaletteKeys": [
+          "cream",
+          "white",
+          "ink",
+          "cyan",
+          "ice",
+          "gray"
+        ],
+        "Pivot": "base-center",
+        "File": "assets/models/items/HaloHamster.fbx"
+      },
+      "Icon": {
+        "File": "assets/icons/items/HaloHamster_512.png",
+        "Key": "Assets.ItemIcons.HaloHamster",
+        "Note": "Halo hole and hanging towel must read at 64px; face stays darker than white fur."
+      }
+    },
+    {
+      "Id": "CometCommode",
+      "Name": "Comet Commode",
+      "Rarity": "Celestial",
+      "Chance": 450000,
+      "Value": 18000000,
+      "IncomePerSecond": 25000,
+      "FirstToiletTier": 12,
+      "New": true,
+      "Event": false,
+      "Description": "A miniature toilet comet always late for its own orbit.",
+      "Model": {
+        "Brief": "White egg-shaped bowl with a gray silver tank, thin cyan seat rim and tapered three-prong ice comet tail curling up behind it. White eyes with ink pupils on tank, surprised ink mouth; one tilted white halo around tail root, five blue constellation dots.",
+        "SizeStuds": [
+          2.9,
+          2.6,
+          2
+        ],
+        "TriangleBudget": 2400,
+        "PaletteKeys": [
+          "white",
+          "ink",
+          "blue",
+          "cyan",
+          "ice",
+          "gray"
+        ],
+        "Pivot": "base-center",
+        "File": "assets/models/items/CometCommode.fbx"
+      },
+      "Icon": {
+        "File": "assets/icons/items/CometCommode_512.png",
+        "Key": "Assets.ItemIcons.CometCommode",
+        "Note": "Side three-quarter framing makes the long three-prong tail and bowl opening unmistakable."
+      }
+    },
+    {
+      "Id": "ConstellationClam",
+      "Name": "Constellation Clam",
+      "Rarity": "Celestial",
+      "Chance": 650000,
+      "Value": 26000000,
+      "IncomePerSecond": 25000,
+      "FirstToiletTier": 12,
+      "New": true,
+      "Event": false,
+      "Description": "A cosmic clam polishing a pearl shaped suspiciously like soap.",
+      "Model": {
+        "Brief": "Open two-fan white clam shells with gray silver ribs and ice edges, cyan soap-bar pearl inside. Pearl has white eyes with ink pupils and a smug ink grin; five thick cyan constellation links on upper shell and a white halo above the hinge.",
+        "SizeStuds": [
+          2.9,
+          2.5,
+          2
+        ],
+        "TriangleBudget": 2400,
+        "PaletteKeys": [
+          "white",
+          "ink",
+          "cyan",
+          "ice",
+          "gray"
+        ],
+        "Pivot": "base-center",
+        "File": "assets/models/items/ConstellationClam.fbx"
+      },
+      "Icon": {
+        "File": "assets/icons/items/ConstellationClam_512.png",
+        "Key": "Assets.ItemIcons.ConstellationClam",
+        "Note": "Keep shell gap dark enough to outline the soap pearl; five-point constellation is large."
+      }
+    },
+    {
+      "Id": "StarlightSeraph",
+      "Name": "Starlight Seraph",
+      "Rarity": "Celestial",
+      "Chance": 900000,
+      "Value": 36000000,
+      "IncomePerSecond": 25000,
+      "FirstToiletTier": 13,
+      "New": true,
+      "Event": false,
+      "Description": "A six-winged towel angel assigned to the night-shift hand dryer.",
+      "Model": {
+        "Brief": "White folded towel body with six broad fan wings in three stacked pairs, gray silver hem blocks, cyan belt and ice ring halo. Two large cyan eye disks with ink pupils and tiny ink smile; constellation stars as three white raised diamonds. No religious symbols.",
+        "SizeStuds": [
+          3,
+          2.9,
+          1.8
+        ],
+        "TriangleBudget": 2500,
+        "PaletteKeys": [
+          "white",
+          "ink",
+          "cyan",
+          "ice",
+          "gray"
+        ],
+        "Pivot": "base-center",
+        "File": "assets/models/items/StarlightSeraph.fbx"
+      },
+      "Icon": {
+        "File": "assets/icons/items/StarlightSeraph_512.png",
+        "Key": "Assets.ItemIcons.StarlightSeraph",
+        "Note": "Six separated wing tips and one clean halo; cyan waist gives a focal point without gold."
+      }
+    },
+    {
+      "Id": "TheLastToilet",
+      "Name": "The Last Toilet",
+      "Rarity": "Secret",
+      "Chance": 1500000,
+      "Value": 60000000,
+      "IncomePerSecond": 100000,
+      "FirstToiletTier": 13,
+      "New": true,
+      "Event": false,
+      "Description": "The final bathroom in the universe has a very nervous door attendant.",
+      "Model": {
+        "Brief": "Black squat toilet bowl beneath a broken-looking but solid white arch, thick magenta inner portal rim and gold star-shaped flush handle. Two white eyes with ink pupils peek over rim, alarmed pink mouth; three cyan floating-look tiles connect behind with hidden thick struts.",
+        "SizeStuds": [
+          2.8,
+          3,
+          2.3
+        ],
+        "TriangleBudget": 2500,
+        "PaletteKeys": [
+          "white",
+          "ink",
+          "black",
+          "gold",
+          "pink",
+          "cyan",
+          "magenta"
+        ],
+        "Pivot": "base-center",
+        "File": "assets/models/items/TheLastToilet.fbx"
+      },
+      "Icon": {
+        "File": "assets/icons/items/TheLastToilet_512.png",
+        "Key": "Assets.ItemIcons.TheLastToilet",
+        "Note": "White arch frames the dark bowl; show three suspended tiles and enormous star handle."
+      }
+    },
+    {
+      "Id": "EmergencyUniverse",
+      "Name": "Emergency Universe",
+      "Rarity": "Secret",
+      "Chance": 2500000,
+      "Value": 100000000,
+      "IncomePerSecond": 100000,
+      "FirstToiletTier": 14,
+      "New": true,
+      "Event": false,
+      "Description": "An emergency bathroom cabinet containing one spare universe.",
+      "Model": {
+        "Brief": "Red rounded cabinet box opened at a fixed angle on cream feet; black circular interior with cyan and gold spiral galaxy bands, violet orb planets. Cabinet has huge white eyes with ink pupils and a panicked ink mouth above opening; white plunger symbol, no medical cross.",
+        "SizeStuds": [
+          2.7,
+          2.9,
+          2
+        ],
+        "TriangleBudget": 2500,
+        "PaletteKeys": [
+          "cream",
+          "white",
+          "ink",
+          "black",
+          "gold",
+          "red",
+          "cyan",
+          "violet"
+        ],
+        "Pivot": "base-center",
+        "File": "assets/models/items/EmergencyUniverse.fbx"
+      },
+      "Icon": {
+        "File": "assets/icons/items/EmergencyUniverse_512.png",
+        "Key": "Assets.ItemIcons.EmergencyUniverse",
+        "Note": "Open door to the left; visible galaxy fills the right two-thirds without particle haze."
+      }
+    },
+    {
+      "Id": "InfiniteOccupied",
+      "Name": "Infinite Occupied",
+      "Rarity": "Secret",
+      "Chance": 5000000,
+      "Value": 200000000,
+      "IncomePerSecond": 100000,
+      "FirstToiletTier": 14,
+      "New": true,
+      "Event": false,
+      "Description": "An occupied sign guarding a door inside a door inside a door.",
+      "Model": {
+        "Brief": "Three nested navy rounded doorframes, alternating pink and cyan rims, shrinking toward one black center. Front frame has two huge white eyes with ink pupils and a sheepish white smile; red oval status plaque, orange slipper feet. No text required on mesh.",
+        "SizeStuds": [
+          2.4,
+          3,
+          1.8
+        ],
+        "TriangleBudget": 2300,
+        "PaletteKeys": [
+          "white",
+          "ink",
+          "black",
+          "orange",
+          "pink",
+          "red",
+          "cyan",
+          "navy"
+        ],
+        "Pivot": "base-center",
+        "File": "assets/models/items/InfiniteOccupied.fbx"
+      },
+      "Icon": {
+        "File": "assets/icons/items/InfiniteOccupied_512.png",
+        "Key": "Assets.ItemIcons.InfiniteOccupied",
+        "Note": "Front perspective shows all three nested openings; red plaque reads as a bold oval, no tiny letters."
+      }
+    },
+    {
+      "Id": "CosmicCourtesy",
+      "Name": "Cosmic Courtesy",
+      "Rarity": "Secret",
+      "Chance": 15000000,
+      "Value": 600000000,
+      "IncomePerSecond": 100000,
+      "FirstToiletTier": 15,
+      "New": true,
+      "Event": false,
+      "Description": "A tiny gloved hand giving the entire universe one last courtesy flush.",
+      "Model": {
+        "Brief": "Black spherical micro-universe split by a broad gold toilet-seat orbit; giant white glove presses a red flush lever on the side, cyan crescent grin and two white star eyes with ink pupils on sphere. Three thick magenta comet ribbons arch behind; no detached thin geometry.",
+        "SizeStuds": [
+          3,
+          2.9,
+          2.7
+        ],
+        "TriangleBudget": 2500,
+        "PaletteKeys": [
+          "white",
+          "ink",
+          "black",
+          "gold",
+          "red",
+          "cyan",
+          "magenta"
+        ],
+        "Pivot": "base-center",
+        "File": "assets/models/items/CosmicCourtesy.fbx"
+      },
+      "Icon": {
+        "File": "assets/icons/items/CosmicCourtesy_512.png",
+        "Key": "Assets.ItemIcons.CosmicCourtesy",
+        "Note": "Glove, lever and golden orbit are the hero shapes; show the grin between the rings."
+      }
+    }
+  ],
+  "Toilets": [
+    {
+      "Id": "Basic",
+      "Name": "Basic Toilet",
+      "Tier": 1,
+      "New": false,
+      "Price": 0,
+      "PriceStatus": "economy-v2 snapshot; feature/permanent owns tiers 1-7 repricing",
+      "Cooldown": 1.5,
+      "CooldownMultiplier": 1,
+      "Luck": 1,
+      "ServiceCoins": 40,
+      "IncomeMultiplier": 1,
+      "Pool": [
+        "Poop",
+        "ToiletPaper",
+        "Rat",
+        "Fish",
+        "SudsSlug",
+        "PocketPuddle",
+        "TubTadpole"
+      ],
+      "SlotRateCapPerMinute": 6000000,
+      "PlayerRateCapPerMinute": 60000000,
+      "DailyRewardMultiplier": 1
+    },
+    {
+      "Id": "Dirty",
+      "Name": "Dirty Toilet",
+      "Tier": 2,
+      "New": false,
+      "Price": 6500,
+      "PriceStatus": "economy-v2 snapshot; feature/permanent owns tiers 1-7 repricing",
+      "Cooldown": 1.4,
+      "CooldownMultiplier": 0.9333333333333332,
+      "Luck": 1.05,
+      "ServiceCoins": 60,
+      "IncomeMultiplier": 1.5,
+      "Pool": [
+        "Duck",
+        "LoopyLoofah",
+        "SoggySock",
+        "BrushBristle",
+        "RollMole"
+      ],
+      "SlotRateCapPerMinute": 9000000,
+      "PlayerRateCapPerMinute": 90000000,
+      "DailyRewardMultiplier": 2
+    },
+    {
+      "Id": "Golden",
+      "Name": "Golden Toilet",
+      "Tier": 3,
+      "New": false,
+      "Price": 14000,
+      "PriceStatus": "economy-v2 snapshot; feature/permanent owns tiers 1-7 repricing",
+      "Cooldown": 1.3,
+      "CooldownMultiplier": 0.8666666666666667,
+      "Luck": 1.1,
+      "ServiceCoins": 80,
+      "IncomeMultiplier": 2.2,
+      "Pool": [
+        "GoldenPoop",
+        "CapybaraCap",
+        "DrainCrab",
+        "ToothpasteGoose"
+      ],
+      "SlotRateCapPerMinute": 13200000.000000002,
+      "PlayerRateCapPerMinute": 132000000.00000001,
+      "DailyRewardMultiplier": 4
+    },
+    {
+      "Id": "Diamond",
+      "Name": "Diamond Toilet",
+      "Tier": 4,
+      "New": false,
+      "Price": 105000,
+      "PriceStatus": "economy-v2 snapshot; feature/permanent owns tiers 1-7 repricing",
+      "Cooldown": 1.15,
+      "CooldownMultiplier": 0.7666666666666666,
+      "Luck": 1.15,
+      "ServiceCoins": 100,
+      "IncomeMultiplier": 3.3,
+      "Pool": [
+        "ToiletBaby",
+        "SpongeKnight",
+        "BubbleBeard",
+        "PlungerPogo"
+      ],
+      "SlotRateCapPerMinute": 19800000,
+      "PlayerRateCapPerMinute": 198000000,
+      "DailyRewardMultiplier": 8
+    },
+    {
+      "Id": "Radioactive",
+      "Name": "Radioactive Toilet",
+      "Tier": 5,
+      "New": false,
+      "Price": 1100000,
+      "PriceStatus": "economy-v2 snapshot; feature/permanent owns tiers 1-7 repricing",
+      "Cooldown": 1,
+      "CooldownMultiplier": 0.6666666666666666,
+      "Luck": 1.2,
+      "ServiceCoins": 1200,
+      "IncomeMultiplier": 5,
+      "Pool": [
+        "SewerShark",
+        "KingPoop",
+        "BathMatBat",
+        "DiscoBidet"
+      ],
+      "SlotRateCapPerMinute": 30000000,
+      "PlayerRateCapPerMinute": 300000000,
+      "DailyRewardMultiplier": 16
+    },
+    {
+      "Id": "Demon",
+      "Name": "Demon Toilet",
+      "Tier": 6,
+      "New": false,
+      "Price": 14000000,
+      "PriceStatus": "economy-v2 snapshot; feature/permanent owns tiers 1-7 repricing",
+      "Cooldown": 0.9,
+      "CooldownMultiplier": 0.6,
+      "Luck": 1.25,
+      "ServiceCoins": 2400,
+      "IncomeMultiplier": 8,
+      "Pool": [
+        "AlienToilet",
+        "TowelTornado",
+        "PorcelainPoodle"
+      ],
+      "SlotRateCapPerMinute": 48000000,
+      "PlayerRateCapPerMinute": 480000000,
+      "DailyRewardMultiplier": 32
+    },
+    {
+      "Id": "Galaxy",
+      "Name": "Galaxy Toilet",
+      "Tier": 7,
+      "New": false,
+      "Price": 95000000,
+      "PriceStatus": "economy-v2 snapshot; feature/permanent owns tiers 1-7 repricing",
+      "Cooldown": 0.8,
+      "CooldownMultiplier": 0.5333333333333333,
+      "Luck": 1.3,
+      "ServiceCoins": 4500,
+      "IncomeMultiplier": 12,
+      "Pool": [
+        "Mystery",
+        "FaucetPharaoh",
+        "Clogtopus"
+      ],
+      "SlotRateCapPerMinute": 72000000,
+      "PlayerRateCapPerMinute": 720000000,
+      "DailyRewardMultiplier": 64
+    },
+    {
+      "Id": "CoralCommode",
+      "Name": "Coral Commode",
+      "Theme": "A reef throne assembled by overenthusiastic bathtub crabs.",
+      "Tier": 8,
+      "New": true,
+      "Price": 160000000,
+      "PriceStatus": "wave1 candidate; conditional post-Galaxy cohort",
+      "Cooldown": 0.76,
+      "CooldownMultiplier": 0.5066666666666667,
+      "Luck": 1.4,
+      "ServiceCoins": 6500,
+      "IncomeMultiplier": 18,
+      "Model": {
+        "SizeStuds": [
+          3.6,
+          5,
+          3.2
+        ],
+        "TriangleBudget": 4600,
+        "Brief": "White standard bowl with orange branch-coral armrests, teal scalloped shell lid and three cream pearl knobs on tank; two gray shell ridges frame a cyan water disk. Six thick coral tips, no fine branches; no face on toilet.",
+        "Pivot": "center of bottom foot at ground",
+        "SeatCenterHeight": 2.08,
+        "CoreLidTop": 4.79,
+        "File": "assets/models/toilets/CoralCommode.fbx"
+      },
+      "Effects": {
+        "BodyPalette": "orange",
+        "AuraPalette": "water",
+        "Description": "Bubble glints at bowl; soft water-blue aura.",
+        "MaxLights": 1,
+        "MaxEmitters": 1,
+        "IdleParticlesPerSecond": 3,
+        "BurstParticles": 24
+      },
+      "Icon": {
+        "File": "assets/icons/toilets/CoralCommode_512.png",
+        "Key": "Assets.ToiletIcons.CoralCommode",
+        "Note": "Keep the orange branching arms separate from the scalloped teal lid."
+      },
+      "Pool": [
+        "RoyalFlushFrog",
+        "GoldenGargler",
+        "LaundryYeti"
+      ],
+      "SlotRateCapPerMinute": 108000000,
+      "PlayerRateCapPerMinute": 1080000000,
+      "TargetCumulativeMinutes": 85,
+      "TargetStatus": "conditional post-Galaxy active cohort target; +/-20%",
+      "DailyRewardMultiplier": 64
+    },
+    {
+      "Id": "CloudCushion",
+      "Name": "Cloud Cushion",
+      "Theme": "A plush sky bathroom with a permanently fluffy seat.",
+      "Tier": 9,
+      "New": true,
+      "Price": 400000000,
+      "PriceStatus": "wave1 candidate; conditional post-Galaxy cohort",
+      "Cooldown": 0.72,
+      "CooldownMultiplier": 0.48,
+      "Luck": 1.5,
+      "ServiceCoins": 9000,
+      "IncomeMultiplier": 27,
+      "Model": {
+        "SizeStuds": [
+          3.7,
+          5.1,
+          3.3
+        ],
+        "TriangleBudget": 4300,
+        "Brief": "White bowl nested in three broad cloud lobes at the foot, blue tank shaped as a stepped raincloud, ice padded oval lid and cyan droplet handle. GoldLight towel ring on one side; lid has a white smiling cloud motif with ink closed eyes.",
+        "Pivot": "center of bottom foot at ground",
+        "SeatCenterHeight": 2.08,
+        "CoreLidTop": 4.79,
+        "File": "assets/models/toilets/CloudCushion.fbx"
+      },
+      "Effects": {
+        "BodyPalette": "white",
+        "AuraPalette": "ice",
+        "Description": "Slow ice motes; pale blue halo at cloud base.",
+        "MaxLights": 1,
+        "MaxEmitters": 1,
+        "IdleParticlesPerSecond": 3,
+        "BurstParticles": 24
+      },
+      "Icon": {
+        "File": "assets/icons/toilets/CloudCushion_512.png",
+        "Key": "Assets.ToiletIcons.CloudCushion",
+        "Note": "Low three-quarter view preserves cloud foot and stepped tank silhouette."
+      },
+      "Pool": [
+        "SteamGenie",
+        "BathBombBehemoth",
+        "DrainKraken"
+      ],
+      "SlotRateCapPerMinute": 162000000,
+      "PlayerRateCapPerMinute": 1620000000,
+      "TargetCumulativeMinutes": 130,
+      "TargetStatus": "conditional post-Galaxy active cohort target; +/-20%",
+      "DailyRewardMultiplier": 64
+    },
+    {
+      "Id": "ClockworkCloset",
+      "Name": "Clockwork Closet",
+      "Theme": "An absurdly punctual brass bathroom.",
+      "Tier": 10,
+      "New": true,
+      "Price": 1000000000,
+      "PriceStatus": "wave1 candidate; conditional post-Galaxy cohort",
+      "Cooldown": 0.68,
+      "CooldownMultiplier": 0.45333333333333337,
+      "Luck": 1.6,
+      "ServiceCoins": 12500,
+      "IncomeMultiplier": 40,
+      "Model": {
+        "SizeStuds": [
+          3.7,
+          5.2,
+          3.3
+        ],
+        "TriangleBudget": 4800,
+        "Brief": "Gold and woodLight square cabinet tank surrounding the standard white oval bowl; large navy clock disk behind the raised lid, three thick gold gear teeth on each side, red plunger pendulum fixed at back. Cream clock hands; no numbers needed, no movable parts.",
+        "Pivot": "center of bottom foot at ground",
+        "SeatCenterHeight": 2.08,
+        "CoreLidTop": 4.79,
+        "File": "assets/models/toilets/ClockworkCloset.fbx"
+      },
+      "Effects": {
+        "BodyPalette": "gold",
+        "AuraPalette": "orange",
+        "Description": "Sparse warm gear-like sparkles using existing sparkle texture; amber bowl glow.",
+        "MaxLights": 1,
+        "MaxEmitters": 1,
+        "IdleParticlesPerSecond": 3,
+        "BurstParticles": 24
+      },
+      "Icon": {
+        "File": "assets/icons/toilets/ClockworkCloset_512.png",
+        "Key": "Assets.ToiletIcons.ClockworkCloset",
+        "Note": "Expose clock hands above the oval seat and the red pendulum on one side."
+      },
+      "Pool": [
+        "GeyserGorilla",
+        "ThroneColossus"
+      ],
+      "SlotRateCapPerMinute": 240000000,
+      "PlayerRateCapPerMinute": 2400000000,
+      "TargetCumulativeMinutes": 175,
+      "TargetStatus": "conditional post-Galaxy active cohort target; +/-20%",
+      "DailyRewardMultiplier": 64
+    },
+    {
+      "Id": "DragonKiln",
+      "Name": "Dragon Kiln",
+      "Theme": "A ceramic dragon warming the seat just a little too proudly.",
+      "Tier": 11,
+      "New": true,
+      "Price": 2500000000,
+      "PriceStatus": "wave1 candidate; conditional post-Galaxy cohort",
+      "Cooldown": 0.64,
+      "CooldownMultiplier": 0.4266666666666667,
+      "Luck": 1.7,
+      "ServiceCoins": 23000,
+      "IncomeMultiplier": 60,
+      "Model": {
+        "SizeStuds": [
+          3.8,
+          5.3,
+          3.4
+        ],
+        "TriangleBudget": 5000,
+        "Brief": "Red kiln bowl on black three-lobed foot, orange scaled dragon tail wrapping outside the pedestal, white oval seat unchanged. Two broad red wings behind the standard-height lid and a friendly dragon head atop tank; cream horns, white eyes with ink pupils, toothless grin.",
+        "Pivot": "center of bottom foot at ground",
+        "SeatCenterHeight": 2.08,
+        "CoreLidTop": 4.79,
+        "File": "assets/models/toilets/DragonKiln.fbx"
+      },
+      "Effects": {
+        "BodyPalette": "red",
+        "AuraPalette": "orange",
+        "Description": "Low-rate embers, red-orange rim light; no flame occlusion of the seat.",
+        "MaxLights": 1,
+        "MaxEmitters": 1,
+        "IdleParticlesPerSecond": 3,
+        "BurstParticles": 24
+      },
+      "Icon": {
+        "File": "assets/icons/toilets/DragonKiln_512.png",
+        "Key": "Assets.ToiletIcons.DragonKiln",
+        "Note": "Dragon head, two broad wings and curled tail remain outside bowl opening."
+      },
+      "Pool": [
+        "PlungerPaladin",
+        "HaloHamster"
+      ],
+      "SlotRateCapPerMinute": 360000000,
+      "PlayerRateCapPerMinute": 3600000000,
+      "TargetCumulativeMinutes": 225,
+      "TargetStatus": "conditional post-Galaxy active cohort target; +/-20%",
+      "DailyRewardMultiplier": 64
+    },
+    {
+      "Id": "AuroraThrone",
+      "Name": "Aurora Throne",
+      "Theme": "A frosty seat under a tiny indoor northern sky.",
+      "Tier": 12,
+      "New": true,
+      "Price": 6250000000,
+      "PriceStatus": "wave1 candidate; conditional post-Galaxy cohort",
+      "Cooldown": 0.6,
+      "CooldownMultiplier": 0.39999999999999997,
+      "Luck": 1.8,
+      "ServiceCoins": 35000,
+      "IncomeMultiplier": 90,
+      "Model": {
+        "SizeStuds": [
+          3.8,
+          5.4,
+          3.3
+        ],
+        "TriangleBudget": 4700,
+        "Brief": "White porcelain core and gray silver-painted foot; three thick folded fan panels in ice, mint and cyan rise behind the unchanged oval lid, each ending in a different stepped height. Blue faceted side buttresses and one cyan star knob; opaque panels, no transparent sheets.",
+        "Pivot": "center of bottom foot at ground",
+        "SeatCenterHeight": 2.08,
+        "CoreLidTop": 4.79,
+        "File": "assets/models/toilets/AuroraThrone.fbx"
+      },
+      "Effects": {
+        "BodyPalette": "white",
+        "AuraPalette": "mint",
+        "Description": "Slow cyan/mint star motes with static ice rim glow.",
+        "MaxLights": 1,
+        "MaxEmitters": 1,
+        "IdleParticlesPerSecond": 3,
+        "BurstParticles": 24
+      },
+      "Icon": {
+        "File": "assets/icons/toilets/AuroraThrone_512.png",
+        "Key": "Assets.ToiletIcons.AuroraThrone",
+        "Note": "Three different-height fan panels form the silhouette; avoid Galaxy's circular orbit."
+      },
+      "Pool": [
+        "CometCommode",
+        "ConstellationClam"
+      ],
+      "SlotRateCapPerMinute": 540000000,
+      "PlayerRateCapPerMinute": 5400000000,
+      "TargetCumulativeMinutes": 285,
+      "TargetStatus": "conditional post-Galaxy active cohort target; +/-20%",
+      "DailyRewardMultiplier": 64
+    },
+    {
+      "Id": "AstralAltar",
+      "Name": "Astral Altar",
+      "Theme": "A starlit porcelain shrine to immaculate plumbing.",
+      "Tier": 13,
+      "New": true,
+      "Price": 15625000000,
+      "PriceStatus": "wave1 candidate; conditional post-Galaxy cohort",
+      "Cooldown": 0.56,
+      "CooldownMultiplier": 0.37333333333333335,
+      "Luck": 1.9,
+      "ServiceCoins": 70000,
+      "IncomeMultiplier": 135,
+      "Model": {
+        "SizeStuds": [
+          3.7,
+          5.5,
+          3.3
+        ],
+        "TriangleBudget": 4900,
+        "Brief": "White standard bowl on a gray silver six-sided plinth; two thick white crescent columns behind tank hold a cyan halo above the 4.79-stud lid. Ice inlaid five-point constellation on lid, gray stepped arms and white star handle. No gold, red, symbols or thin floating pieces.",
+        "Pivot": "center of bottom foot at ground",
+        "SeatCenterHeight": 2.08,
+        "CoreLidTop": 4.79,
+        "File": "assets/models/toilets/AstralAltar.fbx"
+      },
+      "Effects": {
+        "BodyPalette": "white",
+        "AuraPalette": "cyan",
+        "Description": "White/cyan starlight, one slow halo shimmer; reduced mode keeps static constellation.",
+        "MaxLights": 1,
+        "MaxEmitters": 1,
+        "IdleParticlesPerSecond": 3,
+        "BurstParticles": 24
+      },
+      "Icon": {
+        "File": "assets/icons/toilets/AstralAltar_512.png",
+        "Key": "Assets.ToiletIcons.AstralAltar",
+        "Note": "Crescent columns and high halo frame the white lid; dark icon shadow preserves edges."
+      },
+      "Pool": [
+        "StarlightSeraph",
+        "TheLastToilet"
+      ],
+      "SlotRateCapPerMinute": 810000000,
+      "PlayerRateCapPerMinute": 8100000000,
+      "TargetCumulativeMinutes": 365,
+      "TargetStatus": "conditional post-Galaxy active cohort target; +/-20%",
+      "DailyRewardMultiplier": 64
+    },
+    {
+      "Id": "ParadoxPotty",
+      "Name": "Paradox Potty",
+      "Theme": "A bathroom doorway folded around the wrong side of itself.",
+      "Tier": 14,
+      "New": true,
+      "Price": 39062500000,
+      "PriceStatus": "wave1 candidate; conditional post-Galaxy cohort",
+      "Cooldown": 0.52,
+      "CooldownMultiplier": 0.3466666666666667,
+      "Luck": 2,
+      "ServiceCoins": 105000,
+      "IncomeMultiplier": 200,
+      "Model": {
+        "SizeStuds": [
+          3.8,
+          5.4,
+          3.4
+        ],
+        "TriangleBudget": 4800,
+        "Brief": "Black bowl with white seat, three thick navy offset rectangular doorframes behind tank, alternating magenta/cyan inset edges. A gold upside-down faucet handle hangs from the smallest frame; cream stepped pedestal remains grounded. Nested frames are joined at back, no actual portals.",
+        "Pivot": "center of bottom foot at ground",
+        "SeatCenterHeight": 2.08,
+        "CoreLidTop": 4.79,
+        "File": "assets/models/toilets/ParadoxPotty.fbx"
+      },
+      "Effects": {
+        "BodyPalette": "black",
+        "AuraPalette": "magenta",
+        "Description": "Sparse violet/cyan particles; magenta portal-edge glow.",
+        "MaxLights": 1,
+        "MaxEmitters": 1,
+        "IdleParticlesPerSecond": 3,
+        "BurstParticles": 24
+      },
+      "Icon": {
+        "File": "assets/icons/toilets/ParadoxPotty_512.png",
+        "Key": "Assets.ToiletIcons.ParadoxPotty",
+        "Note": "Offset rectangular frames must show three distinct apertures and the upside-down handle."
+      },
+      "Pool": [
+        "EmergencyUniverse",
+        "InfiniteOccupied"
+      ],
+      "SlotRateCapPerMinute": 1200000000,
+      "PlayerRateCapPerMinute": 12000000000,
+      "TargetCumulativeMinutes": 460,
+      "TargetStatus": "conditional post-Galaxy active cohort target; +/-20%",
+      "DailyRewardMultiplier": 64
+    },
+    {
+      "Id": "InfinityFlush",
+      "Name": "Infinity Flush",
+      "Theme": "An endless cosmic flushing machine that still needs a handle.",
+      "Tier": 15,
+      "New": true,
+      "Price": 97656250000,
+      "PriceStatus": "wave1 candidate; conditional post-Galaxy cohort",
+      "Cooldown": 0.48,
+      "CooldownMultiplier": 0.32,
+      "Luck": 2.1,
+      "ServiceCoins": 155000,
+      "IncomeMultiplier": 300,
+      "Model": {
+        "SizeStuds": [
+          4,
+          5.5,
+          3.5
+        ],
+        "TriangleBudget": 5000,
+        "Brief": "White bowl on a black hourglass pedestal; two thick gold and cyan elliptical infinity loops rise behind and beside the standard lid, crossing above tank. Purple starfield tank inset, magenta lever with oversized white glove finial. All loops joined, widest decoration at back.",
+        "Pivot": "center of bottom foot at ground",
+        "SeatCenterHeight": 2.08,
+        "CoreLidTop": 4.79,
+        "File": "assets/models/toilets/InfinityFlush.fbx"
+      },
+      "Effects": {
+        "BodyPalette": "black",
+        "AuraPalette": "cyan",
+        "Description": "Alternating cyan/gold stars, restrained violet aura; no screen-wide idle effect.",
+        "MaxLights": 1,
+        "MaxEmitters": 1,
+        "IdleParticlesPerSecond": 3,
+        "BurstParticles": 24
+      },
+      "Icon": {
+        "File": "assets/icons/toilets/InfinityFlush_512.png",
+        "Key": "Assets.ToiletIcons.InfinityFlush",
+        "Note": "Both infinity loops and white glove must fit inside the frame; bowl remains the anchor."
+      },
+      "Pool": [
+        "CosmicCourtesy"
+      ],
+      "SlotRateCapPerMinute": 1800000000,
+      "PlayerRateCapPerMinute": 18000000000,
+      "TargetCumulativeMinutes": 570,
+      "TargetStatus": "conditional post-Galaxy active cohort target; +/-20%",
+      "DailyRewardMultiplier": 64
+    }
+  ],
+  "Rebirth": {
+    "PermanentToilets": true,
+    "MinimumToiletTierByNextLevel": [
+      4,
+      5,
+      6,
+      7,
+      8,
+      8,
+      9,
+      9,
+      10,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+    ],
+    "RequiredNewFlushesBaseline": 3300,
+    "FlushThresholdOwner": "feature/permanent; use its merged threshold or level table",
+    "ExistingLevelPolicy": "never downgrade; requirements gate only the next rebirth"
+  },
+  "Balance": {
+    "LuckScenarios": [
+      1,
+      5,
+      10
+    ],
+    "Uptime": 0.75,
+    "FirstSightSpeedFactor": 1,
+    "ShowcaseMinutes": 60,
+    "ShowcaseSlots": 10,
+    "ShowcaseCash": 1.4,
+    "ShowcaseLuckFactor": 1.4,
+    "ShowcaseSpeedFactor": 0.8,
+    "ConditionalCohort": {
+      "Population": 200,
+      "Seed": 20261006,
+      "StartTier": 7,
+      "StartMinute": 35,
+      "StartCoins": 0,
+      "StartItems": [
+        {
+          "Id": "Duck",
+          "Count": 8
+        },
+        {
+          "Id": "GoldenPoop",
+          "Count": 2
+        }
+      ],
+      "Slots": 10,
+      "Cash": 1.4,
+      "LuckFactor": 1.4,
+      "SpeedFactor": 0.8,
+      "CollectSeconds": 30,
+      "Rebirths": false,
+      "FurtherTrackPurchases": false,
+      "MaxMinutes": 100000,
+      "Description": "Synthetic post-Galaxy starting portfolio. Does not simulate or prove reaching Galaxy in 35 minutes."
+    }
+  },
+  "Migration": {
+    "ItemIdsUnchanged": true,
+    "LegacyChanges": [
+      {
+        "Id": "KingPoop",
+        "OldRarity": "Mythic",
+        "NewRarity": "Godly",
+        "OldChance": 100000,
+        "NewChance": 100000,
+        "OldIncomePerSecond": 1000,
+        "NewIncomePerSecond": 6000
+      },
+      {
+        "Id": "SewerShark",
+        "OldRarity": "Godly",
+        "NewRarity": "Godly",
+        "OldChance": 25000,
+        "NewChance": 50000,
+        "OldIncomePerSecond": 6000,
+        "NewIncomePerSecond": 6000
+      }
+    ],
+    "KeepFoundingIds": [
+      "Poop",
+      "ToiletPaper",
+      "Rat",
+      "Fish",
+      "Duck",
+      "GoldenPoop",
+      "ToiletBaby",
+      "SewerShark",
+      "KingPoop",
+      "AlienToilet",
+      "Mystery"
+    ],
+    "KeepIndexClaims": true,
+    "NewFullIndexCount": 47
+  },
+  "Integration": {
+    "CelestialAudio": {
+      "LogicalCue": "Celestial",
+      "ReuseCueSettings": "Godly",
+      "ReuseAssetKey": "Assets.Sounds.Godly",
+      "NewUploads": 0
+    },
+    "Index": {
+      "RarityOrder": [
+        "Common",
+        "Uncommon",
+        "Rare",
+        "Epic",
+        "Legendary",
+        "Mythic",
+        "Godly",
+        "Celestial",
+        "Secret"
+      ],
+      "RarityStamps": {
+        "Common": 2,
+        "Uncommon": 3,
+        "Rare": 5,
+        "Epic": 8,
+        "Legendary": 10,
+        "Mythic": 15,
+        "Godly": 20,
+        "Celestial": 22,
+        "Secret": 25
+      },
+      "LegacyMilestone35": "Keep Count=35, same ID and reward; rename label to Veteran index plaque",
+      "NewMilestone47": {
+        "Count": 47,
+        "Cosmetic": "WaveOneComplete",
+        "Label": "Wave 1 complete plaque"
+      },
+      "ClaimMigration": "Keep rarity:<name> and milestone claims; no clawback or re-award"
+    },
+    "Art": {
+      "Units": "stud",
+      "AuthorUp": "Z",
+      "AuthorFront": "-Y",
+      "ExportUp": "Y",
+      "ExportForward": "Z",
+      "ImportScale": 1,
+      "ItemPivot": "horizontal bounds center at minimum height 0",
+      "ToiletPivot": "bottom foot center; do not recenter on decorative bounds",
+      "OneMesh": true,
+      "OneMaterial": true,
+      "Atlas": "assets/textures/ToyPalette.png",
+      "Icons": {
+        "Width": 512,
+        "Height": 512,
+        "Transparent": true,
+        "InspectSizes": [
+          128,
+          64
+        ]
+      }
+    },
+    "MergePolicy": {
+      "LegacyToiletPriceCooldownLuckService": "Read merged feature/permanent; snapshots in this file are proof inputs, not overwrites",
+      "NewToiletPriceFormula": "160000000 * 2.5^(Tier-8)",
+      "NewToiletCooldownFormula": "max(merged floor, merged Galaxy cooldown * Cooldown/0.8)",
+      "NewToiletLuckFormula": "min(merged cap, merged Galaxy luck * Luck/1.3)",
+      "NewToiletIncomeFormula": "merged Galaxy display multiplier * IncomeMultiplier/12",
+      "AfterRebase": "Regenerate proof and rerun merged fresh-account cohorts before enabling content"
+    }
+  }
+}
