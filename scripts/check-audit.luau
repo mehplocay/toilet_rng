@@ -1,6 +1,14 @@
 -- Runs against actual bundled source using audit-harness.luau's controlled scheduler.
 local failures, passed = {}, 0
 local function test(name, callback)
+	if
+		displayCollectBaseline
+		and name ~= "display: protected copies and duplicates reserve one physical copy per slot"
+		and name ~= "collect: pad collects only its own ledger and central jar collects the remainder"
+		and name ~= "display UI: Display places another owned copy instead of removing the first"
+	then
+		return
+	end
 	local ok, err = pcall(callback)
 	if ok then
 		passed += 1
@@ -415,7 +423,7 @@ local function server(options)
 		}
 		world.Assigned[player] = {
 			Owner = player,
-			IncomePoint = { Position = position },
+			IncomePoint = { Position = position, Parent = world },
 			CFrame = { Position = position },
 			Model = {
 				GetDescendants = function()
@@ -748,11 +756,11 @@ test("income migration, offline cap and ambiguous acquisition consume time once"
 	e.Store.After = nil
 	e:Resume(load)
 	p = data:Get(joined)
-	assert(p.Income.Pending["1"] == 240 * 6000 and p.Income.UpdatedAt == e.Now)
+	assert(p.Income.Pending["1"] == 5 * 240 * 6000 and p.Income.UpdatedAt == e.Now)
 	data:Close(joined)
 	local third = e:Player(50)
 	data:Load(third)
-	assert(data:Get(third).Income.Pending["1"] == 240 * 6000, "Reconnect duplicated offline credit")
+	assert(data:Get(third).Income.Pending["1"] == 5 * 240 * 6000, "Reconnect duplicated offline credit")
 end)
 
 test("income settles before display removal, replacement and tier change; reservations remain", function()
@@ -762,11 +770,11 @@ test("income settles before display removal, replacement and tier change; reserv
 	e:Fire("Display", player, "Duck", 1)
 	e.Now += 60
 	e:Fire("Display", player, nil, 1)
-	assert(p.Income.Pending["1"] == 6000)
+	assert(p.Income.Pending["1"] == 30000)
 	e:Fire("Display", player, "Poop", 1)
 	e.Now += 60
 	e:Fire("State", player)
-	assert(p.Income.Pending["1"] == 6120)
+	assert(p.Income.Pending["1"] == 54000)
 	e:Fire("Sell", player, "Poop", 2)
 	assert(p.Inventory.Poop == 2, "Sale consumed reserved/first copy")
 	e:Fire("Sell", player, "Poop", 1)
@@ -774,17 +782,17 @@ test("income settles before display removal, replacement and tier change; reserv
 	e:Fire("Display", player, nil, 1)
 	e.Now += 10
 	e:Fire("State", player)
-	assert(p.Income.Pending["1"] == 6120, "Empty slot earned income")
+	assert(p.Income.Pending["1"] == 54000, "Empty slot earned income")
 	e:Fire("Sell", player, "Poop", 1)
 	assert(p.Inventory.Poop == 1, "First-copy protection changed")
 	e:Fire("Display", player, "Duck", 1)
 	p.Coins = 1000
 	e.Now += 10
 	e:Fire("BuyToilet", player, "Dirty")
-	assert(p.ToiletTier == 2 and p.Income.Pending["1"] == 7120)
+	assert(p.ToiletTier == 2 and p.Income.Pending["1"] == 59000)
 	e.Now += 20
 	e:Fire("State", player)
-	assert(p.Income.Pending["1"] == 11120, "New tier cap applied retroactively")
+	assert(p.Income.Pending["1"] == 73000, "New tier cap applied retroactively")
 end)
 
 test("income collect validates geometry, ownership, life, arguments and shared rate limit", function()
@@ -808,7 +816,7 @@ test("income collect validates geometry, ownership, life, arguments and shared r
 	plot.Owner = player
 	e.Now += 5
 	e:Fire("CollectIncome", player, 99999)
-	e:Fire("CollectIncome", player) -- Invalid request consumed the token.
+	-- Malformed requests cannot mint income; they do not spend the legitimate input token.
 	assert(p.Coins == 0 and e.Store.Calls == calls)
 	e.Now += 5
 	e:Fire("CollectIncome", player)
@@ -836,8 +844,9 @@ test("income accepts a live owned collect pad but rejects a removed pad and supp
 	end
 	local pad = { Position = padPosition }
 	plot.CollectPoints = { pad }
+	plot.CollectSlots = { [1] = pad }
 	p.Income.Pending["1"] = 60000
-	e:Fire("CollectIncome", player)
+	e:Fire("CollectIncome", player, 1)
 	assert(p.Coins == 0, "Removed pad authorized remote collection")
 	pad.Parent = plot.Model
 	e.Now += 5
@@ -845,6 +854,8 @@ test("income accepts a live owned collect pad but rejects a removed pad and supp
 	assert(p.Coins == 0, "Client-supplied pad accepted")
 	e.Now += 5
 	e:Fire("CollectIncome", player)
+	assert(p.Coins == 0, "Pad proximity authorized remote Collect All")
+	e:Fire("CollectIncome", player, 1)
 	assert(p.Coins == 10 and next(p.Income.Pending) == nil)
 	assert(e.Store.Records.Player_59.Data.Coins == 10)
 end)
@@ -945,11 +956,11 @@ test("income departure timestamp freezes before a queued final save yields", fun
 	e:Resume(save)
 	e:Resume(close)
 	local saved = e.Store.Records.Player_56.Data.Income
-	assert(saved.UpdatedAt == departure and saved.Pending["1"] == 3000)
+	assert(saved.UpdatedAt == departure and saved.Pending["1"] == 15000)
 	e.Now += 86400
 	local joined = e:Player(56)
 	data:Load(joined)
-	assert(data:Get(joined).Income.Pending["1"] == 3000 + 240 * 6000)
+	assert(data:Get(joined).Income.Pending["1"] == 15000 + 5 * 240 * 6000)
 end)
 
 runPresentationAudit(test, environment, server)

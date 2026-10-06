@@ -90,7 +90,9 @@ function Idle.Start()
 					and part
 					and part:IsA("BasePart")
 					and (camera.CFrame.Position - part.Position).Magnitude <= Visuals.Budget.IdleDistance
-				local enabled = near == true and not flushing
+				local enabled = near == true
+					and not flushing
+					and (not object:GetAttribute("IncomeGlow") or object:GetAttribute("IncomeReady") == true)
 				if enabled ~= entry.Enabled then
 					entry.Enabled = enabled
 					if entry.Tween then

@@ -1,5 +1,7 @@
 # Passive display income
 
+2026-10-06 follow-up: [Display/collection fix](display-collect.md) supersedes the rates, aggregate-only pads, input cadence and feedback contract below. Ledger and lease/save guarantees remain. Historical implementation record follows.
+
 Implemented on `feature/income`; uncommitted as requested. Research: [timestamp and persistence findings](../research/passive-income.md).
 
 Displayed copies earn `Value * 0.01` Coins/minute before the per-slot and per-player tier caps in `src/shared/Config/Income.luau`. Both online and offline time use server `os.time()`. Offline accrual is limited to 240 minutes per absence; pending storage is capped at 33,600 Coins per slot and 100,800 per player. Full storage stops earning; elapsed excess time is consumed, not banked for a later collect.

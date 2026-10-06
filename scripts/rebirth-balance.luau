@@ -8,7 +8,8 @@ local Service = require("../src/server/Services/ServiceCoinService")
 local Inventory = require("../src/shared/SafeInventory")
 local Cohort = require("./upgrade-cohort")
 local Balance = {}
-function Balance.Run(required, population)
+local DisplayCohort = require("./display-cohort")
+function Balance.Run(required, population, displaySlots)
 	local config = table.clone(Config)
 	config.RequiredFlushes = required
 	local rules = R.new(config)
@@ -26,16 +27,19 @@ function Balance.Run(required, population)
 			Inventory = {},
 			Collection = {},
 			Displays = {},
-			DisplaySlots = 3,
+			DisplaySlots = displaySlots or 3,
 			Upgrades = U:Sanitize(nil),
 			IndexClaims = {},
-			Income = { UpdatedAt = 1, Pending = {} },
+			Income = { UpdatedAt = 1000, Pending = {} },
 			RebirthLevel = 0,
 			RunFlushes = 0,
 		}
 		for run = 1, 2 do
 			local elapsed, entries, lastTier, lastLuck = 0, nil, nil, nil
 			while not rules:Eligible(p, run - 1) do
+				if displaySlots then
+					DisplayCohort.Settle(p, elapsed * 60)
+				end
 				local pending = false
 				for _, id in ipairs({ "FlushSpeed", "CashBoost", "LuckBoost" }) do
 					local level = U:Level(p, id)
@@ -60,7 +64,9 @@ function Balance.Run(required, population)
 				p.Collection[item.Id] = (p.Collection[item.Id] or 0) + 1
 				p.Stats.Flushes += 1
 				p.RunFlushes += 1
-				if Inventory.Sellable(p, item.Id) > 0 then
+				if displaySlots then
+					DisplayCohort.ReserveAndSell(p)
+				elseif Inventory.Sellable(p, item.Id) > 0 then
 					assert(Inventory.Sell(p, Items, item.Id, 1, U:Cash(p)))
 				end
 				elapsed += U:Cooldown(p, toilet.Cooldown) / 60 / 0.75
@@ -68,6 +74,10 @@ function Balance.Run(required, population)
 			end
 			table.insert(runs[run], elapsed)
 			p = assert(rules:Build(p, run - 1, 1))
+			if displaySlots then
+				p.Income.UpdatedAt = 1000
+				p.NextCollection = nil
+			end
 		end
 	end
 	return Cohort.Percentile(runs[1], 0.5),

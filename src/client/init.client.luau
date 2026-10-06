@@ -100,7 +100,8 @@ local skipToggle = settingsRow(
 		remotes.AnimationSkip:FireServer(not skipAnimation)
 	end
 )
-local panels = { collection.Panel, upgrades.Panel, rewards.Panel, passes.Panel, rebirth.Panel, settings }
+local panels =
+	{ collection.Panel, collection.SlotsPanel, upgrades.Panel, rewards.Panel, passes.Panel, rebirth.Panel, settings }
 local dev
 if RunService:IsStudio() then
 	dev = C.Panel(root, "Developer Tools", Color3.fromRGB(219, 78, 105))
@@ -218,7 +219,20 @@ local incomeChip = require(script.UI.IncomeChip).Create(hud.Frame)
 local PromptService = game:GetService("ProximityPromptService")
 PromptService.PromptTriggered:Connect(function(prompt)
 	if prompt:GetAttribute("IncomeOwnerUserId") == player.UserId then
-		remotes.CollectIncome:FireServer()
+		local slot = prompt:GetAttribute("CollectSlot")
+		if slot then
+			remotes.CollectIncome:FireServer(slot)
+		else
+			remotes.CollectIncome:FireServer()
+		end
+	elseif prompt:GetAttribute("OwnerUserId") == player.UserId and prompt:GetAttribute("DisplaySlot") then
+		local slot = prompt:GetAttribute("DisplaySlot")
+		if prompt:GetAttribute("DisplayOccupied") then
+			remotes.Display:FireServer(nil, slot)
+		else
+			show(collection.Panel)
+			collection.OpenSlot(slot)
+		end
 	end
 end)
 remotes.IncomePending.OnClientEvent:Connect(incomeChip.Update)
@@ -263,6 +277,9 @@ remotes.Result.OnClientEvent:Connect(function(action, payload)
 		showServiceCoins(payload.ServiceCoins)
 		presentation.Reveal(item, payload)
 	elseif action == "CollectIncome" then
+		if payload.Success then
+			showServiceCoins(payload.Coins, true)
+		end
 		toast(
 			if payload.Success then "+" .. C.Commas(payload.Coins) .. " display coins collected!" else payload.Message,
 			C.Gold

@@ -215,8 +215,12 @@ function methods:GetAttribute(key)
 	return self._attributes[key]
 end
 function methods:SetAttribute(key, value)
+	if self._attributes[key] == value then
+		return
+	end
 	self._attributes[key] = value
 	self.AttributeChanged:Fire(key)
+	self:GetAttributeChangedSignal(key):Fire()
 end
 function methods:GetAttributeChangedSignal(key)
 	return self:GetPropertyChangedSignal("attr:" .. key)
@@ -378,6 +382,7 @@ function services.TweenService:Create(object, _, props)
 			end
 		end,
 		Cancel = function() end,
+		Pause = function() end,
 		Destroy = function() end,
 	}
 end

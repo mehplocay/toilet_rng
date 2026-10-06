@@ -24,12 +24,12 @@ local function units(p)
 end
 local p = profile(1, 3, "Poop")
 Income:Settle(p, 1060, false)
-assert(units(p) == 360 and Income:PendingCoins(p) == 0)
+assert(units(p) == 72000 and Income:PendingCoins(p) == 12)
 for now = 1061, 7000 do
 	Income:Settle(p, now, false)
 end
-assert(units(p) == 6 * Config.UnitsPerCoin, "Frequent settlement lost fractions")
-assert(Income:Collect(p) == 6 and p.Coins == 6 and p.Stats.Earned == 6)
+assert(units(p) == 1200 * Config.UnitsPerCoin, "Frequent settlement lost fractions")
+assert(Income:Collect(p) == 1200 and p.Coins == 1200 and p.Stats.Earned == 1200)
 assert(Income:Collect(p) == 0, "Repeated collect duplicated coins")
 Income:Settle(p, 6000, false)
 Income:Settle(p, 7000, false)
@@ -37,27 +37,29 @@ assert(units(p) == 0 and p.Income.UpdatedAt == 7000, "Clock rollback replayed in
 
 p = profile(1, 3, "Duck")
 Income:Settle(p, 1060, false)
-assert(units(p) == 18000)
+assert(units(p) == 90000)
 assert(Display.Set(p, nil, 1))
 assert(Display.Set(p, "Poop", 1) == false)
 p.Inventory.Poop = 1
 assert(Display.Set(p, "Poop", 1))
 Income:Settle(p, 1120, false)
-assert(units(p) == 30120 and p.Income.Pending["1"] == 6120, "Change lost/repriced old income")
-assert(Income:Collect(p) == 5 and units(p) == 120, "Pooled fractions were lost")
+assert(units(p) == 174000 and p.Income.Pending["1"] == 54000, "Change lost/repriced old income")
+assert(Income:Collect(p) == 29 and units(p) == 0)
+p.Income.Pending = { ["1"] = 3001, ["2"] = 3002 }
+assert(Income:Collect(p, 1) == 0 and Income:Collect(p) == 1 and units(p) == 3, "Pooled fractions were lost")
 
 p = profile(7, 10, "Mystery")
 local rates, rate = Income:Rates(p), 0
 for _, value in pairs(rates) do
 	rate += value
 end
-assert(rate == 420 * Config.UnitsPerCoin / 60, "Player rate cap missing")
+assert(rate == 1410 * Config.UnitsPerCoin / 60, "Player rate cap missing")
 local single = profile(7, 1, "Mystery")
-assert(Income:Rates(single)["1"] == 140 * Config.UnitsPerCoin / 60, "Slot rate cap missing")
+assert(Income:Rates(single)["1"] == 141 * Config.UnitsPerCoin / 60, "Slot rate cap missing")
 Income:Settle(p, 1000 + 86400 * 30, true)
-assert(Income:PendingCoins(p) == 420 * 240, "Offline interval not capped to 240 minutes")
+assert(Income:PendingCoins(p) == 1410 * 240, "Offline interval not capped to 240 minutes")
 Income:Settle(p, p.Income.UpdatedAt, true)
-assert(Income:PendingCoins(p) == 420 * 240, "Same timestamp replayed offline award")
+assert(Income:PendingCoins(p) == 1410 * 240, "Same timestamp replayed offline award")
 Income:Settle(single, 1000 + 86400 * 30, false)
 assert(Income:PendingCoins(single) == Config.SlotPendingCap)
 assert(Income:PendingCoins(p) == Config.PlayerPendingCap)
@@ -69,9 +71,9 @@ assert(units(p) == 0, "Collect recovered time discarded at cap")
 p = profile(1, 1, "Duck")
 Income:Settle(p, 1060, false)
 p.Coins = Config.MaxBalance
-assert(Income:Collect(p) == 0 and units(p) == Config.UnitsPerCoin)
+assert(Income:Collect(p) == 0 and units(p) == 5 * Config.UnitsPerCoin)
 p.Coins, p.Stats.Earned = Config.MaxBalance - 1, Config.MaxBalance
-assert(Income:Collect(p) == 0 and units(p) == Config.UnitsPerCoin)
+assert(Income:Collect(p) == 0 and units(p) == 5 * Config.UnitsPerCoin)
 p.Stats.Earned = Config.MaxBalance - 1
 assert(Income:Collect(p) == 1 and p.Coins == Config.MaxBalance and p.Stats.Earned == Config.MaxBalance)
 

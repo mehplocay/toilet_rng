@@ -1,13 +1,23 @@
 local SafeInventory = {}
 local Rebirth = require(if script then script.Parent.Config.Rebirth else "./Config/Rebirth")
 
-function SafeInventory.Sellable(profile, id)
+function SafeInventory.Displayed(profile, id)
 	local displayed = 0
 	for _, displayId in pairs(profile.Displays or {}) do
 		if displayId == id then
 			displayed += 1
 		end
 	end
+	return displayed
+end
+
+function SafeInventory.Displayable(profile, id)
+	-- Display is a reservation, not a sale: protected copies remain eligible.
+	return math.max(0, (profile.Inventory[id] or 0) - SafeInventory.Displayed(profile, id))
+end
+
+function SafeInventory.Sellable(profile, id)
+	local displayed = SafeInventory.Displayed(profile, id)
 	-- A displayed copy may also be the protected first copy; never double-reserve it.
 	return math.max(
 		0,

@@ -198,14 +198,14 @@ test("upgrades: cash settles past income before changing rates; index and slots 
 	e.Now += 60
 	e:Fire("BuyUpgrade", player, "CashBoost", 0)
 	local before = p.Income.Pending["1"]
-	assert(before == 120, "Past income used new boost")
+	assert(before == 24000, "Past income used new boost")
 	e.Now += 60
 	e:Fire("State", player)
-	assert(p.Income.Pending["1"] == before + 120, "Fixed-point income must round fractional units down")
+	assert(p.Income.Pending["1"] == before + 26400, "Cash boost must affect only subsequent accrual")
 	p.Upgrades.CashBoost = 10
 	e.Now += 60
 	e:Fire("State", player)
-	assert(p.Income.Pending["1"] == before + 120 + 240)
+	assert(p.Income.Pending["1"] == before + 26400 + 48000)
 	e:Fire("Sell", player, "Poop", 1)
 	assert(p.Coins == 974 and p.Inventory.Poop == 9)
 	p.DisplaySlots = 9
@@ -327,8 +327,8 @@ test("upgrades: maximum offline tank survives ambiguous load and cannot be recla
 	local player, p = e:Join(80)
 	p.ToiletTier = 7
 	p.Upgrades.CashBoost, p.Upgrades.OfflineTank = 10, 10
-	p.Inventory.Mystery = 3
-	for slot = 1, 3 do
+	p.Inventory.Mystery, p.DisplaySlots = 10, 10
+	for slot = 1, 10 do
 		p.Displays[tostring(slot)] = "Mystery"
 	end
 	e.Data:Close(player)
@@ -348,9 +348,9 @@ test("upgrades: maximum offline tank survives ambiguous load and cannot be recla
 		e:Load("src/shared/UpgradeRules").new(e:Load("src/shared/Config/Upgrades"))
 	)
 	local restored = e.Data:Get(second)
-	assert(income:PendingCoins(restored) == 403200 and restored.Upgrades.OfflineTank == 10)
+	assert(income:PendingCoins(restored) == 1353600 and restored.Upgrades.OfflineTank == 10)
 	e.Data:Close(second)
 	local third = e:Player(80)
 	e.Data:Load(third)
-	assert(income:PendingCoins(e.Data:Get(third)) == 403200, "Reconnect repeated maximum tank")
+	assert(income:PendingCoins(e.Data:Get(third)) == 1353600, "Reconnect repeated maximum tank")
 end)

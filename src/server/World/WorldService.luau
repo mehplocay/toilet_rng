@@ -109,8 +109,12 @@ function World:Refresh(player, profile)
 			end
 		end
 	end
-	local entries =
-		{ tostring(profile.DisplaySlots), tostring(profile.ToiletTier), tostring((profile.Upgrades or {}).CashBoost) }
+	local entries = {
+		tostring(profile.DisplaySlots),
+		tostring(profile.ToiletTier),
+		tostring((profile.Upgrades or {}).CashBoost),
+		tostring(profile.RebirthLevel),
+	}
 	for slot = 1, profile.DisplaySlots do
 		table.insert(entries, profile.Displays[tostring(slot)] or "-")
 	end
@@ -128,6 +132,11 @@ end
 function World:RenderDisplays(plot)
 	if not plot.Profile then
 		return
+	end
+	plot.CollectIncome = function(player, slot, touching)
+		if self.Assigned[player] == plot and plot.Owner == player and self.CollectIncome then
+			self.CollectIncome(player, slot, touching)
+		end
 	end
 	DisplayRows.Build(plot)
 	if plot.Owner then
@@ -322,7 +331,7 @@ function World:Start(data)
 			end
 			plot.Profile, plot.DisplaySignature, plot.Page = nil, nil, nil
 			plot.PendingCoins, plot.IncomePoint, plot.IncomePrompt, plot.IncomeCoins = nil, nil, nil, nil
-			plot.CollectPoints, plot.IncomeLabel = nil, nil
+			plot.CollectPoints, plot.CollectSlots, plot.CollectIncome, plot.IncomeLabel = nil, nil, nil, nil
 			plot.Sign.Text = "Available Plot"
 			plot.Displays:ClearAllChildren()
 			DisplayRows.Build(plot, { ToiletTier = 1, DisplaySlots = 0, Displays = {} })

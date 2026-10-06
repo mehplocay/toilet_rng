@@ -28,7 +28,8 @@ return {
 		Rebirth = { Capacity = 1, Refill = 0.2 },
 		PresentationSettings = { Capacity = 3, Refill = 1 },
 		BuyUpgrade = { Capacity = 3, Refill = 1 },
-		CollectIncome = { Capacity = 1, Refill = 0.2 },
+		CollectIncome = { Capacity = 1, Refill = 2 }, -- Shared touch/prompt budget; one durable save at a time.
+		CollectIncomeSave = { Capacity = 10, Refill = 0.2 }, -- Internal budget: one ten-pad sweep, 12 writes/minute sustained.
 		ClaimIndexReward = { Capacity = 3, Refill = 0.5 },
 		AnimationSkip = { Capacity = 3, Refill = 1 },
 		PlotColor = { Capacity = 3, Refill = 1 },

@@ -1,5 +1,7 @@
 # Rebirth implementation and review
 
+2026-10-06: [Display/collection follow-up](display-collect.md) retunes passive income and extends balance cohorts with retained displays. Reset/protection rules and the 60–90-minute first-rebirth target remain; the old passive fraction below is superseded.
+
 2026-10-05, `feature/rebirth`. Uncommitted; no pushes. This implementation supersedes the old Galaxy/fee/all-inventory proposal in progression.md. [Current API research](../research/rebirth.md).
 
 ## Eligibility and tuning

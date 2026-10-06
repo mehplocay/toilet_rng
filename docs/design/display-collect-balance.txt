@@ -1,0 +1,62 @@
+Rebirth: seeded 500-player cohort; 75% manual uptime, duplicate sales, active tracks through L4; no daily/offline/pass income
+  3600 flushes + tier 4: first p50 71.06 / p90 71.66 min; second p50 62.29 / p90 62.83 min; 12.3% faster
+Minutes per next toilet; 75% manual cooldown uptime, sequential tiers, carryover, protected first copies.
+Buy one level of Cash/Luck/Flush Speed per tier through level 4; buy each as affordable before the toilet.
+Auto speed, display slots and tank are optional utility purchases, excluded from this active cohort.
+No daily/index/tutorial/offline starting income or timed boosts. Legacy targets are pre-change stage medians.
+Toilet        Price  Target  Stage p50  Stage p90  Cumulative p50/p90  No-track p50
+Dirty            70    1.40       1.41       1.63       1.41 / 1.63           0.73
+Golden          850    4.48       4.47       5.12       5.81 / 6.57           4.39
+Diamond        3800    9.36       9.38      10.49      15.13 / 16.52         12.08
+Radioactive   15500   17.87      17.94      19.46      32.87 / 35.21         28.47
+Demon         67300   37.11      37.08      39.04      69.79 / 73.01         68.98
+Galaxy       172000   47.29      47.12      48.74     116.65 / 120.65        85.28
+Conservative no-upgrade route: every item retained or only Poop duplicates sold; zero luck required.
+  Dirty        service-only 2.33 min; Poop-only 0.83 min
+  Golden       service-only 13.22 min; Poop-only 6.66 min
+  Diamond      service-only 27.44 min; Poop-only 18.34 min
+  Radioactive  service-only 49.53 min; Poop-only 39.64 min
+First four cumulative bounds: service-only 92.53 min; Poop-only 65.47 min
+Daily rewards: unchanged fixed grants (Cash Boost does not multiply them); day-one / day-seven Coins:
+  Basic        25 / 250
+  Dirty        50 / 500
+  Golden       100 / 1000
+  Diamond      200 / 2000
+  Radioactive  400 / 4000
+  Demon        800 / 8000
+  Galaxy       1600 / 16000
+Index: once-only fourth slot retained; no Coins or luck minted. Fair start and stage medians passed.
+Basic, ten Common Poop: $0.67/s = 25.39% of active income.
+Display income: coins/second UI; ten reasonable retained copies from 60 active minutes; 75% manual uptime.
+No-track and normal stage tracks (Cash/Luck/Speed through L4); acquisition/slot costs excluded from steady-state rates.
+  Basic        L0: $0.83/s / active $2.63/s = 31.74%; 10x Fish
+  Basic        L1: $0.92/s / active $2.97/s = 30.88%; 10x Fish
+  Dirty        L0: $1.17/s / active $3.85/s = 30.32%; 8x Duck, 2x Fish
+  Dirty        L2: $1.40/s / active $5.11/s = 27.39%; 10x Duck
+  Golden       L0: $1.83/s / active $5.86/s = 31.31%; 2x GoldenPoop, 8x Duck
+  Golden       L3: $2.38/s / active $9.55/s = 24.95%; 3x GoldenPoop, 7x Duck
+  Diamond      L0: $3.00/s / active $9.91/s = 30.27%; 2x GoldenPoop, 8x Duck
+  Diamond      L4: $4.20/s / active $18.90/s = 22.22%; 4x GoldenPoop, 6x Duck
+  Radioactive  L0: $5.67/s / active $18.66/s = 30.37%; 3x GoldenPoop, 7x Duck
+  Radioactive  L4: $7.93/s / active $36.04/s = 22.01%; 1x ToiletBaby, 5x GoldenPoop, 4x Duck
+  Demon        L0: $11.17/s / active $37.05/s = 30.14%; 3x GoldenPoop, 7x Duck
+  Demon        L4: $15.63/s / active $69.30/s = 22.56%; 1x ToiletBaby, 6x GoldenPoop, 3x Duck
+  Galaxy       L0: $23.50/s / active $78.24/s = 30.04%; 4x GoldenPoop, 6x Duck
+  Galaxy       L4: $32.90/s / active $143.48/s = 22.93%; 1x ToiletBaby, 7x GoldenPoop, 2x Duck
+Absolute 100-jackpot-slot ceiling: 37.93% maximum across 0..15 rebirths and independent Cash/Speed 0..10.
+Base tank: 240 minutes; upgraded tank: 480. Storage/rates scale with cash; persisted 6000 units/coin unchanged.
+Display-enabled 200-player cohorts: actual retained copies, collection once/minute, no starting offline wallet.
+  3 slots -> Dirty        p50 1.44 min (original active target 1.40)
+  3 slots -> Golden       p50 4.41 min (original active target 4.48)
+  3 slots -> Diamond      p50 9.12 min (original active target 9.36)
+  3 slots -> Radioactive  p50 17.24 min (original active target 17.87)
+  3 slots -> Demon        p50 34.93 min (original active target 37.11)
+  3 slots -> Galaxy       p50 44.32 min (original active target 47.29)
+  3 slots rebirth: first 70.66 min, second 61.92 min
+  10 slots -> Dirty        p50 1.61 min (original active target 1.40)
+  10 slots -> Golden       p50 4.17 min (original active target 4.48)
+  10 slots -> Diamond      p50 8.23 min (original active target 9.36)
+  10 slots -> Radioactive  p50 15.72 min (original active target 17.87)
+  10 slots -> Demon        p50 30.88 min (original active target 37.11)
+  10 slots -> Galaxy       p50 38.66 min (original active target 47.29)
+  10 slots rebirth: first 69.59 min, second 61.29 min
