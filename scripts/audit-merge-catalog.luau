@@ -106,9 +106,9 @@ test("merge economy: maximum paid offline ledger round-trips exact fractions and
 		p.Displays[tostring(slot)] = "Mystery"
 	end
 	local income = commerce.Income
-	assert(income.Upgrades:Cash(p) == 9)
+	assert(income.Upgrades:Cash(p) == 10)
 	assert(income.Upgrades:OfflineMinutes(p, income.Config.OfflineMinutes) == 1440)
-	assert(income:Rates(p)["1"] == 1300000 * 9 * 6000)
+	assert(income:Rates(p)["1"] == 1300000 * 10 * 6000)
 	p.Income.UpdatedAt = e.Now - 86400
 	income:Settle(p, e.Now, true)
 	assert(income:TotalUnits(p) == 9e15 and income:StorageUnits(p, false) == 9e15)
@@ -154,7 +154,7 @@ test(
 		p.Upgrades.CashBoost, p.Upgrades.LuckBoost, p.Upgrades.OfflineTank = 100, 50, 100
 		p.ToiletTier, p.RebirthLevel = 7, 15
 		assert(u:Cash(p) == 10 and u:OfflineMinutes(p, 480) == 1440)
-		assert(math.abs(u:Luck(p, 1.3) - 5.07) < 1e-12, "Cash passes changed luck")
+		assert(math.abs(u:Luck(p, 1.3) - 5.98) < 1e-12, "Cash passes changed luck")
 		p.Inventory.Rat, p.Inventory.Mystery, p.Displays["1"] = 3, 1, "Mystery"
 		local items = e:Load("src/shared/Config/Items")
 		local rat

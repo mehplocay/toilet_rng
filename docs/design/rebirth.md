@@ -2,6 +2,10 @@
 
 2026-10-06, `feature/permanent`; supersedes the earlier flush/tier gate and reset-to-Basic contract. [Economy tables and assumptions](economy-v2.md), [source review](../research/permanent-economy.md). No commit/push.
 
+## Stronger rewards review (2026-10-06)
+
+**This worktree is not ready for acceptance:** the requested R15 x16 cash reward conflicts with the existing catalog's 10x total cash cap. The cap remains unchanged pending an owner decision. Stronger rewards with unchanged gates also fail the requested rebirth pacing. No timing assertion was relaxed. See [current validation](rebirth-values-validation.md) and [three-archetype report](rebirth-values-simulations.txt). Historical pacing and validation numbers below describe the previous reward table unless explicitly identified as current.
+
 ## Reset contract
 
 **Keep:** every toilet tier and upgrade level; all display slots, exact pedestal positions and displayed copies; lifetime collection/index/rarest find/lifetime flushes; index claims, stamps, cosmetics, daily claims, tutorial state, passes/commerce receipt history and settings. Copies retained on display remain protected from sale. An empty purchased slot is also permanent.
@@ -14,7 +18,7 @@
 
 `Rebirth(expectedLevel)` accepts exactly one finite integer generation. Server rules require the current saved level, sufficient wallet coins, and at least **300 successful flushes since the last rebirth**. No toilet-tier requirement remains. Maximum is 15. The entire wallet resets, rather than deducting the gate and retaining excess coins; the window discloses the current wallet and pending loss before its review/hold action.
 
-| Next rebirth | Wallet coin gate | Normal cumulative p50 / p90 hours |
+| Next rebirth | Wallet coin gate | Previous-reward normal cumulative p50 / p90 hours |
 |---|---:|---:|
 | 1 | 3M | 0.40 / 0.52 |
 | 2 | 12M | 0.57 / 0.76 |
@@ -32,9 +36,33 @@
 | 14 | 650B | 63.11 / 94.37 |
 | 15 | 2.5T | 95.67 / 133.84 |
 
-All gates and rewards live in Config/Rebirth. Cash bonus adds 25 percentage points per level for 1-3, 10 for 4-8 and 5 afterward, capped at +160%. Luck adds two points per level, capped at +30% before the global 10x/diminishing-return rules. Speed bonuses cap at +20% and never bypass the 0.4s cooldown floor. Starter coins remain 2,500 + 250 per subsequent level, at most 6,000. Titles/badges/tokens are cosmetic; tokens are not a second currency or paid luck.
+All gates and rewards live in an explicit 15-row Config/Rebirth table. Cumulative bonuses are:
 
-Each gate is much larger than its starter grant, so resets cannot print money. Fresh flushes provide a separate minimum even for inherited jackpot displays/offline wallets. R15 is intentionally steep; the p50 95.67h result includes permanent upgrade spending and income, not a fixed-income extrapolation. See the 64-seed/archetype simulation and its discretization limits in economy-v2.md.
+| Rebirth | Cash bonus | Luck bonus | Speed reduction |
+|---|---:|---:|---:|
+| 1 | +50% | +5% | 3% |
+| 2 | +110% | +10% | 5% |
+| 3 | +180% | +15% | 7% |
+| 4 | +240% | +20% | 9% |
+| 5 | +300% | +25% | 10% |
+| 6 | +380% | +32% | 13% |
+| 7 | +470% | +39% | 16% |
+| 8 | +570% | +46% | 19% |
+| 9 | +680% | +53% | 22% |
+| 10 | +800% | +60% | 25% |
+| 11 | +930% | +68% | 30% |
+| 12 | +1070% | +76% | 35% |
+| 13 | +1210% | +84% | 40% |
+| 14 | +1350% | +92% | 45% |
+| 15 | +1500% | +100% | 50% |
+
+Cash adds to Cash Boost before paid factors: `min(10, (1 + CashBoostEffect + RebirthCash) * DoubleCash * VIP)`. Toilet display factors multiply this result; collection never applies another multiplier. The current 10x total cap clips the upper rewards, including the requested R15 x16. Luck retains the 10x global cap and diminishing returns beyond 5x for odds strictly rarer than 1/25K. Speed retains the 0.4s floor, including Fast Flush. Starter coins and all coin gates are unchanged.
+
+R5 grants free Auto Collect through the same server method, five-second scheduler, living-owner plot bounds, save guard and fractional ledger used by the pass. It never marks the pass owned or grants coins independently. R10 adds two slots once, up to the ten-slot physical capacity; already-full and legacy larger plots retain capacity without refunds. The saved RebirthAppliedSlots marker prevents repeated grants on rejoin or rebirth. Existing R10+ saves receive the slot allowance on migration while retaining their level.
+
+Config cosmetics unlock at R2 (overhead title), R4 (violet trail), R6 (emerald sign trim), R8 (chat tag), R10 (cyan trail), R12 (gold sign trim), R14 (Eternal chat tag), and R15 (Legend toilet glow, golden title and character aura). The latest unlocked style per category is automatic. They do not modify the toilet tier or economic stats. Effects are reused on refresh and removed on reset/reassignment; respawn uses the existing cosmetic lifecycle. No new assets, remote requests or animation loops are introduced.
+
+Each gate is much larger than its starter grant, so resets cannot print money. Fresh flushes provide a separate minimum even for inherited jackpot displays/offline wallets. The previous p50 95.67h result is superseded by the current 65.25h normal median with unchanged gates; the requested 96h target has not been met. See the 64-seed/archetype simulation and its discretization limits in economy-v2.md.
 
 ## Transaction, replay and migration
 
@@ -51,11 +79,11 @@ Do not roll back on an ambiguous response: the replacement may already be commit
 | Old request after rejoin | Generation mismatch rejects it |
 | Backend never returns/deadline | Existing outage durability limit; no unlimited retry or exactly-once guarantee |
 
-Profiles still migrate lifetime flushes into the first run only when no run counter exists; later missing run counters become zero. The separate UpgradeVersion=2 migration clamps old levels under old maxima before preserving new caps on future saves. Rebirth does not rewind the commerce ledger, product quotes, paid slots or VIP daily claim. The active auto-flush toggle can stop while Get is unavailable during the exclusive save; its lifetime unlock and saved preferences remain.
+Existing saved rebirth levels automatically read the new bonus table; no coin compensation or level reset is performed. Malformed levels retain the existing sanitizer behavior. Profiles still migrate lifetime flushes into the first run only when no run counter exists; later missing run counters become zero. The separate UpgradeVersion=2 migration clamps old levels under old maxima before preserving new caps on future saves. Rebirth does not rewind the commerce ledger, product quotes, paid slots or VIP daily claim. The active auto-flush toggle can stop while Get is unavailable during the exclusive save; its lifetime unlock and saved preferences remain.
 
 ## UI/world and verification
 
-The window shows wallet/coin-gate progress, run flush progress, current/next permanent bonuses, starter coins, and separate reset/keep lists. Existing two-second hold, focus/release/panel/scroll cancellation, pending lock and response timeout stay intact. Stairs reuse their geometry and now display the next coin gate plus 300 fresh flushes. Upgrade footer explicitly says toilets and upgrades are permanent. All coins use compact notation.
+The window shows wallet/coin-gate progress, run flush progress, current/next permanent bonuses, starter coins, and separate reset/keep lists. Existing two-second hold, focus/release/panel/scroll cancellation, pending lock and response timeout stay intact. Stairs reuse their geometry and display each milestone's cumulative cash/luck/speed bonuses alongside the next coin gate and 300 fresh flushes. The scrolling window lists cumulative free and cosmetic perks; nominal cash bonuses are labelled before caps. Upgrade footer explicitly says toilets and upgrades are permanent. All coins use compact notation.
 
 Drop/rebirth announcement cooldowns, bounded queues, friend lookup worker, deduplication and preferences are unchanged. Levels 3-4 notify friends and 5+ the server within that same budget. Higher luck is measured against the existing event drain in simulate.luau, not justified by increasing queue capacity.
 

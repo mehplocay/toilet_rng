@@ -224,7 +224,7 @@ test("rebirth: offline accrual cannot restore cleared pending; retained copies a
 	assert(p.Inventory.Rat == 2 and p.Coins == 2500)
 	p.Inventory.Rat += 1
 	e:Fire("Sell", player, "Rat", 1)
-	assert(p.Inventory.Rat == 2 and p.Coins == 4250 and p.Collection.Rat == 10)
+	assert(p.Inventory.Rat == 2 and p.Coins == 4500 and p.Collection.Rat == 10)
 	e:Fire("ClaimIndexReward", player, "total:5")
 	assert(p.Stamps == 33 and p.DisplaySlots == 6)
 	e.Data:Close(player)
@@ -236,7 +236,7 @@ test("rebirth: offline accrual cannot restore cleared pending; retained copies a
 		e:Load("src/shared/UpgradeRules").new(e:Load("src/shared/Config/Upgrades"))
 	)
 	assert(
-		income:PendingCoins(restored) == 83160,
+		income:PendingCoins(restored) == 95040,
 		"Expected retained Poop at permanent Diamond/cash/rebirth rate for 480 minutes"
 	)
 	assert(restored.RebirthLevel == 1 and restored.RunFlushes == 0 and restored.ProtectedInventory.Rat == 2)

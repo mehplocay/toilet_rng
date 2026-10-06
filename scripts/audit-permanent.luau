@@ -134,8 +134,8 @@ test("permanent: 10x cap and rare diminishing returns apply at the strict 25000 
 	local items, toilets = e:Load("src/shared/Config/Items"), e:Load("src/shared/Config/Toilets")
 	local u = e:Load("src/shared/UpgradeRules").new(e:Load("src/shared/Config/Upgrades"))
 	local late = { RebirthLevel = 15, Upgrades = { LuckBoost = 50, CashBoost = 100, OfflineTank = 100 } }
-	assert(math.abs(u:Luck(late, 1.3) - 5.07) < 1e-12)
-	assert(math.abs(u:Cash(late) - 5.85) < 1e-12 and u:OfflineMinutes(late, 480) == 1440)
+	assert(math.abs(u:Luck(late, 1.3) - 5.98) < 1e-12)
+	assert(math.abs(u:Cash(late) - 10) < 1e-12 and u:OfflineMinutes(late, 480) == 1440)
 	for _, luck in ipairs({ 1, 5, 10, 1000000 }) do
 		local entries, empty = roll.Distribution(items, toilets, 7, luck)
 		local total = 0

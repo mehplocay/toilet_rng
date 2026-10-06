@@ -399,6 +399,7 @@ local function server(options)
 	e:Override("src/server/Services/IconResolver", { Start = function() end })
 	-- Geometry is outside this security harness; retain the actual cosmetic/ownership service.
 	e:Override("src/shared/Visuals/Primitives", {})
+	e:Override("src/server/World/RebirthCosmetics", { Character = function() end, Plot = function() end })
 	e:Load("src/server")
 	e.Remotes = {}
 	for _, remote in ipairs(e.CreatedRemotes) do

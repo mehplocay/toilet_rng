@@ -3,6 +3,7 @@ local Shared = game.ReplicatedStorage.Shared
 local Config = require(Shared.Config.Monetization)
 local Rules = require(Shared.MonetizationRules)
 local P = require(Shared.Visuals.Primitives)
+local RebirthCosmetics = require(script.Parent.Parent.World.RebirthCosmetics)
 local CosmeticService = {}
 CosmeticService.__index = CosmeticService
 
@@ -11,6 +12,7 @@ function CosmeticService.new(world)
 end
 
 function CosmeticService:Apply(player, owned, profile)
+	RebirthCosmetics.Character(player, profile)
 	local character = player.Character
 	local root = character and character:FindFirstChild("HumanoidRootPart")
 	local head = character and character:FindFirstChild("Head")
@@ -98,6 +100,7 @@ function CosmeticService:Apply(player, owned, profile)
 end
 
 function CosmeticService:ResetPlot(plot)
+	RebirthCosmetics.Plot(plot, 0)
 	local sign = plot.Model:FindFirstChild("VIPPlotSign")
 	if sign then
 		sign:Destroy()

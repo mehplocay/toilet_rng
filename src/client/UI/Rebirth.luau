@@ -6,13 +6,14 @@ local Input = game:GetService("UserInputService")
 local Run = game:GetService("RunService")
 local Rebirth = {}
 function Rebirth.Create(root, remotes)
-	local panel = C.Panel(root, "REBIRTH", C.Purple, 810)
+	local panel = C.Panel(root, "REBIRTH", C.Purple, 1090)
 	local toast = C.Toast(root)
 	local body = panel.ContentScroll.Body
 	C.Icon(body, "Crown", UDim2.fromOffset(62, 62), UDim2.fromOffset(4, 0))
 	local level = C.Text(body, "REBIRTH 0", UDim2.new(1, -76, 0, 32), UDim2.fromOffset(72, 0), 26)
 	local title = C.BodyText(body, "New Flusher", UDim2.new(1, -76, 0, 28), UDim2.fromOffset(72, 36))
 	local current = C.BodyText(body, "", UDim2.new(1, -8, 0, 42), UDim2.fromOffset(4, 68))
+	current.Name = "PermanentBonuses"
 	local flushLabel = C.BodyText(body, "", UDim2.new(1, -8, 0, 28), UDim2.fromOffset(4, 116))
 	local flushBar = C.ProgressBar(body, UDim2.new(1, -8, 0, 12), UDim2.fromOffset(4, 148), C.Purple)
 	local tierLabel = C.BodyText(body, "", UDim2.new(1, -8, 0, 28), UDim2.fromOffset(4, 172))
@@ -30,13 +31,13 @@ function Rebirth.Create(root, remotes)
 	end
 	local preview = C.BodyText(body, "", UDim2.new(1, -8, 0, 64), UDim2.fromOffset(4, 508))
 	preview.Name, preview.TextColor3 = "NextBonus", C.Gold
-	local perks = C.BodyText(body, "", UDim2.new(1, -8, 0, 66), UDim2.fromOffset(4, 578))
+	local perks = C.BodyText(body, "", UDim2.new(1, -8, 0, 346), UDim2.fromOffset(4, 578))
 	perks.Name = "TokenPerks"
-	local warning = C.BodyText(body, "", UDim2.new(1, -8, 0, 56), UDim2.fromOffset(4, 650))
+	local warning = C.BodyText(body, "", UDim2.new(1, -8, 0, 56), UDim2.fromOffset(4, 930))
 	local state, armedLevel, held, heldAt, pending = nil, nil, nil, 0, false
 	local pendingAt = 0
 	local confirm, update
-	local holdBar = C.ProgressBar(body, UDim2.new(1, -8, 0, 10), UDim2.fromOffset(4, 782), C.Gold)
+	local holdBar = C.ProgressBar(body, UDim2.new(1, -8, 0, 10), UDim2.fromOffset(4, 1062), C.Gold)
 	local function cancel()
 		C.StopSound("RebirthHold")
 		armedLevel, held = nil, nil
@@ -45,7 +46,7 @@ function Rebirth.Create(root, remotes)
 			update()
 		end
 	end
-	confirm = C.Button(body, "Loading...", UDim2.new(1, -8, 0, 58), UDim2.fromOffset(4, 716), function()
+	confirm = C.Button(body, "Loading...", UDim2.new(1, -8, 0, 58), UDim2.fromOffset(4, 996), function()
 		if state and not pending and rules:Eligible(state, rules:Level(state)) and armedLevel == nil then
 			armedLevel = rules:Level(state)
 			update()
@@ -60,9 +61,9 @@ function Rebirth.Create(root, remotes)
 		local count, bonus = rules:Level(state), rules:Bonus(state)
 		local nextBonus = Config.Levels[count + 1]
 		level.Text = "REBIRTH " .. count .. " / " .. #Config.Levels
-		title.Text = bonus.Title .. " | " .. count .. " cosmetic Rebirth Tokens"
+		title.Text = bonus.Title
 		current.Text = string.format(
-			"Permanent: +%d%% cash / +%d%% luck / +%d%% speed",
+			"Permanent (before caps): +%d%% cash / +%d%% luck / +%d%% speed",
 			math.round(bonus.Cash * 100),
 			math.round(bonus.Luck * 100),
 			math.round(bonus.Speed * 100)
@@ -78,7 +79,7 @@ function Rebirth.Create(root, remotes)
 		tierBar.Set(if nextBonus then state.Coins / nextBonus.RequiredCoins else 1)
 		preview.Text = if nextBonus
 			then string.format(
-				"NEXT: +%d%% cash / +%d%% luck / +%d%% speed\nStarter: %s Coins. Global luck cap and speed floor apply.",
+				"NEXT: +%d%% cash / +%d%% luck / +%d%% speed\nStarter: %s Coins. Cash/luck caps and speed floor apply.",
 				math.round(nextBonus.Cash * 100),
 				math.round(nextBonus.Luck * 100),
 				math.round(nextBonus.Speed * 100),
@@ -86,8 +87,8 @@ function Rebirth.Create(root, remotes)
 			)
 			else "MAX LEVEL - all permanent bonuses unlocked."
 		perks.Text = if nextBonus
-			then "FREE COSMETIC PERKS\n" .. table.concat(nextBonus.Perks, " / ")
-			else "YOUR COSMETIC PERKS\n" .. table.concat(bonus.Perks, " / ")
+			then "NEXT LEVEL PERKS (cumulative)\n" .. table.concat(nextBonus.Perks, "\n")
+			else "YOUR UNLOCKED PERKS\n" .. table.concat(bonus.Perks, "\n")
 		warning.Text = if nextBonus
 			then string.format(
 				"%s wallet Coins + %s pending Coins reset.\nLoose items reset. Toilets, upgrades and displays stay.",

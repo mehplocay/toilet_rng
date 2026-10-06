@@ -536,7 +536,7 @@ do
 	for _, object in ipairs(plot.Displays:GetDescendants()) do
 		if object.Name == "IncomeNametag" then
 			names += 1
-			assert(object:GetChildren()[1]:GetChildren()[1].Text:find("$4.6M/s", 1, true))
+			assert(object:GetChildren()[1]:GetChildren()[1].Text:find("$13M/s", 1, true))
 		end
 	end
 	assert(names == 10)
@@ -544,7 +544,7 @@ do
 	assert(plot.IncomeLabel.Text == "COLLECT ALL\n$34.5B")
 	World.Assigned[owner] = nil
 	plot.Model:Destroy()
-	print("Economy world text passed: ten $4.6M/s nametags and $34.5B collection jar")
+	print("Economy world text passed: ten $13M/s nametags and $34.5B collection jar")
 end
 
 if snapshot then

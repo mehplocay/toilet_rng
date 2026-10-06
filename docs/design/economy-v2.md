@@ -2,6 +2,21 @@
 
 2026-10-06, `feature/permanent`. This owner decision supersedes the old reset-to-Basic, ten-level tracks, 5x luck and 60/90-minute pacing in earlier audits and merge notes. No commit or push. [Research](../research/permanent-economy.md), [rebirth contract](rebirth.md), [upgrades](upgrades.md), [full measured output](economy-v2-balance.txt), [odds output](permanent-odds.txt).
 
+## Stronger rewards review (2026-10-06)
+
+**This worktree is not ready for acceptance:** the requested R15 x16 cash reward conflicts with the existing catalog's 10x total cash cap. The cap remains unchanged pending an owner decision. Stronger rewards with unchanged gates also fail the requested rebirth pacing. No timing assertion was relaxed. See [current validation](rebirth-values-validation.md) and [three-archetype report](rebirth-values-simulations.txt). Historical pacing and validation numbers below describe the previous reward table unless explicitly identified as current.
+
+
+## Current seeded medians (hours)
+
+| Archetype | R1 | R5 | R10 | R15 |
+|---|---:|---:|---:|---:|
+| Casual | 0.700 | 2.967 | 34.967 | 95.592 |
+| Normal | 0.400 | 1.725 | 24.042 | 65.250 |
+| Grinder | 0.332 | 1.450 | 20.950 | 56.050 |
+
+Each archetype has 64 seeds, with a 300-hour censoring horizon. These are cumulative continuously online hours. Normal R15 p90 is 91.608h; casual 144.025h; grinder 82.292h. No paid passes or temporary luck are included. Normal Galaxy is independently measured at 36.43min p50 / 47.26min p90 while deferring rebirth, unchanged by reward-only tuning.
+
 ## Permanent progression and rates
 
 Rebirth preserves toilet tier, every upgrade level, all display capacity/placements, lifetime index, passes, cosmetics and settings. It clears the wallet to a configured starter grant, **all non-displayed inventory** (including first/protected loose copies), uncollected pending coins and the run flush counter. Settle the old pending ledger before the complete replacement; settlement does not collect it or count toward the coin gate. Only displayed quantities survive, with their existing protection. Lifetime discovery is never spendable inventory.
@@ -20,11 +35,11 @@ Base rarity income remains Common 1, Uncommon 3, Rare 10, Epic 40, Legendary 200
 
 These cumulative tier timings defer rebirth. The separate continuous rebirth cohort resets as soon as eligible, so buying Galaxy can occur later. Prices, income factors and rate caps are in Config/Toilets and Config/Income. Existing sale values stay unchanged.
 
-Cash is `min(10, (1 + trackEffect + rebirthBonus) * DoubleCash * VIP)`. The first ten Cash levels keep +10% each; levels 11-100 add +2.5% each. Maximum unpaid cash is 5.85x, paid cash remains capped at 10x. Daily rewards retain their separate schedule and paid factors. No paid luck is introduced.
+Cash is `min(10, (1 + trackEffect + rebirthBonus) * DoubleCash * VIP)`. The first ten Cash levels keep +10% each; levels 11-100 add +2.5% each. The new R15 bonus is +1500%; with Cash Boost L100, the uncapped factor is 19.25x. The existing formula clips both unpaid and paid cash to 10x; R15 alone is nominally 16x but currently delivers 10x. Double Cash and VIP still multiply by 2 and 1.25 before that cap. Resolving this conflict requires an explicit cap decision. Daily rewards retain their separate schedule and paid factors. No paid luck is introduced.
 
 Offline Tank retains +24 minutes for each legacy level 1-10, then +8 minutes/level through 100: 8 hours base, 12 at L10, 24 at L100; Offline Plus doubles these. Storage can fill earlier. Base storage is 37.44B coins/slot and 374.4B/player, scaled by cash and tank; the entire ledger still caps at **9e15 subcoins = 1.5T coins**. The saved scale remains 6,000 units/coin. Wallet/Earned remain <=9e15 coins. Fraction retention, bounded products, old-rate settlement and timestamp high-water rules are unchanged.
 
-## Purchase curves and measured upgrade pace
+## Purchase curves and previous measured upgrade pace
 
 Config/Upgrades gives each track strictly increasing piecewise exponential cost anchors. For purchase number n between anchors (a,A) and (b,B), cost is `ceil(A * (B/A)^((n-a)/(b-a)))`. Endpoints are included, server-authoritative and validated under the integer ceiling. Every ten levels unlocks a named title; maximum unlocks Master. Titles add no hidden economic multiplier.
 
@@ -52,7 +67,7 @@ At the very start, the first five Cash levels are affordable within four active 
 | Rebirth 5 | 3.30 | 2.03 | 1.77 |
 | Rebirth 15 | 140.00 | 95.67 | 84.62 |
 
-## Reproducibility and limitations
+## Reproducibility and limitations (previous tuning targets)
 
 `luau scripts/balance.luau` uses 200 independently seeded short accounts per archetype for toilet timings; the long cohort uses 64 per archetype through 300 online hours, or all upgrades/R15 completed. Unfinished accounts are explicitly censored as infinity, never excluded from percentiles. Normal checks enforce tier targets within 20%, R1 20-25 minutes, R5 2-3h, R15 80-150h; long tracks enforce the milestone bands (L35 and full plot allow approximately 2h via a 1.8h lower tolerance).
 
@@ -66,7 +81,7 @@ These estimates assume continuously online play, efficient display/sale choices 
 
 ## Luck and migration
 
-Total luck is capped at 10x. The UI says `Luck +N%`, so 10x is +900% (1000% total). The first 5x applies fully; for base odds strictly rarer than 1/25,000, additional luck is halved: `min(luck,5) + max(0,luck-5)/2`. Sewer Shark at exactly 1/25K uses full luck. Maximum untimed Galaxy luck is 5.07x (+407%); late-game 4-6x total is typical. Daily/server boosts can reach the cap, paid luck cannot.
+Total luck is capped at 10x. The UI says `Luck +N%`, so 10x is +900% (1000% total). The first 5x applies fully; for base odds strictly rarer than 1/25,000, additional luck is halved: `min(luck,5) + max(0,luck-5)/2`. Sewer Shark at exactly 1/25K uses full luck. Maximum untimed Galaxy luck is now 5.98x (+498%); late-game 4-6x total is typical. Daily/server boosts can reach the cap, paid luck cannot.
 
 `simulate.luau` prints each item's effective sequential odds and checks one million independent rolls at each of 1x, 5x and 10x. Expected first Secret at one flush/second: 252.53h / 50.51h / 33.67h. At 10x, total event probability is 0.000083249 per roll: about 8.99 arrivals/hour at the worst 12-player, 0.4s floor, far below one broadcast per 8 seconds. Existing bounded queue, deduplication and announcement limits are unchanged. Every accepted roll returns an item. At 10x Toilet Paper's check reaches certainty if all rarer checks fail, so Poop has zero effective probability, while remaining the structural fallback.
 
@@ -74,6 +89,6 @@ Total luck is capped at 10x. The UI says `Luck +N%`, so 10x is +900% (1000% tota
 
 Verification includes the extended audit harness, all standalone checks, UI/runtime and 972 layout cases, visuals, all six world modes, odds, balance, StyLua and Rojo. Native touch/gamepad rendering, device performance, live DataStore outages/lease timing and paid receipts still require isolated Studio/published-server QA. Existing crash/ambiguous-save durability limits remain; no exactly-once outage guarantee is claimed.
 
-Final verification: 21 standalone checks, 148 audit scenarios, UI plus 972 layout cases, visual checks and all six world modes passed. Balance, three-million-roll odds, StyLua and `rojo build -o build.rbxl` passed. Selene was attempted but could not load its configured `roblox` standard library; no Selene pass is claimed. Representative [upgrade phone](permanent-previews/upgrades-phone.png), [rebirth overview](permanent-previews/rebirth-desktop.png) and [rebirth phone review](permanent-previews/rebirth-phone.png) images are headless approximations, not Studio screenshots.
+Previous baseline verification: 21 standalone checks, 148 audit scenarios, UI plus 972 layout cases, visual checks and all six world modes passed. Balance, three-million-roll odds, StyLua and `rojo build -o build.rbxl` passed. Selene was attempted but could not load its configured `roblox` standard library; no Selene pass is claimed. Representative [upgrade phone](permanent-previews/upgrades-phone.png), [rebirth overview](permanent-previews/rebirth-desktop.png) and [rebirth phone review](permanent-previews/rebirth-phone.png) images are headless approximations, not Studio screenshots.
 
 Runtime files: Config/Upgrades, Config/Rebirth, Config/Toilets, Config/Income; UpgradeRules/RebirthRules; DataService schema marker and RollService rare odds; HUD/UpgradeTracks/Upgrades/Rebirth UI, Audio/Feedback, and the existing RebirthStairs labels. The admin validator only expands its numeric envelope to the new configured track maxima. New audit-permanent and permanent-cohort modules extend the existing harness; affected old tests now assert the permanent contract rather than historical reset behavior. Studio MCP was checked and returned `studios: []`; no native engine test is claimed.

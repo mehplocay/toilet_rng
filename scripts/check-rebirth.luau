@@ -9,14 +9,13 @@ local Roll = require("../src/server/Services/RollService")
 local Income = require("../src/shared/IncomeAccrual").new(IncomeConfig, Items, U)
 assert(#Config.Levels >= 10 and #Config.Levels <= 20 and Config.RequiredFlushes == 300)
 local previous = { Cash = 0, Luck = 0, Speed = 0 }
-local previousCashStep = math.huge
+
 for level, bonus in ipairs(Config.Levels) do
 	assert(bonus.Cash >= previous.Cash and bonus.Cash <= Config.CashCap + 1e-9)
 	assert(bonus.Luck >= previous.Luck and bonus.Luck <= Config.LuckBonusCap)
 	assert(bonus.Speed >= previous.Speed and bonus.Speed <= Config.SpeedBonusCap)
-	assert(bonus.Cash - previous.Cash <= previousCashStep + 1e-9)
-	previousCashStep, previous = bonus.Cash - previous.Cash, bonus
-	assert(bonus.StarterCoins <= 10000 and #bonus.Perks == 3 and bonus.Title and bonus.Badge)
+	previous = bonus
+	assert(bonus.StarterCoins <= 10000 and #bonus.Perks >= 1 and bonus.Title and bonus.Badge)
 	for tier, toilet in ipairs(Toilets) do
 		for _, cash in ipairs({ 0, 10, 35, 60, 85, 100 }) do
 			for speed = 0, 10 do
@@ -50,5 +49,5 @@ for _, invalid in ipairs({ -1, 0.5, math.huge, 0 / 0, "1", {} }) do
 end
 assert(rules:Level({ RebirthLevel = 100 }) == #Config.Levels)
 print(
-	"Rebirth math passed: 15 bounded diminishing levels, global luck/cooldown caps, probability sum 1, exact bounded income across all Cash/Speed/tier/rebirth combinations"
+	"Rebirth math passed: 15 explicit cumulative reward levels, global luck/cooldown caps, probability sum 1, exact bounded income across all Cash/Speed/tier/rebirth combinations"
 )

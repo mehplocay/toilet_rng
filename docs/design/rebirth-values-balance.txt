@@ -1,0 +1,43 @@
+scripts/balance.luau: FAIL (unchanged target assertion: R5 >= 2h; measured 1.725h).
+
+PERMANENT ECONOMY: paid OFF, daily/server boosts OFF; fresh accounts, production roll/accrual/sale/reset math.
+Short cohort: 200 seeds, per-flush settlement. Long cohort: 64 seeds, 2s batches in hour one, 30s later; 300h censoring.
+Casual/normal/grinder flush uptime 30/75/100%; collect every 120/30/15s; online displays earn continuously.
+Buy Dirty, five slots, then affordable slots and one Cash/Luck/Speed per tier through L4; purchase every next toilet.
+After Galaxy, buy the cheapest available track at <=25% of wallet, reserve the rest for rebirth. All purchases debit coins.
+Galaxy timing defers rebirth. Long cohort rebirths at every coin gate: its Galaxy timing may be later.
+Milestone titles every 10; max Master. Display Slots cap 10 levels, stops at ten physical slots (normally seven purchases).
+Price	CashBoost	levels	100	first	400	last	20000000000
+Price	LuckBoost	levels	50	first	600	last	3500000000
+Price	FlushSpeed	levels	10	first	400	last	140000000
+Price	AutoFlushSpeed	levels	10	first	800	last	140000000
+Price	DisplaySlots	levels	10	first	600	last	300000000
+Price	OfflineTank	levels	100	first	1000	last	20000000000
+Service-only early Cash L1: 0.33 cumulative minutes, 0.33 minutes this level
+Service-only early Cash L2: 0.80 cumulative minutes, 0.47 minutes this level
+Service-only early Cash L3: 1.43 cumulative minutes, 0.63 minutes this level
+Service-only early Cash L4: 2.30 cumulative minutes, 0.87 minutes this level
+Service-only early Cash L5: 3.53 cumulative minutes, 1.23 minutes this level
+Normal | tier | p50 / p90 minutes (rebirth deferred)
+Normal | Dirty | 1.50 / 1.57
+Normal | Golden | 3.10 / 3.52
+Normal | Diamond | 6.37 / 7.16
+Normal | Radioactive | 12.36 / 14.63
+Normal | Demon | 20.60 / 25.23
+Normal | Galaxy | 36.43 / 47.26
+Normal | rebirth | required coins | cumulative p50 / p90 hours
+Normal | R1 | 3000000 | 0.40 / 0.52
+Normal | R2 | 12000000 | 0.56 / 0.73
+Normal | R3 | 35000000 | 0.89 / 1.18
+Normal | R4 | 100000000 | 1.17 / 1.50
+Normal | R5 | 500000000 | 1.73 / 2.39
+Normal | R6 | 1500000000 | 3.08 / 4.22
+Normal | R7 | 5000000000 | 5.76 / 7.12
+Normal | R8 | 15000000000 | 12.29 / 14.62
+Normal | R9 | 40000000000 | 19.20 / 22.32
+Normal | R10 | 80000000000 | 24.04 / 31.49
+Normal | R11 | 150000000000 | 26.67 / 36.81
+Normal | R12 | 250000000000 | 29.98 / 45.59
+Normal | R13 | 400000000000 | 34.09 / 53.20
+Normal | R14 | 650000000000 | 41.99 / 62.17
+Normal | R15 | 2500000000000 | 65.25 / 91.61

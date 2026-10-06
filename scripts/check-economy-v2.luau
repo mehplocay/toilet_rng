@@ -33,12 +33,12 @@ for _, pair in ipairs({
 end
 local p = profile(4, "Poop", 1)
 p.RebirthLevel, p.Upgrades.CashBoost = 1, 1
-assert(Income:Rates(p)["1"] == 26730, "3.3 tier * (1 + .1 cash + .25 rebirth) must retain fractions")
+assert(Income:Rates(p)["1"] == 31680, "3.3 tier * (1 + .1 cash + .50 rebirth) must retain fractions")
 for second = 1001, 11000 do
 	Income:Settle(p, second, false)
 end
-assert(Income:TotalUnits(p) == 267300000)
-assert(Income:Collect(p) == 44550 and Income:TotalUnits(p) == 0)
+assert(Income:TotalUnits(p) == 316800000)
+assert(Income:Collect(p) == 52800 and Income:TotalUnits(p) == 0)
 
 -- Large whole balances plus one subcoin survive every save/collect; division cannot round up.
 p = profile(7, "Mystery", 100)
@@ -48,9 +48,9 @@ for _, rate in pairs(rates) do
 	assert(rate >= 0 and rate % 1 == 0)
 	sum += rate
 end
-assert(sum == 280800000000, "100 legacy Secrets must share ten-slot total cap exactly")
+assert(sum == 780000000000, "100 legacy Secrets must share ten-slot total cap exactly")
 Income:Settle(p, 1000 + 86400, true)
-assert(Income:TotalUnits(p) == 6065280000000000, "Half-rate twelve-hour allowance changed")
+assert(Income:TotalUnits(p) == 9e15, "Half-rate twelve-hour allowance must saturate the safe ledger cap")
 Income:Settle(p, Config.MaxTimestamp, false)
 assert(Income:TotalUnits(p) == 9e15 and Income:PendingCoins(p) == 1500000000000)
 local sanitized = Income:Sanitize(p.Income, p)

@@ -6,6 +6,11 @@
       "$className": "Workspace",
       "$properties": { "StreamingEnabled": true, "StreamingMinRadius": 128, "StreamingTargetRadius": 512, "StreamingIntegrityMode": "PauseOutsideLoadedArea", "StreamOutBehavior": "Opportunistic" }
     },
+    "TextChatService": {
+      "$className": "TextChatService",
+      "$properties": { "ChatVersion": "TextChatService", "CreateDefaultTextChannels": true },
+      "ChatWindowConfiguration": { "$className": "ChatWindowConfiguration", "$properties": { "Enabled": true } }
+    },
     "Lighting": {
       "$className": "Lighting",
       "$properties": { "LightingStyle": "Soft", "PrioritizeLightingQuality": true }

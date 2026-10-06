@@ -25,8 +25,17 @@ function Rules:Bonus(profile)
 	return self.Config.Levels[self:Level(profile)]
 		or { Cash = 0, Luck = 0, Speed = 0, StarterCoins = 0, Title = "New Flusher", Perks = {} }
 end
+function Rules:ApplySlots(profile, raw)
+	local slots = self:Bonus(profile).DisplaySlots or 0
+	local applied = raw and raw.RebirthAppliedSlots
+	applied = if integer(applied, slots) then applied else 0
+	profile.DisplaySlots =
+		math.max(profile.DisplaySlots, math.min(self.Config.DisplayCapacity, profile.DisplaySlots + slots - applied))
+	profile.RebirthAppliedSlots = slots
+end
 function Rules:Restore(profile, raw)
 	profile.RebirthLevel = self:Level(raw)
+	self:ApplySlots(profile, raw)
 	local flushes = raw and raw.RunFlushes
 	-- Legacy lifetime rolls count toward the first run, never toward later runs.
 	profile.RunFlushes = if integer(flushes, self.Config.MaxBalance)
@@ -57,6 +66,7 @@ function Rules:Build(profile, expectedLevel, now)
 	local result = copy(profile)
 	result.RebirthLevel, result.RunFlushes = expectedLevel + 1, 0
 	local bonus = self:Bonus(result)
+	self:ApplySlots(result, profile)
 	if result.Stats.Earned > self.Config.MaxBalance - bonus.StarterCoins then
 		return nil
 	end

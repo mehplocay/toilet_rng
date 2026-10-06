@@ -25,6 +25,22 @@ do
 		RebirthLevel = 0,
 		Settings = {},
 	}
+	for count = 0, 15 do
+		state.RebirthLevel = count
+		ui.Update(state)
+		local bonus = config.Levels[count]
+		if bonus then
+			assert(body.PermanentBonuses.Text:find("+" .. math.round(bonus.Cash * 100) .. "% cash", 1, true))
+		end
+		local preview = config.Levels[count + 1]
+		if preview then
+			assert(body.NextBonus.Text:find("+" .. math.round(preview.Cash * 100) .. "% cash", 1, true))
+		end
+		for _, perk in ipairs((preview or bonus).Perks) do
+			assert(body.TokenPerks.Text:find(perk, 1, true), "Reward missing from preview")
+		end
+	end
+	state.RebirthLevel = 0
 	ui.Update(state)
 	assert(body.CoinGate.Text == "3M / 3M Coins required" and button.Interactable)
 	state.Coins -= 1

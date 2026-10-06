@@ -16,7 +16,7 @@ $modulePaths = @(
     'src/shared/PaidBenefits.luau', 'src/shared/Config/Monetization.luau',
     'src/shared/UpgradeRules.luau', 'src/shared/Config/Upgrades.luau', 'src/shared/Config/Rebirth.luau',
     'src/shared/Config/Income.luau', 'src/server/World/IncomeDisplay.luau', 'src/server/World/RebirthHook.luau',
-    'src/server/World/RebirthStairs.luau',
+    'src/server/World/RebirthStairs.luau', 'src/server/World/RebirthCosmetics.luau',
     'src/shared/Config/Assets.luau', 'src/shared/Config/MeshCatalog.luau', 'src/shared/Config/WorldModels.luau',
     'src/shared/Config/Visuals.luau', 'src/shared/Config/World.luau',
     'src/shared/Config/Items.luau', 'src/shared/Config/Toilets.luau', 'src/shared/Config/Rarities.luau',
