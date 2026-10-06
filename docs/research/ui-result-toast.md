@@ -1,0 +1,16 @@
+# Result toast and UI regression checks
+
+Checked 2026-10-06 for `fix/ui-banner`.
+
+- Result audio is observed by `Audio/Feedback`; `UI/UpgradeTracks` displays `BuyUpgrade.Message` using `Components.Toast`. The former toast covered the safe area's entire width at Y=68, above modal headers in Z order. The shared toast now uses bottom-center safe-area geometry above HUD actions and below the modal header. All callers for a root reuse one toast.
+- `GuiObject` positioning and actual size are relative to its parent. Use the safe-area root's `AbsoluteSize`, and recalculate on size changes: https://create.roblox.com/docs/reference/engine/classes/GuiObject
+- `task.delay` resumes on the first Heartbeat after the requested duration. The toast holds for 2.5 seconds, then fades for 0.25 seconds; generation tokens prevent older callbacks from hiding replacement messages: https://create.roblox.com/docs/reference/engine/libraries/task
+- TweenService supports property dictionaries; text and its UIStroke are separate fade targets. Fade the background, text, border and text outline together: https://create.roblox.com/docs/reference/engine/classes/TweenService ; https://create.roblox.com/docs/reference/engine/classes/UIStroke ; https://create.roblox.com/docs/ui/animation
+- DevForum reports independently rendered text strokes during fades. This informed explicit stroke fades, rather than changing only text opacity: https://devforum.roblox.com/t/how-do-i-remove-the-inside-stroke-in-a-text-label/3897138
+- CanvasGroup consumes a texture budget, clips descendants, and recommends static sizes. This compact responsive toast uses ordinary Frame/TextLabel property tweens: https://create.roblox.com/docs/reference/engine/classes/CanvasGroup
+- Release-notes index and release 741 checked for platform changes; no changed API behavior is assumed: https://devforum.roblox.com/c/updates/release-notes/62 ; https://devforum.roblox.com/t/release-notes-for-741/4906281
+- Tool references: `rojo build -o build.rbxl` creates a binary place, and `stylua --check` validates without rewriting. Selene supports file/folder inputs: https://rojo.space/docs/v0.5/getting-started/new-game/ ; https://github.com/JohnnyMorganz/StyLua ; https://kampfkarren.github.io/selene/cli/usage.html
+
+The original generated UI failure at line 24344 is the exact coin-gate assertion in `scripts/ui-rebirth.luau`. Wave 1 changed R1 from 3M to 4M; the fixture already uses the current configured balance, but its expected rendered text was stale. The check now expects `4M / 4M Coins required` and retains the below-gate rejection and hold-confirmation checks.
+
+Validation: all 12 windows at all 12 safe viewports with mouse and touch layouts, replacement/expiry/destruction checks, plus the full UI, audit (251), visuals and six-mode world suites passed. StyLua passed using Windows line endings, matching this checkout; Rojo built `build.rbxl`. Offline raster review covered desktop, portrait, short landscape and the Extra Slots card. The review renderer needed a temporary subpixel-rectangle guard for tiny offscreen progress fills; the renderer source and UI assertions were unchanged. Studio/device rendering remains unverified. Installed Selene 0.31.0 cannot load `std = "roblox"` and does not expose a Roblox standard-library generator.

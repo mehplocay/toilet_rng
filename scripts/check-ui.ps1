@@ -58,6 +58,7 @@ $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'audio-coverage-check
 $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-admin.luau')))
 $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-flushanywhere.luau')))
 $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-wave1.luau')))
+$parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-toast.luau')))
 try {
     [IO.File]::WriteAllText($generatedPath, ($parts -join "`n"), [Text.UTF8Encoding]::new($false))
     $output = & luau $generatedPath

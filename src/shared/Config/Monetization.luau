@@ -94,7 +94,7 @@ return {
 			Id = 0,
 			Name = "Extra Slots",
 			Price = 149,
-			Description = "+3 display slots, up to 10 total.",
+			Description = "+3 display slots, up to 10 total. All 10 slots can also be earned for free with coin upgrades.",
 			Slots = 3,
 		},
 		OfflinePlus = {

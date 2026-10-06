@@ -14,7 +14,7 @@ Icon paths below are creation targets for the separate art session, not claims o
 | 4 | Pass | Fast Flush | 20% shorter flush cooldown. Same items and odds. | 99 | Gamepasses.FastFlush | assets/icons/passes/Flush.png / Flush |
 | 5 | Pass | Double Cash | 2x coin income. Paid factors stack up to 3x on top of free bonuses. | 249 | Gamepasses.DoubleCash | assets/icons/passes/DoubleCash.png / DoubleCash |
 | 6 | Pass | Auto Collect | Collect display coins every 5 seconds while inside your plot. | 149 | Gamepasses.AutoCollect | assets/icons/passes/AutoCollect.png / AutoCollect |
-| 7 | Pass | Extra Slots | +3 display slots, up to 10 total. | 149 | Gamepasses.ExtraSlots | assets/icons/passes/ExtraSlots.png / ExtraSlots |
+| 7 | Pass | Extra Slots | +3 display slots, up to 10 total. All 10 slots can also be earned for free with coin upgrades. | 149 | Gamepasses.ExtraSlots | assets/icons/passes/ExtraSlots.png / ExtraSlots |
 | 8 | Pass | Offline Plus | Double your offline tank time and storage. | 129 | Gamepasses.OfflinePlus | assets/icons/passes/OfflinePlus.png / OfflinePlus |
 | 9 | Pass | VIP | 1.5x cash, +1 path speed step, +2 display slots, +50% offline tank, daily chest, VIP hub pad, gold star, trail and sign trim. No luck. | 399 | Gamepasses.VIPPack | assets/icons/passes/VIP.png / VIP |
 | 10 | Pass | Rainbow Name | Animated rainbow overhead name and rainbow chat name color. Cosmetic only. | 39 | Gamepasses.RainbowName | assets/icons/passes/RainbowName.png / RainbowName |

@@ -538,20 +538,62 @@ function C.Panel(parent, title, color, minimumHeight)
 	resize()
 	return panel
 end
+local toasts = setmetatable({}, { __mode = "k" })
 function C.Toast(parent)
-	local frame, label = C.Pill(parent, "", C.Navy, UDim2.new(1, -32, 0, 58), UDim2.fromOffset(16, 68))
+	if toasts[parent] then
+		return toasts[parent]
+	end
+	local frame, label = C.Pill(parent, "", C.Navy)
+	frame.Name, label.Name = "ResultToast", "Message"
 	frame.Visible, frame.ZIndex, label.ZIndex = false, 80, 82
+	label.Font = Enum.Font.BuilderSansBold
+	label.UITextSizeConstraint.MinTextSize = 14
+	local border, outline = frame.UIStroke, label.UIStroke
+	local input = game:GetService("UserInputService")
+	local function resize()
+		C.Place(
+			frame,
+			Layout.Toast(math.max(240, parent.AbsoluteSize.X), math.max(220, parent.AbsoluteSize.Y), input.TouchEnabled)
+		)
+	end
+	local resized = parent:GetPropertyChangedSignal("AbsoluteSize"):Connect(resize)
+	resize()
 	local token = 0
-	return function(message, color)
+	local alive = true
+	frame.Destroying:Connect(function()
+		alive = false
+		token += 1
+		resized:Disconnect()
+		toasts[parent] = nil
+	end)
+	local function show(message, color)
+		if not alive then
+			return
+		end
 		token += 1
 		local current = token
+		-- Cancel a previous fade before restoring the new message's opacity.
+		C.Tween(frame, 0, { BackgroundTransparency = 0 })
+		C.Tween(label, 0, { TextTransparency = 0 })
+		C.Tween(border, 0, { Transparency = 0 })
+		C.Tween(outline, 0, { Transparency = 0 })
 		label.Text, label.TextColor3, frame.Visible = message, color or white, true
-		C.Pop(frame)
-		task.delay(3, function()
-			if current == token then
-				frame.Visible = false
+		resize()
+		task.delay(2.5, function()
+			if alive and current == token then
+				C.Tween(frame, 0.25, { BackgroundTransparency = 1 })
+				C.Tween(label, 0.25, { TextTransparency = 1 })
+				C.Tween(border, 0.25, { Transparency = 1 })
+				C.Tween(outline, 0.25, { Transparency = 1 })
+				task.delay(0.25, function()
+					if alive and current == token then
+						frame.Visible = false
+					end
+				end)
 			end
 		end)
 	end
+	toasts[parent] = show
+	return show
 end
 return C
