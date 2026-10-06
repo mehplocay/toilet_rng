@@ -14,7 +14,9 @@ return {
 	OfflineMinutes = 480,
 	OfflineRate = 0.5,
 	MaxOfflineMinutes = 24 * 60,
-	-- Coins/minute; ten maximum-rate Secrets fit at each tier.
+	-- Coins/minute including the nominal toilet factor. Rates removes that factor
+	-- before applying the combined free/paid cash factor, so it cannot escape the free cap.
+	-- Ten maximum-rate Secrets fit; legacy extra slots share the same player cap.
 	SlotRateCaps = { 6000000, 9000000, 13200000, 19800000, 31500000, 51000000, 78000000 },
 	PlayerRateCaps = { 60000000, 90000000, 132000000, 198000000, 315000000, 510000000, 780000000 },
 	SlotPendingCap = 37440000000,

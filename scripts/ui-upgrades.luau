@@ -4,6 +4,11 @@ do
 	local panel = H.Load("src/client/UI/Upgrades").Create(root, remotes)
 	local body = panel.Panel.ContentScroll.Body
 	local tracks = body.PermanentUpgradeTracks
+	local cashExplanation = false
+	for _, label in ipairs(tracks.CashBoost:GetDescendants()) do
+		cashExplanation = cashExplanation or label.Text == H.Load("src/shared/Config/Cash").Explanation
+	end
+	assert(cashExplanation, "Cash cap explanation missing from Upgrades")
 	local tab = body:FindFirstChild("Coin Upgrades", true)
 	assert(tab and not tracks.Visible)
 	tab.Activated:Fire()

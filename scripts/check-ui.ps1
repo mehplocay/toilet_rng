@@ -5,6 +5,7 @@ $generatedPath = Join-Path $workspaceRoot '.ui-check.generated.luau'
 $parts = [System.Collections.Generic.List[string]]::new()
 $parts.Add('local sources = {}')
 $parts.Add('local expectedIcons = {}')
+$parts.Add('local unuploadedIcons = {}')
 $parts.Add('local expectedAudio = {}')
 $audioCount = 0
 $audioSeen = @{}
@@ -29,7 +30,12 @@ foreach ($asset in $manifest.assets) {
     if ($asset.config_key -and $asset.size[0] -eq 512) {
         $section, $key = $asset.config_key.Split('.')
         $id = $uploads.($asset.category).($asset.name)
-        if (!$id) { throw "Missing uploaded icon: $($asset.name)" }
+        if (!$id) {
+            # Shared art manifests may contain future catalog entries. They must stay
+            # absent or use an empty vector fallback in this worktree's Assets config.
+            $parts.Add("table.insert(unuploadedIcons, { Group = '$section', Key = '$key' })")
+            continue
+        }
         $parts.Add("table.insert(expectedIcons, { Group = '$section', Key = '$key', Id = 'rbxassetid://$id' })")
     }
 }

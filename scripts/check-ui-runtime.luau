@@ -39,6 +39,15 @@ H.Viewports = {
 	{ 640, 303 },
 }
 assert(#expectedIcons == 37, "Incomplete icon manifest")
+for _, icon in ipairs(unuploadedIcons) do
+	local configured = Assets[icon.Group] and Assets[icon.Group][icon.Key]
+	local existingUpload = false
+	for _, existing in ipairs(expectedIcons) do
+		existingUpload = existingUpload
+			or (existing.Group == icon.Group and existing.Key == icon.Key and configured == existing.Id)
+	end
+	assert(configured == nil or configured == "" or existingUpload, "Unverified uploaded icon: " .. icon.Key)
+end
 for _, icon in ipairs(expectedIcons) do
 	assert(Assets[icon.Group][icon.Key] == icon.Id, "Wrong upload mapping: " .. icon.Group .. "." .. icon.Key)
 end

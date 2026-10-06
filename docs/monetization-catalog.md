@@ -12,7 +12,7 @@
 | Pass / AutoCollect | Auto Collect | Collect display coins every 5 seconds while inside your plot. | 149 | AutoCollect / basket |
 | Pass / ExtraSlots | Extra Slots | +3 display slots, up to 10 total. | 149 | ExtraSlots / collection book |
 | Pass / OfflinePlus | Offline Plus | Double your offline tank time and storage. | 129 | OfflinePlus / daily gift |
-| Pass / VIPPack | VIP Pack | +25% cash, +1 path speed, gold trail, VIP sign and daily coins. No luck. | 399 | VIPPack / gold crown |
+| Pass / VIPPack | VIP Pack | +50% cash, +1 path speed, gold trail, VIP sign and daily coins. No luck. | 399 | VIPPack / gold crown |
 | Product / Coins10Minutes | Coin Pack: 10 Minutes | 10 minutes of display income, quoted before purchase. | 49 | CoinPack / coins |
 | Product / Coins1Hour | Coin Pack: 1 Hour | 1 hour of display income, quoted before purchase. | 149 | CoinPack / coins |
 | Product / Coins6Hours | Coin Pack: 6 Hours | 6 hours of display income, quoted before purchase. | 399 | CoinPack / coins |
@@ -20,7 +20,7 @@
 
 New icon keys have empty asset strings and rendered vector fallbacks, not invented upload IDs. Existing four use their already-uploaded art. Creator Hub requires uploading suitable icon images separately; these vector fallbacks are in-game artwork, not upload IDs.
 
-VIP includes the existing VIP name/chat star, exclusive gold trail with star particles, a permanent VIP plot sign, +25% cash, one extra path speed step and one claimable chest per UTC day. The sign has a monthly-club visual theme but **is not a subscription and does not expire**. VIP grants its trail without needing Sparkle Trail. VIP's star overlaps VIP Star; buying both does not add a second star or a discount.
+VIP includes the existing VIP name/chat star, exclusive gold trail with star particles, a permanent VIP plot sign, +50% cash, one extra path speed step and one claimable chest per UTC day. The sign has a monthly-club visual theme but **is not a subscription and does not expire**. VIP grants its trail without needing Sparkle Trail. VIP's star overlaps VIP Star; buying both does not add a second star or a discount.
 
 Coin packs use current server display income/second, including applicable upgrades/rebirth/pass bonuses, multiplied by 600/3,600/21,600, floored and clamped to **100–1,000,000,000 Coins**. There is no second multiplier at wallet credit. An in-game quote is saved before prompting and survives disconnect/rebirth. Unquoted external purchases use income at processing time because receipts contain no historical income timestamp; use in-experience sales for quoted amounts. VIP chest uses the same rate and clamps for 600 seconds, once per UTC day. Empty displays therefore receive the stated minimum, not a fabricated passive rate.
 

@@ -1,3 +1,4 @@
+local Cash = require(if script then script.Parent.Cash else "./Cash")
 return {
 	AutoFlushUnlock = 100,
 	FlushRange = 14,
@@ -15,7 +16,7 @@ return {
 		"OfflinePlus",
 		"VIPPack",
 	},
-	CashMultiplierCap = 10,
+	CashMultiplierCap = Cash.TotalCap,
 	DisplayCapacity = 10,
 	AutoCollectSeconds = 5,
 	ReceiptHistoryLimit = 128,
@@ -29,7 +30,7 @@ return {
 			Id = 0,
 			Name = "Double Cash",
 			Price = 249,
-			Description = "2x coin income. Stacks with bonuses, up to the cash cap.",
+			Description = "2x coin income. Paid factors stack up to 3x on top of free bonuses.",
 			CashMultiplier = 2,
 		},
 		AutoCollect = {
@@ -56,8 +57,8 @@ return {
 			Id = 0,
 			Name = "VIP Pack",
 			Price = 399,
-			Description = "+25% cash, +1 path speed, gold trail, VIP sign and daily coins. No luck.",
-			CashMultiplier = 1.25,
+			Description = "+50% cash, +1 path speed, gold trail, VIP sign and daily coins. No luck.",
+			CashMultiplier = 1.5,
 			PathSpeedStep = 1,
 		},
 		SparkleTrail = {

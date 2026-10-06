@@ -42,15 +42,15 @@ assert(Income:Collect(p) == 52800 and Income:TotalUnits(p) == 0)
 
 -- Large whole balances plus one subcoin survive every save/collect; division cannot round up.
 p = profile(7, "Mystery", 100)
-p.RebirthLevel, p.Upgrades.CashBoost, p.Upgrades.OfflineTank = 15, 10, 10
+p.RebirthLevel, p.Upgrades.CashBoost, p.Upgrades.OfflineTank = 15, 10, 100
 local rates, sum = Income:Rates(p), 0
 for _, rate in pairs(rates) do
 	assert(rate >= 0 and rate % 1 == 0)
 	sum += rate
 end
-assert(sum == 780000000000, "100 legacy Secrets must share ten-slot total cap exactly")
+assert(sum == 240000000000, "100 legacy Secrets must share the free 40x ten-slot rate cap exactly")
 Income:Settle(p, 1000 + 86400, true)
-assert(Income:TotalUnits(p) == 9e15, "Half-rate twelve-hour allowance must saturate the safe ledger cap")
+assert(Income:TotalUnits(p) == 9e15, "Half-rate 24-hour allowance must saturate the safe ledger cap")
 Income:Settle(p, Config.MaxTimestamp, false)
 assert(Income:TotalUnits(p) == 9e15 and Income:PendingCoins(p) == 1500000000000)
 local sanitized = Income:Sanitize(p.Income, p)

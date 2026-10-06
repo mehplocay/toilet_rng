@@ -5,7 +5,7 @@ return {
 		AutoCollect = { Icon = "AutoCollect", Color = { 100, 230, 160 }, Description = "Collect while in your plot" },
 		ExtraSlots = { Icon = "ExtraSlots", Color = { 90, 200, 255 }, Description = "+3 slots, up to 10 total" },
 		OfflinePlus = { Icon = "OfflinePlus", Color = { 180, 140, 255 }, Description = "Double offline tank capacity" },
-		VIPPack = { Icon = "VIPPack", Color = { 255, 185, 35 }, Description = "+25% cash, path speed & style" },
+		VIPPack = { Icon = "VIPPack", Color = { 255, 185, 35 }, Description = "+50% cash, path speed & style" },
 		Coins10Minutes = { Icon = "CoinPack", Color = { 255, 225, 110 }, Description = "10 minutes of display income" },
 		Coins1Hour = { Icon = "CoinPack", Color = { 255, 200, 75 }, Description = "1 hour of display income" },
 		Coins6Hours = { Icon = "CoinPack", Color = { 255, 170, 50 }, Description = "6 hours of display income" },

@@ -12,7 +12,7 @@ function Tracks.Create(body, remotes)
 	local latest, cards = nil, {}
 	local colors = { C.Gold, C.Purple, C.Green, C.Blue, C.Purple, C.Gold }
 	local descriptions = {
-		CashBoost = "Sales, service and display income. Whole coins round down.",
+		CashBoost = require(Shared.Config.Cash).Explanation,
 		LuckBoost = "Cap: 10x total (+900%). Above 5x, extra luck is halved for rarer than 1 in 25K.",
 		FlushSpeed = "Shorter shared cooldown. Always at least " .. Config.CooldownFloor .. " seconds.",
 		AutoFlushSpeed = "Faster auto interval, never below your flush cooldown. Free at 100 flushes.",

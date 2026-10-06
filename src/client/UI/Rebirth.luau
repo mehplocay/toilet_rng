@@ -6,7 +6,7 @@ local Input = game:GetService("UserInputService")
 local Run = game:GetService("RunService")
 local Rebirth = {}
 function Rebirth.Create(root, remotes)
-	local panel = C.Panel(root, "REBIRTH", C.Purple, 1090)
+	local panel = C.Panel(root, "REBIRTH", C.Purple, 1170)
 	local toast = C.Toast(root)
 	local body = panel.ContentScroll.Body
 	C.Icon(body, "Crown", UDim2.fromOffset(62, 62), UDim2.fromOffset(4, 0))
@@ -33,11 +33,14 @@ function Rebirth.Create(root, remotes)
 	preview.Name, preview.TextColor3 = "NextBonus", C.Gold
 	local perks = C.BodyText(body, "", UDim2.new(1, -8, 0, 346), UDim2.fromOffset(4, 578))
 	perks.Name = "TokenPerks"
-	local warning = C.BodyText(body, "", UDim2.new(1, -8, 0, 56), UDim2.fromOffset(4, 930))
+	local warning = C.BodyText(body, "", UDim2.new(1, -8, 0, 56), UDim2.fromOffset(4, 1010))
+	local cashCaps =
+		C.BodyText(body, require(Shared.Config.Cash).Explanation, UDim2.new(1, -8, 0, 70), UDim2.fromOffset(4, 930))
+	cashCaps.Name = "CashCaps"
 	local state, armedLevel, held, heldAt, pending = nil, nil, nil, 0, false
 	local pendingAt = 0
 	local confirm, update
-	local holdBar = C.ProgressBar(body, UDim2.new(1, -8, 0, 10), UDim2.fromOffset(4, 1062), C.Gold)
+	local holdBar = C.ProgressBar(body, UDim2.new(1, -8, 0, 10), UDim2.fromOffset(4, 1142), C.Gold)
 	local function cancel()
 		C.StopSound("RebirthHold")
 		armedLevel, held = nil, nil
@@ -46,7 +49,7 @@ function Rebirth.Create(root, remotes)
 			update()
 		end
 	end
-	confirm = C.Button(body, "Loading...", UDim2.new(1, -8, 0, 58), UDim2.fromOffset(4, 996), function()
+	confirm = C.Button(body, "Loading...", UDim2.new(1, -8, 0, 58), UDim2.fromOffset(4, 1076), function()
 		if state and not pending and rules:Eligible(state, rules:Level(state)) and armedLevel == nil then
 			armedLevel = rules:Level(state)
 			update()

@@ -1,4 +1,4 @@
--- Cumulative bonuses add to Cash Boost; toilet display factors multiply the result.
+-- Cumulative bonuses add to Cash Boost; toilet display factors share the free cash cap.
 local levels = {
 	{
 		RequiredCoins = 3000000,
@@ -51,7 +51,7 @@ local levels = {
 		Perks = { "Diamond Janitor title" },
 	},
 	{
-		RequiredCoins = 1500000000,
+		RequiredCoins = 1000000000,
 		Cash = 3.8,
 		Luck = 0.32,
 		Speed = 0.13,
@@ -61,7 +61,7 @@ local levels = {
 		Perks = { "Pipe Guardian title" },
 	},
 	{
-		RequiredCoins = 5000000000,
+		RequiredCoins = 2000000000,
 		Cash = 4.7,
 		Luck = 0.39,
 		Speed = 0.16,
@@ -71,7 +71,7 @@ local levels = {
 		Perks = { "Flush Captain title" },
 	},
 	{
-		RequiredCoins = 15000000000,
+		RequiredCoins = 4000000000,
 		Cash = 5.7,
 		Luck = 0.46,
 		Speed = 0.19,
@@ -81,7 +81,7 @@ local levels = {
 		Perks = { "Bowl Champion title" },
 	},
 	{
-		RequiredCoins = 40000000000,
+		RequiredCoins = 15000000000,
 		Cash = 6.8,
 		Luck = 0.53,
 		Speed = 0.22,
@@ -91,7 +91,7 @@ local levels = {
 		Perks = { "Porcelain Hero title" },
 	},
 	{
-		RequiredCoins = 80000000000,
+		RequiredCoins = 40000000000,
 		Cash = 8,
 		Luck = 0.6,
 		Speed = 0.25,
@@ -101,7 +101,7 @@ local levels = {
 		Perks = { "Cosmic Janitor title" },
 	},
 	{
-		RequiredCoins = 150000000000,
+		RequiredCoins = 120000000000,
 		Cash = 9.3,
 		Luck = 0.68,
 		Speed = 0.3,
@@ -111,7 +111,7 @@ local levels = {
 		Perks = { "Starlight Keeper title" },
 	},
 	{
-		RequiredCoins = 250000000000,
+		RequiredCoins = 200000000000,
 		Cash = 10.7,
 		Luck = 0.76,
 		Speed = 0.35,
@@ -121,7 +121,7 @@ local levels = {
 		Perks = { "Royal Plumber title" },
 	},
 	{
-		RequiredCoins = 400000000000,
+		RequiredCoins = 320000000000,
 		Cash = 12.1,
 		Luck = 0.84,
 		Speed = 0.4,
@@ -131,7 +131,7 @@ local levels = {
 		Perks = { "Galaxy Guardian title" },
 	},
 	{
-		RequiredCoins = 650000000000,
+		RequiredCoins = 520000000000,
 		Cash = 13.5,
 		Luck = 0.92,
 		Speed = 0.45,
@@ -141,7 +141,7 @@ local levels = {
 		Perks = { "Eternal Cleaner title" },
 	},
 	{
-		RequiredCoins = 2500000000000,
+		RequiredCoins = 1250000000000,
 		Cash = 15,
 		Luck = 1,
 		Speed = 0.5,

@@ -86,8 +86,11 @@ function Rules:Milestone(profile, id)
 		else "Novice",
 		math.min(track.MaxLevel, reached + self.Config.MilestoneEvery)
 end
-function Rules:Cash(profile)
-	return Paid.Cash(profile, 1 + self:Effect(profile, "CashBoost") + self:RebirthBonus(profile, "Cash"))
+function Rules:Cash(profile, toiletFactor)
+	return Paid.Cash(
+		profile,
+		(1 + self:Effect(profile, "CashBoost") + self:RebirthBonus(profile, "Cash")) * (toiletFactor or 1)
+	)
 end
 function Rules:RebirthBonus(profile, key)
 	local level = profile and profile.RebirthLevel

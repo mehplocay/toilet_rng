@@ -215,7 +215,7 @@ function Passes.Create(gui, remotes)
 	C.Grid(swatches, 112, 48)
 	local details = C.BodyText(
 		content,
-		"VIP Pack: +25% cash, +1 path speed step, gold-star trail, name/chat star, permanent VIP plot sign and daily display-income coins. No luck.\nCoin packs and VIP chest: 100 to 1,000,000,000 Coins. Cash bonuses cap at 10x; path speed at 5x.",
+		"VIP Pack: +50% cash, +1 path speed step, gold-star trail, name/chat star, permanent VIP plot sign and daily display-income coins. No luck.\nCoin packs and VIP chest: 100 to 1,000,000,000 Coins. Free cash caps at 40x; paid cash at 3x on top (120x max); path speed at 5x.",
 		UDim2.new(1, -12, 0, 112)
 	)
 	details.LayoutOrder = 4

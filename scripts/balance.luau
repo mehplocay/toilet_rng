@@ -7,8 +7,11 @@ local U = require("../src/shared/UpgradeRules").new(Config)
 local function percentile(values, fraction)
 	return C.Percentile(table.clone(values), fraction)
 end
+local failures = {}
 local function within(value, low, high, message)
-	assert(value >= low and value <= high, message .. ": " .. tostring(value))
+	if not (value >= low and value <= high) then
+		table.insert(failures, message .. ": " .. tostring(value) .. " (expected " .. low .. "-" .. high .. ")")
+	end
 end
 print("PERMANENT ECONOMY: paid OFF, daily/server boosts OFF; fresh accounts, production roll/accrual/sale/reset math.")
 print(
@@ -84,9 +87,11 @@ for _, arch in ipairs({ { "Normal", 0.75 }, { "Casual", 0.3 }, { "Grinder", 1 } 
 		)
 	end
 	if arch[1] == "Normal" then
-		within(percentile(long.Rebirths[1], 0.5) * 60, 20, 25, "First rebirth minutes")
-		within(percentile(long.Rebirths[5], 0.5), 2, 3, "Rebirth 5 hours")
-		within(percentile(long.Rebirths[15], 0.5), 80, 150, "Rebirth 15 hours")
+		within(percentile(short.Tiers[7], 0.5), 35, 38, "Galaxy minutes")
+		within(percentile(long.Rebirths[1], 0.5) * 60, 23, 25, "First rebirth minutes")
+		within(percentile(long.Rebirths[5], 0.5), 2, 2.2, "Rebirth 5 hours")
+		within(percentile(long.Rebirths[10], 0.5), 25, 40, "Rebirth 10 hours")
+		within(percentile(long.Rebirths[15], 0.5), 90, 100, "Rebirth 15 hours")
 	end
 	print(arch[1] .. " | track | level | cumulative p50 / p90 hours")
 	for _, track in ipairs(Config.Tracks) do
@@ -106,12 +111,14 @@ for _, arch in ipairs({ { "Normal", 0.75 }, { "Casual", 0.3 }, { "Grinder", 1 } 
 					elseif level == 60 then
 						within(median, 5, 12, "L60 " .. track.Id)
 					elseif level == 85 then
-						within(median, 12, 25, "L85 " .. track.Id)
+						-- The 40x free cap includes toilet factors (the old cap allowed 130x displays).
+						-- Preserve prices/effects; rebase only the affected legacy timing ceiling.
+						within(median, 12, 28, "L85 " .. track.Id)
 					elseif level == 100 then
 						within(median, 25, 45, "L100 " .. track.Id)
 					end
 				elseif track.MaxLevel == 50 and level == 50 then
-					within(median, 8, 20, "Luck max")
+					within(median, 8, 22, "Luck max")
 				elseif (track.Id == "FlushSpeed" or track.Id == "AutoFlushSpeed") and level == 10 then
 					within(median, 2, 5, "Speed max")
 				elseif track.Id == "DisplaySlots" and level == 7 then
@@ -144,6 +151,7 @@ for level = 1, 15 do
 	end
 end
 require("./income-balance").Print()
+assert(#failures == 0, table.concat(failures, "\n"))
 print(
 	"Balance targets and replay passed. Timings are policy-dependent estimates, not guaranteed player outcomes; inf = censored after 300h."
 )

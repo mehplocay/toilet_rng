@@ -527,6 +527,7 @@ do
 	local owner = { UserId = 981, DisplayName = "Income fixture" }
 	local profile =
 		{ ToiletTier = 7, DisplaySlots = 10, Displays = {}, RebirthLevel = 15, Upgrades = { CashBoost = 10 } }
+	profile.Monetization = { Passes = { DoubleCash = true, VIPPack = true } }
 	for slot = 1, 10 do
 		profile.Displays[tostring(slot)] = "Mystery"
 	end
@@ -536,7 +537,7 @@ do
 	for _, object in ipairs(plot.Displays:GetDescendants()) do
 		if object.Name == "IncomeNametag" then
 			names += 1
-			assert(object:GetChildren()[1]:GetChildren()[1].Text:find("$13M/s", 1, true))
+			assert(object:GetChildren()[1]:GetChildren()[1].Text:find("$12M/s", 1, true))
 		end
 	end
 	assert(names == 10)
@@ -544,7 +545,7 @@ do
 	assert(plot.IncomeLabel.Text == "COLLECT ALL\n$34.5B")
 	World.Assigned[owner] = nil
 	plot.Model:Destroy()
-	print("Economy world text passed: ten $13M/s nametags and $34.5B collection jar")
+	print("Economy world text passed: ten $12M/s nametags at 120x and $34.5B collection jar")
 end
 
 if snapshot then

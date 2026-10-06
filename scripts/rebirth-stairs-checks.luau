@@ -22,6 +22,11 @@ do
 	for level = 0, #config.Levels do
 		profile.RebirthLevel = level
 		World:Refresh(owner, profile)
+		local skin = plot.Toilet:FindFirstChild("LegendSkin")
+		assert((skin ~= nil) == (level == 15), "Legend skin threshold or cleanup failed")
+		if skin then
+			assert(skin.Adornee == plot.Toilet and profile.ToiletTier == 4)
+		end
 		assert(plot.Sign.Text == owner.DisplayName .. "'s Plot\nRebirth " .. level)
 		local unlockedCount, nextCount = 0, 0
 		for _, step in ipairs(plot.RebirthSteps) do
