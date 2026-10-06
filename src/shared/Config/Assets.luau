@@ -3,6 +3,13 @@ return {
 	-- Optional ["decalId"] = "rbxassetid://imageId" overrides; see docs/icons-resolve.md.
 	IconImages = {},
 	Icons = {
+		DoubleCash = "",
+		AutoCollect = "",
+		ExtraSlots = "",
+		OfflinePlus = "",
+		VIPPack = "",
+		CoinPack = "",
+		PathBoost = "",
 		Coins = "rbxassetid://110019653714338",
 		Shop = "rbxassetid://132255389849764",
 		Collection = "rbxassetid://87189008349282",

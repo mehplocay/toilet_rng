@@ -5,6 +5,9 @@ local Rules = require(game.ReplicatedStorage.Shared.MonetizationRules)
 local Service = { Owned = {}, Auto = {}, Loading = {}, Pending = {}, Checking = {} }
 
 function Service:Apply(player)
+	if self.Commerce then
+		self.Commerce:Apply(player, self.Owned[player])
+	end
 	if self.Cosmetics then
 		self.Cosmetics:Apply(player, self.Owned[player] or {}, self.Data:Get(player))
 	end
@@ -15,7 +18,8 @@ function Service:Load(player)
 		return false
 	end
 	self.Loading[player] = true
-	local owned = self.Owned[player] or {}
+	local profile = self.Data:Get(player)
+	local owned = self.Owned[player] or (profile and table.clone(profile.Monetization.Passes)) or {}
 	self.Owned[player] = owned
 	local complete = true
 	for _, key in ipairs(Config.PassOrder) do
@@ -69,11 +73,8 @@ end
 
 function Service:Start(limiter, remotes, sync, data, world)
 	self.Data, self.World, self.Sync = data, world, sync
-	-- No products are implemented. Keep unexpected receipts recoverable; never
-	-- acknowledge a purchase until a future handler durably grants and deduplicates it.
-	MarketplaceService.ProcessReceipt = function()
-		return Enum.ProductPurchaseDecision.NotProcessedYet
-	end
+	self.Commerce = require(script.Parent.CommerceService).new(data, world, sync)
+	self.Commerce:Start(limiter, remotes)
 	local function trackCharacter(player)
 		player.CharacterRemoving:Connect(function()
 			self:StopAuto(player)

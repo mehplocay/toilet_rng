@@ -26,6 +26,7 @@ $parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'audit-upgrad
 $parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'audit-rebirth.luau')))
 $parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'audit2-server.luau')))
 $parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'audit-display-collect.luau')))
+$parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'audit-path-catalog.luau')))
 $parts.Add('do')
 $parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'ui-harness.luau')))
 $parts.Add((Get-Content -Raw -LiteralPath (Join-Path $PSScriptRoot 'audit2-client.luau')))

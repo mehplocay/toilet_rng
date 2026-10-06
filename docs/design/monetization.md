@@ -1,86 +1,43 @@
-# Fair monetization
+# Fair monetization: implemented catalog
 
-Proposal, 2026-10-05. Prices are base Robux design suggestions, not configured products or revenue forecasts. Display the actual platform price in purchase UI; never invent asset/product IDs. Policy research: [genre analysis](../research/genre-analysis.md#policy-findings-and-design-implications).
+2026-10-06, `feature/path-boost-catalog`. This manager-approved catalog replaces the earlier paid-luck proposal in this document. The older roadmap's Lucky Flush/Server Luck plans are not implemented or authorized by this catalog. **No paid luck, paid odds modifiers or paid random items.** All random outcomes remain free.
 
-## Principles and offer catalog
+## Offers and honest presentation
 
-All 35 collection items, all toilets/worlds, Auto-Flush, six earned display slots and capped rebirth power are obtainable for free. Purchases buy known cosmetics or disclosed temporary probability modifiers. Luck is still an advantage; do not call it purely cosmetic or claim spending guarantees rarity. No permanent 2x luck/speed pass and no Robux-to-Coin conversion.
+The exact nine passes and four products, creation prices and icons are in [the Creator Hub catalog](../monetization-catalog.md). Existing SparkleTrail, VIPStar, CustomPlotColor and FastFlush config keys remain. All IDs stay 0; the Shop has Passes/Boosts tabs, colored cards, overflowing icons, green purchase buttons, disabled Coming soon states and platform-priced/owned states once enabled. New art uses vector fallbacks. Gifting remains explicitly unavailable. HUD offers remain static with no unsolicited pulses or automatic prompts.
 
-| Type / offer | Base price | Exact benefit | Release |
-|---|---|---|---|
-| Pass: Confetti Flush | 49 R$ | Choose 3 confetti colors; client effect only | v1 |
-| Pass: Golden Nameplate | 79 R$ | Gold plot border + nameplate skin, no official/admin badge | v1 |
-| Pass: Showcase Plus | 99 R$ | +3 display slots above earned capacity (3-6 becomes 6-9); no item power | v1 |
-| Pass: VIP Bathroom | 249 R$ | Chrome toilet skin, VIP title, 3 photo frames; free preview | v1.1 |
-| Pass: Porcelain Patron | 499 R$ | 5 animated toilet skins, 3 pedestal skins, 2 emotes; no future-content promise | v1.2 |
-| Product: Lucky Flush | 5 R$ | P=10 for exactly 1 successful flush | v1.2, after odds/policy gate |
-| Product: Lucky Flush x5 | 19 R$ | 5 individually armed charges; same P=10, one charge/flush | v1.2, after odds/policy gate |
-| Product: Server Luck | 49 R$ | E=2 for 10 minutes for eligible recipients in current server | v1.2, after mixed-policy tests |
-| Product: Rebirth Restart | 29 R$ | Fixed credit of 100 service-only flush awards at Basic: `100*floor(M_r)` Coins, no RNG or luck | v1.2; low priority, test demand |
+VIP Pack is a one-time pass, not a subscription. Its permanent sign is the requested monthly-style VIP sign; its daily chest is manually claimable from Passes. It includes the VIP Star benefit, so the separate star is redundant for a VIP owner; the UI description discloses this overlap. Auto-Flush and animation skip remain free.
 
-Passes are one-time entitlements, VIP is **not** a subscription. Patron has no overlap discount trap: its cosmetics are distinct from cheaper passes. Item storage/first-copy protection and accessible controls are never monetized. Do not ship a paid Auto-Flush simply because the older GDD listed it.
+## Entitlements and arithmetic
 
-Rebirth Restart is available only after at least one earned rebirth, at current Basic, at most once per rebirth. Coin grant is exactly 100 at r=1, 200 at r=5 and 300 at r=10; deliberately modest, shown before purchase. It does not add flush count, items, best tier, luck or rebirth eligibility. Credit cannot buy random products because Coins have no random-purchase sink. If that changes, reassess indirect paid randomness before release. Recommendation: cosmetics and optional luck first; drop this product if users find its benefit unclear.
+Ownership is checked on the server at load, every 120 seconds, on manual refresh and before pass prompting. Server PromptGamePassPurchaseFinished grants are monotonic and idempotent. Failed/stale negative lookups cannot erase a verified positive. Verified pass flags persist for offline calculations; config ID 0 disables grants and lookups. Entitlement changes settle the previous rate before changing benefits.
 
-## Lucky Flush contract and probability disclosure
+Double Cash multiplies service coins, sellable-copy sales, passive accrual and ordinary daily coins by 2. VIP multiplies those same sources by 1.25. The existing upgrade-plus-rebirth cash factor is unchanged; paid factors multiply that result, with a new configurable hard total cap of 10x. Existing unpaid daily rewards stay unchanged and receive only the paid factor. Starter/rebirth grants, Stamps and administrative grants are not income and are not multiplied. Product/chest quotes already include the display-income factors, so wallet credit never applies them twice. No economy values, toilet/item prices, upgrade prices, paid luck or RNG behavior were retuned.
 
-- Bought charges enter a persistent wallet; no expiry. Player arms one explicitly; Auto-Flush pauses before arming and resumes only after confirmation/result. A rejected/failed flush consumes nothing. Item award and charge consumption are one durable operation with retry-safe identity.
-- Rebirth, toilet, pool, strongest event and charge form L as specified in [progression](progression.md#exact-luck-and-outcome-math). Luck cap 50; each eligible item receives its own rarest-first check. Boosting the parameter 10x is not a guarantee or ten independent rolls.
-- Before buying, show `5 R$ / 1 charge` or `19 R$ / 5 charges`, exact duration by uses, current pool/tier, before/after effective percentages for **every** possible item including Poop, and a labeled `Odds Details` control. Before arming, show updated values again.
-- Probability display uses the full sequence formula; no nominal denominator masquerading as actual chance. Internal outcomes sum to 100%; retain enough decimal digits for the rarest outcome and use the policy's rounding notice when displayed sums differ.
-- Example validation fixture, not a live pool: Rat check 1/25, Paper 1/8, Poop fallback. At L=1: Rat 4%, Paper 12%, Poop 84%. At L=10: Rat 40%, Paper 60%, Poop 0%. Paper did not become 10x more likely. Live pools have additional earlier checks and need their own full calculation.
-- No hidden pity meter, near-miss animation, secret boosted first purchase or “you're due” wording. Ordinary free drops use the same generator with P=1.
+Extra Slots adds 3 above existing earned/upgrade capacity, capped at the ten physical pedestals. An AppliedSlots marker prevents refresh/rejoin/rebirth from adding slots repeatedly; index minima include the paid allowance. Legacy capacity above ten is preserved, not increased by the pass. Rebirth keeps the original indexes of every occupied display and enough capacity to retain them.
 
-Roblox explicitly covers purchased luck/probability modifiers and indirect random purchases in its [paid random items policy](https://create.roblox.com/docs/production/monetization/paid-random-items). This catalog cannot ship paid luck as an unregulated “boost.”
+Offline Plus doubles both the earned tank duration and pending storage capacity. Saved verified ownership is restored before offline settlement/sanitization. Auto Collect checks the living owner's position against the rotated 48x60 plot rectangle every five seconds; it credits the same pending ledger as manual collection without creating income. Mutation is non-yielding and ordinary autosave/close persists debit and credit together. It skips active saves; manual collection still uses its existing durable save/limits. A crash can lose unsaved ordinary accrual/collection, just like existing gameplay.
 
-## Eligibility and paid server luck
+VIP daily chest uses ten minutes of current display income, floored/clamped to 100–1,000,000,000 coins, once per UTC day. Claim marker and coins are one guarded replacement/save. Duplicate requests, rejoin and rebirth retain the day marker. No automatic daily purchase prompts.
 
-Implementation decision: server obtains per-user policy via [PolicyService](https://create.roblox.com/docs/reference/engine/classes/PolicyService), validates before a purchase prompt and rechecks before consuming a charge or applying a paid modifier. On failure/unknown status, paid RNG is disabled while free play and deterministic cosmetics remain available.
+## Products and recovery
 
-| State | Required product behavior |
-|---|---|
-| Paid randomness restricted | Hide/disable Lucky Flush and Server Luck purchasing; never apply another player's paid modifier to this user. Free scheduled events still work. |
-| Eligible buyer, mixed server | Purchase states “2x server luck for eligible players for 10 minutes”; restricted users receive the same visual celebration plus a temporary zero-power pipe glow, no modified random reward. |
-| User becomes restricted with charges | Retain unused charges; prevent consumption. Explain unavailability and provide support route; do not exchange for undisclosed random rewards. |
-| Free E=2 already active | Paid 10 minutes start after current free E=2 ends; show scheduled start/end before prompt. Free E=1.5 does not delay paid E=2. |
-| Another paid boost active | Allow at most one 10-minute extension queued; disable further purchases until capacity returns. No E>2 stacking. |
-| Event arrives during paid boost | Freeze paid remaining time during free E=2 overlap; restore remaining time afterward. Paid duration is preserved. |
-| Last player leaves/server closes | Persist unused paid seconds as a buyer-owned activation credit; reactivation requires a live eligible server and cannot duplicate the original session. |
+The server computes displayed coin quotes from actual fixed-point IncomeAccrual rates. BuyProduct accepts only a known key and expected quote for stale-display rejection: no client-supplied value becomes a grant. One saved offer is prepared before the platform prompt. Changed income requires reviewing the updated quote. Quotes survive rebirth/rejoin. An interrupted offer can be reopened at its saved amount or canceled in the platform prompt; already-paid users are told to rejoin for receipt delivery. No prompt-completion event grants products. Unquoted external receipts use the current processing-time rate because Roblox supplies no historical income/prompt timestamp. See [API findings](../research/catalog-receipts.md); use only in-experience sales when an exact advance quote is required.
 
-Server Luck requires durable ownership of the timer/credit and receipt identity, not just a local countdown. If exact time recovery is not implemented and tested, postpone this product. Buyer leaving alone does not reclaim time already benefiting their server. All paid-influenced item copies retain paid provenance even when recipients did not pay. As a conservative design choice, paid-origin rare finds trigger cosmetic celebrations only; only unpaid-origin finds trigger the free statistical discovery buff. This avoids routing purchased randomness into a second unrestricted modifier.
+Path Boost grants a persistent wall-clock expiry extended by ten minutes per new receipt, at 4x on paths (5x with VIP). Multiple purchases extend duration, never compound speed. Time continues offline, after death and through rebirth. The free default is 3x. All path/other server boosts multiply under a 5x total cap; admin absolute speed overrides are separate. [Path runtime contract](../research/path-speed-runtime.md).
 
-Trading launches with paid-origin copies excluded. Any future paid-item trading must honor `IsPaidItemTradingAllowed` for both participants and preserve provenance through onward transfers; see [trading](social-and-events.md#trading-v2-after-persistence-and-provenance). Do not sell tradable random eggs, gift luck charges or enable secondary markets initially.
+Receipt processing has a per-player in-flight guard and waits up to 30 seconds for early join/loading or existing saves. It validates the configured positive product ID, PlayerId/PurchaseId, active player/profile, persistence availability and lease. Unknown products and any failure return NotProcessedYet. New benefit and PurchaseId are written in the same immutable whole-profile snapshot using DataService.ReplaceAndSave; gameplay is blocked through the save. PurchaseGranted is returned only for a confirmed durable grant or previously durable matching receipt. A departure suppresses stale success; rejoin retries the saved receipt. Ambiguous failures do not roll back an already-committed grant.
 
-## Offer timing and limits
+The profile retains 128 receipt entries. Before eviction, the oldest acknowledged entry is archived under its globally unique PurchaseId in a permanent receipt store; every missing profile ID checks that archive with UpdateAsync. Archive failure prevents eviction/new grant. This avoids the otherwise unavoidable duplicate vulnerability from simply forgetting old receipts. Studio and production use separate stores. Player profile size is bounded; permanent receipt tombstones are not age-pruned. A profile restore performed by an administrator must reconcile paid receipts; ordinary session leases cannot make an external rollback safe.
 
-| Moment | Allowed presentation |
-|---|---|
-| First 10 minutes | Ordinary shop button available; no automatic purchase modal |
-| First display / minute 10+ | One dismissible Confetti/Nameplate preview card; only after completed action |
-| Earned fourth display slot | Showcase Plus in customization panel, alongside free next-index-slot goal |
-| First Sewer visit | VIP skin preview in cosmetic catalog; no blocking world gate |
-| Player opens Odds Details / minute 20+ | Optional Lucky Flush tile with before/after odds; never triggered by a run of bad rolls |
-| Earned rebirth | Explain free permanent bonus first; Restart listed only in voluntarily opened shop |
-| Shared event panel | Server Luck tile explains eligible audience, exact time and strongest-only stacking |
+## Validation and deployment limits
 
-At most 1 unsolicited cosmetic suggestion/session, 2/account/day; dismiss hides suggestions for 7 days. Random offers never auto-prompt. No upsell after canceled purchase, loss, failed boss or trading dispute. Client prompt closing is not proof of payment: receipt fulfillment must be server-authoritative, idempotent and recoverable before any product launch.
+Recovery completion, 2026-10-06: preserved the interrupted implementation, fixed its obsolete four-pass standalone assertion, retained capped paid/index slot minima during rebirth, kept movement benefits stable through exclusive saves, and cleared completed product-offer UI banners. No commit or push; branch remains `feature/path-boost-catalog`.
 
-Product safety limits (our design, not platform mandates): at most 20 paid Lucky Flush charges purchased/UTC day and 2 Server Luck purchases/UTC day; no bulk pack beyond five. Enforce limits before prompting and honor already-completed legitimate receipts. No streak-protection sales, fake stock, fake discounts or resetting countdowns. This follows [Roblox monetization guidance](https://create.roblox.com/docs/production/monetization) on honest promotions and avoiding pressure on minors.
+Verified: `rojo build -o build.rbxl`; `stylua --check --line-endings Windows src scripts`; all **19 standalone** `scripts/check-*.luau`; `check-audit.ps1` (**113 passed, 0 failed**); `check-ui.ps1` (including product tabs/quotes/phone layouts, VIP chest, path effect lifecycle and 972 layout cases); `check-visuals.ps1`; all six `check-world.ps1` modes; `git diff --check`. Audit/UI runtime source files execute through their PS1 bundlers. Selene was attempted but its Roblox standard library is missing; the installed binary cannot generate it. Studio MCP returned `studios: []`, so no native engine or billing test is claimed.
 
-## ARPPU: planning model, not a promise
+Main additions: `CommerceService`, `ReceiptService`, `CommerceProfile`, `PaidBenefits`, `Config/PathBoost`, `PathBoostRules`, `PathBoostService`, `PathBoostEffects`, `audit-path-catalog` and `ui-path-catalog`. Existing profile, upgrade, income-award, cosmetics and UI entry points have small integration changes. Existing item/toilet/economy numbers and map geometry are unchanged. The exact creation list is [monetization-catalog.md](../monetization-catalog.md).
 
-Measure monthly **gross Robux spent / unique payers**; separately report creator-earned Robux after actual platform adjustments. No USD/DevEx conversion assumed. Regional/platform pricing and eligibility will change realized results.
+The expanded check-audit.ps1 runs actual modules with controlled lease, callback, backend failure and coroutine interleavings. check-path-boost.luau checks pure geometry/state math; UI checks exercise price/owned/zero-ID behavior and both tabs. Existing full build, standalone Luau checks, UI, visuals and six world modes remain release gates. Headless tests do not verify Roblox billing, native replication/rendering, uploaded-asset permissions, phone frame times or live DataStore outages.
 
-| Illustrative first-30-day payer group | Share of 100 payers | Spend per payer | Contribution |
-|---|---|---|---|
-| Small cosmetic | 60% | 79 R$ | 4,740 R$ |
-| Mid-tier / combination | 30% | 249 R$ | 7,470 R$ |
-| Premium cosmetic | 10% | 499 R$ | 4,990 R$ |
-| Optional repeat consumables | 25 of the same 100 payers | 38 R$ extra (two five-packs) | 950 R$ |
-| Total | 100 unique payers | **181.5 R$ ARPPU** | **18,150 R$ gross** |
-
-Sensitivity: all payers buying only 49-R$ cosmetic => 49 ARPPU; 50% at 79 + 35% at 249 + 15% at 499 + 19 average add-on => 220.5 ARPPU. Use 80-220 as an initial planning band, not a KPI to force through pressure.
-
-At assumed 2% monthly payer conversion, 10,000 monthly unique players -> 200 payers -> 36,300 gross R$ at 181.5 ARPPU (3.63 R$/monthly user). At 0.5% conversion it is 9,075 R$; at 4%, 72,600 R$. None is a forecast, and costs are not subtracted. Pass-heavy revenue is front-loaded: existing owners cannot buy the same pass next month. Retention and occasional new original cosmetics must support later revenue.
-
-Track product impressions -> voluntary opens -> successful purchases, 7-day return by payer/nonpayer, ARPPU median and distribution, refunds/support complaints, policy exclusions and time-to-next-free-upgrade. Stop an offer test if it produces a material retention decline or credible confusion about odds; never solve low conversion by slowing free progress.
+All old server builds must be retired before enabling the new profile schema/products: older sanitizers discard commerce fields. No real purchase was performed in this task. Keep placeholder IDs disabled until the manager creates/enables the catalog and completes isolated published multi-client purchase/receipt and movement testing. No commit or push was made.

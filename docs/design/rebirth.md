@@ -1,5 +1,7 @@
 # Rebirth implementation and review
 
+2026-10-06, `feature/path-boost-catalog`: **every occupied display now survives in its exact slot**, including gaps and slots originally bought with coins. The previous builder retained copies but packed assignments into reduced capacity; that did not satisfy the owner's placement requirement. The reset keeps enough capacity for the highest occupied slot, plus paid and index minima. This follow-up changes no economy values or eligibility requirements. [Catalog and transaction review](monetization.md).
+
 2026-10-06: [Display/collection follow-up](display-collect.md) retunes passive income and extends balance cohorts with retained displays. Reset/protection rules and the 60–90-minute first-rebirth target remain; the old passive fraction below is superseded.
 
 2026-10-05, `feature/rebirth`. Uncommitted; no pushes. This implementation supersedes the old Galaxy/fee/all-inventory proposal in progression.md. [Current API research](../research/rebirth.md).
@@ -30,14 +32,18 @@ Second-run median is **12.3% faster**. At the absolute 0.4-second floor, 3,600 n
 | RunFlushes | Zero; only successful server flushes increment it |
 | Inventory | Keep the greatest of one owned first copy, displayed copies, and previously protected copies of each known item; remove other copies |
 | ProtectedInventory | All kept copies become permanently unsellable; they remain freely displayable. New duplicates can be sold. Removing a display never unlocks a carried copy for sale |
-| Displays | Pack existing assignments in ascending old slot order into retained capacity. Excess displayed copies go to protected inventory, never disappear |
-| Display capacity | Remove only tracked coin-bought levels; preserve index minima and remaining legacy/unknown/paid-origin capacity. Current paid slot products do not exist |
+| Displays | Keep every item at its original string-keyed slot index; preserve gaps. No compaction, replacement item grant or overflow removal |
+| Display capacity | Remove unused tracked coin-bought capacity; retain at least the highest occupied index, index minimum plus the Extra Slots allowance, and base capacity plus that allowance. New paid capacity is capped at ten; existing legacy capacity remains preserved |
 | Lifetime collection / best finds / total flushes / Earned | Keep. Starter coins increase Earned once; reject the whole reset if this would exceed 9e15 |
 | Index claims/cosmetics, Stamps, daily state/boost, tutorial dismissal, settings | Keep, with no repeated claim or tutorial award |
-| Pass entitlements | Existing server pass cache/platform ownership is untouched; cosmetic settings remain |
+| Pass entitlements and commerce | Keep verified pass flags, applied-slot marker, receipt history, saved product quote, path expiry and VIP daily claim day; cosmetic settings remain |
 | RebirthLevel | Increment once, maximum 15; saved level is the permanent badge/title/token entitlement |
 
 Permanent protection is a deliberate scope decision. The game has no acquisition-price/provenance ledger yet. No carried copy can be sold at a higher rebirth multiplier; future unlocking/trading requires that ledger first. No item is created to replace a previously sold lifetime discovery. The UI states this protection explicitly before confirmation.
+
+`DataService:Get` settles the old display/tier rate before reset construction. The settled **pending coins still reset**, as do the wallet and coin upgrade tracks. Preserved displays immediately accrue new income at Basic's capped rate with retained permanent/pass bonuses; keeping a display does not preserve its old rate. Copy counts remain `min(owned, max(first copy, displayed count, previously protected count))`, so reservations do not duplicate inventory or double-reserve a first copy. Removing a retained display frees a display reservation but does not make its protected copy sellable. Newly obtained unprotected duplicates remain sellable.
+
+The Rebirth keep list says **Items on your display**; confirmation explicitly says their slots remain. `audit-path-catalog.luau` exercises sparse slots 2/9/10, settlement, continued accrual, inventory reservations, stale replay, save/rejoin, and empty/sparse paid/index capacity after saturated upgrades. Existing rebirth interruption, lease-loss and first-copy regressions still run. Current task validation is recorded in [monetization.md](monetization.md); the original 68-case report below is historical.
 
 Legacy saves without rebirth fields start at level zero and use lifetime flushes as first-run progress. Missing run counts at a nonzero rebirth level start at zero. Integer/nonfinite validation, inventory-bounded protected counts and a maximum level whitelist are applied on every load/save. Rebirth level is restored **before income capacity sanitation** to avoid clipping legitimate high-level pending balances.
 

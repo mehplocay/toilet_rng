@@ -1,4 +1,5 @@
 local RewardService = {}
+local Paid = require(if script then game.ReplicatedStorage.Shared.PaidBenefits else "../../shared/PaidBenefits")
 RewardService.__index = RewardService
 
 function RewardService.new(config, schedule, clock)
@@ -15,7 +16,7 @@ function RewardService:Claim(profile)
 	if not available then
 		return { Success = false, Message = "Today's reward has already been claimed." }
 	end
-	local coins = self.Schedule.Coins(day, profile.ToiletTier, self.Config)
+	local coins = math.floor(self.Schedule.Coins(day, profile.ToiletTier, self.Config) * Paid.Cash(profile, 1))
 	if profile.Coins + coins > 9e15 or profile.Stats.Earned + coins > 9e15 then
 		return { Success = false, Message = "Coin limit reached." }
 	end

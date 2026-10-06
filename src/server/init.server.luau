@@ -27,6 +27,8 @@ for _, key in ipairs({
 	"AnimationSkip",
 	"PlotColor",
 	"BuyPass",
+	"BuyProduct",
+	"ClaimVIP",
 	"RefreshPasses",
 	"DevGrant",
 	"TutorialDone",
@@ -70,10 +72,11 @@ end)
 local function sync(player)
 	local profile = data:Get(player)
 	if profile then
+		monetization:Apply(player)
 		world:Refresh(player, profile)
 		world:RefreshIncome(player, income:PendingCoins(profile))
-		monetization:Apply(player)
 		remotes.State:FireClient(player, {
+			Commerce = monetization.Commerce and monetization.Commerce:Snapshot(profile, player),
 			RebirthLevel = profile.RebirthLevel,
 			RunFlushes = profile.RunFlushes,
 			ProtectedInventory = profile.ProtectedInventory,
@@ -142,6 +145,7 @@ Players.PlayerRemoving:Connect(function(player)
 	limiter:Remove(player)
 end)
 monetization:Start(limiter, remotes, sync, data, world)
+require(script.Services.PathBoostService).Start(data)
 require(script.Services.IncomeService).Start(data, limiter, remotes, sync, world)
 remotes.Settings.OnServerEvent:Connect(function(player, sound, ...)
 	if select("#", ...) ~= 0 or not AudioSettings.ValidRequest(sound) or not limiter:Allow(player, "Settings") then

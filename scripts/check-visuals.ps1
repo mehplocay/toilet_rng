@@ -12,6 +12,7 @@ $harness += Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoo
 $modulePaths = @(
     'src/shared/Config/MapLayout.luau', 'src/server/World/Kit.luau', 'src/server/World/DisplayRows.luau',
     'src/shared/IncomeAccrual.luau', 'src/shared/LeaderboardStats.luau',
+    'src/shared/PaidBenefits.luau', 'src/shared/Config/Monetization.luau',
     'src/shared/UpgradeRules.luau', 'src/shared/Config/Upgrades.luau', 'src/shared/Config/Rebirth.luau',
     'src/shared/Config/Income.luau', 'src/server/World/IncomeDisplay.luau', 'src/server/World/RebirthHook.luau',
     'src/server/World/RebirthStairs.luau',

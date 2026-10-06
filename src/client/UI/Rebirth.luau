@@ -88,7 +88,7 @@ function Rebirth.Create(root, remotes)
 			else "YOUR COSMETIC PERKS\n" .. table.concat(bonus.Perks, " / ")
 		warning.Text = if nextBonus
 			then string.format(
-				"%s wallet Coins + %s pending Coins reset.\nKept items stay protected; extra displays return to inventory.",
+				"%s wallet Coins + %s pending Coins reset.\nItems on your display keep their slots and earn again. Kept copies stay unsellable.",
 				C.Commas(state.Coins),
 				C.Commas(state.PendingCoins or 0)
 			)

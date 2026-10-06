@@ -1,6 +1,7 @@
 local C = require(script.Parent.Components)
 local Config = require(game.ReplicatedStorage.Shared.Config.Rewards)
 local Schedule = require(game.ReplicatedStorage.Shared.RewardSchedule)
+local Paid = require(game.ReplicatedStorage.Shared.PaidBenefits)
 local Rewards = {}
 local function duration(seconds)
 	seconds = math.max(0, math.ceil(seconds))
@@ -53,9 +54,9 @@ function Rewards.Create(gui, remotes)
 			card.Status.TextColor3 = if claimed then C.Muted elseif today then C.Green else Color3.new(1, 1, 1)
 			card.Marks(not claimed and not today, claimed)
 			card.Frame.Background.UIStroke.Color = if today then C.Green elseif claimed then C.Muted else C.Gold
-			card.Value.Text = C.Commas(Schedule.Coins(index, state.ToiletTier, Config))
-				.. " Coins"
-				.. (if index == #Config.BaseCoins then "\n+ 10 min x2 Luck" else "")
+			card.Value.Text = C.Commas(
+				math.floor(Schedule.Coins(index, state.ToiletTier, Config) * Paid.Cash(state, 1))
+			) .. " Coins" .. (if index == #Config.BaseCoins then "\n+ 10 min x2 Luck" else "")
 		end
 		countdown.Text = (if available then "Ready! Resets in " else "Next reward in ") .. duration(nextAt - now)
 		claim.Text = if pending then "Claiming..." elseif available then "Claim Day " .. day else "Claimed Today"

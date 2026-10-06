@@ -1,0 +1,16 @@
+return {
+	Multiplier = 3,
+	TotalMultiplierCap = 5,
+	CheckSeconds = 0.2,
+	EaseSeconds = 0.35,
+	RootHeight = 7,
+	SanityMultiplier = 1.8,
+	SanitySlack = 8,
+	SanityLogSeconds = 30,
+	TeleportDistance = 80,
+	FOVKick = 5,
+	ChevronCount = 4,
+	ChevronSpacing = 4,
+	ChevronSpeed = 10,
+	Assets = { HubPathStrip = true, PlotPathStraight = true, PlotPathCorner = true },
+}

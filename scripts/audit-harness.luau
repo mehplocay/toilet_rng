@@ -39,6 +39,11 @@ local function environment(options)
 		return thread
 	end
 	local players = { PlayerAdded = signal(), PlayerRemoving = signal(), List = {} }
+	local playersById = {}
+	function players:GetPlayerByUserId(id)
+		local player = playersById[id]
+		return if player and player.Parent == self then player else nil
+	end
 	function players:GetPlayers()
 		return table.clone(self.List)
 	end
@@ -56,9 +61,13 @@ local function environment(options)
 		function player:SetAttribute(key, value)
 			self.Attributes[key] = value
 		end
+		function player:GetAttribute(key)
+			return self.Attributes[key]
+		end
 		function player:Kick(reason)
 			self.Kicked = reason
 		end
+		playersById[id] = player
 		return player
 	end
 	local store = { Records = {}, Calls = 0, Writes = 0 }
@@ -83,8 +92,16 @@ local function environment(options)
 		return copy(value)
 	end
 	env.Store = store
+	local archive = { Records = {}, Calls = 0, Writes = 0, UpdateAsync = store.UpdateAsync }
+	env.Archive = archive
 	local guid = 0
-	local marketplace = { PromptGamePassPurchaseFinished = signal() }
+	local marketplace = { PromptGamePassPurchaseFinished = signal(), PromptProductPurchaseFinished = signal() }
+	function marketplace:PromptProductPurchase(player, id)
+		if self.PromptError then
+			error("Prompt failed")
+		end
+		self.LastProduct = { Player = player, Id = id }
+	end
 	function marketplace:UserOwnsGamePassAsync()
 		if self.Lookup then
 			return self.Lookup()
@@ -96,11 +113,13 @@ local function environment(options)
 		Players = players,
 		DataStoreService = {
 			GetDataStore = function(_, name)
-				env.StoreName = name
+				if not name:find("Receipts") then
+					env.StoreName = name
+				end
 				if options.NoStore then
 					error("Mock store unavailable")
 				end
-				return store
+				return if name:find("Receipts") then archive else store
 			end,
 		},
 		HttpService = {
@@ -115,6 +134,18 @@ local function environment(options)
 			end,
 		},
 		MarketplaceService = marketplace,
+		TweenService = {
+			Create = function(_, object, _, target)
+				return {
+					Play = function()
+						for key, value in pairs(target) do
+							object[key] = value
+						end
+					end,
+					Cancel = function() end,
+				}
+			end,
+		},
 	}
 	local nodes, cache = {}, {}
 	local function node(path)
@@ -142,7 +173,30 @@ local function environment(options)
 		env.Shutdown = callback
 	end
 	local globals = {
-		Enum = { ProductPurchaseDecision = { NotProcessedYet = "NotProcessedYet" } },
+		Enum = {
+			ProductPurchaseDecision = { NotProcessedYet = "NotProcessedYet", PurchaseGranted = "PurchaseGranted" },
+			EasingStyle = { Sine = "Sine" },
+			EasingDirection = { InOut = "InOut" },
+		},
+		TweenInfo = {
+			new = function(...)
+				return { ... }
+			end,
+		},
+		Vector3 = {
+			new = function(x, y, z)
+				return setmetatable({ X = x, Y = y, Z = z }, {
+					__mul = function(v, factor)
+						return { X = v.X * factor, Y = v.Y * factor, Z = v.Z * factor }
+					end,
+					__index = function(v, key)
+						if key == "Magnitude" then
+							return math.sqrt(v.X * v.X + v.Y * v.Y + v.Z * v.Z)
+						end
+					end,
+				})
+			end,
+		},
 		game = game,
 		Color3 = {
 			fromRGB = function(r, g, b)
@@ -239,5 +293,6 @@ local function environment(options)
 	function env:Override(path, value)
 		cache[path] = value
 	end
+	env.Globals = globals
 	return env
 end
