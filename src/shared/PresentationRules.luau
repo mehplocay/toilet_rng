@@ -72,9 +72,12 @@ function Rules.Audience(rarity)
 		else nil
 end
 function Rules.Announcements(config, clock)
-	local self = { Pending = {}, Seen = {}, RebirthSeen = {}, Accepted = {}, Sent = {}, Busy = {} }
+	local self = { Pending = {}, Seen = {}, RebirthSeen = {}, AdminSeen = {}, Accepted = {}, Sent = {}, Busy = {} }
 	function self:Push(player, item, id, payload)
-		local seen = if payload.Kind == "Rebirth" then self.RebirthSeen else self.Seen
+		local seen = if payload.Admin
+			then self.AdminSeen
+			elseif payload.Kind == "Rebirth" then self.RebirthSeen
+			else self.Seen
 		if not Rules.Audience(item.Rarity) or Rules.Integer(id) ~= id or id <= (seen[player] or 0) then
 			return false
 		end
@@ -105,6 +108,7 @@ function Rules.Announcements(config, clock)
 		end
 	end
 	function self:Remove(player)
+		self.AdminSeen[player] = nil
 		self.RebirthSeen[player] = nil
 		self.Seen[player], self.Accepted[player], self.Sent[player], self.Busy[player] = nil, nil, nil, nil
 		for i = #self.Pending, 1, -1 do

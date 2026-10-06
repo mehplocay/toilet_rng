@@ -61,12 +61,13 @@ function Effects.Create(gui, _soundGroup, hud)
 			end
 			generation += 1
 			local token = generation
-			text.Text = payload.PlayerName
+			text.Text = (if payload.Admin then "[ADMIN TEST] " else "")
+				.. payload.PlayerName
 				.. " found "
 				.. item.Name
 				.. "!\n1 in "
 				.. C.Commas(item.Chance)
-				.. " • Server Luck x2!"
+				.. (if payload.Admin then " • Preview" else " • Server Luck x2!")
 			text.TextColor3 = if item.Rarity == "Secret"
 				then Color3.fromRGB(228, 172, 255)
 				else Rarities[item.Rarity].Color:Lerp(Color3.new(1, 1, 1), 0.3)

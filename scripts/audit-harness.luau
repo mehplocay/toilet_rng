@@ -110,6 +110,7 @@ local function environment(options)
 			end,
 		},
 		RunService = {
+			Heartbeat = signal(),
 			IsStudio = function()
 				return options.Studio == true
 			end,
@@ -236,6 +237,7 @@ local function environment(options)
 	function env:Load(path)
 		return loadModule(node(path))
 	end
+	env.Services, env.Globals = services, globals
 	function env:Override(path, value)
 		cache[path] = value
 	end

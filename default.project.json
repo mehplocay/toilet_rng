@@ -15,6 +15,7 @@
       "ModelTemplates": { "$path": "assets/rbxm/ModelTemplates.rbxm" },
       "EnvTemplates": { "$path": "assets/rbxm/EnvTemplates.rbxm" }
     },
+    "ServerStorage": { "AdminClient": { "$path": "src/admin-client" } },
     "ServerScriptService": { "Server": { "$path": "src/server" } },
     "StarterPlayer": { "StarterPlayerScripts": { "Client": { "$path": "src/client" } } }
   }

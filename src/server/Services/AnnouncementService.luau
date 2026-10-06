@@ -19,6 +19,18 @@ function Service.Start(data, remotes, events)
 			queue:Push(player, item, flushId, { ItemId = item.Id, PlayerName = Rules.Name(player.Name) })
 		end
 	end
+	local adminSequence = 0
+	events.ObserveAdmin = function(player, item)
+		if known[item.Id] == item and data:Get(player) and player.Parent == Players then
+			adminSequence += 1
+			queue:Push(
+				player,
+				item,
+				adminSequence,
+				{ Kind = "Admin", ItemId = item.Id, PlayerName = Rules.Name(player.Name), Admin = true }
+			)
+		end
+	end
 	local function deliver(entry)
 		local player, payload = entry.Player, entry.Payload
 		local profile = data:Get(player)

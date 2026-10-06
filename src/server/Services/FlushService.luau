@@ -5,11 +5,13 @@ local Monetization = require(game.ReplicatedStorage.Shared.Config.Monetization)
 local Rules = require(game.ReplicatedStorage.Shared.MonetizationRules)
 local RollService = require(script.Parent.RollService)
 local ServiceCoins = require(script.Parent.ServiceCoinService)
+local Presentation = require(script.Parent.FlushPresentation)
 local upgrades =
 	require(game.ReplicatedStorage.Shared.UpgradeRules).new(require(game.ReplicatedStorage.Shared.Config.Upgrades))
 local FlushService = {}
 function FlushService.Start(data, limiter, remotes, sync, world, events, monetization, rewards)
 	local nextFlush, nextAuto, random = {}, {}, Random.new()
+	local presentationSequence = {}
 	local function flush(player, automatic)
 		if not automatic and not limiter:Allow(player, "Flush") then
 			return
@@ -49,22 +51,22 @@ function FlushService.Start(data, limiter, remotes, sync, world, events, monetiz
 		nextFlush[player] = now + cooldown
 		nextAuto[player] = now + upgrades:AutoInterval(profile, cooldown)
 		leaderboardStats:Record(profile, item)
+		-- Profile editing/reset must not rewind this session's reveal/event dedupe ID.
+		presentationSequence[player] = math.max((presentationSequence[player] or 0) + 1, profile.Stats.Flushes)
 		profile.RunFlushes = (profile.RunFlushes or 0) + 1
 		profile.Inventory[item.Id] = (profile.Inventory[item.Id] or 0) + 1
 		profile.Collection[item.Id] = (profile.Collection[item.Id] or 0) + 1
-		events:Trigger(player, item, profile.Stats.Flushes)
-		world:Animate(player, item, profile.Settings.SkipAnimation, upgrades:Animation(cooldown))
-		remotes.Result:FireClient(player, "Flush", {
+		Presentation.Publish(player, profile, item, {
 			ItemId = item.Id,
 			Rarity = item.Rarity,
 			Chance = item.Chance,
 			Probability = probability,
-			FlushId = profile.Stats.Flushes,
+			FlushId = presentationSequence[player],
 			Cooldown = cooldown,
 			ServiceCoins = serviceCoins,
 			LuckMultiplier = luck,
 			LuckCapped = luck >= upgrades.Config.LuckCap,
-		})
+		}, world, events, remotes, upgrades:Animation(cooldown))
 		sync(player)
 	end
 	task.spawn(function()
@@ -83,6 +85,10 @@ function FlushService.Start(data, limiter, remotes, sync, world, events, monetiz
 		end
 	end)
 	world.Flush = flush
+	-- Server-only hook: admin service performs authorization before calling it.
+	world.ClearFlushCooldown = function(player)
+		nextFlush[player], nextAuto[player] = nil, nil
+	end
 	remotes.Flush.OnServerEvent:Connect(function(player, ...)
 		if select("#", ...) == 0 then
 			flush(player)
@@ -91,6 +97,7 @@ function FlushService.Start(data, limiter, remotes, sync, world, events, monetiz
 	game:GetService("Players").PlayerRemoving:Connect(function(player)
 		nextFlush[player] = nil
 		nextAuto[player] = nil
+		presentationSequence[player] = nil
 	end)
 end
 return FlushService

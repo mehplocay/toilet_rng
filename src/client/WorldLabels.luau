@@ -49,9 +49,13 @@ function Labels.Start(hud)
 			boardLinks[object] = nil
 		end
 	end)
-	for _, object in ipairs(workspace:GetDescendants()) do
-		add(object)
+	local function rescan()
+		for _, object in ipairs(workspace:GetDescendants()) do
+			add(object)
+		end
 	end
+	Labels.Reload = rescan
+	rescan()
 	local step = game:GetService("RunService").RenderStepped:Connect(function()
 		local camera = workspace.CurrentCamera
 		if not camera then
@@ -94,6 +98,9 @@ function Labels.Start(hud)
 		end
 	end)
 	hud.Destroying:Connect(function()
+		if Labels.Reload == rescan then
+			Labels.Reload = nil
+		end
 		added:Disconnect()
 		removed:Disconnect()
 		step:Disconnect()

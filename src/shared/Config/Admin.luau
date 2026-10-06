@@ -1,0 +1,31 @@
+-- Identity is checked only by the server. Names are never credentials.
+return {
+	UserIds = { [1212975135] = true },
+	AllowGroupOwner = false,
+	GroupId = 711692751,
+	AuthorizationCacheSeconds = 60,
+	CountAdminProfilesInRankings = true,
+	MaxItemGrant = 10000,
+	MaxCoins = 1e12,
+	MaxCounter = 1000000000,
+	MaxImportBytes = 100000,
+	MaxImportNodes = 4096,
+	MaxImportDepth = 10,
+	ResetConfirmationSeconds = 30,
+	MovementLeaseSeconds = 15,
+	MaxWalkSpeed = 100,
+	MaxJumpPower = 150,
+	FlySpeed = 60,
+	MaxDebugAdornments = 300,
+	Limits = {
+		Request = { Capacity = 4, Refill = 2 },
+		Mutation = { Capacity = 1, Refill = 0.2 },
+		World = { Capacity = 1, Refill = 0.125 },
+	},
+	CoinPresets = { 1000, 10000, 100000, 1000000, 1000000000, 1000000000000 },
+	LightingPresets = {
+		Day = { ClockTime = 14, Brightness = 3 },
+		Sunset = { ClockTime = 18, Brightness = 2 },
+		Night = { ClockTime = 0, Brightness = 1 },
+	},
+}

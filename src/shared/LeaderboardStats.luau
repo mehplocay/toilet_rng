@@ -1,5 +1,6 @@
 -- Pure validation for persisted server-awarded records. Never accept client ranking values.
 local Stats = {}
+local Admin = require(if script then script.Parent.Config.Admin else "./Config/Admin")
 function Stats.Integer(value)
 	return if type(value) == "number" and value == value and value >= 0 and value <= 9e15 then math.floor(value) else 0
 end
@@ -35,6 +36,9 @@ end
 function Stats:Rank(entries, key)
 	local rows = {}
 	for _, entry in ipairs(entries) do
+		if not Admin.CountAdminProfilesInRankings and entry.Profile.Admin and entry.Profile.Admin.Touched then
+			continue
+		end
 		local stats = self:Sanitize(entry.Profile.Stats)
 		local value = if key == "Coins"
 			then Stats.Integer(entry.Profile.Coins)
