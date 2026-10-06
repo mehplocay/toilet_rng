@@ -20,11 +20,16 @@ end
 assert(#Config.Tracks == 6 and Config.DisplayCapacity == 10)
 for _, track in ipairs(Config.Tracks) do
 	assert(
-		track.MaxLevel >= 8 and track.MaxLevel <= 12
-			or track.Id == "DisplaySlots" and track.MaxLevel == Config.DisplayCapacity - Config.BaseDisplaySlots
+		track.MaxLevel
+			== (
+				if track.Id == "CashBoost" or track.Id == "OfflineTank"
+					then 100
+					elseif track.Id == "LuckBoost" then 50
+					else 10
+			)
 	)
 	local p, spent = profile(), 0
-	for level = 0, track.MaxLevel - 1 do
+	for level = 0, (if track.Id == "DisplaySlots" then 7 else track.MaxLevel) - 1 do
 		local price = U:Price(track.Id, level)
 		assert(price and price > 0 and price % 1 == 0 and price <= Config.MaxBalance)
 		if level > 0 then
@@ -61,7 +66,7 @@ local old = { DisplaySlots = 100 }
 U:Restore(old, nil)
 assert(old.DisplaySlots == 100 and old.Upgrades.CashBoost == 0)
 U:Restore(old, { DisplaySlots = 999, CashBoost = 999, Unknown = 10 })
-assert(old.DisplaySlots == 100 and old.Upgrades.CashBoost == 10 and old.Upgrades.Unknown == nil)
+assert(old.DisplaySlots == 100 and old.Upgrades.CashBoost == 100 and old.Upgrades.Unknown == nil)
 local fresh = { DisplaySlots = 3 }
 U:Restore(fresh, { DisplaySlots = 4 })
 U:Restore(fresh, fresh.Upgrades)
@@ -69,6 +74,8 @@ assert(fresh.DisplaySlots == 7, "Migration repeatedly added display levels")
 fresh.Coins = 9e15
 fresh.DisplaySlots = 10
 assert(not U:Buy(fresh, "DisplaySlots", 4), "Sold an unusable display slot")
+local title, nextLevel = U:Milestone(fresh, "DisplaySlots")
+assert(title == "Display Slots Master" and nextLevel == nil, "Capacity-complete track must show its Master title")
 
 for _, toilet in ipairs(Toilets) do
 	local previous, autoPrevious = toilet.Cooldown, toilet.Cooldown * Config.AutoBaseMultiplier
@@ -109,15 +116,15 @@ p.Income = Income:Sanitize(nil, p)
 Income:Settle(p, 1000, false)
 Income:Settle(p, 1000 + 86400 * 30, true)
 assert(U:OfflineMinutes(p, IncomeConfig.OfflineMinutes) == 720)
-assert(Income:PendingCoins(p) == 720000000 * 2 * 720, "Tank/boost clipped by old pending cap")
+assert(Income:PendingCoins(p) == 780000000 * 2 * 720, "Tank/boost clipped by old pending cap")
 p.Income = Income:Sanitize(p.Income, p)
-assert(Income:Collect(p) == 1036800000000)
+assert(Income:Collect(p) == 1123200000000)
 assert(Income:Collect(p) == 0)
 Income:Settle(p, p.Income.UpdatedAt, true)
 assert(Income:PendingCoins(p) == 0)
 
 for tier = 1, #Toilets do
-	local entries, empty = Roll.Distribution(Items, Toilets, tier, U:Luck(p, Toilets[tier].Luck, 2, 2, 2))
+	local entries, empty = Roll.Distribution(Items, Toilets, tier, U:Luck(p, Toilets[tier].Luck, 2, 2, 1e300))
 	local total, events = 0, 0
 	for _, entry in ipairs(entries) do
 		total += entry.Probability
@@ -125,14 +132,14 @@ for tier = 1, #Toilets do
 			events += entry.Probability
 		end
 		if entry.Item.Id == "KingPoop" then
-			assert(entry.Probability >= 0.0000499997 and entry.Probability <= 0.00005)
+			assert(entry.Probability >= 0.0000749993 and entry.Probability <= 0.000075)
 		end
 	end
 	assert(empty == 0 and math.abs(total - 1) < 1e-12)
-	assert(events <= 0.0000555 and (tier < 5 or events >= 0.00005 - 1e-12))
+	assert(events <= 0.00008325 and (tier < 5 or events >= 0.000075 - 1e-12))
 	assert(Roll.Sample(entries, function()
 		return 0.999999999
-	end).Id == "Poop")
+	end).Id == "ToiletPaper")
 end
 print(
 	"Upgrade checks passed: bounded exponential purchases, compare-and-swap replay, migration, slots, luck/cooldown/auto caps, cash rounding, full tank and exact odds"

@@ -1,3 +1,5 @@
+2026-10-06 follow-up: [Permanent economy](economy-v2.md) and [coin-gate rebirth](rebirth.md) supersede the reset/timing/upgrade limits in this historical merge report. Commerce receipt/pass preservation and paid caps remain unchanged.
+
 # Income-first, admin and path/catalog merge
 
 2026-10-06. Resolves the existing merge into main without committing or aborting it. This note supersedes conflicting historical branch-specific counts and tuning statements in the linked design notes.

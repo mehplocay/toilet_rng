@@ -2,7 +2,6 @@
 local Config = game.ReplicatedStorage.Shared.Config
 local Rebirth = require(Config.Rebirth)
 local Rarities = require(Config.Rarities)
-local Toilets = require(Config.Toilets)
 local Layout = require(Config.MapLayout)
 local NumberFormat = require(game.ReplicatedStorage.Shared.NumberFormat)
 local colors = {}
@@ -22,7 +21,8 @@ function Stairs.Refresh(plot, owner, profile)
 		math.clamp(level - Layout.Rebirth.Steps + 2, 1, math.max(1, #Rebirth.Levels - Layout.Rebirth.Steps + 1))
 	local requirement = NumberFormat.Compact(Rebirth.RequiredFlushes)
 		.. " flushes + "
-		.. Toilets[Rebirth.RequiredTier].Id
+		.. NumberFormat.Compact((Rebirth.Levels[level + 1] or Rebirth.Levels[#Rebirth.Levels]).RequiredCoins)
+		.. " Coins"
 	for index, step in ipairs(plot.RebirthSteps) do
 		local milestone = first + index - 1
 		local unlocked = owner ~= nil and milestone <= level

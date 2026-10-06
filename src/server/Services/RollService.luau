@@ -1,8 +1,10 @@
+local Luck = require(if script then game.ReplicatedStorage.Shared.Config.Upgrades else "../../shared/Config/Upgrades")
 local RollService = {}
 function RollService.Distribution(items, toilets, tier, luckOverride)
 	assert(toilets[tier], "Invalid toilet tier")
 	local luck = luckOverride or toilets[tier].Luck
 	assert(luck >= 1 and luck < math.huge, "Invalid luck")
+	luck = math.min(luck, Luck.LuckCap)
 	local pool, sorted = {}, {}
 	for index = 1, tier do
 		for _, id in ipairs(toilets[index].Pool) do
@@ -19,7 +21,10 @@ function RollService.Distribution(items, toilets, tier, luckOverride)
 	end)
 	local entries, remaining = {}, 1
 	for _, item in ipairs(sorted) do
-		local chance = if item.Id == "Poop" then 1 else math.min(1, luck / item.Chance)
+		local effective = if item.Chance > Luck.RareLuckThreshold
+			then math.min(luck, Luck.FullLuck) + math.max(0, luck - Luck.FullLuck) * Luck.RareLuckScale
+			else luck
+		local chance = if item.Id == "Poop" then 1 else math.min(1, effective / item.Chance)
 		table.insert(entries, { Item = item, Check = chance, Probability = remaining * chance })
 		remaining *= 1 - chance
 	end

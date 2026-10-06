@@ -4,19 +4,22 @@ test("audit2: all tier/track/rebirth/boost combinations obey the total luck and 
 	local rules = e:Load("src/shared/UpgradeRules").new(e:Load("src/shared/Config/Upgrades"))
 	local profile = e:Load(dataPath).DefaultProfile()
 	for _, toilet in ipairs(e:Load("src/shared/Config/Toilets")) do
-		for level = 0, 10 do
-			profile.Upgrades.LuckBoost, profile.Upgrades.FlushSpeed = level, level
+		for level = 0, 50 do
+			profile.Upgrades.LuckBoost, profile.Upgrades.FlushSpeed = level, math.min(level, 10)
 			for rebirth = 0, 15 do
 				profile.RebirthLevel = rebirth
 				for daily = 1, 2 do
 					for event = 1, 2 do
 						for pass = 1, 2 do
 							local luck = rules:Luck(profile, toilet.Luck, event, pass, daily)
-							assert(luck >= 1 and luck <= 5)
+							assert(luck >= 1 and luck <= 10)
 							local expected = math.min(
-								5,
+								10,
 								toilet.Luck
-									* (1 + level * 0.1 + rules:RebirthBonus(profile, "Luck"))
+									* (1 + math.min(level, 10) * 0.1 + math.max(0, level - 10) * 0.04 + rules:RebirthBonus(
+										profile,
+										"Luck"
+									))
 									* event
 									* pass
 									* daily

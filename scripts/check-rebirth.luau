@@ -7,7 +7,7 @@ local Items = require("../src/shared/Config/Items")
 local IncomeConfig = require("../src/shared/Config/Income")
 local Roll = require("../src/server/Services/RollService")
 local Income = require("../src/shared/IncomeAccrual").new(IncomeConfig, Items, U)
-assert(#Config.Levels >= 10 and #Config.Levels <= 20 and Config.RequiredTier == 4)
+assert(#Config.Levels >= 10 and #Config.Levels <= 20 and Config.RequiredFlushes == 300)
 local previous = { Cash = 0, Luck = 0, Speed = 0 }
 local previousCashStep = math.huge
 for level, bonus in ipairs(Config.Levels) do
@@ -18,11 +18,11 @@ for level, bonus in ipairs(Config.Levels) do
 	previousCashStep, previous = bonus.Cash - previous.Cash, bonus
 	assert(bonus.StarterCoins <= 10000 and #bonus.Perks == 3 and bonus.Title and bonus.Badge)
 	for tier, toilet in ipairs(Toilets) do
-		for cash = 0, 10 do
+		for _, cash in ipairs({ 0, 10, 35, 60, 85, 100 }) do
 			for speed = 0, 10 do
-				local p = { RebirthLevel = level, Upgrades = { CashBoost = cash, FlushSpeed = speed, LuckBoost = 10 } }
+				local p = { RebirthLevel = level, Upgrades = { CashBoost = cash, FlushSpeed = speed, LuckBoost = 50 } }
 				local cooldown, multiplier = U:Cooldown(p, toilet.Cooldown), U:Cash(p)
-				assert(cooldown >= UpgradeConfig.CooldownFloor and multiplier <= 2 + Config.CashCap + 1e-9)
+				assert(cooldown >= UpgradeConfig.CooldownFloor and multiplier <= 4.25 + Config.CashCap + 1e-9)
 				p.ToiletTier, p.DisplaySlots, p.Displays = tier, 100, {}
 				for slot = 1, 100 do
 					p.Displays[tostring(slot)] = "Mystery"

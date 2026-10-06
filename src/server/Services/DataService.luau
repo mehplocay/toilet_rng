@@ -63,6 +63,7 @@ function DataService.DefaultProfile()
 	return {
 		Monetization = CommerceProfile.Sanitize(nil),
 		Version = 1,
+		UpgradeVersion = 2,
 		RebirthLevel = 0,
 		RunFlushes = 0,
 		ProtectedInventory = {},
@@ -106,7 +107,7 @@ local function sanitize(raw, withoutAdmin)
 	profile.ToiletTier = math.clamp(integer(raw.ToiletTier, 1), 1, #Toilets)
 	profile.DisplaySlots = math.clamp(integer(raw.DisplaySlots, 3), 1, 100)
 	profile.RebirthLevel = rebirth:Level(raw)
-	upgrades:Restore(profile, raw.Upgrades)
+	upgrades:Restore(profile, raw.Upgrades, if raw.UpgradeVersion == 2 then 2 else 1)
 	index:Sanitize(profile, raw)
 	profile.Income = income:Sanitize(raw.Income, profile)
 	for _, item in ipairs(Items) do

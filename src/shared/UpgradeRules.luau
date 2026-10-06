@@ -8,12 +8,14 @@ end
 function Rules.new(config)
 	local self = setmetatable({ Config = config, ById = {} }, Rules)
 	for _, track in ipairs(config.Tracks) do
-		assert(integer(track.MaxLevel, 12) and track.MaxLevel > 0)
-		assert(
-			track.Growth > 1
-				and integer(math.ceil(track.BaseCost * track.Growth ^ (track.MaxLevel - 1)), config.MaxBalance)
-		)
+		assert(integer(track.MaxLevel, 100) and track.MaxLevel > 0)
 		self.ById[track.Id] = track
+		local previous = 0
+		for level = 0, track.MaxLevel - 1 do
+			local price = self:Price(track.Id, level)
+			assert(integer(price, config.MaxBalance) and price > previous, "Invalid upgrade curve")
+			previous = price
+		end
 	end
 	return self
 end
@@ -29,8 +31,15 @@ function Rules:Sanitize(raw)
 	end
 	return levels
 end
-function Rules:Restore(profile, raw)
+function Rules:Restore(profile, raw, version)
 	profile.Upgrades = self:Sanitize(raw)
+	if version ~= nil and version < self.Config.Version then
+		-- Never reinterpret corrupt legacy levels as new purchases.
+		for id, level in pairs(profile.Upgrades) do
+			profile.Upgrades[id] = math.min(level, if id == "DisplaySlots" then 7 else 10)
+		end
+	end
+	profile.UpgradeVersion = self.Config.Version
 	profile.DisplaySlots = math.max(
 		profile.DisplaySlots,
 		math.min(
@@ -47,13 +56,37 @@ function Rules:Price(id, level)
 	if not track or not integer(level, track.MaxLevel - 1) then
 		return nil
 	end
+	if track.Costs then
+		local target = level + 1
+		for i = 2, #track.Costs do
+			local a, b = track.Costs[i - 1], track.Costs[i]
+			if target <= b[1] then
+				return math.ceil(a[2] * (b[2] / a[2]) ^ ((target - a[1]) / (b[1] - a[1])))
+			end
+		end
+	end
 	return math.ceil(track.BaseCost * track.Growth ^ level)
 end
+function Rules:Effect(profile, id)
+	local track, level = self.ById[id], self:Level(profile, id)
+	return math.min(level, 10) * track.Step + math.max(0, level - 10) * (track.LateStep or track.Step)
+end
+function Rules:Milestone(profile, id)
+	local track, level = self.ById[id], self:Level(profile, id)
+	if
+		level == track.MaxLevel
+		or (id == "DisplaySlots" and (profile.DisplaySlots or 0) >= self.Config.DisplayCapacity)
+	then
+		return track.Name .. " Master", nil
+	end
+	local reached = math.floor(level / self.Config.MilestoneEvery) * self.Config.MilestoneEvery
+	return if reached > 0
+		then track.Name .. " " .. self.Config.MilestoneTitles[reached / self.Config.MilestoneEvery]
+		else "Novice",
+		math.min(track.MaxLevel, reached + self.Config.MilestoneEvery)
+end
 function Rules:Cash(profile)
-	return Paid.Cash(
-		profile,
-		1 + self:Level(profile, "CashBoost") * self.ById.CashBoost.Step + self:RebirthBonus(profile, "Cash")
-	)
+	return Paid.Cash(profile, 1 + self:Effect(profile, "CashBoost") + self:RebirthBonus(profile, "Cash"))
 end
 function Rules:RebirthBonus(profile, key)
 	local level = profile and profile.RebirthLevel
@@ -62,8 +95,7 @@ function Rules:RebirthBonus(profile, key)
 end
 function Rules:Luck(profile, tier, ...)
 	local cap = self.Config.LuckCap
-	local luck = tier
-		* (1 + self:Level(profile, "LuckBoost") * self.ById.LuckBoost.Step + self:RebirthBonus(profile, "Luck"))
+	local luck = tier * (1 + self:Effect(profile, "LuckBoost") + self:RebirthBonus(profile, "Luck"))
 	assert(luck >= 1 and luck < math.huge)
 	luck = math.min(cap, luck)
 	for i = 1, select("#", ...) do
@@ -89,7 +121,7 @@ function Rules:AutoInterval(profile, cooldown)
 	)
 end
 function Rules:OfflineMinutes(profile, base)
-	return Paid.Offline(profile, base + self:Level(profile, "OfflineTank") * self.ById.OfflineTank.Step)
+	return Paid.Offline(profile, base + self:Effect(profile, "OfflineTank"))
 end
 function Rules:Animation(cooldown)
 	return math.min(self.Config.AnimationMax, cooldown * 0.8)

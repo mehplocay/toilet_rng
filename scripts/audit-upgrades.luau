@@ -17,7 +17,7 @@ test("merge: capped RNG odds, cash, lifetime collection and animation survive ma
 			p.Upgrades.FlushSpeed, p.Upgrades.AutoFlushSpeed = 10, 10
 			p.RewardLuckExpires = e.Now + 60
 		end
-		local luck, cooldown = if upgraded then 5 else 1, if upgraded then 0.4 else 1.5
+		local luck, cooldown = if upgraded then 5.2 else 1, if upgraded then 0.4 else 1.5
 		local expected = {}
 		for _, entry in ipairs(roll.Distribution(items, toilets, p.ToiletTier, luck)) do
 			expected[entry.Item.Id] = entry.Probability
@@ -38,7 +38,7 @@ test("merge: capped RNG odds, cash, lifetime collection and animation survive ma
 			local animation = animations[#animations]
 			assert(payload.Rarity == animation.Item.Rarity and payload.Chance == animation.Item.Chance)
 			assert(payload.Probability == expected[payload.ItemId] and payload.LuckMultiplier == luck)
-			assert(payload.LuckCapped == upgraded and payload.Cooldown == cooldown)
+			assert(payload.LuckCapped == false and payload.Cooldown == cooldown)
 			assert(animation.Duration > 0 and animation.Duration < cooldown)
 			assert(payload.ServiceCoins == toilets[p.ToiletTier].ServiceCoins * (if upgraded then 2 else 1))
 			assert(p.Coins == coins + payload.ServiceCoins and p.Stats.Earned == p.Coins)
@@ -90,6 +90,7 @@ end)
 test("upgrades: delayed save and duplicate purchase cannot double debit or level", function()
 	local e = server()
 	local player, p = e:Join(71)
+	local u = e:Load("src/shared/UpgradeRules").new(e:Load("src/shared/Config/Upgrades"))
 	p.Coins = 10000
 	e.Store.Before = function()
 		coroutine.yield("purchase save held")
@@ -110,10 +111,15 @@ test("upgrades: delayed save and duplicate purchase cannot double debit or level
 	-- Busy saves reject without mutating or queueing; retry the next level after acknowledgement.
 	e.Now += 1
 	e:Fire("BuyUpgrade", player, "CashBoost", 1)
-	assert(e.Store.Records.Player_71.Data.Coins == 7600 and e.Store.Records.Player_71.Data.Upgrades.CashBoost == 2)
+	assert(
+		e.Store.Records.Player_71.Data.Coins == 9600 - u:Price("CashBoost", 1)
+			and e.Store.Records.Player_71.Data.Upgrades.CashBoost == 2
+	)
 	e.Data:Close(player)
 	local rejoined = e:Join(71)
-	assert(e.Data:Get(rejoined).Coins == 7600 and e.Data:Get(rejoined).Upgrades.CashBoost == 2)
+	assert(
+		e.Data:Get(rejoined).Coins == 9600 - u:Price("CashBoost", 1) and e.Data:Get(rejoined).Upgrades.CashBoost == 2
+	)
 end)
 
 test("upgrades: committed response loss retries one immutable transaction", function()
@@ -244,8 +250,8 @@ test("upgrades: 0.4s shared cooldown admits legitimate requests and rejects burs
 		if result.Payload[1] == "Flush" then
 			assert(
 				result.Payload[2].Cooldown == 0.4
-					and result.Payload[2].LuckMultiplier == 5
-					and result.Payload[2].LuckCapped
+					and result.Payload[2].LuckMultiplier == 5.2
+					and not result.Payload[2].LuckCapped
 			)
 		end
 	end
@@ -256,7 +262,7 @@ test("upgrades: 0.4s shared cooldown admits legitimate requests and rejects burs
 		end
 	end
 	-- The existing State wire exposes both levels and derived server stats.
-	assert(state and state.Upgrades.FlushSpeed == 10 and state.UpgradeStats.LuckCapped)
+	assert(state and state.Upgrades.FlushSpeed == 10 and not state.UpgradeStats.LuckCapped)
 end)
 
 test("upgrades: all auto levels use slower intervals than the shared cooldown and never catch up", function()
@@ -348,9 +354,9 @@ test("upgrades: maximum offline tank survives ambiguous load and cannot be recla
 		e:Load("src/shared/UpgradeRules").new(e:Load("src/shared/Config/Upgrades"))
 	)
 	local restored = e.Data:Get(second)
-	assert(income:PendingCoins(restored) == 1036800000000 and restored.Upgrades.OfflineTank == 10)
+	assert(income:PendingCoins(restored) == 1123200000000 and restored.Upgrades.OfflineTank == 10)
 	e.Data:Close(second)
 	local third = e:Player(80)
 	e.Data:Load(third)
-	assert(income:PendingCoins(e.Data:Get(third)) == 1036800000000, "Reconnect repeated maximum tank")
+	assert(income:PendingCoins(e.Data:Get(third)) == 1123200000000, "Reconnect repeated maximum tank")
 end)

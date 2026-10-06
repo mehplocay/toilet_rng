@@ -1,43 +1,58 @@
-local RollService = require("../src/server/Services/RollService")
-local Simulation = require("../src/server/Simulation")
+local Roll = require("../src/server/Services/RollService")
 local Items = require("../src/shared/Config/Items")
 local Toilets = require("../src/shared/Config/Toilets")
-math.randomseed(20261004)
-Simulation.Run(RollService, Items, Toilets, math.random)
 local Config = require("../src/shared/Config/Upgrades")
-local upgrades = require("../src/shared/UpgradeRules").new(Config)
-local luck = upgrades:Luck({ Upgrades = { LuckBoost = 10 } }, Toilets[#Toilets].Luck, 2, 2, 2)
-assert(luck == 5)
-local entries, empty = RollService.Distribution(Items, Toilets, #Toilets, luck)
-local expected = 0
-for _, entry in ipairs(entries) do
-	if entry.Item.Event then
-		expected += entry.Probability
+assert(Config.LuckCap == 10)
+print("Galaxy effective odds: independent rare-first checks; Poop fallback, no paid luck.")
+for _, luck in ipairs({ 1, 5, 10 }) do
+	local entries, empty = Roll.Distribution(Items, Toilets, 7, luck)
+	local total, secrets, events = 0, 0, 0
+	local counts = {}
+	math.randomseed(20261006 + luck)
+	local n = 1000000
+	for _ = 1, n do
+		local item = Roll.Sample(entries, math.random)
+		assert(item)
+		counts[item.Id] = (counts[item.Id] or 0) + 1
 	end
-end
-assert(empty == 0 and expected >= 0.00005 and expected <= 0.0000555)
-math.randomseed(20261005)
-local rolls = 5000000
-local counts = Simulation.Run(RollService, Items, Toilets, math.random, rolls, #Toilets, luck)
-local events, total = 0, 0
-for _, item in ipairs(Items) do
-	local count = counts[item.Id] or 0
-	total += count
-	if item.Event then
-		events += count
+	local counted = 0
+	for _, entry in ipairs(entries) do
+		local p = entry.Probability
+		local observed = counts[entry.Item.Id] or 0
+		counted += observed
+		total += p
+		if entry.Item.Rarity == "Secret" then
+			secrets += p
+		end
+		if entry.Item.Event then
+			events += p
+		end
+		assert(
+			math.abs(observed - n * p) <= 6 * math.sqrt(n * p * (1 - p)) + 1,
+			"Seeded odds outside six sigma: " .. entry.Item.Id
+		)
+		print(
+			string.format(
+				"%dx | %-14s | check %.9f | effective 1 / %.3f | observed %d / %d",
+				luck,
+				entry.Item.Id,
+				entry.Check,
+				if p > 0 then 1 / p else math.huge,
+				observed,
+				n
+			)
+		)
 	end
-end
-assert(total == rolls and not counts.NoDrop, "A roll did not return exactly one known item")
-local tolerance = 6 * math.sqrt(rolls * expected * (1 - expected))
-assert(math.abs(events - rolls * expected) <= tolerance, "Observed Event rate outside six-sigma seeded test range")
-print(
-	string.format(
-		"5x cap: Event probability %.9f (%.6f%%); %d/%d observed; six-sigma count range %.1f..%.1f; no empty rolls.",
-		expected,
-		expected * 100,
-		events,
-		rolls,
-		rolls * expected - tolerance,
-		rolls * expected + tolerance
+	assert(counted == n and empty == 0 and math.abs(total - 1) < 1e-12)
+	print(
+		string.format(
+			"%dx | expected first Secret at 1 flush/s: %.2f hours; event probability %.9f; 12 players at 0.4s floor: %.3f events/hour",
+			luck,
+			1 / secrets / 3600,
+			events,
+			events * 30 * 3600
+		)
 	)
-)
+	assert(events <= 0.00008325 and events * 30 < 1 / 8, "Expected arrivals exceed existing event drain")
+end
+print("Odds simulation passed: all items, 3 million independent rolls, exact sum 1; queue/rate limit unchanged.")

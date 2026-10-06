@@ -108,7 +108,7 @@ test("merge economy: maximum paid offline ledger round-trips exact fractions and
 	local income = commerce.Income
 	assert(income.Upgrades:Cash(p) == 9)
 	assert(income.Upgrades:OfflineMinutes(p, income.Config.OfflineMinutes) == 1440)
-	assert(income:Rates(p)["1"] == 1200000 * 9 * 6000)
+	assert(income:Rates(p)["1"] == 1300000 * 9 * 6000)
 	p.Income.UpdatedAt = e.Now - 86400
 	income:Settle(p, e.Now, true)
 	assert(income:TotalUnits(p) == 9e15 and income:StorageUnits(p, false) == 9e15)

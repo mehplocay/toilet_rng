@@ -21,7 +21,7 @@ function Upgrades.Create(gui, remotes)
 		row.Visible, tracks.Frame.Visible = name == "Toilets", name == "Coin Upgrades"
 		footer.Text = if name == "Toilets"
 			then "Better toilets = more income + better drops!"
-			else "Coin upgrades last until your next rebirth."
+			else "Toilets and coin upgrades are permanent."
 	end)
 	tabs.Frame.Position = UDim2.fromOffset(0, 38)
 	C.Grid(row, 144, 310)

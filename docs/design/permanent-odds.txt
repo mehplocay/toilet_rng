@@ -1,0 +1,38 @@
+Galaxy effective odds: independent rare-first checks; Poop fallback, no paid luck.
+1x | Mystery        | check 0.000000100 | effective 1 / 10000000.000 | observed 0 / 1000000
+1x | AlienToilet    | check 0.000001000 | effective 1 / 1000000.100 | observed 0 / 1000000
+1x | KingPoop       | check 0.000010000 | effective 1 / 100000.110 | observed 7 / 1000000
+1x | SewerShark     | check 0.000040000 | effective 1 / 25000.278 | observed 37 / 1000000
+1x | ToiletBaby     | check 0.000200000 | effective 1 / 5000.256 | observed 227 / 1000000
+1x | GoldenPoop     | check 0.001000000 | effective 1 / 1000.251 | observed 988 / 1000000
+1x | Duck           | check 0.004000000 | effective 1 / 250.313 | observed 3996 / 1000000
+1x | Fish           | check 0.012500000 | effective 1 / 80.422 | observed 12289 / 1000000
+1x | Rat            | check 0.040000000 | effective 1 / 25.450 | observed 39085 / 1000000
+1x | ToiletPaper    | check 0.125000000 | effective 1 / 8.483 | observed 117645 / 1000000
+1x | Poop           | check 1.000000000 | effective 1 / 1.212 | observed 825726 / 1000000
+1x | expected first Secret at 1 flush/s: 252.53 hours; event probability 0.000011100; 12 players at 0.4s floor: 1.199 events/hour
+5x | Mystery        | check 0.000000500 | effective 1 / 2000000.000 | observed 1 / 1000000
+5x | AlienToilet    | check 0.000005000 | effective 1 / 200000.100 | observed 6 / 1000000
+5x | KingPoop       | check 0.000050000 | effective 1 / 20000.110 | observed 57 / 1000000
+5x | SewerShark     | check 0.000200000 | effective 1 / 5000.278 | observed 206 / 1000000
+5x | ToiletBaby     | check 0.001000000 | effective 1 / 1000.256 | observed 939 / 1000000
+5x | GoldenPoop     | check 0.005000000 | effective 1 / 200.251 | observed 4887 / 1000000
+5x | Duck           | check 0.020000000 | effective 1 / 50.314 | observed 19876 / 1000000
+5x | Fish           | check 0.062500000 | effective 1 / 16.429 | observed 61514 / 1000000
+5x | Rat            | check 0.200000000 | effective 1 / 5.476 | observed 182801 / 1000000
+5x | ToiletPaper    | check 0.625000000 | effective 1 / 2.191 | observed 455362 / 1000000
+5x | Poop           | check 1.000000000 | effective 1 / 3.651 | observed 274351 / 1000000
+5x | expected first Secret at 1 flush/s: 50.51 hours; event probability 0.000055500; 12 players at 0.4s floor: 5.994 events/hour
+10x | Mystery        | check 0.000000750 | effective 1 / 1333333.333 | observed 0 / 1000000
+10x | AlienToilet    | check 0.000007500 | effective 1 / 133333.433 | observed 9 / 1000000
+10x | KingPoop       | check 0.000075000 | effective 1 / 13333.443 | observed 81 / 1000000
+10x | SewerShark     | check 0.000400000 | effective 1 / 2500.208 | observed 401 / 1000000
+10x | ToiletBaby     | check 0.002000000 | effective 1 / 500.242 | observed 1990 / 1000000
+10x | GoldenPoop     | check 0.010000000 | effective 1 / 100.249 | observed 10090 / 1000000
+10x | Duck           | check 0.040000000 | effective 1 / 25.315 | observed 39345 / 1000000
+10x | Fish           | check 0.125000000 | effective 1 / 8.438 | observed 118297 / 1000000
+10x | Rat            | check 0.400000000 | effective 1 / 3.014 | observed 331805 / 1000000
+10x | ToiletPaper    | check 1.000000000 | effective 1 / 2.009 | observed 497982 / 1000000
+10x | Poop           | check 1.000000000 | effective 1 / inf | observed 0 / 1000000
+10x | expected first Secret at 1 flush/s: 33.67 hours; event probability 0.000083249; 12 players at 0.4s floor: 8.991 events/hour
+Odds simulation passed: all items, 3 million independent rolls, exact sum 1; queue/rate limit unchanged.

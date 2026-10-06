@@ -1,3 +1,5 @@
+2026-10-06 permanent progression update: [Economy v2](economy-v2.md) supersedes the historical tuning below. Toilets and upgrades now survive rebirth; only uncollected pending and loose inventory reset. Current tier factors are 1 / 1.5 / 2.2 / 3.3 / 5.25 / 8.5 / 13, base storage 37.44B per slot / 374.4B total, and Offline Tank spans 8-24h before paid factors and storage caps. The 6,000-unit ledger and 9e15-subcoin ceiling are unchanged.
+
 # Passive display income
 
 2026-10-06, income-first economy. [Economy v2](economy-v2.md) owns current tuning and measured progression. [Display/collect](display-collect.md) records the unchanged placement, authorization and durable collection contract. [Research](../research/income-first-economy.md).

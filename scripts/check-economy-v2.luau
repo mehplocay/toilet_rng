@@ -48,7 +48,7 @@ for _, rate in pairs(rates) do
 	assert(rate >= 0 and rate % 1 == 0)
 	sum += rate
 end
-assert(sum == 259200000000, "100 legacy Secrets must share ten-slot total cap exactly")
+assert(sum == 280800000000, "100 legacy Secrets must share ten-slot total cap exactly")
 Income:Settle(p, Config.MaxTimestamp, true)
 assert(Income:TotalUnits(p) == 9e15 and Income:PendingCoins(p) == 1500000000000)
 local sanitized = Income:Sanitize(p.Income, p)

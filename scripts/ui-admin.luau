@@ -32,7 +32,7 @@ do
 	window.Send("Give", { ItemId = "Poop", Count = 0 })
 	window.Send("Give", { ItemId = "Poop", Count = 10001 })
 	window.Send("SetCoins", { Amount = math.huge })
-	window.Send("Upgrade", { Track = "CashBoost", Level = 11 })
+	window.Send("Upgrade", { Track = "CashBoost", Level = 101 })
 	assert(#remote.Calls == initialCalls, "Invalid numeric fields must not lock the UI waiting for a dropped request")
 	H.Services.UserInputService.InputBegan:Fire({ KeyCode = Enum.KeyCode.F2 }, true)
 	assert(window.Panel.Visible, "Processed F2 must not toggle the panel while typing")

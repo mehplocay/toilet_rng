@@ -1,3 +1,5 @@
+Permanent progression follow-up (2026-10-06, `feature/permanent`): **148 audit scenarios pass**, including legacy/new-cap migration, permanent tiers/tracks/slots, strict loose-inventory reset, coin-gate boundaries, pending exclusion, level-100 response-loss/replay and reset/purchase/collection races. Existing announcement queues and persistence lease/save machinery are unchanged. [Current contract, measured pacing and limits](design/economy-v2.md) supersede historical reset/tuning statements below.
+
 # Full-game security, exploit and performance audit
 
 2026-10-05/06, `feature/audit2`, baseline `f0597c1ee64279a462d1ce25380c7e96de798ee1`. No commit or push. Scope: AGENTS.md, GDD/mockup, previous audit, rebirth/upgrades/passive-income/rare-drop-reveal designs, all `src/` and `scripts/`, including map generation, asset/preview tooling and test harnesses. Generated map data was reviewed with its authoring recipe and exhaustive builder/collision checks. Imported binaries were inspected by the existing Rojo XML validation.

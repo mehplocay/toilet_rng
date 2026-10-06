@@ -18,11 +18,29 @@ local titles = {
 	"Eternal Cleaner",
 	"Flush Legend",
 }
+local gates = {
+	3000000,
+	12000000,
+	35000000,
+	100000000,
+	500000000,
+	1500000000,
+	5000000000,
+	15000000000,
+	40000000000,
+	80000000000,
+	150000000000,
+	250000000000,
+	400000000000,
+	650000000000,
+	2500000000000,
+}
 for level = 1, 15 do
 	cash += if level <= 3 then 0.25 elseif level <= 8 then 0.10 else 0.05
 	luck = math.min(0.30, luck + 0.02)
 	speed = math.min(0.20, speed + (if level <= 3 then 0.04 else 0.01))
 	levels[level] = {
+		RequiredCoins = gates[level],
 		Cash = math.min(1.60, cash),
 		Luck = luck,
 		Speed = speed,
@@ -33,10 +51,8 @@ for level = 1, 15 do
 	}
 end
 return {
-	-- Income-first cohort: about 60 minutes; currency cannot bypass fresh flushes.
-	RequiredFlushes = 3300,
-	RequiredTier = 4, -- Diamond (one-based runtime tiers).
-	ResetTier = 1,
+	-- Coin gates set the pace; every run also requires fresh successful flushes.
+	RequiredFlushes = 300,
 	BaseDisplaySlots = 3,
 	HoldSeconds = 2,
 	ResponseTimeout = 15,
@@ -50,18 +66,16 @@ return {
 	Levels = levels,
 	ResetList = {
 		"Wallet -> starter coins",
-		"Toilet -> Basic",
-		"All coin upgrade levels",
-		"Pending display coins",
-		"Unprotected extra items",
-		"Unused coin-bought slots",
+		"ALL loose inventory",
+		"Uncollected pending coins",
+		"Flushes this run",
 	},
 	KeepList = {
-		"Items on your display",
-		"Kept copies stay unsellable",
+		"All toilet tiers + upgrades",
+		"All display slots + items",
 		"Lifetime index + best finds",
 		"Passes, cosmetics + settings",
 		"Tutorial, daily + index claims",
-		"First copies + occupied slots",
+		"Permanent rebirth bonuses",
 	},
 }

@@ -1,8 +1,5 @@
 -- Pure reset construction. The caller swaps this complete tree without yielding.
 local Rules = {}
-local IndexRewards = require(if script then script.Parent.Config.IndexRewards else "./Config/IndexRewards")
-local Paid = require(if script then script.Parent.PaidBenefits else "./PaidBenefits")
-local Monetization = require(if script then script.Parent.Config.Monetization else "./Config/Monetization")
 Rules.__index = Rules
 local function integer(value, maximum)
 	return type(value) == "number" and value == value and value >= 0 and value <= maximum and value % 1 == 0
@@ -48,8 +45,10 @@ function Rules:Eligible(profile, expectedLevel)
 	return profile ~= nil
 		and integer(expectedLevel, #self.Config.Levels - 1)
 		and self:Level(profile) == expectedLevel
-		and (profile.RunFlushes or 0) >= self.Config.RequiredFlushes
-		and profile.ToiletTier >= self.Config.RequiredTier
+		and integer(profile.RunFlushes, self.Config.MaxBalance)
+		and profile.RunFlushes >= self.Config.RequiredFlushes
+		and integer(profile.Coins, self.Config.MaxBalance)
+		and profile.Coins >= self.Config.Levels[expectedLevel + 1].RequiredCoins
 end
 function Rules:Build(profile, expectedLevel, now)
 	if not self:Eligible(profile, expectedLevel) then
@@ -61,42 +60,18 @@ function Rules:Build(profile, expectedLevel, now)
 	if result.Stats.Earned > self.Config.MaxBalance - bonus.StarterCoins then
 		return nil
 	end
-	result.Coins, result.ToiletTier = bonus.StarterCoins, self.Config.ResetTier
+	result.Coins = bonus.StarterCoins
 	result.Stats.Earned += bonus.StarterCoins
-	-- Preserve capacity of unknown/legacy/paid origin. Remove only tracked coin purchases.
-	local paidSlots = Paid.Slots(profile)
-	result.DisplaySlots = math.max(
-		math.min(Monetization.DisplayCapacity, self.Config.BaseDisplaySlots + paidSlots),
-		profile.DisplaySlots - (profile.Upgrades.DisplaySlots or 0)
-	)
-	for _, reward in ipairs(IndexRewards.Milestones) do
-		if profile.IndexClaims["total:" .. reward.Count] and reward.DisplaySlots then
-			result.DisplaySlots =
-				math.max(result.DisplaySlots, math.min(Monetization.DisplayCapacity, reward.DisplaySlots + paidSlots))
-		end
-	end
-	for id in pairs(result.Upgrades) do
-		result.Upgrades[id] = 0
-	end
 	local reserved = {}
 	for _, id in pairs(profile.Displays) do
 		reserved[id] = (reserved[id] or 0) + 1
 	end
-	result.ProtectedInventory = {}
-	for id, count in pairs(profile.Inventory) do
-		local kept = math.min(count, math.max(1, reserved[id] or 0, (profile.ProtectedInventory or {})[id] or 0))
+	result.Inventory, result.ProtectedInventory = {}, {}
+	for id, count in pairs(reserved) do
+		local kept = math.min(count, profile.Inventory[id] or 0)
 		result.Inventory[id], result.ProtectedInventory[id] = kept, kept
 	end
-	-- Occupied pedestals survive in place, including gaps and upgrade-funded slots.
-	-- Retain enough capacity to address the highest occupied slot after upgrades reset.
-	result.Displays = {}
-	for slot = 1, profile.DisplaySlots do
-		local id = profile.Displays[tostring(slot)]
-		if id then
-			result.Displays[tostring(slot)] = id
-			result.DisplaySlots = math.max(result.DisplaySlots, slot)
-		end
-	end
+	-- Copied tier, upgrades, capacity and exact display positions are permanent.
 	result.Income = { Pending = {}, UpdatedAt = math.max(now, profile.Income.UpdatedAt) }
 	return result
 end

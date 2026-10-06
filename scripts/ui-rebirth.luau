@@ -18,13 +18,19 @@ do
 	local body, input = ui.Panel.ContentScroll.Body, H.Services.UserInputService
 	local button = body.Confirm
 	local state = {
-		Coins = 98765,
+		Coins = config.Levels[1].RequiredCoins,
 		PendingCoins = 300,
 		ToiletTier = 4,
 		RunFlushes = config.RequiredFlushes,
 		RebirthLevel = 0,
 		Settings = {},
 	}
+	ui.Update(state)
+	assert(body.CoinGate.Text == "3M / 3M Coins required" and button.Interactable)
+	state.Coins -= 1
+	ui.Update(state)
+	assert(not button.Interactable, "Coin-short state enabled the irreversible reset")
+	state.Coins += 1
 	ui.Update(state)
 	ui.Panel.Visible = true
 	local click = { UserInputType = Enum.UserInputType.MouseButton1 }
@@ -102,6 +108,7 @@ do
 	ui.Update(state)
 	assert(button.Text == "MAX REBIRTH" and not button.Interactable)
 	state.RebirthLevel = 1
+	state.Coins = config.Levels[2].RequiredCoins
 	state.RunFlushes = config.RequiredFlushes
 	ui.Update(state)
 	for _, size in ipairs(H.Viewports) do

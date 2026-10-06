@@ -158,8 +158,9 @@ test("catalog products: server quote survives rebirth and rejoin; client cannot 
 	assert(e.Marketplace.LastProduct.Id == 9003 and e.Store.Records.Player_408.Data.Monetization.Quote.Coins == amount)
 	p = e.Data:Get(player)
 	p.ToiletTier, p.RunFlushes = 4, e:Load("src/shared/Config/Rebirth").RequiredFlushes
+	p.Coins = e:Load("src/shared/Config/Rebirth").Levels[1].RequiredCoins
 	e:Fire("Rebirth", player, 0)
-	assert(e.Data:Get(player).Monetization.Quote.Coins == amount)
+	assert(e.Data:Get(player).RebirthLevel == 1 and e.Data:Get(player).Monetization.Quote.Coins == amount)
 	e.Data:Close(player)
 	player.Parent = nil
 	local joined, before = e:Join(408)
@@ -489,7 +490,7 @@ test("rebirth capacity: capped paid slots and index minima survive empty and spa
 		before.Monetization.AppliedSlots = 3
 		before.Upgrades.DisplaySlots, before.DisplaySlots = 7, 10
 		before.Displays, before.IndexClaims = {}, {}
-		local expected = 6
+		local expected = 10
 		if indexed then
 			for _, reward in ipairs(e:Load("src/shared/Config/IndexRewards").Milestones) do
 				if reward.DisplaySlots then
@@ -502,7 +503,7 @@ test("rebirth capacity: capped paid slots and index minima survive empty and spa
 		end
 		e:Fire("Rebirth", player, 0)
 		local after = e.Data:Get(player)
-		assert(after.DisplaySlots == expected and after.Upgrades.DisplaySlots == 0)
+		assert(after.RebirthLevel == 1 and after.DisplaySlots == expected and after.Upgrades.DisplaySlots == 7)
 		assert(not indexed or after.Displays["2"] == "Rat")
 		e.Data:Close(player)
 		player.Parent = nil

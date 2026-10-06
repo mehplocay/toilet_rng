@@ -10,13 +10,13 @@ return {
 		Godly = 6000,
 		Secret = 100000,
 	},
-	TierMultipliers = { 1, 1.5, 2.2, 3.3, 5, 8, 12 },
+	TierMultipliers = { 1, 1.5, 2.2, 3.3, 5.25, 8.5, 13 },
 	OfflineMinutes = 480,
 	-- Coins/minute; ten maximum-rate Secrets fit at each tier.
-	SlotRateCaps = { 6000000, 9000000, 13200000, 19800000, 30000000, 48000000, 72000000 },
-	PlayerRateCaps = { 60000000, 90000000, 132000000, 198000000, 300000000, 480000000, 720000000 },
-	SlotPendingCap = 34560000000,
-	PlayerPendingCap = 345600000000,
+	SlotRateCaps = { 6000000, 9000000, 13200000, 19800000, 31500000, 51000000, 78000000 },
+	PlayerRateCaps = { 60000000, 90000000, 132000000, 198000000, 315000000, 510000000, 780000000 },
+	SlotPendingCap = 37440000000,
+	PlayerPendingCap = 374400000000,
 	MaxLedgerUnits = 9e15, -- Integer subcoins, NOT coins; exact accumulation.
 	MaxSlots = 100, -- Includes legacy saved capacities.
 	UnitsPerCoin = 6000, -- Persisted scale: do not change without a ledger migration.

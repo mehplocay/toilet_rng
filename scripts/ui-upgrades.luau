@@ -8,6 +8,11 @@ do
 	assert(tab and not tracks.Visible)
 	tab.Activated:Fire()
 	assert(tracks.Visible)
+	local permanentFooter = false
+	for _, object in ipairs(body:GetChildren()) do
+		permanentFooter = permanentFooter or object.Text == "Toilets and coin upgrades are permanent."
+	end
+	assert(permanentFooter, "Upgrade footer still promises a rebirth reset")
 	local state = {
 		Coins = 10000,
 		ToiletTier = 1,
@@ -22,7 +27,7 @@ do
 	assert(H.Calls[#H.Calls].Args[1] == "CashBoost" and H.Calls[#H.Calls].Args[2] == 0)
 	state.Upgrades.CashBoost = 1
 	panel.Update(state)
-	assert(tracks.CashBoost.Level.Text == "LEVEL 1 / 10" and tracks.CashBoost.Price.Text == "2K Coins")
+	assert(tracks.CashBoost.Level.Text == "1 / 100" and tracks.CashBoost.Price.Text == "603 Coins")
 	tracks.CashBoost.Buy.Activated:Fire()
 	assert(H.Calls[#H.Calls].Args[2] == 1, "Purchase callback retained an old level")
 	state.Coins = 0
@@ -33,18 +38,25 @@ do
 	state.Coins = 9e15
 	state.Upgrades.CashBoost, state.Upgrades.LuckBoost, state.Upgrades.OfflineTank = 9, 9, 9
 	panel.Update(state)
-	assert(tracks.CashBoost.Price.Text == "781.2M Coins")
-	assert(tracks.LuckBoost.Price.Text == "1.1B Coins" and tracks.OfflineTank.Price.Text == "1.9B Coins")
+	assert(tracks.CashBoost.Price.Text == "16K Coins")
+	assert(tracks.CashBoost.Milestone.Text == "Novice | Next title: 10")
+	assert(tracks.CashBoost.Progress.Frame.Size.X.Scale == 0.09)
+	assert(tracks.LuckBoost.Price.Text == "76.7K Coins" and tracks.OfflineTank.Price.Text == "16K Coins")
 	assert(tracks.OfflineTank.Effect.Text == "8 hours offline cap")
 	for _, track in ipairs(config.Tracks) do
 		state.Upgrades[track.Id] = track.MaxLevel
 	end
 	state.DisplaySlots = 10
-	state.UpgradeStats = { Cooldown = 0.4, AutoInterval = 0.4, OfflineMinutes = 720, LuckCapped = true }
+	state.UpgradeStats =
+		{ Cooldown = 0.4, AutoInterval = 0.4, OfflineMinutes = 1440, LuckCapped = true, LuckMultiplier = 10 }
 	panel.Update(state)
-	assert(string.find(tracks.LuckBoost.Effect.Text, "5x CAP REACHED", 1, true))
+	assert(string.find(tracks.LuckBoost.Effect.Text, "Luck +900%", 1, true))
+	assert(string.find(tracks.LuckBoost.Effect.Text, "10x CAP REACHED", 1, true))
+	assert(tracks.OfflineTank.Effect.Text == "24 hours offline cap")
 	for _, track in ipairs(config.Tracks) do
 		assert(not tracks[track.Id].Buy.Interactable and tracks[track.Id].Buy.Text == "Max")
+		assert(tracks[track.Id].Milestone.Text == track.Name .. " Master")
+		assert(tracks[track.Id].Progress.Frame.Size.X.Scale == 1)
 	end
 	panel.Panel.Visible = true
 	for _, size in ipairs(H.Viewports) do

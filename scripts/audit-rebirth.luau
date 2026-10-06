@@ -1,7 +1,7 @@
 -- Real server handlers, immutable store snapshots and controlled yields.
 local function rebirthReady(e, id)
 	local player, p = e:Join(id)
-	p.Coins, p.ToiletTier = 98765, 4
+	p.Coins, p.ToiletTier = e:Load("src/shared/Config/Rebirth").Levels[1].RequiredCoins, 4
 	p.Stats.Flushes, p.RunFlushes = 5000, e:Load("src/shared/Config/Rebirth").RequiredFlushes
 	p.Inventory.Poop, p.Inventory.Rat = 20, 4
 	p.Collection.Poop, p.Collection.Rat = 100, 10
@@ -28,16 +28,20 @@ test("rebirth: atomic replacement keeps discoveries, first copies, displays, rew
 	local player, before = rebirthReady(e, 200)
 	e:Fire("Rebirth", player, 0)
 	local p = e.Data:Get(player)
-	assert(p ~= before and before.Coins == 98765 and before.RunFlushes > 0)
-	assert(p.RebirthLevel == 1 and p.RunFlushes == 0 and p.ToiletTier == 1 and p.Coins == 2500)
+	assert(
+		p ~= before
+			and before.Coins == e:Load("src/shared/Config/Rebirth").Levels[1].RequiredCoins
+			and before.RunFlushes > 0
+	)
+	assert(p.RebirthLevel == 1 and p.RunFlushes == 0 and p.ToiletTier == 4 and p.Coins == 2500)
 	assert(p.Inventory.Poop == 1 and p.Inventory.Rat == 2 and p.ProtectedInventory.Rat == 2)
-	assert(p.DisplaySlots == 5 and p.Displays["3"] == nil and p.Displays["5"] == "Poop")
+	assert(p.DisplaySlots == 6 and p.Displays["3"] == nil and p.Displays["5"] == "Poop")
 	assert(p.Collection.Poop == 100 and p.Collection.Rat == 10 and p.Stats.Flushes == 5000)
 	assert(p.TutorialDone and p.Stamps == 33 and p.LastClaimDay == 123 and p.Streak == 2 and p.IndexClaims["total:5"])
 	assert(p.Settings ~= before.Settings and p.Stats.RarestItemId == "Rat")
 	assert(next(p.Income.Pending) == nil and p.Income.UpdatedAt == e.Now)
 	for _, value in pairs(p.Upgrades) do
-		assert(value == 0)
+		assert(value == before.Upgrades[_])
 	end
 	assert(rebirthSuccesses(e) == 1 and e.Store.Records.Player_200.Data.RebirthLevel == 1)
 	e:Fire("Rebirth", player, 0)
@@ -66,7 +70,12 @@ test("rebirth: no gameplay can mutate either side of a yielded reset; departure 
 		e:Fire("CollectIncome", player)
 		e:Fire("ClaimIndexReward", player, "rarity:Common")
 	end
-	assert(p.Coins == 2500 and p.RunFlushes == 0 and old.Coins == 98765 and rebirthSuccesses(e) == 0)
+	assert(
+		p.Coins == 2500
+			and p.RunFlushes == 0
+			and old.Coins == e:Load("src/shared/Config/Rebirth").Levels[1].RequiredCoins
+			and rebirthSuccesses(e) == 0
+	)
 	player.Parent = nil
 	local closing = e:Spawn(function()
 		e.Data:Close(player)
@@ -99,6 +108,8 @@ test(
 		e:Fire("Rebirth", player, 0)
 		local p = e.Data:Get(player)
 		p.RunFlushes, p.ToiletTier = 100000, 4
+		p.Coins = e:Load("src/shared/Config/Rebirth").Levels[2].RequiredCoins
+		assert(e:Load("src/shared/RebirthRules").new(e:Load("src/shared/Config/Rebirth")):Eligible(p, 1))
 		e.Now += 6
 		e:Fire("Rebirth", player, 0)
 		assert(p.RebirthLevel == 1 and rebirthSuccesses(e) == 1)
@@ -127,8 +138,10 @@ for _, afterCommit in ipairs({ false, true }) do
 		assert(player.Kicked and not e.Data:Get(player) and rebirthSuccesses(e) == 0)
 		local disk = e.Store.Records.Player_203.Data
 		assert(disk.RebirthLevel == (if afterCommit then 1 else 0))
-		assert(disk.Coins == (if afterCommit then 2500 else 98765))
-		assert(disk.ToiletTier == (if afterCommit then 1 else 4))
+		assert(
+			disk.Coins == (if afterCommit then 2500 else e:Load("src/shared/Config/Rebirth").Levels[1].RequiredCoins)
+		)
+		assert(disk.ToiletTier == 4)
 		assert(e.Data.Profiles[player].RebirthLevel == 1, "Ambiguous save rolled back in memory")
 		-- Simulate crash without Close: a new owner gets either whole old or whole new state.
 		e.Store.Before, e.Store.After = nil, nil
@@ -168,7 +181,11 @@ test("rebirth: lease takeover or expiry during callback replay never overwrites 
 		end
 		e:Fire("Rebirth", player, 0)
 		assert(not e.Data:Get(player) and player.Kicked and rebirthSuccesses(e) == 0)
-		assert(e.Store.Records.Player_205.Data.RebirthLevel == 0 and e.Store.Records.Player_205.Data.Coins == 98765)
+		assert(
+			e.Store.Records.Player_205.Data.RebirthLevel == 0
+				and e.Store.Records.Player_205.Data.Coins
+					== e:Load("src/shared/Config/Rebirth").Levels[1].RequiredCoins
+		)
 	end
 end)
 test("rebirth: malformed requests, requirements, cap and numeric ceilings reject before any reset", function()
@@ -177,9 +194,9 @@ test("rebirth: malformed requests, requirements, cap and numeric ceilings reject
 	for _, args in ipairs({ {}, { {} }, { "0" }, { 0 / 0 }, { math.huge }, { -1 }, { 0.5 }, { 1 }, { 0, true } }) do
 		e.Now += 6
 		e:Fire("Rebirth", player, table.unpack(args))
-		assert(e.Data:Get(player) == p and p.Coins == 98765)
+		assert(e.Data:Get(player) == p and p.Coins == e:Load("src/shared/Config/Rebirth").Levels[1].RequiredCoins)
 	end
-	for _, field in ipairs({ "RunFlushes", "ToiletTier" }) do
+	for _, field in ipairs({ "RunFlushes", "Coins" }) do
 		local old = p[field]
 		p[field] = 0
 		e.Now += 6
@@ -190,46 +207,43 @@ test("rebirth: malformed requests, requirements, cap and numeric ceilings reject
 	p.Stats.Earned = 9e15
 	e.Now += 6
 	e:Fire("Rebirth", player, 0)
-	assert(p.RebirthLevel == 0 and p.Coins == 98765)
+	assert(p.RebirthLevel == 0 and p.Coins == e:Load("src/shared/Config/Rebirth").Levels[1].RequiredCoins)
 	p.Stats.Earned, p.RebirthLevel = 0, 15
 	e.Now += 6
 	e:Fire("Rebirth", player, 15)
-	assert(p.RebirthLevel == 15 and p.Coins == 98765)
+	assert(p.RebirthLevel == 15 and p.Coins == e:Load("src/shared/Config/Rebirth").Levels[1].RequiredCoins)
 end)
-test(
-	"rebirth: offline accrual cannot restore cleared pending or use the old tier; first copies stay protected",
-	function()
-		local e = server()
-		local player = rebirthReady(e, 207)
-		e:Fire("Rebirth", player, 0)
-		local p = e.Data:Get(player)
-		e:Fire("Display", player, nil, 1)
-		e:Fire("Display", player, nil, 2)
-		e:Fire("Sell", player, "Rat", 1)
-		assert(p.Inventory.Rat == 2 and p.Coins == 2500)
-		p.Inventory.Rat += 1
-		e:Fire("Sell", player, "Rat", 1)
-		assert(p.Inventory.Rat == 2 and p.Coins == 3750 and p.Collection.Rat == 10)
-		e:Fire("ClaimIndexReward", player, "total:5")
-		assert(p.Stamps == 33 and p.DisplaySlots == 5)
-		e.Data:Close(player)
-		e.Now += 86400
-		local _, restored = e:Join(207)
-		local income = e:Load("src/shared/IncomeAccrual").new(
-			e:Load("src/shared/Config/Income"),
-			e:Load("src/shared/Config/Items"),
-			e:Load("src/shared/UpgradeRules").new(e:Load("src/shared/Config/Upgrades"))
-		)
-		assert(
-			income:PendingCoins(restored) == 36000,
-			"Expected only retained Poop at Basic rebirth rate for 480 minutes"
-		)
-		assert(restored.RebirthLevel == 1 and restored.RunFlushes == 0 and restored.ProtectedInventory.Rat == 2)
-		local units = income:TotalUnits(restored)
-		income:Settle(restored, e.Now, true)
-		assert(income:TotalUnits(restored) == units)
-	end
-)
+test("rebirth: offline accrual cannot restore cleared pending; retained copies and permanent income survive", function()
+	local e = server()
+	local player = rebirthReady(e, 207)
+	e:Fire("Rebirth", player, 0)
+	local p = e.Data:Get(player)
+	e:Fire("Display", player, nil, 1)
+	e:Fire("Display", player, nil, 2)
+	e:Fire("Sell", player, "Rat", 1)
+	assert(p.Inventory.Rat == 2 and p.Coins == 2500)
+	p.Inventory.Rat += 1
+	e:Fire("Sell", player, "Rat", 1)
+	assert(p.Inventory.Rat == 2 and p.Coins == 4250 and p.Collection.Rat == 10)
+	e:Fire("ClaimIndexReward", player, "total:5")
+	assert(p.Stamps == 33 and p.DisplaySlots == 6)
+	e.Data:Close(player)
+	e.Now += 86400
+	local _, restored = e:Join(207)
+	local income = e:Load("src/shared/IncomeAccrual").new(
+		e:Load("src/shared/Config/Income"),
+		e:Load("src/shared/Config/Items"),
+		e:Load("src/shared/UpgradeRules").new(e:Load("src/shared/Config/Upgrades"))
+	)
+	assert(
+		income:PendingCoins(restored) == 166320,
+		"Expected retained Poop at permanent Diamond/cash/rebirth rate for 480 minutes"
+	)
+	assert(restored.RebirthLevel == 1 and restored.RunFlushes == 0 and restored.ProtectedInventory.Rat == 2)
+	local units = income:TotalUnits(restored)
+	income:Settle(restored, e.Now, true)
+	assert(income:TotalUnits(restored) == units)
+end)
 test("rebirth: flushes count once and persist; legacy profiles migrate only lifetime first-run progress", function()
 	local e = server()
 	local player, p = e:Join(208)
@@ -292,7 +306,7 @@ test("rebirth: saturated coin/index slots, high-water clocks and high-level inco
 	p.Income.UpdatedAt = e.Now + 100
 	e:Fire("Rebirth", player, 0)
 	p = e.Data:Get(player)
-	assert(p.DisplaySlots == 5 and e.Store.Records.Player_213.Data.DisplaySlots == 5)
+	assert(p.DisplaySlots == 10 and e.Store.Records.Player_213.Data.DisplaySlots == 10)
 	assert(p.Income.UpdatedAt == e.Now + 100)
 	p.RebirthLevel, p.ToiletTier, p.Upgrades.CashBoost, p.Upgrades.OfflineTank = 15, 7, 10, 10
 	p.Inventory.Mystery, p.Displays = 3, { ["1"] = "Mystery", ["2"] = "Mystery", ["3"] = "Mystery" }

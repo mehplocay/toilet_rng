@@ -3,7 +3,6 @@ local Layout = require(script.Parent.Layout)
 local UserInputService = game:GetService("UserInputService")
 local Shared = game.ReplicatedStorage.Shared
 local Monetization = require(Shared.Config.Monetization)
-local Toilets = require(Shared.Config.Toilets)
 local Rewards = require(Shared.Config.Rewards)
 local Schedule = require(Shared.RewardSchedule)
 local rebirth = require(Shared.RebirthRules).new(require(Shared.Config.Rebirth))
@@ -61,7 +60,7 @@ function HUD.Create(root, remotes, open, prompts)
 		coins.Text = C.Commas(number)
 	end)
 	local boost = C.New("Frame", gui, { Name = "Boosts", BackgroundTransparency = 1 })
-	local _, serverText = C.Chip(boost, "Luck x1", C.Navy, UDim2.new(0.5, -4, 1, 0))
+	local _, serverText = C.Chip(boost, "Luck +0%", C.Navy, UDim2.new(0.5, -4, 1, 0))
 	local _, personalText = C.Chip(boost, "Daily luck", C.Navy, UDim2.new(0.5, -4, 1, 0), UDim2.fromScale(0.5, 0))
 	serverText.TextColor3, personalText.TextColor3 = Color3.fromRGB(151, 255, 128), Color3.fromRGB(221, 173, 255)
 	local hint = C.New("CanvasGroup", gui, { Name = "CenterHint", BackgroundTransparency = 1, Visible = false })
@@ -217,7 +216,9 @@ function HUD.Create(root, remotes, open, prompts)
 				math.max(0, math.ceil(serverExpiry - now)), math.max(0, math.ceil(personalExpiry - now))
 			serverText.Text = if serverLeft > 0
 				then "Server x2\n" .. timer(serverLeft)
-				else "Luck x" .. tostring(if state then Toilets[state.ToiletTier].Luck else 1)
+				else "Luck +" .. math.round(
+					((if state and state.UpgradeStats then state.UpgradeStats.LuckMultiplier else 1) - 1) * 100
+				) .. "%"
 			personalText.Text = if personalLeft > 0
 				then "Daily x2\n" .. timer(personalLeft)
 				else "Daily boost\nDay 7 reward"
