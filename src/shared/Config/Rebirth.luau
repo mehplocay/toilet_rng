@@ -181,7 +181,6 @@ return {
 	BaseDisplaySlots = 3,
 	DisplayCapacity = 10,
 	Cosmetics = cosmetics,
-	HoldSeconds = 2,
 	ResponseTimeout = 15,
 	MaxBalance = 9e15,
 	CashCap = 15,

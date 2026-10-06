@@ -1,12 +1,12 @@
 local C = require(script.Parent.Components)
 local Shared = game.ReplicatedStorage.Shared
 local Config = require(Shared.Config.Rebirth)
+local requestLimit = require(Shared.Config.Remotes).Limits.Rebirth
 local rules = require(Shared.RebirthRules).new(Config)
-local Input = game:GetService("UserInputService")
 local Run = game:GetService("RunService")
 local Rebirth = {}
 function Rebirth.Create(root, remotes)
-	local panel = C.Panel(root, "REBIRTH", C.Purple, 1170)
+	local panel = C.Panel(root, "REBIRTH", C.Purple, 1146)
 	local toast = C.Toast(root)
 	local body = panel.ContentScroll.Body
 	C.Icon(body, "Crown", UDim2.fromOffset(62, 62), UDim2.fromOffset(4, 0))
@@ -37,22 +37,24 @@ function Rebirth.Create(root, remotes)
 	local cashCaps =
 		C.BodyText(body, require(Shared.Config.Cash).Explanation, UDim2.new(1, -8, 0, 70), UDim2.fromOffset(4, 930))
 	cashCaps.Name = "CashCaps"
-	local state, armedLevel, held, heldAt, pending = nil, nil, nil, 0, false
-	local pendingAt = 0
+	local state, pending = nil, false
+	local pendingAt, completedLevel, refreshRequested = 0, 0, false
+	local retryAt = 0
 	local confirm, update
-	local holdBar = C.ProgressBar(body, UDim2.new(1, -8, 0, 10), UDim2.fromOffset(4, 1142), C.Gold)
-	local function cancel()
-		C.StopSound("RebirthHold")
-		armedLevel, held = nil, nil
-		holdBar.Set(0)
-		if update then
-			update()
-		end
-	end
 	confirm = C.Button(body, "Loading...", UDim2.new(1, -8, 0, 58), UDim2.fromOffset(4, 1076), function()
-		if state and not pending and rules:Eligible(state, rules:Level(state)) and armedLevel == nil then
-			armedLevel = rules:Level(state)
+		if
+			panel.Visible
+			and state
+			and not pending
+			and os.clock() >= retryAt
+			and rules:Level(state) >= completedLevel
+			and rules:Eligible(state, rules:Level(state))
+		then
+			local expected = rules:Level(state)
+			-- Lock before sending so consecutive activations cannot submit twice.
+			pending, pendingAt, refreshRequested = true, os.clock(), false
 			update()
+			remotes.Rebirth:FireServer(expected)
 		end
 	end, C.Purple, { TextSize = 23 })
 	confirm.Name = "Confirm"
@@ -99,101 +101,39 @@ function Rebirth.Create(root, remotes)
 				C.Commas(state.PendingCoins or 0)
 			)
 			else "Your progress is safe. No further reset is available."
-		local eligible = rules:Eligible(state, count)
-		confirm.Interactable = eligible and not pending
+		local eligible = count >= completedLevel and rules:Eligible(state, count)
+		local missingFlushes = Config.RequiredFlushes - (state.RunFlushes or 0)
+		confirm.Interactable = eligible and not pending and os.clock() >= retryAt
 		confirm.Text = if pending
 			then "SAVING..."
 			elseif not nextBonus then "MAX REBIRTH"
+			elseif count < completedLevel then "UPDATING..."
+			elseif
+				state.Coins < nextBonus.RequiredCoins and (state.RunFlushes or 0) < Config.RequiredFlushes
+			then "NEED COINS + FLUSHES"
+			elseif state.Coins < nextBonus.RequiredCoins then "NEED " .. C.Commas(
+				nextBonus.RequiredCoins - state.Coins
+			) .. " MORE COINS"
+			elseif missingFlushes > 0 then "NEED " .. C.Commas(missingFlushes) .. (if missingFlushes == 1
+				then " MORE FLUSH"
+				else " MORE FLUSHES")
 			elseif not eligible then "REQUIREMENTS NOT MET"
-			elseif armedLevel ~= nil then "HOLD " .. Config.HoldSeconds .. " SECONDS TO RESET"
-			else "REVIEWED - CONTINUE"
-	end
-	local function begin(input)
-		if
-			not panel.Visible
-			or pending
-			or armedLevel == nil
-			or held
-			or not state
-			or not rules:Eligible(state, armedLevel)
-		then
-			return
-		end
-		if
-			input.UserInputType == Enum.UserInputType.MouseButton1
-			or input.UserInputType == Enum.UserInputType.Touch
-			or input.KeyCode == Enum.KeyCode.ButtonA
-			or input.KeyCode == Enum.KeyCode.Return
-			or input.KeyCode == Enum.KeyCode.Space
-		then
-			held, heldAt = input, os.clock()
-			C.Sound("RebirthHold")
-		end
+			elseif os.clock() < retryAt then "PLEASE WAIT"
+			else "REBIRTH!"
 	end
 	local connections = {}
-	table.insert(connections, confirm.InputBegan:Connect(begin))
-	table.insert(
-		connections,
-		Input.InputBegan:Connect(function(input)
-			if
-				game:GetService("GuiService").SelectedObject == confirm
-				and (
-					input.KeyCode == Enum.KeyCode.ButtonA
-					or input.KeyCode == Enum.KeyCode.Return
-					or input.KeyCode == Enum.KeyCode.Space
-				)
-			then
-				begin(input)
-			end
-		end)
-	)
-	table.insert(
-		connections,
-		Input.InputEnded:Connect(function(input)
-			if input == held then
-				C.StopSound("RebirthHold")
-				held = nil
-				holdBar.Set(0)
-			end
-		end)
-	)
-	table.insert(
-		connections,
-		confirm.MouseLeave:Connect(function()
-			C.StopSound("RebirthHold")
-			held = nil
-			holdBar.Set(0)
-		end)
-	)
-	table.insert(connections, confirm.SelectionLost:Connect(cancel))
-	table.insert(connections, panel.ContentScroll:GetPropertyChangedSignal("CanvasPosition"):Connect(cancel))
-	table.insert(connections, Input.WindowFocusReleased:Connect(cancel))
-	table.insert(connections, panel:GetPropertyChangedSignal("Visible"):Connect(cancel))
 	table.insert(
 		connections,
 		Run.Heartbeat:Connect(function()
-			if pending and os.clock() - pendingAt >= Config.ResponseTimeout then
-				pending = false
-				cancel()
-				remotes.State:FireServer()
-				toast("No save confirmation yet. Check your level before retrying.", C.Gold)
-			end
-			if not held then
-				return
-			end
-			if not panel.Visible or not state or not rules:Eligible(state, armedLevel) then
-				cancel()
-				return
-			end
-			local progress = (os.clock() - heldAt) / Config.HoldSeconds
-			holdBar.Set(progress)
-			if progress >= 1 then
-				C.StopSound("RebirthHold")
-				local expected = armedLevel
-				pending, held, armedLevel = true, nil, nil
-				pendingAt = os.clock()
+			if not pending and retryAt > 0 and os.clock() >= retryAt then
+				retryAt = 0
 				update()
-				remotes.Rebirth:FireServer(expected)
+			end
+			if pending and not refreshRequested and os.clock() - pendingAt >= Config.ResponseTimeout then
+				-- A timeout is not a failed transaction. Keep locked until its result.
+				refreshRequested = true
+				remotes.State:FireServer()
+				toast("Still waiting for the server. Your rebirth will not be sent again.", C.Gold)
 			end
 		end)
 	)
@@ -209,7 +149,13 @@ function Rebirth.Create(root, remotes)
 				return
 			end
 			pending = false
-			cancel()
+			if payload.Success then
+				completedLevel = math.max(completedLevel, payload.Level)
+			else
+				-- An immediate retry must not be silently dropped by the server bucket.
+				retryAt = pendingAt + 1 / requestLimit.Refill
+			end
+			update()
 			if payload.Success then
 				panel.Visible = false
 				toast("REBIRTH " .. payload.Level .. " - " .. Config.Levels[payload.Level].Title, C.Gold)
@@ -234,7 +180,6 @@ function Rebirth.Create(root, remotes)
 		end)
 	)
 	panel.Destroying:Connect(function()
-		C.StopSound("RebirthHold")
 		for _, connection in ipairs(connections) do
 			connection:Disconnect()
 		end
@@ -243,10 +188,6 @@ function Rebirth.Create(root, remotes)
 	return {
 		Panel = panel,
 		Update = function(snapshot)
-			if state and rules:Level(state) ~= rules:Level(snapshot) then
-				pending = false
-				cancel()
-			end
 			state = snapshot
 			update()
 		end,
