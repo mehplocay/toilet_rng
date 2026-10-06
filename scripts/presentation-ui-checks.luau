@@ -123,6 +123,8 @@ for _, viewport in ipairs(H.Viewports) do
 end
 
 local chatService = H.Services.TextChatService
+local window = H.Instance.new("ChatWindowConfiguration")
+window.Parent = chatService
 local channels = H.Instance.new("Folder")
 channels.Name, channels.Parent = "TextChannels", chatService
 local channel = H.Instance.new("TextChannel")
@@ -134,52 +136,60 @@ end
 local chatRemote = { OnClientEvent = H.Signal() }
 local chat = H.Load("src/client/Presentation/ChatAnnouncements").Start(chatRemote)
 chatRemote.OnClientEvent:Fire({ ItemId = "KingPoop", PlayerName = "<b>Tester" })
-assert(#messages == 1 and messages[1][1]:find("bTester flushed", 1, true) and not messages[1][1]:find("<b>", 1, true))
-chat.Enabled = false
+assert(#messages == 0, "Chat must allow CoreScripts to initialize")
+H.Advance(2.1)
+assert(#messages == 1 and messages[1][1]:find("bTester found", 1, true) and not messages[1][1]:find("<b>", 1, true))
+chat:SetMode("Off")
 chatRemote.OnClientEvent:Fire({ ItemId = "KingPoop", PlayerName = "Tester" })
 assert(#messages == 1)
-chat.Enabled = true
+chat:SetMode("Rare+")
 chatRemote.OnClientEvent:Fire({ Kind = "Rebirth", Level = 5, PlayerName = "<b>Tester" })
 assert(
 	#messages == 2 and messages[2][1]:find("bTester reached Rebirth 5", 1, true) and messages[2][2] == "ToiletRebirth"
 )
 chatRemote.OnClientEvent:Fire({ Kind = "Rebirth", Level = 500, PlayerName = "Tester" })
 assert(#messages == 2)
+chatRemote.OnClientEvent:Fire({ Self = true, ItemId = "Fish", Count = 7 })
+assert(#messages == 3 and messages[3][1]:find("You found 7 items (best: Rare Fish)!", 1, true))
 chat:Destroy()
+channels:Destroy()
+window:Destroy()
 
 local listRoot = H.Root(724, 318)
-local players = {}
-for i, coins in ipairs({ 900, 1200, 1000000 }) do
-	local player = H.Instance.new("Player")
-	player.Name, player.UserId = "Player" .. i, i
-	local stats = H.Instance.new("Folder")
-	stats.Name, stats.Parent = "leaderstats", player
-	local money = H.Instance.new("NumberValue")
-	money.Name, money.Value, money.Parent = "Coins", coins, stats
-	local rarest = H.Instance.new("StringValue")
-	rarest.Name, rarest.Value, rarest.Parent = "Rarest", "Mythic", stats
-	local rebirth = H.Instance.new("IntValue")
-	rebirth.Name, rebirth.Value, rebirth.Parent = "Rebirth", i, stats
-	table.insert(players, player)
-end
-H.PlayerList = players
+local starter = H.Services.StarterGui
+starter.CoreEnabled["CoreGuiType.PlayerList"] = false
+H.HoldCoreGui = true
 local list = H.Load("src/client/Presentation/PlayerList").Create(listRoot)
-list.Toggle()
-local rows = listRoot.ServerPlayers.ScrollingFrame
-assert(rows["3"].LayoutOrder == 1 and rows["1"].LayoutOrder == 3 and rows["3"].Coins.Text == "1M")
-assert(rows["3"].PlayerName.Text == "[R3] Player3")
-players[1].leaderstats.Coins.Value = 2e6
-H.Advance(1.1)
-assert(rows["1"].LayoutOrder == 1 and rows["1"].Coins.Text == "2M")
-players[1].leaderstats.Coins.Value = 9e15
-H.Advance(1.1)
-assert(rows["1"].Coins.Text == "9Qa" and rows["1"].LayoutOrder == 1)
-table.remove(players, 2)
-H.Advance(1.1)
-assert(not rows:FindFirstChild("2"))
-H.Snapshot(listRoot, "player-list-landscape")
+assert(not listRoot:FindFirstChild("ServerPlayers") and list.Toggle == nil)
+H.Advance(0.3)
+assert(starter.CoreEnabled["CoreGuiType.PlayerList"] == false)
+H.HoldCoreGui = nil
+H.Advance(0.3)
+assert(starter.CoreEnabled["CoreGuiType.PlayerList"] == true)
+local calls = #starter.Calls
+H.Services.UserInputService.InputBegan:Fire({ KeyCode = "KeyCode.Tab" }, false)
+H.Advance(2)
+assert(#starter.Calls == calls, "Native list visibility belongs to CoreScripts")
 list.Destroy()
-H.PlayerList = nil
+assert(starter.CoreEnabled["CoreGuiType.PlayerList"] == true)
+listRoot:Destroy()
+
+local settingsRoot = H.Root(375, 690)
+local patches = {}
+local settingsUI = H.Load("src/client/Presentation/SettingsUI").Create(settingsRoot, {
+	FireServer = function(_, patch)
+		table.insert(patches, patch)
+	end,
+})
+local button = settingsRoot.ChatSettings:FindFirstChildWhichIsA("TextButton")
+for _, pair in ipairs({ { "All", "Rare+" }, { "Rare+", "Off" }, { "Off", "All" } }) do
+	settingsUI.Update({ ChatMessages = pair[1] })
+	assert(button.Text == "Chat messages: " .. pair[1])
+	button.Activated:Fire()
+	assert(patches[#patches].ChatMessages == pair[2])
+end
+assert(not settingsRoot.PlayerListSettings:FindFirstChildWhichIsA("TextButton"))
+settingsRoot:Destroy()
 print(
-	"Presentation runtime passed: cinematic template/rotation hooks, camera restore, skip, queue cap, modes, cleanup, chat opt-out and numerical player sorting"
+	"Presentation runtime passed: reveal lifecycle, delayed rich-text chat, three chat modes and native PlayerList retry without custom Tab binding"
 )

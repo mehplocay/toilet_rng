@@ -1,10 +1,10 @@
 local Settings = require(game.ReplicatedStorage.Shared.PresentationSettings)
 local Presentation = {}
-function Presentation.Start(root, hud, remotes, audio, settingsList)
+function Presentation.Start(root, hud, remotes, audio, settingsList, chat)
 	local reveal = require(script.Parent.RevealController).Create(root, hud, audio)
-	local chat = require(script.Parent.ChatAnnouncements).Start(remotes.DropAnnouncement)
+	chat = chat or require(script.Parent.ChatAnnouncements).Start(remotes.DropAnnouncement)
 	local list = require(script.Parent.PlayerList).Create(root)
-	local settings = require(script.Parent.SettingsUI).Create(settingsList, remotes.PresentationSettings, list.Toggle)
+	local settings = require(script.Parent.SettingsUI).Create(settingsList, remotes.PresentationSettings)
 	local self = {}
 	function self.Update(raw)
 		local values = Settings.Sanitize(raw)
@@ -12,7 +12,9 @@ function Presentation.Start(root, hud, remotes, audio, settingsList)
 		reveal:SetIntensity(
 			if raw.SkipAnimation and values.RevealIntensity == "Full" then "Reduced" else values.RevealIntensity
 		)
-		chat.Enabled = values.ChatAnnouncements
+		if chat.Mode ~= values.ChatMessages then
+			chat:SetMode(values.ChatMessages)
+		end
 		settings.Update(raw)
 	end
 	function self.Reveal(item, payload)

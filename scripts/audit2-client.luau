@@ -117,6 +117,8 @@ test("audit2: chat escapes catalog markup, strips identity control characters an
 	local remote = { OnClientEvent = H.Signal() }
 	local service = H.Load("src/client/Presentation/ChatAnnouncements").Start(remote)
 	local chat = H.Services.TextChatService
+	local window = H.Instance.new("ChatWindowConfiguration")
+	window.Parent = chat
 	local channels = H.Instance.new("Folder")
 	channels.Name, channels.Parent = "TextChannels", chat
 	local channel = H.Instance.new("TextChannel")
@@ -130,6 +132,7 @@ test("audit2: chat escapes catalog markup, strips identity control characters an
 	items[6].Name = '<b>Gold & "Poop"</b>'
 	remote.OnClientEvent:Fire({ ItemId = items[6].Id, PlayerName = "<i>Admin</i>\n&\255" })
 	items[6].Name = old
+	H.Advance(2.1)
 	assert(#messages == 1 and not messages[1]:find("<b>", 1, true) and not messages[1]:find("<i>", 1, true))
 	assert(messages[1]:find("&lt;b&gt;Gold &amp; &quot;Poop&quot;&lt;/b&gt;", 1, true))
 	assert(not messages[1]:find("\n", 1, true))
@@ -138,4 +141,5 @@ test("audit2: chat escapes catalog markup, strips identity control characters an
 	assert(#messages == 1)
 	service:Destroy()
 	channels:Destroy()
+	window:Destroy()
 end)

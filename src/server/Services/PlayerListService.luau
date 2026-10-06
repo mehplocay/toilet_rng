@@ -18,18 +18,25 @@ function Service.Start(data)
 				if not row then
 					local folder = Instance.new("Folder")
 					folder.Name = "leaderstats"
-					local coins, rarest = Instance.new("NumberValue"), Instance.new("StringValue")
-					coins.Name, rarest.Name = "Coins", "Rarest"
-					coins.Parent, rarest.Parent = folder, folder
-					local rebirth = Instance.new("IntValue")
-					rebirth.Name, rebirth.Parent = "Rebirth", folder
+					-- NumberValue is a double: every integer through the 9e15 wallet cap is exact.
+					local coins, rebirths, rarest =
+						Instance.new("NumberValue"), Instance.new("IntValue"), Instance.new("StringValue")
+					coins.Name, rebirths.Name, rarest.Name = "Coins", "Rebirths", "Rarest"
+					coins.Parent, rebirths.Parent, rarest.Parent = folder, folder, folder
+					for priority, stat in ipairs({ coins, rebirths, rarest }) do
+						local order = Instance.new("NumberValue")
+						order.Name, order.Value, order.Parent = "Priority", 4 - priority, stat
+					end
 					local primary = Instance.new("BoolValue")
 					primary.Name, primary.Value, primary.Parent = "IsPrimary", true, coins
-					row = { Folder = folder, Coins = coins, Rarest = rarest, Rebirth = rebirth }
+					row = { Folder = folder, Coins = coins, Rarest = rarest, Rebirths = rebirths }
 					stats[player] = row
 				end
 				local item = byId[profile.Stats.RarestItemId]
-				row.Rebirth.Value = rebirth:Level(profile)
+				local level = rebirth:Level(profile)
+				if row.Rebirths.Value ~= level then
+					row.Rebirths.Value = level
+				end
 				local coins, rarest = Rules.Integer(profile.Coins), if item then item.Rarity else "None"
 				if row.Coins.Value ~= coins then
 					row.Coins.Value = coins

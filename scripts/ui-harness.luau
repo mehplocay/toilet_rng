@@ -203,6 +203,14 @@ function methods:FindFirstChild(name, recursive)
 	end
 	return nil
 end
+function methods:FindFirstChildOfClass(class)
+	for _, child in ipairs(self:GetChildren()) do
+		if child.ClassName == class then
+			return child
+		end
+	end
+	return nil
+end
 function methods:FindFirstChildWhichIsA(class)
 	for _, child in ipairs(self._children) do
 		if child:IsA(class) then
@@ -346,6 +354,7 @@ function Instance.new(class)
 	return object
 end
 local services = {
+	StarterGui = { CoreEnabled = {}, Calls = {} },
 	ProximityPromptService = { PromptTriggered = signal(), PromptShown = signal(), PromptHidden = signal() },
 	RunService = { Heartbeat = signal(), RenderStepped = signal(), PreSimulation = signal() },
 	UserInputService = {
@@ -361,6 +370,16 @@ local services = {
 	Players = {},
 	ContextActionService = {},
 }
+function services.StarterGui:GetCoreGuiEnabled(kind)
+	return self.CoreEnabled[kind] ~= false
+end
+function services.StarterGui:SetCoreGuiEnabled(kind, enabled)
+	if H.HoldCoreGui then
+		error("CoreScripts loading")
+	end
+	self.CoreEnabled[kind] = enabled
+	table.insert(self.Calls, { Kind = kind, Enabled = enabled })
+end
 function services.RunService:IsStudio()
 	return true
 end

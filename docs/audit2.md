@@ -1,5 +1,7 @@
 # Full-game security, exploit and performance audit
 
+2026-10-06 task follow-up: [rare-find chat/native PlayerList](design/chat-native-list.md) extends the audit harness to 150 passing regressions. The new finder-only/coalesced Rare+ path is independent of friendship lookups; existing cross-player bounds remain. PresentationSettings now also accepts the validated ChatMessages enum. Native PlayerList replaces the custom UI and publishes Coins/Rebirths/Rarest only. Actual CoreScript rendering remains open: Studio execute_luau was denied by the automatic approval policy.
+
 2026-10-05/06, `feature/audit2`, baseline `f0597c1ee64279a462d1ce25380c7e96de798ee1`. No commit or push. Scope: AGENTS.md, GDD/mockup, previous audit, rebirth/upgrades/passive-income/rare-drop-reveal designs, all `src/` and `scripts/`, including map generation, asset/preview tooling and test harnesses. Generated map data was reviewed with its authoring recipe and exhaustive builder/collision checks. Imported binaries were inspected by the existing Rojo XML validation.
 
 **No new Critical or High exploit was confirmed in the current shipped configuration.** The previous audit's High session-lock fixes still pass. Fixed the actionable Medium/Low findings below. This is a source audit plus executable engine-double tests, not a live penetration test or mobile certification: no Roblox Studio session was connected. Marketplace, DataStore, actual streaming, draw calls, frame times and memory still require engine/device measurements.

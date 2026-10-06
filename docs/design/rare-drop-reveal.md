@@ -1,5 +1,7 @@
 # Rare drop presentation review
 
+2026-10-06 follow-up: [rare-find chat and native player list](chat-native-list.md) supersedes the chat audience, boolean chat setting and custom player-list sections below. Rare+ now reaches the finder, Epic/Legendary adds friends, Mythic+ adds the server; the native Roblox PlayerList replaces ServerPlayers and its custom Tab binding. Original reveal behavior is unchanged.
+
 Task branch: `feature/reveal`. No commits/pushes. [API research](../research/rare-drop-presentation.md).
 
 ## Implementation
