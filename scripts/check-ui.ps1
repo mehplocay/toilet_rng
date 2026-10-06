@@ -27,6 +27,7 @@ $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'check-ui-runtime.lua
 $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'presentation-ui-checks.luau')))
 $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-upgrades.luau')))
 $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-rebirth.luau')))
+$parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'audio-coverage-checks.luau')))
 try {
     [IO.File]::WriteAllText($generatedPath, ($parts -join "`n"), [Text.UTF8Encoding]::new($false))
     $output = & luau $generatedPath

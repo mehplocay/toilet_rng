@@ -35,4 +35,43 @@ end
 function Mix.Pitch(combo, variation)
 	return (1 + math.clamp(combo or 0, 0, 8) * 0.035) * (1 + math.clamp(variation, -0.05, 0.05))
 end
+-- Decide admission without mutating clocks or voices. Rejected cues are never queued.
+function Mix.Admit(config, key, now, last, voices)
+	local cue = config.Cues[key]
+	if not cue or now - (last[key] or -math.huge) < cue.Gap then
+		return false
+	end
+	local total, same, class = 0, 0, 0
+	local victim, weakest, oldest = nil, math.huge, math.huge
+	local classVictim, classPriority, classOldest = nil, math.huge, math.huge
+	for sound, voice in pairs(voices) do
+		total += 1
+		same += if voice.Key == key then 1 else 0
+		local priority = config.Cues[voice.Key].Priority
+		if priority < weakest or (priority == weakest and voice.Started < oldest) then
+			victim, weakest, oldest = sound, priority, voice.Started
+		end
+		if config.Cues[voice.Key].Class == cue.Class then
+			class += 1
+			if priority < classPriority or (priority == classPriority and voice.Started < classOldest) then
+				classVictim, classPriority, classOldest = sound, priority, voice.Started
+			end
+		end
+	end
+	if same >= cue.MaxVoices then
+		return false
+	end
+	if class >= config.ClassLimits[cue.Class] then
+		-- A stronger stinger can replace a lesser one, never the reverse.
+		return cue.Priority > classPriority, classVictim
+	end
+	if total >= config.MaxVoices then
+		return cue.Priority > weakest, victim
+	end
+	return true
+end
+function Mix.AmountPitch(amount)
+	local value = if type(amount) == "number" and amount == amount then math.clamp(amount, 0, 9e15) else 0
+	return 1 + math.min(0.24, math.log10(1 + value) * 0.04)
+end
 return Mix

@@ -14,6 +14,49 @@ local C = {
 }
 local white = Color3.new(1, 1, 1)
 local tweens = setmetatable({}, { __mode = "k" })
+local audioButtons = setmetatable({}, { __mode = "k" })
+function C.Sound(key, amount)
+	if C.SoundHook then
+		C.SoundHook(key, amount)
+	end
+end
+function C.StopSound(key)
+	if C.StopSoundHook then
+		C.StopSoundHook(key)
+	end
+end
+-- Disabled GuiButtons do not fire Activated. Hit-test the visible input stack
+-- without making disabled purchases interactable or allowing clicks through modals.
+function C.DisabledFeedback(objects)
+	for _, object in ipairs(objects) do
+		local ancestor = object
+		while ancestor do
+			if audioButtons[ancestor] then
+				if not ancestor.Interactable then
+					C.Sound(audioButtons[ancestor])
+				end
+				return
+			end
+			ancestor = ancestor.Parent
+		end
+		if object:IsA("GuiButton") and object.Active then
+			return
+		end
+	end
+end
+function C.StartAudioInput(playerGui, lifetime)
+	local connection = game:GetService("UserInputService").InputBegan:Connect(function(input)
+		if
+			input.UserInputType == Enum.UserInputType.MouseButton1
+			or input.UserInputType == Enum.UserInputType.Touch
+		then
+			C.DisabledFeedback(playerGui:GetGuiObjectsAtPosition(input.Position.X, input.Position.Y))
+		end
+	end)
+	lifetime.Destroying:Connect(function()
+		connection:Disconnect()
+	end)
+end
 function C.Commas(value)
 	return (tostring(math.floor(value)):reverse():gsub("(%d%d%d)", "%1,"):reverse():gsub("^,", ""))
 end
@@ -190,6 +233,7 @@ function C.Button(parent, text, size, position, callback, color, options)
 		BackgroundTransparency = 1,
 		Font = C.Font,
 	})
+	audioButtons[button] = options.DisabledSound or "Error"
 	C.Chrome(button, color or C.Blue, true)
 	local label = C.Text(button, text, UDim2.fromScale(0.88, 0.76), UDim2.fromScale(0.06, 0.12), options.TextSize or 26)
 	label.Name = "Label"
@@ -240,6 +284,7 @@ function C.Button(parent, text, size, position, callback, color, options)
 	end)
 	button.Activated:Connect(function()
 		if not button.Interactable then
+			C.Sound(options.DisabledSound or "Error")
 			return
 		end
 		if C.SoundHook then
@@ -430,7 +475,7 @@ function C.TabBar(parent, names, callback, colors)
 		buttons[name] = C.Button(row, name, UDim2.fromOffset(120, 44), nil, function()
 			selectTab(name)
 			callback(name)
-		end, colors and colors[name], { TextSize = 18 })
+		end, colors and colors[name], { TextSize = 18, Sound = "TabSwitch" })
 		buttons[name].LayoutOrder = i
 	end
 	selectTab(names[1])

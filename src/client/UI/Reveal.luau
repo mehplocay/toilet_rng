@@ -37,14 +37,7 @@ function Reveal.Create(parent, hud)
 		frame.Visible = true
 		local duration =
 			math.min(if skip then 0.15 else math.huge, upgrades:Animation(cooldown or upgrades.Config.CooldownFloor))
-		if Rarities[item.Rarity].Order >= 4 then
-			if C.SoundHook then
-				C.SoundHook(item.Rarity)
-			end
-			if C.AudioHook then
-				C.AudioHook("Reveal", duration)
-			end
-		end
+		C.Sound(item.Rarity)
 		hud.SetHintVisible(false)
 		if not skip then
 			C.Pop(frame)

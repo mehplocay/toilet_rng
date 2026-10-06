@@ -53,6 +53,11 @@ function Service:_mix()
 		)
 	end
 	self.SFX.Volume = if self.Ready then Mix.Volume(self.Settings.SFXVolume, self.Settings.SFXMuted) else 0
+	local ambience = if duck < 1 then Audio.AmbienceDuckGain else 1
+	if ambience ~= self.AmbienceTarget then
+		self.AmbienceTarget = ambience
+		self:_fade(self.Buses.Ambience, if duck < 1 then Audio.DuckAttack else Audio.DuckRelease, { Volume = ambience })
+	end
 	if duck ~= self.LastDuck then
 		self.LastDuck = duck
 		self:_fade(self.Equalizer, Audio.DuckRelease, { HighGain = if duck < 1 then -4 else 0 })
@@ -70,6 +75,14 @@ function Service:ApplySettings(raw)
 		return
 	end
 	self.Settings, self.Ready = Settings.Sanitize(raw, Audio.Defaults), true
+	if self.Settings.SFXMuted or self.Settings.SFXVolume <= 0 then
+		self.FlushGeneration = (self.FlushGeneration or 0) + 1
+		for _, sound in ipairs(table.clone(self.Voices)) do
+			if self.VoiceInfo[sound].Key ~= "Ambience" then
+				self:_forget(sound)
+			end
+		end
+	end
 	self:_mix()
 	if not self.MusicStarted then
 		self.MusicStarted = true
@@ -78,7 +91,7 @@ function Service:ApplySettings(raw)
 		end)
 	end
 end
-function Service:Play(key)
+function Service:Play(key, amount)
 	if self.Destroyed or not self.Ready or self.Settings.SFXMuted or self.Settings.SFXVolume <= 0 then
 		return
 	end
@@ -87,12 +100,16 @@ function Service:Play(key)
 		return -- Empty/invalid IDs never allocate, request content or call Play.
 	end
 	local now = os.clock()
-	if now - (self.LastCue[key] or -math.huge) < cue.Gap then
+	local allowed, victim = Mix.Admit(Audio, key, now, self.LastCue, self.VoiceInfo)
+	if not allowed then
 		return
+	end
+	if victim then
+		self:_forget(victim)
 	end
 	self.LastCue[key] = now
 	local combo = 0
-	local variation = math.random() * 0.1 - 0.05
+	local variation = (math.random() * 2 - 1) * cue.Variation
 	if key == "CoinCollect" then
 		self.Combo = if now - self.LastCoin <= Audio.ComboWindow then math.min(self.Combo + 1, 8) else 0
 		if self.Combo == 0 then
@@ -102,30 +119,93 @@ function Service:Play(key)
 		variation = self.CoinVariation
 		self.LastCoin, combo = now, self.Combo
 	end
-	if #self.Voices >= Audio.MaxVoices then
-		self:_release(table.remove(self.Voices, 1))
-	end
-	local sound = self:_sound(id, self.Buses[cue.Bus], cue.Gain)
-	sound.PlaybackSpeed = Mix.Pitch(combo, variation)
+	local sound = self:_sound(id, self.Buses[cue.Bus], cue.Gain, cue.Looped)
+	sound.Name = key
+	sound.PlaybackSpeed = if cue.AmountPitch then Mix.AmountPitch(amount) else Mix.Pitch(combo, variation)
 	table.insert(self.Voices, sound)
+	self.VoiceInfo[sound] = { Key = key, Started = now }
 	local function release()
-		local index = table.find(self.Voices, sound)
-		if index then
-			table.remove(self.Voices, index)
-			self:_release(sound)
-		end
+		self:_forget(sound)
 	end
 	sound.Ended:Once(release)
-	task.delay(15, release) -- Also collects failed or inaccessible assets.
+	if not cue.Looped then
+		task.delay(cue.Length / sound.PlaybackSpeed + 0.15, release)
+	elseif key == "RebirthHold" then
+		task.delay(Audio.HoldTimeout, release)
+	else
+		task.delay(Audio.LoadTimeout, function()
+			if self.VoiceInfo[sound] and not sound.IsLoaded then
+				release()
+			end
+		end)
+	end
+	if cue.Duck then
+		self:Duck(sound, cue.Length / sound.PlaybackSpeed)
+	end
 	pcall(function()
 		sound:Play()
 	end)
+	return sound
 end
-function Service:Flush(auto)
-	self:Play("Flush")
+function Service:_forget(sound)
+	if not self.VoiceInfo[sound] then
+		return
+	end
+	self.VoiceInfo[sound], self.Ducks[sound] = nil, nil
+	local index = table.find(self.Voices, sound)
+	if index then
+		table.remove(self.Voices, index)
+	end
+	self:_release(sound)
+	if not self.Destroyed then
+		self:_mix()
+	end
+end
+function Service:Stop(key)
+	for _, sound in ipairs(table.clone(self.Voices)) do
+		if self.VoiceInfo[sound].Key == key then
+			self:_forget(sound)
+		end
+	end
+end
+function Service:Flush(auto, duration)
+	local now = os.clock()
+	if self.Destroyed or now - (self.LastFlush or -math.huge) < Audio.FlushGap then
+		return
+	end
+	self.LastFlush = now
+	self.FlushGeneration = (self.FlushGeneration or 0) + 1
+	local token = self.FlushGeneration
+	self:Play("FlushStart")
 	self:Play("FlushRumble")
 	if auto then
 		self:Play("AutoFlushTick")
+	end
+	local function later(delay, key)
+		task.delay(delay, function()
+			if not self.Destroyed and token == self.FlushGeneration then
+				self:Play(key)
+			end
+		end)
+	end
+	later(Audio.FlushSwooshDelay, "Flush")
+	later(math.max(Audio.FlushSwooshDelay, duration or 0.32), "DropLanding")
+end
+function Service:_environment()
+	if not self.Ready then
+		return
+	end
+	local character = Players.LocalPlayer.Character
+	if not character or not character:FindFirstChild("HumanoidRootPart") then
+		return
+	end
+	if character ~= self.LastCharacter then
+		self.LastCharacter = character
+		self:Play("SpawnArrival")
+	end
+	if not self.AmbienceAttempted and not self.Settings.SFXMuted and self.Settings.SFXVolume > 0 then
+		self.AmbienceAttempted = true
+		self:Play("Ambience")
 	end
 end
 function Service:_release(sound)
@@ -244,6 +324,9 @@ function Service:Destroy()
 		sound:Destroy()
 	end
 	table.clear(self.Voices)
+	table.clear(self.VoiceInfo)
+	table.clear(self.WorldVoices)
+	table.clear(self.Ducks)
 	for _, sound in pairs({ self.Current, self.Loading, self.Outgoing, self.Next }) do
 		sound:Destroy()
 	end
@@ -260,20 +343,23 @@ function Service.Start()
 		Settings = Settings.Sanitize(nil, Audio.Defaults),
 		Ducks = {},
 		Voices = {},
+		VoiceInfo = {},
 		LastCue = {},
 		Connections = {},
 		Tweens = setmetatable({}, { __mode = "k" }),
 		WorldSounds = setmetatable({}, { __mode = "k" }),
+		WorldVoices = {},
 		Combo = 0,
 		LastCoin = -math.huge,
 	}, Service)
 	self.Music = group("Music", SoundService, 0)
 	self.SFX = group("ToiletSounds", SoundService, 0)
 	self.Buses = {}
-	for _, name in ipairs({ "UI", "Rewards", "Gameplay" }) do
+	for _, name in ipairs({ "UI", "Rewards", "Gameplay", "Ambience" }) do
 		self.Buses[name] = group(name, self.SFX, 1)
 	end
 	self.LocalFlush = group("LocalFlush", self.SFX, 0)
+	self.WorldSFX = group("NearbyFlushes", self.SFX, Audio.WorldFlushGain)
 	self.Equalizer = Instance.new("EqualizerSoundEffect")
 	self.Equalizer.Name, self.Equalizer.HighGain, self.Equalizer.Parent = "RevealMix", 0, self.Music
 	local function register(object)
@@ -284,12 +370,43 @@ function Service.Start()
 			-- Other players still hear its positional audio through the SFX bus.
 			if assetId(object.SoundId) and assetId(object.SoundId) == assetId(Assets.Sounds.Flush) then
 				local ancestor = object.Parent
+				local own = false
 				while ancestor and ancestor ~= workspace do
 					if ancestor:GetAttribute("OwnerUserId") == Players.LocalPlayer.UserId then
-						object.SoundGroup = self.LocalFlush
+						own = true
 						break
 					end
 					ancestor = ancestor.Parent
+				end
+				local now, count = os.clock(), 0
+				local emitter, camera = object.Parent, workspace.CurrentCamera
+				local far = emitter
+					and emitter:IsA("BasePart")
+					and (not camera or (emitter.Position - camera.CFrame.Position).Magnitude > Audio.WorldFlushDistance)
+				for sound, deadline in pairs(self.WorldVoices) do
+					if deadline <= now or not sound.Parent then
+						self.WorldVoices[sound] = nil
+					else
+						count += 1
+					end
+				end
+				if
+					own
+					or far
+					or count >= Audio.WorldMaxVoices
+					or now - (self.LastWorldFlush or -math.huge) < Audio.WorldFlushGap
+				then
+					object.SoundGroup = self.LocalFlush
+				else
+					self.LastWorldFlush = now
+					self.WorldVoices[object] = now + Audio.Cues.Flush.Length + 0.15
+					object.SoundGroup = self.WorldSFX
+					task.delay(Audio.Cues.Flush.Length + 0.15, function()
+						self.WorldVoices[object] = nil
+						if not self.Destroyed and object.Parent then
+							object.SoundGroup = self.LocalFlush
+						end
+					end)
 				end
 			end
 		end
@@ -306,6 +423,7 @@ function Service.Start()
 			if elapsed >= 0.1 then
 				elapsed = 0
 				self:_mix()
+				self:_environment()
 			end
 		end)
 	)

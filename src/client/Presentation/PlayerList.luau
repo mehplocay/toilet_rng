@@ -20,6 +20,7 @@ function PlayerList.Create(root)
 	local list = C.Scroll(panel, UDim2.new(1, -12, 1, -54), UDim2.fromOffset(6, 48))
 	C.New("UIListLayout", list, { Padding = UDim.new(0, 4), SortOrder = Enum.SortOrder.LayoutOrder })
 	local rows, connections, elapsed, coreDisabled, previous = {}, {}, 0, false, true
+	local lastSignature
 	local function refresh()
 		local sorted, present = {}, {}
 		for _, player in ipairs(Players:GetPlayers()) do
@@ -36,6 +37,15 @@ function PlayerList.Create(root)
 		table.sort(sorted, function(a, b)
 			return if a.Coins == b.Coins then a.Player.UserId < b.Player.UserId else a.Coins > b.Coins
 		end)
+		local signature = {}
+		for _, entry in ipairs(sorted) do
+			table.insert(signature, entry.Player.UserId .. ":" .. entry.Coins .. ":" .. entry.Rarest)
+		end
+		local currentSignature = table.concat(signature, "|")
+		if lastSignature and currentSignature ~= lastSignature then
+			C.Sound("LeaderboardUpdate")
+		end
+		lastSignature = currentSignature
 		for rank, entry in ipairs(sorted) do
 			local player = entry.Player
 			present[player] = true
@@ -84,6 +94,15 @@ function PlayerList.Create(root)
 			refresh()
 		end
 	end
+	table.insert(
+		connections,
+		panel:GetPropertyChangedSignal("Visible"):Connect(function()
+			C.Sound(if panel.Visible then "Open" else "Close")
+			if not panel.Visible then
+				lastSignature = nil
+			end
+		end)
+	)
 	table.insert(connections, root:GetPropertyChangedSignal("AbsoluteSize"):Connect(resize))
 	table.insert(
 		connections,

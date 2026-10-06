@@ -39,7 +39,7 @@ for _ = 1, 50 do
 	controller:Show(item("Mystery"))
 end
 assert(#controller.Queue.Pending == 2)
-H.Services.UserInputService.InputBegan:Fire({ UserInputType = "UserInputType.Touch" })
+H.Services.UserInputService.InputBegan:Fire({ UserInputType = "UserInputType.Touch", Position = Vector3.new() })
 assert(controller.Queue.Active.Item.Id == "Mystery" and #controller.Queue.Pending == 1)
 controller:SetIntensity("Reduced")
 assert(not controller.Queue.Active and #controller.Queue.Pending == 0 and not H.RenderBindings.FlushRevealShake)
@@ -48,7 +48,10 @@ assert(controller.Queue.Active.Tier == "Pop" and not H.RenderBindings.FlushRevea
 controller:SetIntensity("Off")
 local count = #cues
 controller:Show(item("Mystery"), { FlushId = 5 })
-assert(not controller.Queue.Active and #cues == count)
+assert(
+	not controller.Queue.Active and #cues == count + 1 and cues[#cues] == "Secret",
+	"Visual Off must retain SFX feedback"
+)
 controller:SetIntensity("Full")
 controller:Show(item("Mystery"), { FlushId = 5 })
 assert(not controller.Queue.Active, "Duplicate authoritative result replayed")

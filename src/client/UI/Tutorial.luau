@@ -16,6 +16,7 @@ end
 function Tutorial.Create(player, remotes, hud, prompts)
 	local C = require(script.Parent.Components)
 	local step, snapshot, stopped, finishing = 1, nil, false, false
+	local soundedStep = 1
 	local connections, highlight, highlightedButton = {}, nil, nil
 	local function clearHighlight()
 		if highlight then
@@ -54,6 +55,10 @@ function Tutorial.Create(player, remotes, hud, prompts)
 		end
 		if step == 4 and snapshot.ToiletTier > 1 then
 			step = 5
+		end
+		if step > soundedStep then
+			soundedStep = step
+			C.Sound("TutorialStep")
 		end
 		local messages = {
 			"Find your toilet!",

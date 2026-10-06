@@ -77,6 +77,72 @@ end
 for key in pairs(Audio.Cues) do
 	assert(Assets.Sounds[key] == "", key)
 end
+-- Admission is shared by production playback. A hover storm cannot steal a stinger.
+local voices = { epic = { Key = "Epic", Started = 0 } }
+local allowed, victim = Mix.Admit(Audio, "Secret", 1, {}, voices)
+assert(allowed and victim == "epic")
+voices = { secret = { Key = "Secret", Started = 0 } }
+assert(not Mix.Admit(Audio, "Epic", 10, {}, voices))
+assert(not Mix.Admit(Audio, "Secret", 10, {}, voices), "Per-slot cap ignored")
+assert(not Mix.Admit(Audio, "Click", 1, { Click = 0.98 }, {}), "Cooldown ignored")
+assert(Mix.Admit(Audio, "Click", 1, { Click = 0.5 }, {}))
+local tiny = table.clone(Audio)
+tiny.MaxVoices = 1
+assert(not Mix.Admit(tiny, "Hover", 10, {}, voices), "UI stole a high-priority voice")
+allowed, victim = Mix.Admit(tiny, "Secret", 10, {}, { hover = { Key = "Hover", Started = 0 } })
+assert(allowed and victim == "hover")
+local previousPitch = 0
+for _, amount in ipairs({ 0, 1, 10, 100, 1000, 1000000, 9e15, math.huge }) do
+	local pitch = Mix.AmountPitch(amount)
+	assert(pitch >= previousPitch and pitch <= 1.24)
+	previousPitch = pitch
+end
+assert(Mix.AmountPitch(0 / 0) == 1 and Mix.AmountPitch(-1) == 1)
+-- Stress every slot at 20 Hz and realistic fast/normal flush intervals for a minute.
+for _, cadence in ipairs({ 0.05, 0.4, 1.5 }) do
+	local active, last, nextId = {}, {}, 0
+	for tick = 0, math.floor(60 / cadence) do
+		local now = tick * cadence
+		for id, voice in pairs(active) do
+			if voice.Until <= now then
+				active[id] = nil
+			end
+		end
+		for key, cue in pairs(Audio.Cues) do
+			local admit, steal = Mix.Admit(Audio, key, now, last, active)
+			if admit then
+				if steal then
+					active[steal] = nil
+				end
+				nextId += 1
+				active[nextId] = { Key = key, Started = now, Until = now + cue.Length / 0.95 + 0.15 }
+				last[key] = now
+			end
+			local total, slots, classes = 0, {}, {}
+			for _, voice in pairs(active) do
+				local class = Audio.Cues[voice.Key].Class
+				total += 1
+				slots[voice.Key] = (slots[voice.Key] or 0) + 1
+				classes[class] = (classes[class] or 0) + 1
+			end
+			assert(total <= Audio.MaxVoices)
+			for slot, count in pairs(slots) do
+				assert(count <= Audio.Cues[slot].MaxVoices)
+			end
+			for class, count in pairs(classes) do
+				assert(count <= Audio.ClassLimits[class])
+			end
+		end
+	end
+end
+for key, cue in pairs(Audio.Cues) do
+	assert(cue.Gap > 0 and cue.MaxVoices >= 1 and cue.Length > 0 and cue.Variation <= 0.05, key)
+	assert(cue.Class ~= "stinger" or cue.Duck, key)
+end
+for key in pairs(Assets.Sounds) do
+	assert(Audio.Cues[key], key)
+end
+print("Audio admission checks passed: cooldowns, slot/class/global caps, priority, rapid stress and amount pitch")
 print(
 	"Audio logic checks passed: profile migration, validation, gains, crossfade scheduling, overlapping ducks, shuffle and pitch"
 )
