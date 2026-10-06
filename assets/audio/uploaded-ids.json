@@ -1,0 +1,5 @@
+{
+  "note": "Roblox audio asset ids uploaded 2026-10-06 to group Dreadlight Studio via Creator Hub. Use as rbxassetid://<id> in Assets.luau (Music[1..5], Sounds.<Key>).",
+  "music": {"Music1":137922863128587,"Music2":75779310529841,"Music3":84030063854868,"Music4":71415907845486,"Music5":132955749725997},
+  "sounds": {"AutoFlushTick":93291584973533,"Click":103735492846894,"Close":71274057897049,"CoinCollect":94795470556985,"Epic":108214536714954,"Error":97601831373842,"Flush":85934041973078,"FlushRumble":121370075086837,"Godly":96660818003537,"Hover":81634999326205,"Legendary":93615652488650,"Mythic":90913293617512,"Open":87953644311021,"PurchaseSuccess":109653981647740,"Secret":133819934607442,"ServerEvent":107855089078089}
+}
