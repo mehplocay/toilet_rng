@@ -1,0 +1,13 @@
+﻿SOCIAL BOOSTS: fixed loadout, unchanged base economy; continuous rates before whole-coin rounding
+Scenario | Free social factor | Relative coin-gated time (fixed rates)
+Typical | 1.000x | 100.00%
+Group | 1.100x | 90.91%
+3 friends | 1.150x | 86.96%
+Group + 3 friends + active invite | 1.518x | 65.88%
+Group + 11 friends + active invite | 2.046x | 48.88%
+Tier | Typical single Poop display coins/min | Group + 3 friends + active invite coins/min
+Basic Toilet | 60.000 | 91.080
+Diamond Toilet | 198.000 | 300.560
+Galaxy Toilet | 780.000 | 1184.040
+Infinity Flush | 19500.000 | 29601.000
+Invite example assumes the boost is active; actual expiry, qualification, daily limits, flush gates, RNG and collection caps affect elapsed progression.

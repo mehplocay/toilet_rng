@@ -62,6 +62,8 @@ function Passes.Create(gui, remotes)
 		{ Size = UDim2.new(1, -10, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, BackgroundTransparency = 1 }
 	)
 	C.New("UIListLayout", content, { Padding = UDim.new(0, 18), SortOrder = Enum.SortOrder.LayoutOrder })
+	local social = require(script.Parent.SocialBoosts).Create(content, remotes)
+	social.Frame.Visible = false
 	local row = C.New("Frame", content, {
 		Size = UDim2.new(1, 0, 0, 0),
 		AutomaticSize = Enum.AutomaticSize.Y,
@@ -334,6 +336,7 @@ function Passes.Create(gui, remotes)
 	local styleFeedback = C.BodyText(content, "", UDim2.new(1, -12, 0, 48))
 	styleFeedback.Name, styleFeedback.LayoutOrder = "StyleFeedback", 4
 	selectTab = function(boosts)
+		social.Frame.Visible = boosts == true
 		local lucky = boosts == "Lucky" and commerce.Lucky and commerce.Lucky.Allowed == true
 		row.Visible, boostRow.Visible, luckyRow.Visible = not boosts, boosts == true, lucky == true
 		useLucky.Visible = lucky == true
@@ -414,7 +417,12 @@ function Passes.Create(gui, remotes)
 	updateButtons()
 	return {
 		Panel = panel,
+		OpenSocial = function()
+			selectTab(true)
+			panel.Visible = true
+		end,
 		Update = function(state)
+			social.Update(state.Social)
 			owned = Rules.Entitlements(state.OwnedPasses, Config)
 			commerce = table.clone(state.Commerce or { Quotes = {} })
 			local lucky = commerce.Lucky

@@ -78,7 +78,8 @@ function Tracks.Create(body, remotes)
 					C.Pop(card.Frame)
 				end
 				local effects = {
-					CashBoost = Format.Compact(rules:Cash(state), 2) .. "x coins",
+					CashBoost = Format.Compact((state.UpgradeStats or {}).CashMultiplier or rules:Cash(state), 2)
+						.. "x coins",
 					LuckBoost = string.format(
 						"Luck +%d%%%s",
 						math.round(((stats.LuckMultiplier or 1) - 1) * 100),

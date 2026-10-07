@@ -92,6 +92,9 @@ function FlushService.Start(data, limiter, remotes, sync, world, events, monetiz
 				return
 			end
 		end
+		if data.Social then
+			data.Social:Flushed(player)
+		end
 		Presentation.Publish(
 			player,
 			profile,

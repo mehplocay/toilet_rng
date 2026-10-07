@@ -16,6 +16,7 @@ function Window.Create(gui, remote, C, reloadLabels)
 	summary.Name, summary.TextXAlignment = "Summary", Enum.TextXAlignment.Left
 	local pending, sequence, alive, resetToken, jsonBox = nil, 0, true, nil, nil
 	local pages, buttons, links = {}, {}, {}
+	local socialSummary, socialState
 	local pageCache = C.New("Folder", gui, { Name = "CachedAdminTabs" })
 	local orders = {}
 	local function ordered(parent, object)
@@ -402,6 +403,8 @@ function Window.Create(gui, remote, C, reloadLabels)
 	end
 	function builders.Tools()
 		local body = page("Tools")
+		socialSummary = text(body, socialState or "Social boosts: refresh profile summary to inspect (read only).")
+		socialSummary.Name, socialSummary.Size = "SocialBoostSummary", UDim2.new(1, 0, 0, 130)
 		button(body, "Export current profile JSON", function()
 			send("Export")
 		end, C.Green)
@@ -453,6 +456,21 @@ function Window.Create(gui, remote, C, reloadLabels)
 				jsonBox.Text = extra.Json
 			end
 			if extra.Coins then
+				if extra.Social then
+					local social = extra.Social
+					socialState = string.format(
+						"Social boosts (read only)\nGroup: %s | Friends: %d\nInvite: %ds remaining | Today: %d | Lifetime: %d\nCombined social coin factor: %.3fx",
+						social.GroupStatus,
+						social.FriendCount,
+						social.InviteRemaining,
+						social.DailyCount,
+						social.RewardedCount,
+						social.Multiplier
+					)
+					if socialSummary then
+						socialSummary.Text = socialState
+					end
+				end
 				summary.Text = string.format(
 					"Coins %s | Tier %d | Rebirth %d | %s | Lucky Flushes %d",
 					C.Commas(extra.Coins),

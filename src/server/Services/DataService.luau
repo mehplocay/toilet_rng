@@ -18,6 +18,7 @@ local index = require(game.ReplicatedStorage.Shared.IndexProgress).new(
 local Monetization = require(game.ReplicatedStorage.Shared.Config.Monetization)
 local MonetizationRules = require(game.ReplicatedStorage.Shared.MonetizationRules)
 local CommerceProfile = require(game.ReplicatedStorage.Shared.CommerceProfile)
+local SocialRules = require(game.ReplicatedStorage.Shared.SocialBoostRules)
 local AudioSettings = require(game.ReplicatedStorage.Shared.AudioSettings)
 local PresentationSettings = require(game.ReplicatedStorage.Shared.PresentationSettings)
 local Audio = require(game.ReplicatedStorage.Shared.Config.Audio)
@@ -62,6 +63,7 @@ function DataService.DefaultProfile()
 	PresentationSettings.Apply(settings, PresentationSettings.Sanitize(nil))
 	return {
 		Monetization = CommerceProfile.Sanitize(nil),
+		Social = SocialRules.Sanitize(nil),
 		Version = 1,
 		UpgradeVersion = 2,
 		RebirthLevel = 0,
@@ -94,6 +96,7 @@ local function sanitize(raw, withoutAdmin)
 	end
 	profile.TutorialDone = raw.TutorialDone == true
 	profile.Monetization = CommerceProfile.Sanitize(raw.Monetization)
+	profile.Social = SocialRules.Sanitize(raw.Social)
 	MonetizationRules.RestoreSettings(profile.Settings, raw.Settings, Monetization)
 	for key, value in pairs(AudioSettings.Migrate(raw.Settings, Audio.Defaults)) do
 		profile.Settings[key] = value
@@ -178,6 +181,9 @@ function DataService:Get(player)
 	if profile then
 		-- Every gameplay mutation settles the previous display/tier first, without yielding.
 		income:Settle(profile, os.time(), false)
+		if self.Social then
+			self.Social:Attach(player, profile)
+		end
 	end
 	return profile
 end

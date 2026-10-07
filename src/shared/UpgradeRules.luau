@@ -3,6 +3,7 @@ local Rules = {}
 local CashMath = require(if script then script.Parent.CashMath else "./CashMath")
 local Paid = require(if script then script.Parent.PaidBenefits else "./PaidBenefits")
 local Income = require(if script then script.Parent.Config.Income else "./Config/Income")
+local Social = require(if script then script.Parent.SocialBoostRules else "./SocialBoostRules")
 Rules.__index = Rules
 local function integer(value, maximum)
 	return type(value) == "number" and value == value and value >= 0 and value <= maximum and value % 1 == 0
@@ -84,12 +85,12 @@ function Rules:Milestone(profile, id)
 		else "Novice",
 		math.min(track.MaxLevel, reached + self.Config.MilestoneEvery)
 end
-function Rules:Cash(profile, toiletFactor)
+function Rules:Cash(profile, toiletFactor, socialFactor)
 	return Paid.Cash(
 		profile,
 		CashMath.Product(
 			CashMath.Product(1 + self:Effect(profile, "CashBoost"), 1 + self:RebirthBonus(profile, "Cash")),
-			toiletFactor or 1
+			CashMath.Product(toiletFactor or 1, socialFactor or Social.Multiplier(profile))
 		)
 	)
 end

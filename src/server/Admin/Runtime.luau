@@ -67,6 +67,7 @@ function Runtime.new(data, world, events, remotes)
 		)
 		return {
 			Coins = profile.Coins,
+			Social = require(Shared.SocialBoostRules).Snapshot(profile),
 			LuckyFlushes = profile.Monetization.LuckyFlushes,
 			ToiletTier = profile.ToiletTier,
 			RebirthLevel = profile.RebirthLevel,
