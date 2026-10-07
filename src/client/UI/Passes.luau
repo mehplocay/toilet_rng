@@ -26,6 +26,7 @@ function Passes.Create(gui, remotes)
 	end)
 	local body = panel.ContentScroll.Body
 	local owned, metadata, buttons, prices, colors, marks = {}, {}, {}, {}, {}, {}
+	local selectedColor = "Default"
 	local commerce = { Quotes = {} }
 	local beginPurchase
 	local oddsUI = Odds.Create(gui, remotes, function()
@@ -290,21 +291,38 @@ function Passes.Create(gui, remotes)
 			refreshPrices()
 		end
 	end)
-	local colorHeading = C.BodyText(content, "Plot color: requires Custom Plot Color", UDim2.new(1, 0, 0, 30))
-	colorHeading.LayoutOrder = 2
+	local colorSummary = C.New("Frame", content, {
+		Size = UDim2.new(1, 0, 0, 32),
+		BackgroundTransparency = 1,
+		LayoutOrder = 2,
+	})
+	local colorHeading = C.BodyText(
+		colorSummary,
+		"Plot color: requires Custom Plot Color",
+		UDim2.new(1, -38, 1, 0),
+		UDim2.fromOffset(38, 0)
+	)
+	colorHeading.TextXAlignment = Enum.TextXAlignment.Left
+	local currentSwatch = C.New("Frame", colorSummary, {
+		Name = "CurrentColorSwatch",
+		Size = UDim2.fromOffset(24, 24),
+		Position = UDim2.fromOffset(4, 4),
+		BackgroundColor3 = C.Green,
+	})
+	C.New("UICorner", currentSwatch, { CornerRadius = UDim.new(0, 6) })
 	local swatches = C.New("Frame", content, {
 		Size = UDim2.new(1, 0, 0, 0),
 		AutomaticSize = Enum.AutomaticSize.Y,
 		BackgroundTransparency = 1,
 		LayoutOrder = 3,
 	})
-	C.Grid(swatches, 112, 48)
+	C.Grid(swatches, 142, 48)
 	local details = C.BodyText(
 		content,
 		"VIP: 1.5x cash, +1 path speed step, +50% offline tank, gold star/trail/sign trim, daily chest and VIP hub pad. No luck.\nCoin packs and VIP chest: 100 to 1,000,000,000 Coins. Free cash caps at 40x; paid cash at 3x on top (120x max); path speed at 5x.",
 		UDim2.new(1, -12, 0, 112)
 	)
-	details.LayoutOrder = 4
+	details.LayoutOrder = 5
 	local chest = C.Button(content, "VIP daily chest", UDim2.new(1, -12, 0, 44), nil, function()
 		remotes.ClaimVIP:FireServer()
 	end, C.Gold, { Name = "VIPChest" })
@@ -313,39 +331,53 @@ function Passes.Create(gui, remotes)
 		oddsUI.Show(commerce.Lucky)
 	end, C.Gold, { Name = "UseLucky" })
 	useLucky.LayoutOrder, useLucky.Visible = 0, false
+	local styleFeedback = C.BodyText(content, "", UDim2.new(1, -12, 0, 48))
+	styleFeedback.Name, styleFeedback.LayoutOrder = "StyleFeedback", 4
 	selectTab = function(boosts)
 		local lucky = boosts == "Lucky" and commerce.Lucky and commerce.Lucky.Allowed == true
 		row.Visible, boostRow.Visible, luckyRow.Visible = not boosts, boosts == true, lucky == true
 		useLucky.Visible = lucky == true
 		details.Visible = not lucky
-		colorHeading.Visible, swatches.Visible = not boosts, not boosts
+		colorSummary.Visible, swatches.Visible = not boosts, not boosts
+		styleFeedback.Visible = not boosts
 		chest.Visible = not boosts
 		scroll.CanvasPosition = Vector2.new(0, 0)
 	end
-	for order, color in ipairs(Config.PlotColors) do
-		colors[color.Id] = C.Button(swatches, color.Name, UDim2.fromOffset(120, 48), nil, function()
-			remotes.PlotColor:FireServer(color.Id)
-		end, if color.RGB then Color3.fromRGB(table.unpack(color.RGB)) else C.Navy, { TextSize = 18 })
-		colors[color.Id].LayoutOrder, colors[color.Id].Interactable = order, false
-	end
 	local message = C.BodyText(body, "", UDim2.new(0.55, -8, 0, 48), UDim2.new(0, 0, 1, -50))
 	message.Name = "PurchaseMessage"
+	for order, color in ipairs(Config.PlotColors) do
+		local button = C.Button(swatches, color.Name, UDim2.fromOffset(142, 48), nil, function()
+			if not colors[color.Id].Interactable then
+				return
+			end
+			styleFeedback.Text = "Applying " .. color.Name .. "..."
+			remotes.PlotColor:FireServer(color.Id)
+		end, C.Navy, { TextSize = 16, Name = "PlotColor_" .. color.Id })
+		colors[color.Id] = button
+		button.LayoutOrder, button.Interactable = order, false
+		button.Label.Position, button.Label.Size = UDim2.fromOffset(34, 4), UDim2.new(1, -38, 1, -8)
+		local swatch = C.New("Frame", button, {
+			Name = "ColorSwatch",
+			Size = UDim2.fromOffset(22, 22),
+			Position = UDim2.fromOffset(7, 13),
+			BackgroundColor3 = if color.RGB then Color3.fromRGB(table.unpack(color.RGB)) else C.Green,
+		})
+		C.New("UICorner", swatch, { CornerRadius = UDim.new(0, 5) })
+		C.New("UIStroke", swatch, { Name = "Selection", Color = Color3.new(1, 1, 1), Thickness = 3, Enabled = false })
+	end
 	C.Button(body, "Refresh passes", UDim2.new(0.45, -8, 0, 44), UDim2.new(0.55, 4, 1, -48), function()
 		message.Text = "Checking..."
 		remotes.RefreshPasses:FireServer()
 		refreshPrices()
 	end, C.Blue, { TextSize = 18 })
 	local results = remotes.Result.OnClientEvent:Connect(function(action, payload)
+		if action == "PlotColor" then
+			styleFeedback.Text = payload.Message or "Request unavailable."
+		end
 		if action == "LuckyReview" then
 			oddsUI.Show(commerce.Lucky)
 		end
-		if
-			action == "BuyPass"
-			or action == "BuyProduct"
-			or action == "ClaimVIP"
-			or action == "RefreshPasses"
-			or action == "PlotColor"
-		then
+		if action == "BuyPass" or action == "BuyProduct" or action == "ClaimVIP" or action == "RefreshPasses" then
 			message.Text = payload.Message or "Request unavailable."
 			if action == pendingAction then
 				pendingAction, pendingDeadline = nil, nil
@@ -418,13 +450,16 @@ function Passes.Create(gui, remotes)
 				elseif owned.VIPPack then "VIP chest claimed today"
 				else "Daily chest requires VIP"
 			updateButtons()
-			local selected = state.Settings.PlotColor or "Default"
+			local choice = Rules.PlotColor(Config, (state.Settings or {}).PlotColor) or Config.PlotColors[1]
+			selectedColor = choice.Id
+			currentSwatch.BackgroundColor3 = if choice.RGB then Color3.fromRGB(table.unpack(choice.RGB)) else C.Green
 			colorHeading.Text = if owned.CustomPlotColor
-				then "Your plot color: " .. selected
+				then "Your plot color: " .. choice.Name
 				else "Plot color: requires Custom Plot Color"
 			for id, button in pairs(colors) do
 				button.Interactable = owned.CustomPlotColor == true
-				button.Text = (if id == selected and owned.CustomPlotColor then "> " else "") .. id
+				button.Text = (Rules.PlotColor(Config, id)).Name
+				button.ColorSwatch.Selection.Enabled = id == selectedColor
 			end
 		end,
 	}

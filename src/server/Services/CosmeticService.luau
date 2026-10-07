@@ -4,6 +4,7 @@ local Config = require(Shared.Config.Monetization)
 local Rules = require(Shared.MonetizationRules)
 local P = require(Shared.Visuals.Primitives)
 local RebirthCosmetics = require(script.Parent.Parent.World.RebirthCosmetics)
+local PlotTint = require(script.Parent.Parent.World.PlotTint)
 local CosmeticService = {}
 CosmeticService.__index = CosmeticService
 
@@ -42,7 +43,7 @@ function CosmeticService:ClearCharacter(character)
 end
 
 function CosmeticService.new(world)
-	return setmetatable({ World = world, Colors = {}, PlayerPlots = {}, Connections = {} }, CosmeticService)
+	return setmetatable({ World = world, PlayerPlots = {}, Connections = {} }, CosmeticService)
 end
 
 function CosmeticService:Apply(player, owned, profile)
@@ -178,25 +179,9 @@ function CosmeticService:Apply(player, owned, profile)
 		text.Text, text.TextColor3 = Config.VIPLabel, gold
 		text.Font, text.TextSize, text.Parent = Enum.Font.GothamBold, 23, tag
 	end
-	-- Remember builder colors so an empty plot or the next owner never inherits a tint.
-	local originals = self.Colors[plot]
-	if not originals then
-		originals = {}
-		for _, part in ipairs(plot.Model:GetDescendants()) do
-			if
-				part:IsA("BasePart")
-				and (part:GetAttribute("PlotTint") or part.Name == "Lawn" or part.Name == "StoneBorder")
-			then
-				originals[part] = part.Color
-			end
-		end
-		self.Colors[plot] = originals
-	end
-	local choice = profile and Rules.PlotColor(Config, profile.Settings.PlotColor)
+	local choice = profile and Rules.PlotColor(Config, (profile.Settings or {}).PlotColor)
 	local color = owned.CustomPlotColor == true and choice and choice.RGB
-	for part, original in pairs(originals) do
-		part.Color = if color then Color3.fromRGB(table.unpack(color)) else original
-	end
+	PlotTint.Apply(plot, color)
 end
 
 function CosmeticService:ResetPlot(plot)
@@ -211,9 +196,7 @@ function CosmeticService:ResetPlot(plot)
 	if sign then
 		sign:Destroy()
 	end
-	for part, color in pairs(self.Colors[plot] or {}) do
-		part.Color = color
-	end
+	PlotTint.Reset(plot)
 end
 
 function CosmeticService:Remove(player)

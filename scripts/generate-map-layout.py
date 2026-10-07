@@ -181,8 +181,8 @@ plotPieces=[]
 pavilion_height=22.5  # Clears the taller primitive Demon fallback as well as all imported tiers.
 def pp(asset,x,y,z,yaw=0,scale=1,**kw):
     plotPieces.append(dict(Asset=asset,Position=[x,y,z],Yaw=yaw,Scale=scale,**kw))
-pp('PlotPlatform',0,-1.45,0,Size=[48,1.65,60])
-pp('GrassSlab',0,.025,-2,Size=[13,.08,52],Solid=[244,74,143])
+pp('PlotPlatform',0,-1.45,0,Size=[48,1.65,60],PlotTint='Floor')
+pp('GrassSlab',0,.025,-2,Size=[13,.08,52],Solid=[244,74,143],PlotTint='Carpet')
 pp('PlotGateArch',0,0,-27,0,1.8)
 # Rear pavilion roof/beams reuse architectural kit meshes, preserving open collection sightlines.
 pp('HubPathStrip',0,pavilion_height,25,Size=[46,1.05,9])
@@ -201,10 +201,10 @@ for x in [-21,21]:
     pp('GrassSlab',x,12,23,Size=[2.2,4,.18],Solid=[244,74,143])
 pp('PlotPathStraight',0,-.95,-32,Size=[14,1.05,6])
 pp('PlotPathCorner',-19,-.96,-13,0,1)
-for x in [-16,0,16]: pp('PlotFenceSection',x,0,28.4,Size=[16.5,3.5,.8])
+for x in [-16,0,16]: pp('PlotFenceSection',x,0,28.4,Size=[16.5,3.5,.8],PlotTint='Trim')
 for x in [-22.4,22.4]:
-    for z in [4,20]: pp('PlotFenceSection',x,0,z,90,Size=[16.5,3.5,.8])
-pp('WoodenFence',-22.2,0,-19,90,1.8)
+    for z in [4,20]: pp('PlotFenceSection',x,0,z,90,Size=[16.5,3.5,.8],PlotTint='Trim')
+pp('WoodenFence',-22.2,0,-19,90,1.8,PlotTint='Trim')
 # Shallow walkable dais with a step; the footprint does not enter the display rows.
 pp('GrassSlab',0,0,19,Size=[18,.6,18],Solid=[30,61,107],WalkStep=True)
 pp('GrassSlab',0,.6,20,Size=[15,.65,14],Solid=[226,240,250],WalkStep=True)

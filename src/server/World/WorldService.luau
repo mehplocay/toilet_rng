@@ -214,6 +214,42 @@ function World:Assign(player)
 	end
 	player:Kick("All plots are occupied. Please join another server.")
 end
+function World:Release(player)
+	self:StopAnimation(player)
+	PlotSpawn:Remove(player)
+	local plot = self.Assigned[player]
+	if plot then
+		require(script.Parent.PlotTint).Reset(plot)
+		plot.Owner = nil
+		RebirthStairs.Refresh(plot, nil, nil)
+		plot.Model:SetAttribute("OwnerUserId", nil)
+		plot.Tier = nil
+		if plot.FlushPrompt then
+			plot.FlushPrompt:Destroy()
+			plot.FlushPrompt = nil
+		end
+		for _, segment in ipairs(plot.GlowRing) do
+			if segment.Tween then
+				segment.Tween:Cancel()
+			end
+			segment.Tween = nil
+			segment.Part.Size = segment.Size
+			segment.Part.Color = Color3.fromRGB(unpack(Layout.UpgradeGlow.RestColor))
+			segment.Part.Transparency = 0
+		end
+		plot.Profile, plot.DisplaySignature, plot.Page = nil, nil, nil
+		plot.PendingCoins, plot.IncomePoint, plot.IncomePrompt, plot.IncomeCoins = nil, nil, nil, nil
+		plot.CollectPoints, plot.CollectSlots, plot.CollectIncome, plot.IncomeLabel = nil, nil, nil, nil
+		plot.Sign.Text = "Available Plot"
+		plot.Displays:ClearAllChildren()
+		DisplayRows.Build(plot, { ToiletTier = 1, DisplaySlots = 0, Displays = {} })
+		if plot.Toilet then
+			plot.Toilet:Destroy()
+			plot.Toilet = nil
+		end
+	end
+	self.Assigned[player] = nil
+end
 function World:StopAnimation(player)
 	local plot = self.Assigned[player]
 	if plot and plot.StopAnimation then
@@ -355,39 +391,7 @@ function World:Start(data)
 		self:Assign(player)
 	end)
 	Players.PlayerRemoving:Connect(function(player)
-		self:StopAnimation(player)
-		PlotSpawn:Remove(player)
-		local plot = self.Assigned[player]
-		if plot then
-			plot.Owner = nil
-			RebirthStairs.Refresh(plot, nil, nil)
-			plot.Model:SetAttribute("OwnerUserId", nil)
-			plot.Tier = nil
-			if plot.FlushPrompt then
-				plot.FlushPrompt:Destroy()
-				plot.FlushPrompt = nil
-			end
-			for _, segment in ipairs(plot.GlowRing) do
-				if segment.Tween then
-					segment.Tween:Cancel()
-				end
-				segment.Tween = nil
-				segment.Part.Size = segment.Size
-				segment.Part.Color = Color3.fromRGB(unpack(Layout.UpgradeGlow.RestColor))
-				segment.Part.Transparency = 0
-			end
-			plot.Profile, plot.DisplaySignature, plot.Page = nil, nil, nil
-			plot.PendingCoins, plot.IncomePoint, plot.IncomePrompt, plot.IncomeCoins = nil, nil, nil, nil
-			plot.CollectPoints, plot.CollectSlots, plot.CollectIncome, plot.IncomeLabel = nil, nil, nil, nil
-			plot.Sign.Text = "Available Plot"
-			plot.Displays:ClearAllChildren()
-			DisplayRows.Build(plot, { ToiletTier = 1, DisplaySlots = 0, Displays = {} })
-			if plot.Toilet then
-				plot.Toilet:Destroy()
-				plot.Toilet = nil
-			end
-		end
-		self.Assigned[player] = nil
+		self:Release(player)
 	end)
 	for _, player in ipairs(Players:GetPlayers()) do
 		task.spawn(function()

@@ -3381,6 +3381,7 @@ return {
 			Yaw = 0,
 			Scale = 1,
 			Size = Vector3.new(48, 1.65, 60),
+			PlotTint = "Floor",
 		},
 		{
 			Asset = "GrassSlab",
@@ -3389,6 +3390,7 @@ return {
 			Scale = 1,
 			Size = Vector3.new(13, 0.08, 52),
 			Solid = { 244, 74, 143 },
+			PlotTint = "Carpet",
 		},
 		{ Asset = "PlotGateArch", Position = Vector3.new(0, 0, -27), Yaw = 0, Scale = 1.8 },
 		{
@@ -3470,6 +3472,7 @@ return {
 			Yaw = 0,
 			Scale = 1,
 			Size = Vector3.new(16.5, 3.5, 0.8),
+			PlotTint = "Trim",
 		},
 		{
 			Asset = "PlotFenceSection",
@@ -3477,6 +3480,7 @@ return {
 			Yaw = 0,
 			Scale = 1,
 			Size = Vector3.new(16.5, 3.5, 0.8),
+			PlotTint = "Trim",
 		},
 		{
 			Asset = "PlotFenceSection",
@@ -3484,6 +3488,7 @@ return {
 			Yaw = 0,
 			Scale = 1,
 			Size = Vector3.new(16.5, 3.5, 0.8),
+			PlotTint = "Trim",
 		},
 		{
 			Asset = "PlotFenceSection",
@@ -3491,6 +3496,7 @@ return {
 			Yaw = 90,
 			Scale = 1,
 			Size = Vector3.new(16.5, 3.5, 0.8),
+			PlotTint = "Trim",
 		},
 		{
 			Asset = "PlotFenceSection",
@@ -3498,6 +3504,7 @@ return {
 			Yaw = 90,
 			Scale = 1,
 			Size = Vector3.new(16.5, 3.5, 0.8),
+			PlotTint = "Trim",
 		},
 		{
 			Asset = "PlotFenceSection",
@@ -3505,6 +3512,7 @@ return {
 			Yaw = 90,
 			Scale = 1,
 			Size = Vector3.new(16.5, 3.5, 0.8),
+			PlotTint = "Trim",
 		},
 		{
 			Asset = "PlotFenceSection",
@@ -3512,8 +3520,9 @@ return {
 			Yaw = 90,
 			Scale = 1,
 			Size = Vector3.new(16.5, 3.5, 0.8),
+			PlotTint = "Trim",
 		},
-		{ Asset = "WoodenFence", Position = Vector3.new(-22.2, 0, -19), Yaw = 90, Scale = 1.8 },
+		{ Asset = "WoodenFence", Position = Vector3.new(-22.2, 0, -19), Yaw = 90, Scale = 1.8, PlotTint = "Trim" },
 		{
 			Asset = "GrassSlab",
 			Position = Vector3.new(0, 0, 19),
