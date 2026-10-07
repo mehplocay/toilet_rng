@@ -363,6 +363,7 @@ function Instance.new(class)
 		"Loaded",
 		"CharacterAdded",
 		"CharacterRemoving",
+		"Died",
 	}) do
 		object._props[event] = signal()
 	end
