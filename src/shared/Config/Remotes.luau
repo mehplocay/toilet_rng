@@ -27,6 +27,7 @@ return {
 	RefreshPasses = "RefreshPasses",
 	DevGrant = "DevGrant",
 	TutorialDone = "TutorialDone",
+	TutorialReplay = "TutorialReplay",
 	ClaimReward = "ClaimReward",
 	ClaimIndexReward = "ClaimIndexReward",
 	Limits = {
@@ -48,6 +49,7 @@ return {
 		BuyPass = { Capacity = 1, Refill = 0.2 },
 		RefreshPasses = { Capacity = 1, Refill = 0.1 },
 		TutorialDone = { Capacity = 2, Refill = 0.5 },
+		TutorialReplay = { Capacity = 2, Refill = 0.5 },
 		ClaimReward = { Capacity = 2, Refill = 0.2 },
 		Settings = { Capacity = 3, Refill = 1 },
 		AutoFlush = { Capacity = 3, Refill = 1 },

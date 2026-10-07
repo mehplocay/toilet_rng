@@ -10,6 +10,7 @@ local upgrades =
 	require(game.ReplicatedStorage.Shared.UpgradeRules).new(require(game.ReplicatedStorage.Shared.Config.Upgrades))
 local Lucky = require(script.Parent.LuckyService)
 local Profile = require(game.ReplicatedStorage.Shared.CommerceProfile)
+local TutorialProgress = require(game.ReplicatedStorage.Shared.TutorialProgress)
 local FlushService = {}
 function FlushService.Start(data, limiter, remotes, sync, world, events, monetization, rewards)
 	monetization.Lucky = Lucky
@@ -85,6 +86,7 @@ function FlushService.Start(data, limiter, remotes, sync, world, events, monetiz
 		profile.RunFlushes = (profile.RunFlushes or 0) + 1
 		profile.Inventory[item.Id] = (profile.Inventory[item.Id] or 0) + 1
 		profile.Collection[item.Id] = (profile.Collection[item.Id] or 0) + 1
+		TutorialProgress.Record(profile, "Flush", { ItemId = item.Id })
 		if paidFlush then
 			profile.Monetization.LuckyFlushes -= 1
 			Lucky.Armed[player] = nil

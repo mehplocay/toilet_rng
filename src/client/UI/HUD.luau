@@ -259,7 +259,7 @@ function HUD.Create(root, remotes, open, prompts, shopNavigation)
 			lastAwayHint = os.clock()
 			showHint("Find your toilet", "Tap Home to return")
 		end
-		local hintLeft = hintUntil - os.clock()
+		local hintLeft = if tutorial and hintUntil > 0 then 1 else hintUntil - os.clock()
 		hint.Visible = hintLeft > 0 and not revealing and not eventActive and not coinPopup
 		hint.GroupTransparency = math.clamp(1 - hintLeft / 0.5, 0, 1)
 	end)
@@ -324,6 +324,13 @@ function HUD.Create(root, remotes, open, prompts, shopNavigation)
 				end
 			end
 			resize()
+		end,
+		FlushButton = flush,
+		SetTutorialActive = function(active)
+			tutorial = active
+			if active then
+				hintUntil, hint.Visible = 0, false
+			end
 		end,
 		Hint = hint,
 		EventActive = function(active)

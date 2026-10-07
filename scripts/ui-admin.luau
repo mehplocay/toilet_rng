@@ -102,6 +102,12 @@ do
 	remote.OnClientEvent:Fire(request[1], { Success = true, Message = "Saved" })
 	before = #remote.Calls
 	window.Select("Player")
+	window.Pages.Player:FindFirstChild("Reset my tutorial", true).Activated:Fire()
+	request = remote.Calls[#remote.Calls]
+	assert(request[2] == "ResetTutorial" and next(request[3]) == nil, "Tutorial reset must target only the sender")
+	remote.OnClientEvent:Fire(request[1], { Success = true, Message = "Saved" })
+	assert(not window.Panel.Visible, "Owner reset must reveal the tutorial after confirmation")
+	before = #remote.Calls
 	window.Pages.Player:FindFirstChild("Confirm reset + create backup", true).Activated:Fire()
 	assert(#remote.Calls == before, "Reset must have a challenge and explicit text")
 	window.Select("Tools")

@@ -85,6 +85,8 @@ function Mutations.Build(data, profile, action, args, now, imported)
 		candidate.RebirthLevel = args.Level
 	elseif action == "Flushes" then
 		candidate.Stats.Flushes, candidate.RunFlushes = args.Amount, args.Amount
+	elseif action == "ResetTutorial" then
+		require(Shared.TutorialProgress).Reset(candidate)
 	elseif action == "Reset" then
 		candidate = data.DefaultProfile()
 		candidate.Admin = { Touched = true, Items = {}, Backup = data.Sanitize(profile, true), BackupAt = now }

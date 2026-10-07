@@ -26,6 +26,7 @@ foreach ($batchName in @('uploaded-ids.json', 'uploaded-ids-2.json')) {
 }
 if ($audioCount -ne 53) { throw "Expected 53 uploaded audio IDs, got $audioCount" }
 $parts.Add('local previewIcons = ' + ([bool]$SnapshotDirectory).ToString().ToLower())
+$parts.Add('local captureSnapshots = ' + ([bool]$SnapshotDirectory).ToString().ToLower())
 $manifest = Get-Content -Raw -LiteralPath (Join-Path $workspaceRoot 'assets/icons/manifest.json') | ConvertFrom-Json
 $uploads = Get-Content -Raw -LiteralPath (Join-Path $workspaceRoot 'assets/icons/uploaded-ids.json') | ConvertFrom-Json
 foreach ($asset in $manifest.assets) {
@@ -70,6 +71,7 @@ $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'purchase-ui-checks.l
 $parts.Add('H.CheckPurchaseUI(); print("Purchase UI regressions passed")')
 $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-plot-color.luau')))
 $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'plot-color-cosmetic-checks.luau')))
+$parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-tutorial.luau')))
 try {
     [IO.File]::WriteAllText($generatedPath, ($parts -join "`n"), [Text.UTF8Encoding]::new($false))
     $output = & luau $generatedPath

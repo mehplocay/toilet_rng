@@ -655,6 +655,7 @@ function H.Remotes()
 		"RefreshPasses",
 		"DevGrant",
 		"TutorialDone",
+		"TutorialReplay",
 		"ClaimReward",
 		"ClaimIndexReward",
 	}) do
@@ -791,6 +792,9 @@ local function json(value)
 	return "{" .. table.concat(parts, ",") .. "}"
 end
 function H.Snapshot(root, name)
+	if captureSnapshots == false then
+		return
+	end
 	-- Offline previews use supplied local PNGs, never evidence of Roblox permission/loading.
 	if previewIcons then
 		for _, object in ipairs(root:GetDescendants()) do

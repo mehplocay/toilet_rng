@@ -522,10 +522,16 @@ function C.Panel(parent, title, color, minimumHeight)
 	local body = C.New("Frame", scroll, { Name = "Body", BackgroundTransparency = 1 })
 	local function resize()
 		local bounds = Layout.Modal(math.max(240, parent.AbsoluteSize.X), math.max(220, parent.AbsoluteSize.Y))
+		if parent:GetAttribute("TutorialActive") then
+			local bottom = bounds.Y + bounds.H
+			bounds.Y = math.max(bounds.Y, 90)
+			bounds.H = bottom - bounds.Y
+		end
 		C.Place(panel, bounds)
 		body.Size = UDim2.new(1, -8, 0, math.max(minimumHeight or 540, bounds.H - 88))
 	end
 	parent:GetPropertyChangedSignal("AbsoluteSize"):Connect(resize)
+	parent:GetAttributeChangedSignal("TutorialActive"):Connect(resize)
 	panel:GetPropertyChangedSignal("Visible"):Connect(function()
 		if C.SoundHook then
 			C.SoundHook(if panel.Visible then "Open" else "Close")
@@ -539,6 +545,25 @@ function C.Panel(parent, title, color, minimumHeight)
 	return panel
 end
 local toasts = setmetatable({}, { __mode = "k" })
+-- Reveal the highlighted action through nested panel/card scrolling.
+function C.ScrollTo(button)
+	local parent = button.Parent
+	local shift = 0
+	while parent and parent:IsA("GuiObject") do
+		if parent:IsA("ScrollingFrame") then
+			local top = button.AbsolutePosition.Y - parent.AbsolutePosition.Y - shift
+			local bottom = top + button.AbsoluteSize.Y
+			if top < 0 or bottom > parent.AbsoluteSize.Y then
+				local position = parent.CanvasPosition or Vector2.new()
+				local delta = if top < 0 then top - 8 else bottom - parent.AbsoluteSize.Y + 8
+				local nextY = math.max(0, position.Y + delta)
+				parent.CanvasPosition = Vector2.new(position.X, nextY)
+				shift += nextY - position.Y
+			end
+		end
+		parent = parent.Parent
+	end
+end
 function C.Toast(parent)
 	if toasts[parent] then
 		return toasts[parent]

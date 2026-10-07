@@ -14,6 +14,25 @@ assert(Tutorial.NextStep(4, "Sell", { Success = true }) == 4)
 assert(Tutorial.NextStep(5, "Flush", { ItemId = "Poop" }) == 5)
 assert(Tutorial.NextStep(3, "Sell", nil) == 3)
 assert(Tutorial.NextStep(3, "Sell", { Success = "true" }) == 3)
+assert(Tutorial.NextStep(2, "Flush", { ItemId = "Poop", Admin = true }) == 2)
+assert(Tutorial.NextStep(2, "Flush", { ItemId = "SudsSlug", Automatic = true, Compact = true }) == 3)
+assert(Tutorial.NextStep(3, "Display", { Success = true, ItemId = "SudsSlug" }) == 4)
+assert(Tutorial.NextStep(3, "Display", { Success = true }) == 3)
+assert(Tutorial.NextStep(4, "BuyUpgrade", { Success = true }) == 5)
+assert(Tutorial.NextStep(4, "Rebirth", { Success = true }) == 4)
+assert(Tutorial.NextStep(4, "BuyPass", { Success = true }) == 4)
+local Progress = require("../src/shared/TutorialProgress")
+local profile = {}
+Progress.Restore(profile, nil)
+assert(profile.TutorialStep == 1 and not profile.TutorialDone)
+for step = 1, 5 do
+	Progress.Restore(profile, { TutorialStep = step })
+	assert(profile.TutorialStep == step and profile.TutorialDone == (step == 5))
+end
+Progress.Reset(profile)
+assert(profile.TutorialStep == 1 and not profile.TutorialDone and profile.TutorialRun == 1)
+Progress.Dismiss(profile)
+assert(profile.TutorialStep == 5 and profile.TutorialDone)
 
 local limiter, player = Limiter.new(Remotes.Limits), {}
 assert(limiter:Allow(player, "TutorialDone"))

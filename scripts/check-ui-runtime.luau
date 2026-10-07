@@ -399,7 +399,7 @@ hud.SetTutorial("Find your toilet", "Tap Home", function() end)
 H.Advance(6)
 hud.SetTutorial("Find your toilet", "Tap Home", function() end)
 H.Services.RunService.Heartbeat:Fire(0.1)
-assert(not hud.Hint.Visible, "Repeated snapshots restart the tutorial hint")
+assert(hud.Hint.Visible, "Tutorial instructions must not expire after five seconds")
 hud.SetTutorial(nil)
 nearToilet = true
 hud.Best("Avery", Items[6])

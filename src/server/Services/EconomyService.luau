@@ -1,6 +1,7 @@
 local Items = require(game.ReplicatedStorage.Shared.Config.Items)
 local Toilets = require(game.ReplicatedStorage.Shared.Config.Toilets)
 local SafeInventory = require(game.ReplicatedStorage.Shared.SafeInventory)
+local TutorialProgress = require(game.ReplicatedStorage.Shared.TutorialProgress)
 local upgrades =
 	require(game.ReplicatedStorage.Shared.UpgradeRules).new(require(game.ReplicatedStorage.Shared.Config.Upgrades))
 local EconomyService = {}
@@ -34,6 +35,7 @@ function EconomyService.Start(data, limiter, remotes, sync)
 		end
 		local success = EconomyService.Sell(profile, id, count)
 		if success then
+			TutorialProgress.Record(profile, "Sell", { Success = true })
 			sync(player)
 		end
 		remotes.Result:FireClient(player, "Sell", { Success = success, Coins = profile.Coins })
@@ -48,6 +50,7 @@ function EconomyService.Start(data, limiter, remotes, sync)
 		end
 		local success = EconomyService.BuyToilet(profile, id)
 		if success then
+			TutorialProgress.Record(profile, "BuyToilet", { Success = true })
 			sync(player)
 		end
 		remotes.Result:FireClient(

@@ -62,6 +62,14 @@ function Tracks.Create(body, remotes)
 	end
 	return {
 		Frame = row,
+		TutorialTarget = function()
+			for _, track in ipairs(Config.Tracks) do
+				if cards[track.Id].Button.Interactable then
+					return cards[track.Id].Button
+				end
+			end
+			return nil
+		end,
 		Update = function(state)
 			local previous = latest
 			latest = state

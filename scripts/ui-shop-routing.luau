@@ -117,25 +117,43 @@ do
 	H.Services.UserInputService.TouchEnabled = touchBefore
 	clientRoot._fixed, clientRoot._abs = { X = 1280, Y = 684 }, nil
 	clientRoot:GetPropertyChangedSignal("AbsoluteSize"):Fire()
-	-- Tutorial toilet purchases point at Shop rather than the coin-upgrade entry.
-	local remotes = H.Remotes()
-	local hint
-	local tutorial = H.Load("src/client/UI/Tutorial").Create(H.Services.Players.LocalPlayer, remotes, {
-		Navigation = { Shop = shop, Upgrades = upgrades },
-		SetTutorial = function(_, detail)
-			hint = detail
-		end,
-	}, {
-		Near = function()
-			return false
-		end,
-	})
-	remotes.State.OnClientEvent:Fire({ ToiletTier = 1 })
-	remotes.Result.OnClientEvent:Fire("Flush", { ItemId = "Poop" })
-	remotes.Result.OnClientEvent:Fire("Sell", { Success = true })
-	assert(hint == "4/5 • Open Shop. Buy your next toilet")
-	assert(shop:FindFirstChild("TutorialHighlight") and not upgrades:FindFirstChild("TutorialHighlight"))
-	tutorial.Destroy()
+	-- Use the real bootstrap: checkpoints, routed entries, tabs and affordable actions.
+	backdrop.Activated:Fire()
+	local tutorialState = table.clone(state)
+	tutorialState.TutorialDone, tutorialState.TutorialStep = false, 4
+	tutorialState.Coins, tutorialState.ToiletTier = 1000, 1
+	bootRemotes.State.OnClientEvent:Fire(tutorialState)
+	H.Advance(0.3)
+	local guide = clientRoot.Tutorial
+	assert(guide.Detail.Text:find("Upgrades for Coin Upgrades", 1, true))
+	assert(guide.Detail.Text:find("Shop for Toilets in the Toilet Shop", 1, true))
+	assert(upgrades:FindFirstChild("TutorialHighlight") and not shop:FindFirstChild("TutorialHighlight"))
+	shop.Activated:Fire()
+	H.Layout(clientRoot)
+	H.Advance(0.3)
+	assert(coinTab:FindFirstChild("TutorialHighlight"), "Unaffordable toilet needs the coin-upgrade tab")
+	coinTab.Activated:Fire()
+	H.Layout(clientRoot)
+	H.Advance(0.3)
+	local cashBuy = coins.CashBoost.Buy
+	assert(cashBuy:FindFirstChild("TutorialHighlight") and cashBuy.Interactable)
+	backdrop.Activated:Fire()
+	upgrades.Activated:Fire()
+	checkTab("Coin Upgrades")
+	H.Layout(clientRoot)
+	H.Advance(0.3)
+	assert(cashBuy:FindFirstChild("TutorialHighlight"), "Upgrades entry must highlight a coin purchase")
+	backdrop.Activated:Fire()
+	tutorialState.Coins = 100000
+	bootRemotes.State.OnClientEvent:Fire(tutorialState)
+	shop.Activated:Fire()
+	checkTab("Toilets")
+	H.Layout(clientRoot)
+	H.Advance(0.3)
+	local toiletBuy = toilets[H.Load("src/shared/Config/Toilets")[2].Id].Locked
+	assert(toiletBuy:FindFirstChild("TutorialHighlight") and toiletBuy.Interactable)
+	backdrop.Activated:Fire()
+	bootRemotes.State.OnClientEvent:Fire(state)
 	print(
 		"Shop routing passed: entry tabs/titles, toggles, manual tabs, close paths, travel, tutorial and 12 viewports with mouse/touch/controller/keyboard callbacks"
 	)

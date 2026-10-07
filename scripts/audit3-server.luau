@@ -9,7 +9,7 @@ test("audit3: every public remote rejects surplus arguments without relaying pay
 		count += 1
 		e:Fire(name, player, cycle, cycle, cycle, cycle)
 	end
-	assert(count == 29, "Update the audit inventory when public remotes change")
+	assert(count == 30, "Update the audit inventory when public remotes change")
 	assert(#e.Results == before + 1 and e.Store.Writes == writes)
 	local rejection = e.Results[#e.Results].Payload
 	assert(rejection[1] == "BuyProduct" and rejection[2].Success == false)

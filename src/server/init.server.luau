@@ -4,6 +4,7 @@ Players.CharacterAutoLoads = false
 require(script.Services.IconResolver).Start()
 local definitions = require(ReplicatedStorage.Shared.Config.Remotes)
 local AudioSettings = require(ReplicatedStorage.Shared.AudioSettings)
+local TutorialProgress = require(ReplicatedStorage.Shared.TutorialProgress)
 local folder = Instance.new("Folder")
 folder.Name = definitions.Folder
 local remotes = {}
@@ -35,6 +36,7 @@ for _, key in ipairs({
 	"RefreshPasses",
 	"DevGrant",
 	"TutorialDone",
+	"TutorialReplay",
 	"ClaimReward",
 	"ClaimIndexReward",
 }) do
@@ -100,6 +102,8 @@ local function sync(player)
 			PendingCoins = income:PendingCoins(profile),
 			OfflineIncome = income:OfflineSnapshot(profile),
 			TutorialDone = profile.TutorialDone,
+			TutorialStep = profile.TutorialStep,
+			TutorialRun = profile.TutorialRun,
 			LastClaimDay = profile.LastClaimDay,
 			Streak = profile.Streak,
 			RewardLuckExpires = profile.RewardLuckExpires,
@@ -142,7 +146,17 @@ remotes.TutorialDone.OnServerEvent:Connect(function(player, ...)
 	end
 	local profile = data:Get(player)
 	if profile then
-		profile.TutorialDone = true
+		TutorialProgress.Dismiss(profile)
+		sync(player)
+	end
+end)
+remotes.TutorialReplay.OnServerEvent:Connect(function(player, ...)
+	if select("#", ...) ~= 0 or not limiter:Allow(player, "TutorialReplay") then
+		return
+	end
+	local profile = data:Get(player)
+	if profile then
+		TutorialProgress.Reset(profile)
 		sync(player)
 	end
 end)

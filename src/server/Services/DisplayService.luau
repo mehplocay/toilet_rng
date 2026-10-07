@@ -1,4 +1,6 @@
 local Display = {}
+local TutorialProgress =
+	require(if script then game.ReplicatedStorage.Shared.TutorialProgress else "../../shared/TutorialProgress")
 local Inventory = require(if script then game.ReplicatedStorage.Shared.SafeInventory else "../../shared/SafeInventory")
 local Items = require(if script then game.ReplicatedStorage.Shared.Config.Items else "../../shared/Config/Items")
 local known = {}
@@ -33,7 +35,10 @@ function Display.Start(data, limiter, remotes, sync)
 			return
 		end
 		local success = Display.Set(profile, id, slot)
-		remotes.Result:FireClient(player, "Display", { Success = success })
+		if success then
+			TutorialProgress.Record(profile, "Display", { Success = true, ItemId = id })
+		end
+		remotes.Result:FireClient(player, "Display", { Success = success, ItemId = if success then id else nil })
 		if success then
 			sync(player)
 		end

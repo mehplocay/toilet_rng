@@ -34,7 +34,14 @@ function Upgrades.Create(gui, remotes)
 			else "Toilets and coin upgrades are permanent."
 	end
 	local tabs = C.TabBar(body, { "Toilets", "Coin Upgrades" }, applyTab)
-	tabs.Frame.Position = UDim2.fromOffset(0, 92)
+	local function resizeHeader()
+		-- Keep both navigation rows reachable above the scrolling cards on short screens.
+		local compact = gui.AbsoluteSize.Y < 350
+		tabs.Frame.Position = UDim2.fromOffset(0, if compact then 54 else 92)
+		wallet.Position = UDim2.fromOffset(0, if compact then 108 else 54)
+	end
+	gui:GetPropertyChangedSignal("AbsoluteSize"):Connect(resizeHeader)
+	resizeHeader()
 	local function selectTab(name)
 		assert(name == "Toilets" or name == "Coin Upgrades", "Unknown shop tab")
 		tabs.Select(name)
@@ -93,6 +100,17 @@ function Upgrades.Create(gui, remotes)
 			else
 				openTab(name)
 			end
+		end,
+		TutorialTarget = function()
+			if tracks.Frame.Visible then
+				return tracks.TutorialTarget() or panel.TitleBar.X
+			end
+			for _, button in ipairs(buttons) do
+				if button.Interactable then
+					return button
+				end
+			end
+			return tabs.Buttons["Coin Upgrades"]
 		end,
 		Update = function(state)
 			tracks.Update(state)
