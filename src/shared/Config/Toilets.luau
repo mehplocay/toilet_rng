@@ -85,7 +85,7 @@ return {
 	{
 		Id = "ClockworkCloset",
 		Name = "Clockwork Closet",
-		Price = 1000000000,
+		Price = 1025000000,
 		Cooldown = 0.68,
 		Luck = 1.6,
 		ServiceCoins = 12500,
@@ -94,7 +94,7 @@ return {
 	{
 		Id = "DragonKiln",
 		Name = "Dragon Kiln",
-		Price = 2500000000,
+		Price = 3800000000,
 		Cooldown = 0.64,
 		Luck = 1.7,
 		ServiceCoins = 23000,
@@ -103,7 +103,7 @@ return {
 	{
 		Id = "AuroraThrone",
 		Name = "Aurora Throne",
-		Price = 6250000000,
+		Price = 14218750000,
 		Cooldown = 0.6,
 		Luck = 1.8,
 		ServiceCoins = 35000,
@@ -112,7 +112,7 @@ return {
 	{
 		Id = "AstralAltar",
 		Name = "Astral Altar",
-		Price = 15625000000,
+		Price = 53437500000,
 		Cooldown = 0.56,
 		Luck = 1.9,
 		ServiceCoins = 70000,
@@ -121,7 +121,7 @@ return {
 	{
 		Id = "ParadoxPotty",
 		Name = "Paradox Potty",
-		Price = 39062500000,
+		Price = 200000000000,
 		Cooldown = 0.52,
 		Luck = 2,
 		ServiceCoins = 105000,
@@ -130,7 +130,7 @@ return {
 	{
 		Id = "InfinityFlush",
 		Name = "Infinity Flush",
-		Price = 97656250000,
+		Price = 741210937500,
 		Cooldown = 0.48,
 		Luck = 2.1,
 		ServiceCoins = 155000,

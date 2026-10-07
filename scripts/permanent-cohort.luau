@@ -10,7 +10,16 @@ local Roll = require("../src/server/Services/RollService")
 local Service = require("../src/server/Services/ServiceCoinService")
 local Display = require("./display-cohort")
 local C = {}
-function C.Run(population, uptime, horizon, deferRebirth)
+local Paid = require("../src/shared/PaidBenefits")
+local Monetization = require("../src/shared/Config/Monetization")
+local function cooldown(p, toilet)
+	return U:Cooldown(
+		p,
+		toilet.Cooldown
+			* (if Paid.Owns(p, "FastFlush") then Monetization.Gamepasses.FastFlush.CooldownMultiplier else 1)
+	)
+end
+function C.Run(population, uptime, horizon, deferRebirth, passes)
 	local result = { Levels = {}, Rebirths = {}, Tiers = {}, FirstTen = {} }
 	for _, track in ipairs(Config.Tracks) do
 		result.Levels[track.Id] = {}
@@ -32,6 +41,7 @@ function C.Run(population, uptime, horizon, deferRebirth)
 		end
 		local p = {
 			Coins = 0,
+			Monetization = { Passes = passes or {} },
 			Stats = { Earned = 0, Flushes = 0 },
 			Inventory = {},
 			Collection = {},
@@ -61,7 +71,11 @@ function C.Run(population, uptime, horizon, deferRebirth)
 			if seconds >= nextCollect then
 				I:Collect(p)
 				nextCollect = seconds
-					+ (if R:Bonus(p).AutoCollect then math.min(5, collectInterval) else collectInterval)
+					+ (
+						if R:Bonus(p).AutoCollect or Paid.Owns(p, "AutoCollect")
+							then math.min(5, collectInterval)
+							else collectInterval
+					)
 			end
 			if not deferRebirth and R:Eligible(p, p.RebirthLevel) then
 				result.Rebirths[p.RebirthLevel + 1][player] = seconds / 3600
@@ -112,7 +126,7 @@ function C.Run(population, uptime, horizon, deferRebirth)
 				oldTier, oldLuck = p.ToiletTier, luck
 			end
 			local step = if seconds < 3600 then 2 else 30
-			fractional += step * uptime / U:Cooldown(p, toilet.Cooldown)
+			fractional += step * uptime / cooldown(p, toilet)
 			local rolls = math.floor(fractional)
 			fractional -= rolls
 			for _ = 1, rolls do

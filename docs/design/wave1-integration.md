@@ -1,6 +1,6 @@
 # Wave 1 integration
 
-> Current validation: [full linear luck and regenerated pacing tables](luck-linear.md). Total luck applies in full to every item check, capped at 10x; this supersedes earlier luck formulas and measured balance snapshots below.
+> Cash/price tables below are historical. Current cash validation: [uncapped cash](no-cash-cap.md). Luck validation: [full linear luck and regenerated pacing tables](luck-linear.md). Total luck applies in full to every item check, capped at 10x; this supersedes earlier luck formulas and measured balance snapshots below.
 
 2026-10-06, `feature/wave1-integration`. Uncommitted worktree delivery. The item IDs, names, odds, rarity bands, values, base income, first unlocks and cumulative pools follow [wave1-data.json](wave1-data.json). The 36 new items and eight new toilets bring the game to 47 items, 15 toilets and nine rarities.
 
@@ -10,7 +10,7 @@
 - `default.project.json` maps the supplied `assets/rbxm/Wave1Templates.rbxm` to `ReplicatedStorage.Wave1Templates`. `MeshCatalog` uses the four actual Wave 1 manifests for dimensions and triangle counts. The loader explicitly routes all three template folders, normalizes once, preserves the imported toilet foot pivot, anchors/non-collides the visible meshes and retains primitive fallbacks. No mesh/texture IDs were invented or reuploaded.
 - `WorldModels`, `World`, `Visuals`, `TemplateEffects`, `TemplateAccents` and the item/toilet builders cover all IDs. Each new toilet has at most one shadowless light and one 3/s sparkle emitter. Color transitions and slow cloud/star motes distinguish the themes; existing distance/Reduced/Off control applies. Static mesh details supply gear/halo/portal shapes; effects reuse the existing sparkle texture. No idle animation loops or additional audio IDs were added.
 - `Assets` has 44 blank icon entries. `UI/Preview` renders static, effect-free normalized model previews for these entries until real icon IDs are supplied. It does not wait for or modify the separate icon-rendering session.
-- Collection cards sort by rarity then odds and ID; nine filters and scrolling cover all 47 cards. The shop exposes all 15 tiers with abbreviated prices, nominal display factors and the 40x free/3x paid cap explanation. Lucky Flush odds report base checks separately from actual outcome probabilities, including the Poop remainder. The admin item picker uses Items and the toilet picker cycles Toilets.
+- Collection cards sort by rarity then odds and ID; nine filters and scrolling cover all 47 cards. The shop exposes all 15 tiers with abbreviated prices, nominal display factors and the uncapped multiplicative cash explanation. Lucky Flush odds report base checks separately from actual outcome probabilities, including the Poop remainder. The admin item picker uses Items and the toilet picker cycles Toilets.
 - Celestial uses the existing configured cinematic/reduced reveal paths, server announcement audience and the Godly stinger at the same cue settings. Native Rarest ranking uses canonical item odds. Existing pool-driven automatic flush, offline accrual, nametags and stairs requirement rendering need no fixed-count extension.
 
 ## Saved profiles and index rewards
@@ -21,9 +21,9 @@ Existing index claim IDs stay stable. `total:35` continues to grant the same `Fu
 
 ## Balance decisions and specification differences
 
-The merged cash formula remains `min(40, freeCash * toiletDisplayFactor) * min(3, paidCash)`. Total luck remains capped at 10x and applies in full to every item check. The current production proof supersedes the historical Wave 1 proof's 5x production cap and uncapped toilet factors.
+The current cash formula multiplies Cash Boost, rebirth, toilet display and paid factors without a multiplier cap. Total luck remains capped at 10x and applies in full to every item check. The current production proof supersedes historical cash assumptions; the luck cap stays 10x.
 
-New tier prices, service awards, cooldowns and luck follow the JSON. Its integration recipe rebases the new display factors from historical Galaxy 12x to the merged 13x: 19.5/29.25/43.3333/65/97.5/146.25/216.6667/325. Slot/player nominal caps follow the same factors, but never bypass the combined 40x/3x cap.
+New tier prices, service awards, cooldowns and luck follow the JSON. Its integration recipe rebases the new display factors from historical Galaxy 12x to the merged 13x: 19.5/29.25/43.3333/65/97.5/146.25/216.6667/325. Slot/player nominal caps follow the same factors, and scale with all uncapped cash factors.
 
 The expanded early pools speed up acquisition. To preserve the requested original progression, only the first seven toilet prices were retuned: Dirty 7,500; Golden 16,000; Diamond 90,000; Radioactive 420,000; Demon 3,000,000; Galaxy 16,500,000. Their service awards, cooldowns, luck and display factors are unchanged. The 200-seed normal fresh-account p50 arrivals are 1.47/3.01/6.12/11.85/20.09/35.47 minutes; Galaxy p90 is 44.24 minutes. Paid, offline, daily, event and rebirth benefits are excluded from that short cohort.
 

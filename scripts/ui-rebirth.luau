@@ -4,7 +4,7 @@ do
 	local config = H.Load("src/shared/Config/Rebirth")
 	local ui = H.Load("src/client/UI/Rebirth").Create(root, remotes)
 	local body = ui.Panel.ContentScroll.Body
-	assert(body.CashCaps.Text == H.Load("src/shared/Config/Cash").Explanation)
+	assert(body.CashStacking.Text == H.Load("src/shared/Config/Cash").Explanation)
 	local button = body.Confirm
 	local state = {
 		Coins = config.Levels[1].RequiredCoins,

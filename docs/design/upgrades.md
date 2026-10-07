@@ -1,6 +1,6 @@
 # Permanent upgrade tracks
 
-> Current validation: [full linear luck and regenerated pacing tables](luck-linear.md). Total luck applies in full to every item check, capped at 10x; this supersedes earlier luck formulas and measured balance snapshots below.
+> Current cash validation: [uncapped cash](no-cash-cap.md). Luck validation: [full linear luck and regenerated pacing tables](luck-linear.md). Total luck applies in full to every item check, capped at 10x; this supersedes earlier luck formulas and measured balance snapshots below.
 
 2026-10-06, `feature/permanent`. This replaces the old run-reset and ten-level-track design. [Measured economy and all archetype tables](economy-v2.md), [rebirth contract](rebirth.md), [research](../research/permanent-economy.md).
 
@@ -27,4 +27,4 @@ Confirmed level changes pop the existing card; existing audio feedback plays Upg
 
 Verification: all configured levels/prices/caps, one-coin-short failures, invalid inputs, replay/race safety, old/new save migration, milestone titles, numeric ceilings, exact rare-first odds, cash rounding, offline ledger fractions, responsive UI and persistent rebirth behavior. The audit includes the committed-response-loss purchase at level 100. Studio/native-device and live backend QA remain outside headless evidence. Retire old server binaries before rollout.
 
-Cash stacking (2026-10-06 rebirth-balance): Cash Boost and rebirth cash add, then any display toilet factor multiplies within the 40x free cap. Paid cash factors multiply on top under their own 3x cap (120x maximum). Milestone titles add no numerical bonus. Daily coins remain paid-only; collection and quoted receipts never multiply again. See [current measured tables](economy-v2.md).
+Cash stacking (2026-10-07): Cash Boost, rebirth, display toilet factors and owned paid cash factors multiply without a multiplier cap. Milestone titles add no numerical bonus. Late cost anchors are retuned in Config/Upgrades to retain pacing; level counts and effects are unchanged. Daily coins remain paid-only; collection and quoted receipts never multiply again. See [current balance and before/after tables](no-cash-cap.md).

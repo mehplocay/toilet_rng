@@ -1,5 +1,6 @@
 -- Pure fixed-point accounting; callers own the session lease and never yield during mutation.
 local Income = {}
+local CashMath = require(if script then script.Parent.CashMath else "./CashMath")
 function Income.new(config, items, upgrades)
 	local self = { Config = config, Items = {}, Upgrades = upgrades }
 	for _, item in ipairs(items) do
@@ -15,15 +16,20 @@ local function bounded(value, maximum)
 end
 function Income:CapacityMultiplier(profile)
 	return if self.Upgrades and profile
-		then self.Upgrades:Cash(profile)
-			* self.Upgrades:OfflineMinutes(profile, self.Config.OfflineMinutes)
-			/ self.Config.OfflineMinutes
+		then CashMath.Product(
+			self.Upgrades:Cash(profile),
+			self.Upgrades:OfflineMinutes(profile, self.Config.OfflineMinutes) / self.Config.OfflineMinutes
+		)
 		else 1
 end
 -- Keep the persisted scale; cap subcoins separately from wallet coins.
 function Income:StorageUnits(profile, perSlot)
 	local c = self.Config
-	local coins = (if perSlot then c.SlotPendingCap else c.PlayerPendingCap) * self:CapacityMultiplier(profile)
+	local coins = CashMath.Product(
+		if perSlot then c.SlotPendingCap else c.PlayerPendingCap,
+		self:CapacityMultiplier(profile),
+		math.floor(c.MaxLedgerUnits / c.UnitsPerCoin)
+	)
 	return math.floor(math.min(coins, math.floor(c.MaxLedgerUnits / c.UnitsPerCoin))) * c.UnitsPerCoin
 end
 function Income:Sanitize(raw, profile)
@@ -98,29 +104,42 @@ function Income:Rates(profile)
 	if tier <= 0 then
 		return rates
 	end
+	local slots = math.min(profile.DisplaySlots, c.MaxSlots)
 	local cash = if self.Upgrades then self.Upgrades:Cash(profile, tier) else tier
-	local slotCap = c.SlotRateCaps[profile.ToiletTier] or 0
-	for slot = 1, math.min(profile.DisplaySlots, c.MaxSlots) do
+	-- Sum unmultiplied weights first, so even 100 extreme slots cannot overflow.
+	local slotCap = (c.SlotRateCaps[profile.ToiletTier] or 0) / tier / 60
+	for slot = 1, slots do
 		local key = tostring(slot)
 		local item = self.Items[profile.Displays[key]]
 		if item then
-			local units = math.floor(
-				math.min((c.RarityRates[item.Rarity] or 0) * 60, slotCap / tier) * cash * c.UnitsPerCoin / 60 + 0.5
-			)
-			rates[key], total = units, total + units
+			local weight = math.min(c.RarityRates[item.Rarity] or 0, slotCap) * c.UnitsPerCoin
+			rates[key], total = weight, total + weight
 		end
 	end
-	local cap = math.floor((c.PlayerRateCaps[profile.ToiletTier] or 0) / tier * cash * c.UnitsPerCoin / 60)
-	if total > cap then
-		-- Divide first: multiplying rate by cap would lose integer precision.
-		local allocated = 0
-		for slot = 1, c.MaxSlots do
+	if total == 0 then
+		return rates
+	end
+	local playerCap = (c.PlayerRateCaps[profile.ToiletTier] or 0) / tier / 60 * c.UnitsPerCoin
+	local base = math.min(total, playerCap)
+	local cap = math.floor(CashMath.Product(base, cash, c.MaxLedgerUnits))
+	if total <= playerCap and cash < c.MaxLedgerUnits / total then
+		local remaining = c.MaxLedgerUnits
+		for slot = 1, slots do
 			local key = tostring(slot)
-			local units = math.floor((rates[key] or 0) / total * cap)
+			if rates[key] then
+				local units = math.min(remaining, CashMath.Round(CashMath.Product(rates[key], cash, c.MaxLedgerUnits)))
+				rates[key], remaining = units, remaining - units
+			end
+		end
+	else
+		local allocated = 0
+		for slot = 1, slots do
+			local key = tostring(slot)
+			local units = math.min(cap - allocated, math.floor((rates[key] or 0) / total * cap))
 			rates[key], allocated = units, allocated + units
 		end
 		local remaining = cap - allocated
-		for slot = 1, c.MaxSlots do
+		for slot = 1, slots do
 			local key = tostring(slot)
 			if remaining > 0 and rates[key] > 0 then
 				rates[key] += 1

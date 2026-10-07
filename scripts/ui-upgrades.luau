@@ -8,7 +8,7 @@ do
 	for _, label in ipairs(tracks.CashBoost:GetDescendants()) do
 		cashExplanation = cashExplanation or label.Text == H.Load("src/shared/Config/Cash").Explanation
 	end
-	assert(cashExplanation, "Cash cap explanation missing from Upgrades")
+	assert(cashExplanation, "Cash stacking explanation missing from Upgrades")
 	local tab = body:FindFirstChild("Coin Upgrades", true)
 	assert(tab and not tracks.Visible)
 	tab.Activated:Fire()

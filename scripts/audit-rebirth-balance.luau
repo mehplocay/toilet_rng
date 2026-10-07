@@ -1,4 +1,4 @@
--- Independent numeric and migration oracles for the two-layer cash contract.
+-- Independent numeric and migration oracles for uncapped cash stacking.
 test("cash layers: fractional paid accrual is partition-invariant and never multiplied on collection", function()
 	local e = server()
 	local u = e:Load("src/shared/UpgradeRules").new(e:Load("src/shared/Config/Upgrades"))
@@ -13,24 +13,26 @@ test("cash layers: fractional paid accrual is partition-invariant and never mult
 		return p
 	end
 	local frequent, batched = profile(), profile()
-	assert(income:Rates(frequent)["1"] == 306450)
+	assert(income:Rates(frequent)["1"] == 583200)
 	for second = 1001, 11001 do
 		income:Settle(frequent, second, false)
 	end
 	income:Settle(batched, 11001, false)
-	assert(income:TotalUnits(frequent) == 3064806450 and income:TotalUnits(batched) == 3064806450)
-	assert(income:Collect(frequent) == 510801 and income:TotalUnits(frequent) == 450)
+	assert(income:TotalUnits(frequent) == 5832583200 and income:TotalUnits(batched) == 5832583200)
+	assert(income:Collect(frequent) == 972097 and income:TotalUnits(frequent) == 1200)
 	assert(income:Collect(frequent) == 0)
 	local offline = profile()
 	income:Settle(offline, 1002, true)
-	assert(income:TotalUnits(offline) == 306450 and income:Collect(offline) == 51 and income:TotalUnits(offline) == 450)
+	assert(
+		income:TotalUnits(offline) == 583200 and income:Collect(offline) == 97 and income:TotalUnits(offline) == 1200
+	)
 end)
 
-test("cash layers: every reward, Cash level, toilet and paid combination uses separate caps", function()
+test("cash layers: every reward, Cash level, toilet and paid combination multiplies without caps", function()
 	local e = server()
 	local u = e:Load("src/shared/UpgradeRules").new(e:Load("src/shared/Config/Upgrades"))
 	local c = e:Load("src/shared/Config/Cash")
-	assert(c.FreeCap == 40 and c.PaidCap == 3 and c.TotalCap == 120)
+	assert(c.FreeCap == nil and c.PaidCap == nil and c.TotalCap == nil)
 	local income = e:Load("src/shared/IncomeAccrual")
 		.new(e:Load("src/shared/Config/Income"), e:Load("src/shared/Config/Items"), u)
 	for level = 0, 15 do
@@ -53,12 +55,10 @@ test("cash layers: every reward, Cash level, toilet and paid combination uses se
 						Monetization = { Passes = paid[1] },
 					}
 					local bonus = e:Load("src/shared/Config/Rebirth").Levels[level]
-					local base = 1
-						+ math.min(cash, 10) * 0.1
-						+ math.max(0, cash - 10) * 0.025
-						+ (if bonus then bonus.Cash else 0)
-					assert(math.abs(u:Cash(p) - math.min(40, base) * paid[2]) < 1e-10)
-					local expected = math.min(40, base * toilet) * paid[2]
+					local base = (1 + math.min(cash, 10) * 0.1 + math.max(0, cash - 10) * 0.025)
+						* (1 + (if bonus then bonus.Cash else 0))
+					assert(math.abs(u:Cash(p) - base * paid[2]) < 1e-10)
+					local expected = base * toilet * paid[2]
 					assert(math.abs(u:Cash(p, toilet) - expected) < 1e-10)
 					assert(income:Rates(p)["1"] == math.floor(100000 * expected * 6000 + 0.5))
 				end
@@ -69,8 +69,14 @@ test("cash layers: every reward, Cash level, toilet and paid combination uses se
 	local paid = e:Load("src/shared/PaidBenefits")
 	local config = e:Load("src/shared/Config/Monetization")
 	config.Gamepasses.FutureCash = { CashMultiplier = 1e300 }
-	assert(paid.Cash({ Monetization = { Passes = { FutureCash = true } } }, 1e300) == 120)
-	assert(paid.Cash({ Monetization = { Passes = { FutureCash = true, DoubleCash = true, VIPPack = true } } }, 2) == 6)
+	assert(paid.Cash({ Monetization = { Passes = { FutureCash = true } } }, 1e300) < math.huge)
+	assert(
+		math.abs(
+			paid.Cash({ Monetization = { Passes = { FutureCash = true, DoubleCash = true, VIPPack = true } } }, 2)
+					/ 6e300
+				- 1
+		) < 1e-12
+	)
 end)
 
 test("cash layers: bundle receipts credit all coin packs once without adding a multiplier", function()
@@ -85,8 +91,8 @@ test("cash layers: bundle receipts credit all coin packs once without adding a m
 		local product = config.DeveloperProducts[key]
 		assert(product.CashMultiplier == nil, "Consumables must not become permanent cash factors")
 		if product.IncomeSeconds then
-			assert(commerce.Income.Upgrades:Cash(p) == 57.75)
-			assert(commerce.Receipts:Rate(p) == 12000000)
+			assert(commerce.Income.Upgrades:Cash(p) == 204)
+			assert(commerce.Receipts:Rate(p) == 265200000)
 			local quote = commerce.Receipts:Quote(p, key)
 			assert(quote == 1000000000)
 			p.Monetization.Quote = { Key = key, Coins = quote }
@@ -96,60 +102,63 @@ test("cash layers: bundle receipts credit all coin packs once without adding a m
 			p = e.Data:Get(player)
 			assert(p.Coins == before + quote)
 			assert(e.Marketplace.ProcessReceipt(info) == "PurchaseGranted" and p.Coins == before + quote)
-			assert(commerce.Income.Upgrades:Cash(p) == 57.75 and commerce.Receipts:Rate(p) == 12000000)
+			assert(commerce.Income.Upgrades:Cash(p) == 204 and commerce.Receipts:Rate(p) == 265200000)
 		end
 	end
 	e.Data:Close(player)
 	player.Parent = nil
 	local _, restored = e:Join(735)
 	assert(restored.Coins == p.Coins and restored.Monetization.Passes.UltimateBundle)
-	assert(commerce.Income.Upgrades:Cash(restored) == 57.75 and commerce.Receipts:Rate(restored) == 12000000)
+	assert(commerce.Income.Upgrades:Cash(restored) == 204 and commerce.Receipts:Rate(restored) == 265200000)
 end)
 
-test("cash layers: 120x fractional accrual, legacy rate sharing, offline saturation and exact collection", function()
-	local e, player, p, commerce, config = catalogPlayer(730)
-	e:Load("src/server/Services/MonetizationService").Cosmetics = nil
-	for i, key in ipairs({ "DoubleCash", "VIPPack", "OfflinePlus" }) do
-		config.Gamepasses[key].Id = 8900 + i
-		p.Monetization.Passes[key] = true
-	end
-	p.RebirthLevel, p.ToiletTier, p.DisplaySlots = 15, 7, 10
-	p.Upgrades.CashBoost, p.Upgrades.OfflineTank = 100, 100
-	local income = commerce.Income
-	for _, slots in ipairs({ 1, 10, 100 }) do
-		p.DisplaySlots, p.Displays = slots, {}
-		for slot = 1, slots do
-			p.Displays[tostring(slot)] = "Mystery"
+test(
+	"cash layers: uncapped fractional accrual, legacy rate sharing, offline saturation and exact collection",
+	function()
+		local e, player, p, commerce, config = catalogPlayer(730)
+		e:Load("src/server/Services/MonetizationService").Cosmetics = nil
+		for i, key in ipairs({ "DoubleCash", "VIPPack", "OfflinePlus" }) do
+			config.Gamepasses[key].Id = 8900 + i
+			p.Monetization.Passes[key] = true
 		end
-		local total = 0
-		for _, rate in pairs(income:Rates(p)) do
-			assert(rate % 1 == 0 and rate <= 72000000000)
-			total += rate
+		p.RebirthLevel, p.ToiletTier, p.DisplaySlots = 15, 7, 10
+		p.Upgrades.CashBoost, p.Upgrades.OfflineTank = 100, 100
+		local income = commerce.Income
+		for _, slots in ipairs({ 1, 10, 100 }) do
+			p.DisplaySlots, p.Displays = slots, {}
+			for slot = 1, slots do
+				p.Displays[tostring(slot)] = "Mystery"
+			end
+			local total = 0
+			for _, rate in pairs(income:Rates(p)) do
+				assert(rate % 1 == 0 and rate <= 1591200000000)
+				total += rate
+			end
+			assert(total == math.min(slots, 10) * 1591200000000)
 		end
-		assert(total == math.min(slots, 10) * 72000000000)
+		p.Inventory.Mystery = 100
+		p.Income = { UpdatedAt = 1, Pending = { ["1"] = 1 } }
+		income:Settle(p, 2, false)
+		assert(income:TotalUnits(p) == 15912000000001)
+		assert(income:Collect(p) == 2652000000 and income:TotalUnits(p) == 1)
+		income:Settle(p, income.Config.MaxTimestamp, true)
+		assert(income:TotalUnits(p) == 9e15 and p.Income.Offline.EarnedUnits == 9e15 - 1)
+		assert(income:StorageUnits(p, true) == 9e15 and income:StorageUnits(p, false) == 9e15)
+		p.Income.Pending["1"] -= 1
+		assert(e.Data:Save(player, false))
+		e.Data:Close(player)
+		local _, q = e:Join(730)
+		assert(income:TotalUnits(q) == 9e15 - 1)
+		q.Coins, q.Stats.Earned = 9e15 - 7, 9e15 - 5
+		assert(income:Collect(q) == 5 and q.Coins == 9e15 - 2 and q.Stats.Earned == 9e15)
+		assert(income:TotalUnits(q) == 9e15 - 30001 and income:Collect(q) == 0)
+		q.Coins, q.Stats.Earned = 0, 0
+		assert(income:Collect(q) == 1499999999994 and income:TotalUnits(q) == 5999)
+		assert(income:Collect(q) == 0)
 	end
-	p.Inventory.Mystery = 100
-	p.Income = { UpdatedAt = 1, Pending = { ["1"] = 1 } }
-	income:Settle(p, 2, false)
-	assert(income:TotalUnits(p) == 720000000001)
-	assert(income:Collect(p) == 120000000 and income:TotalUnits(p) == 1)
-	income:Settle(p, income.Config.MaxTimestamp, true)
-	assert(income:TotalUnits(p) == 9e15 and p.Income.Offline.EarnedUnits == 9e15 - 1)
-	assert(income:StorageUnits(p, true) == 9e15 and income:StorageUnits(p, false) == 9e15)
-	p.Income.Pending["1"] -= 1
-	assert(e.Data:Save(player, false))
-	e.Data:Close(player)
-	local _, q = e:Join(730)
-	assert(income:TotalUnits(q) == 9e15 - 1)
-	q.Coins, q.Stats.Earned = 9e15 - 7, 9e15 - 5
-	assert(income:Collect(q) == 5 and q.Coins == 9e15 - 2 and q.Stats.Earned == 9e15)
-	assert(income:TotalUnits(q) == 9e15 - 30001 and income:Collect(q) == 0)
-	q.Coins, q.Stats.Earned = 0, 0
-	assert(income:Collect(q) == 1499999999994 and income:TotalUnits(q) == 5999)
-	assert(income:Collect(q) == 0)
-end)
+)
 
-test("cash layers: maximum sale/service awards respect both wallet and lifetime ceilings", function()
+test("cash layers: sale/service awards respect both wallet and lifetime ceilings", function()
 	local e = server()
 	local items = e:Load("src/shared/Config/Items")
 	local inventory = e:Load("src/shared/SafeInventory")

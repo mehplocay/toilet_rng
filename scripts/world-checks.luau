@@ -539,7 +539,7 @@ if checkWorld then
 	end
 end
 
--- Exercise production world currency text at the actual v2 upper income scale.
+-- Exercise production world currency text at a large uncapped income scale.
 do
 	local plot = Plot.Build(root, CFrame.new(), 1)
 	local owner = { UserId = 981, DisplayName = "Income fixture" }
@@ -555,7 +555,7 @@ do
 	for _, object in ipairs(plot.Displays:GetDescendants()) do
 		if object.Name == "IncomeNametag" then
 			names += 1
-			assert(object:GetChildren()[1]:GetChildren()[1].Text:find("$12M/s", 1, true))
+			assert(object:GetChildren()[1]:GetChildren()[1].Text:find("$124.8M/s", 1, true))
 		end
 	end
 	assert(names == 10)
@@ -563,7 +563,7 @@ do
 	assert(plot.IncomeLabel.Text == "COLLECT ALL\n$34.5B")
 	World.Assigned[owner] = nil
 	plot.Model:Destroy()
-	print("Economy world text passed: ten $12M/s nametags at 120x and $34.5B collection jar")
+	print("Economy world text passed: ten $124.8M/s nametags at 1248x and $34.5B collection jar")
 end
 
 if snapshot then

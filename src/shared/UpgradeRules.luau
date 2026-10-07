@@ -1,5 +1,6 @@
 -- Pure, bounded upgrade math. Server callers hold a live profile and never yield during Buy.
 local Rules = {}
+local CashMath = require(if script then script.Parent.CashMath else "./CashMath")
 local Paid = require(if script then script.Parent.PaidBenefits else "./PaidBenefits")
 local Income = require(if script then script.Parent.Config.Income else "./Config/Income")
 Rules.__index = Rules
@@ -86,7 +87,10 @@ end
 function Rules:Cash(profile, toiletFactor)
 	return Paid.Cash(
 		profile,
-		(1 + self:Effect(profile, "CashBoost") + self:RebirthBonus(profile, "Cash")) * (toiletFactor or 1)
+		CashMath.Product(
+			CashMath.Product(1 + self:Effect(profile, "CashBoost"), 1 + self:RebirthBonus(profile, "Cash")),
+			toiletFactor or 1
+		)
 	)
 end
 function Rules:RebirthBonus(profile, key)

@@ -220,7 +220,7 @@ function Passes.Create(gui, remotes)
 			C.New("UIStroke", card, { Color = C.Gold, Thickness = 4 })
 			C.BodyText(
 				slot,
-				"1.5x cash / +1 path speed step\n+50% offline tank\nDaily income-scaled chest\nVIP hub pad coin bonus\nGold star, trail and sign trim\nNo luck. Free cash cap 40x; paid cap 3x on top. Speed cap 5x.",
+				"1.5x cash / +1 path speed step\n+50% offline tank\nDaily income-scaled chest\nVIP hub pad coin bonus\nGold star, trail and sign trim\nNo luck. Cash bonuses multiply without a cap. Speed cap 5x.",
 				UDim2.new(1, -16, 0, 162),
 				UDim2.fromOffset(8, Card.CellHeight + 4)
 			)
@@ -291,7 +291,7 @@ function Passes.Create(gui, remotes)
 	C.Grid(swatches, 112, 48)
 	local details = C.BodyText(
 		content,
-		"VIP: 1.5x cash, +1 path speed step, +50% offline tank, gold star/trail/sign trim, daily chest and VIP hub pad. No luck.\nCoin packs and VIP chest: 100 to 1,000,000,000 Coins. Free cash caps at 40x; paid cash at 3x on top (120x max); path speed at 5x.",
+		"VIP: 1.5x cash, +1 path speed step, +50% offline tank, gold star/trail/sign trim, daily chest and VIP hub pad. No luck.\nCoin packs and VIP chest: 100 to 1,000,000,000 Coins. Cash bonuses multiply without a cap; path speed caps at 5x.",
 		UDim2.new(1, -12, 0, 112)
 	)
 	details.LayoutOrder = 4

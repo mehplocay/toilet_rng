@@ -135,7 +135,7 @@ test("permanent: full luck applies to every rarity under the 10x cap", function(
 	local u = e:Load("src/shared/UpgradeRules").new(e:Load("src/shared/Config/Upgrades"))
 	local late = { RebirthLevel = 15, Upgrades = { LuckBoost = 50, CashBoost = 100, OfflineTank = 100 } }
 	assert(math.abs(u:Luck(late, 1.3) - 5.98) < 1e-12)
-	assert(math.abs(u:Cash(late) - 19.25) < 1e-12 and u:OfflineMinutes(late, 480) == 1440)
+	assert(math.abs(u:Cash(late) - 68) < 1e-12 and u:OfflineMinutes(late, 480) == 1440)
 	for _, luck in ipairs({ 1, 5, 10, 1000000 }) do
 		local entries, empty = roll.Distribution(items, toilets, 7, luck)
 		local total = 0

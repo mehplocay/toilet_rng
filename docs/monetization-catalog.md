@@ -12,7 +12,7 @@ Icon paths below are creation targets for the separate art session, not claims o
 | 2 | Pass | Star Tag | A gold star in chat and above your name. Cosmetic only; included in VIP. | 59 | Gamepasses.VIPStar | assets/icons/passes/StarTag.png / StarTag |
 | 3 | Pass | Custom Plot Color | Choose your plot lawn and border color. Cosmetic only. | 79 | Gamepasses.CustomPlotColor | assets/icons/passes/Home.png / Home |
 | 4 | Pass | Fast Flush | 20% shorter flush cooldown. Same items and odds. | 99 | Gamepasses.FastFlush | assets/icons/passes/Flush.png / Flush |
-| 5 | Pass | Double Cash | 2x coin income. Paid factors stack up to 3x on top of free bonuses. | 249 | Gamepasses.DoubleCash | assets/icons/passes/DoubleCash.png / DoubleCash |
+| 5 | Pass | Double Cash | 2x coin income. | 249 | Gamepasses.DoubleCash | assets/icons/passes/DoubleCash.png / DoubleCash |
 | 6 | Pass | Auto Collect | Collect display coins every 5 seconds while inside your plot. | 149 | Gamepasses.AutoCollect | assets/icons/passes/AutoCollect.png / AutoCollect |
 | 7 | Pass | Offline Plus | Double your offline tank time and storage. | 129 | Gamepasses.OfflinePlus | assets/icons/passes/OfflinePlus.png / OfflinePlus |
 | 8 | Pass | VIP | 1.5x cash, +1 path speed step, +50% offline tank, daily chest, VIP hub pad, gold star, trail and sign trim. No luck. | 399 | Gamepasses.VIPPack | assets/icons/passes/VIP.png / VIP |
@@ -68,7 +68,7 @@ Display slots are never sold. All ten slots remain free through coin upgrades, i
 
 Ultimate Bundle implies every other pass listed above (14 entitlements). It grants **no coins, Lucky Flush charges or timed Path Boost products**. Direct and bundle ownership combine without duplicate multipliers. Rainbow Name takes priority over Golden Name. VIP includes the Star Tag and its own gold trail without requiring Sparkle Trail. Owning overlapping passes does not grant a refund or extra copy.
 
-VIP multiplies coin income by 1.5, stacks with Double Cash under the separate 3x paid cap on top of the 40x free progression cap (120x maximum), adds one path step under the 5x total speed cap, and 50% offline tank time/storage. Offline Plus multiplies that tank factor by two; the existing 24-hour and ledger caps still apply. Legacy above-ten capacities are preserved. Daily VIP chest grants 600 seconds of current display income once per server UTC day, with its marker and coins saved atomically. Minimum 100, maximum 1,000,000,000 coins; no second cash multiplier at credit.
+VIP multiplies coin income by 1.5, multiplies with Double Cash and free progression without any cash multiplier cap, adds one path step under the 5x total speed cap, and 50% offline tank time/storage. Offline Plus multiplies that tank factor by two; the existing 24-hour and ledger caps still apply. Legacy above-ten capacities are preserved. Daily VIP chest grants 600 seconds of current display income once per server UTC day, with its marker and coins saved atomically. Minimum 100, maximum 1,000,000,000 coins; no second cash multiplier at credit.
 
 The hub VIP pad grants five seconds of current display income, clamped to 10–10,000 coins. It requires a living eligible player within eight studs and has a persistent five-minute cooldown, a one-token/0.2-per-second prompt limiter, ledger checks and an atomic save. Rejoining cannot clear its cooldown. This small reward and cooldown are implementation assumptions where the owner specified no exact values.
 

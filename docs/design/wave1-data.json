@@ -1911,7 +1911,7 @@
       "Theme": "An absurdly punctual brass bathroom.",
       "Tier": 10,
       "New": true,
-      "Price": 1000000000,
+      "Price": 1025000000,
       "PriceStatus": "wave1 candidate; conditional post-Galaxy cohort",
       "Cooldown": 0.68,
       "CooldownMultiplier": 0.45333333333333337,
@@ -1961,7 +1961,7 @@
       "Theme": "A ceramic dragon warming the seat just a little too proudly.",
       "Tier": 11,
       "New": true,
-      "Price": 2500000000,
+      "Price": 3800000000,
       "PriceStatus": "wave1 candidate; conditional post-Galaxy cohort",
       "Cooldown": 0.64,
       "CooldownMultiplier": 0.4266666666666667,
@@ -2011,7 +2011,7 @@
       "Theme": "A frosty seat under a tiny indoor northern sky.",
       "Tier": 12,
       "New": true,
-      "Price": 6250000000,
+      "Price": 14218750000,
       "PriceStatus": "wave1 candidate; conditional post-Galaxy cohort",
       "Cooldown": 0.6,
       "CooldownMultiplier": 0.39999999999999997,
@@ -2053,7 +2053,7 @@
       "PlayerRateCapPerMinute": 5400000000,
       "TargetCumulativeMinutes": 350,
       "HistoricalUncappedTargetMinutes": 285,
-      "TargetStatus": "integrated 40x free cash cap, normal conditional post-Galaxy cohort; +/-20%; see wave1-integration.md",
+      "TargetStatus": "uncapped cash with retuned costs, normal conditional post-Galaxy cohort; +/-20%; see no-cash-cap.md",
       "DailyRewardMultiplier": 64
     },
     {
@@ -2062,7 +2062,7 @@
       "Theme": "A starlit porcelain shrine to immaculate plumbing.",
       "Tier": 13,
       "New": true,
-      "Price": 15625000000,
+      "Price": 53437500000,
       "PriceStatus": "wave1 candidate; conditional post-Galaxy cohort",
       "Cooldown": 0.56,
       "CooldownMultiplier": 0.37333333333333335,
@@ -2104,7 +2104,7 @@
       "PlayerRateCapPerMinute": 8100000000,
       "TargetCumulativeMinutes": 530,
       "HistoricalUncappedTargetMinutes": 365,
-      "TargetStatus": "integrated 40x free cash cap, normal conditional post-Galaxy cohort; +/-20%; see wave1-integration.md",
+      "TargetStatus": "uncapped cash with retuned costs, normal conditional post-Galaxy cohort; +/-20%; see no-cash-cap.md",
       "DailyRewardMultiplier": 64
     },
     {
@@ -2113,7 +2113,7 @@
       "Theme": "A bathroom doorway folded around the wrong side of itself.",
       "Tier": 14,
       "New": true,
-      "Price": 39062500000,
+      "Price": 200000000000,
       "PriceStatus": "wave1 candidate; conditional post-Galaxy cohort",
       "Cooldown": 0.52,
       "CooldownMultiplier": 0.3466666666666667,
@@ -2155,7 +2155,7 @@
       "PlayerRateCapPerMinute": 12000000000,
       "TargetCumulativeMinutes": 770,
       "HistoricalUncappedTargetMinutes": 460,
-      "TargetStatus": "integrated 40x free cash cap, normal conditional post-Galaxy cohort; +/-20%; see wave1-integration.md",
+      "TargetStatus": "uncapped cash with retuned costs, normal conditional post-Galaxy cohort; +/-20%; see no-cash-cap.md",
       "DailyRewardMultiplier": 64
     },
     {
@@ -2164,7 +2164,7 @@
       "Theme": "An endless cosmic flushing machine that still needs a handle.",
       "Tier": 15,
       "New": true,
-      "Price": 97656250000,
+      "Price": 741210937500,
       "PriceStatus": "wave1 candidate; conditional post-Galaxy cohort",
       "Cooldown": 0.48,
       "CooldownMultiplier": 0.32,
@@ -2205,7 +2205,7 @@
       "PlayerRateCapPerMinute": 18000000000,
       "TargetCumulativeMinutes": 1150,
       "HistoricalUncappedTargetMinutes": 570,
-      "TargetStatus": "integrated 40x free cash cap, normal conditional post-Galaxy cohort; +/-20%; see wave1-integration.md",
+      "TargetStatus": "uncapped cash with retuned costs, normal conditional post-Galaxy cohort; +/-20%; see no-cash-cap.md",
       "DailyRewardMultiplier": 64
     }
   ],
@@ -2372,7 +2372,7 @@
     },
     "MergePolicy": {
       "LegacyToiletPriceCooldownLuckService": "Read merged feature/permanent; snapshots in this file are proof inputs, not overwrites",
-      "NewToiletPriceFormula": "160000000 * 2.5^(Tier-8)",
+      "NewToiletPriceFormula": "Explicit Price values retuned for uncapped cash; see no-cash-cap.md",
       "NewToiletCooldownFormula": "max(merged floor, merged Galaxy cooldown * Cooldown/0.8)",
       "NewToiletLuckFormula": "min(merged cap, merged Galaxy luck * Luck/1.3)",
       "NewToiletIncomeFormula": "merged Galaxy display multiplier * IncomeMultiplier/12",

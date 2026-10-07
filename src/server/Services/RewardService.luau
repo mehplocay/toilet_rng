@@ -1,4 +1,5 @@
 local RewardService = {}
+local CashMath = require(if script then game.ReplicatedStorage.Shared.CashMath else "../../shared/CashMath")
 local NumberFormat = require(if script then game.ReplicatedStorage.Shared.NumberFormat else "../../shared/NumberFormat")
 local Paid = require(if script then game.ReplicatedStorage.Shared.PaidBenefits else "../../shared/PaidBenefits")
 RewardService.__index = RewardService
@@ -19,7 +20,9 @@ function RewardService:Claim(profile)
 	end
 	-- Daily tuning is independent of display rates and coin/rebirth upgrades.
 	-- Apply paid cash once; pending income already includes its own multipliers.
-	local coins = math.floor(self.Schedule.Coins(day, profile.ToiletTier, self.Config) * Paid.Cash(profile, 1))
+	local coins = math.floor(
+		CashMath.Product(self.Schedule.Coins(day, profile.ToiletTier, self.Config), Paid.Cash(profile, 1), 9e15)
+	)
 	if coins > 9e15 - profile.Coins or coins > 9e15 - profile.Stats.Earned then
 		return { Success = false, Message = "Coin limit reached." }
 	end

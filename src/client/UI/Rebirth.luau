@@ -34,9 +34,9 @@ function Rebirth.Create(root, remotes)
 	local perks = C.BodyText(body, "", UDim2.new(1, -8, 0, 346), UDim2.fromOffset(4, 578))
 	perks.Name = "TokenPerks"
 	local warning = C.BodyText(body, "", UDim2.new(1, -8, 0, 56), UDim2.fromOffset(4, 1010))
-	local cashCaps =
+	local cashStacking =
 		C.BodyText(body, require(Shared.Config.Cash).Explanation, UDim2.new(1, -8, 0, 70), UDim2.fromOffset(4, 930))
-	cashCaps.Name = "CashCaps"
+	cashStacking.Name = "CashStacking"
 	local state, pending = nil, false
 	local pendingAt, completedLevel, refreshRequested = 0, 0, false
 	local retryAt = 0
@@ -68,7 +68,7 @@ function Rebirth.Create(root, remotes)
 		level.Text = "REBIRTH " .. count .. " / " .. #Config.Levels
 		title.Text = bonus.Title
 		current.Text = string.format(
-			"Permanent (before caps): +%d%% cash / +%d%% luck / +%d%% speed",
+			"Permanent: +%d%% cash / +%d%% luck / +%d%% speed",
 			math.round(bonus.Cash * 100),
 			math.round(bonus.Luck * 100),
 			math.round(bonus.Speed * 100)
@@ -84,7 +84,7 @@ function Rebirth.Create(root, remotes)
 		tierBar.Set(if nextBonus then state.Coins / nextBonus.RequiredCoins else 1)
 		preview.Text = if nextBonus
 			then string.format(
-				"NEXT: +%d%% cash / +%d%% luck / +%d%% speed\nStarter: %s Coins. Cash/luck caps and speed floor apply.",
+				"NEXT: +%d%% cash / +%d%% luck / +%d%% speed\nStarter: %s Coins. Cash multiplies other bonuses. Luck cap and speed floor apply.",
 				math.round(nextBonus.Cash * 100),
 				math.round(nextBonus.Luck * 100),
 				math.round(nextBonus.Speed * 100),
