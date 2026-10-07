@@ -89,7 +89,7 @@ return {
 			Id = 2014760290,
 			Name = "Auto Collect",
 			Price = 149,
-			Description = "Collect display coins every 5 seconds while inside your plot.",
+			Description = "Collect display coins every 5 seconds, anywhere on the map.",
 		},
 		OfflinePlus = {
 			Id = 2013200307,

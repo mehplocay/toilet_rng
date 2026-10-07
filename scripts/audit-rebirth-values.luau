@@ -82,12 +82,7 @@ end)
 
 test("rebirth rewards: free Auto Collect has the same living-owner, save and ledger guards", function()
 	local e, player, p, commerce = catalogPlayer(720)
-	local position = { X = 0, Y = 3, Z = 0 }
-	e.World.Assigned[player].LayoutCFrame = {
-		PointToObjectSpace = function()
-			return position
-		end,
-	}
+	player.Distance = 400
 	p.RebirthLevel = 4
 	p.Income.Pending = { ["1"] = 60001 }
 	commerce:Collect(player)
@@ -96,12 +91,7 @@ test("rebirth rewards: free Auto Collect has the same living-owner, save and led
 	commerce:Collect(player)
 	assert(p.Coins == 10 and p.Income.Pending["1"] == 1 and not p.Monetization.Passes.AutoCollect)
 	p.Income.Pending["1"] += 30000
-	for _, invalid in ipairs({ { X = 25, Y = 3, Z = 0 }, { X = 0 / 0, Y = 3, Z = 0 }, { X = 0, Y = 30, Z = 0 } }) do
-		position = invalid
-		commerce:Collect(player)
-		assert(p.Coins == 10)
-	end
-	position = { X = 0, Y = 3, Z = 0 }
+	e.Now += 5
 	player.Health = 0
 	commerce:Collect(player)
 	assert(p.Coins == 10)
@@ -110,6 +100,7 @@ test("rebirth rewards: free Auto Collect has the same living-owner, save and led
 	commerce:Collect(player)
 	assert(p.Coins == 10)
 	e.Data.Saving[player] = nil
+	player.Distance = 0
 	e:Fire("CollectIncome", player)
 	commerce:Collect(player)
 	assert(p.Coins == 15 and p.Income.Pending["1"] == 1)

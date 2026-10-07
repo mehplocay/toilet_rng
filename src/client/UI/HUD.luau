@@ -194,8 +194,9 @@ function HUD.Create(root, remotes, open, prompts)
 		local elapsed = math.max(0, os.clock() - statusAt)
 		local idleLeft = math.max(0, math.ceil((autoStatus.IdleRemaining or 0) - elapsed))
 		local paused = autoStatus.Paused == true
+		local collecting = autoStatus.CollectEnabled == true
 		local running = autoEnabled and not paused and os.clock() < autoRunningUntil
-		idle.Visible = autoEnabled and paused
+		idle.Visible = (autoEnabled or collecting) and paused
 		flush.Visible = not idle.Visible
 		if autoUnlocked then
 			local uptime = math.floor((autoStatus.Uptime or 0) + (if autoEnabled and not paused then elapsed else 0))
@@ -210,7 +211,22 @@ function HUD.Create(root, remotes, open, prompts)
 						then "\nIdle " .. timer(idleLeft)
 						else ""
 				)
+		else
+			auto.Text = "AUTO\n" .. (if state then state.LifetimeFlushes else 0) .. "/" .. Monetization.AutoFlushUnlock
 		end
+		-- Extend the existing automation chip upwards, keeping the action's bottom edge.
+		auto.Size = UDim2.new(0, 84, 1, if collecting then 40 else 0)
+		auto.Position = UDim2.new(1, -84, 0, if collecting then -40 else 0)
+		if collecting then
+			if not autoEnabled and not paused and idleLeft <= AutoConfig.IdleWarningSeconds then
+				auto.Text ..= "\nIdle " .. timer(idleLeft)
+			end
+			auto.Text ..= "\nCOLLECT\n" .. (if paused
+				then "PAUSED"
+				elseif autoStatus.CollectRunning then "ON / 5s"
+				else "WAITING")
+		end
+		auto.Label.TextTransparency = if collecting or autoUnlocked then 0 else 0.4
 		flush.Interactable = state ~= nil and (not near or remaining <= 0)
 		flush.Text = if not state
 			then "LOADING..."
@@ -247,6 +263,7 @@ function HUD.Create(root, remotes, open, prompts)
 	end)
 	local characterRemoving = game:GetService("Players").LocalPlayer.CharacterRemoving:Connect(function()
 		autoEnabled, autoRunningUntil, flushIcon.Rotation = false, 0, 0
+		autoStatus.CollectEnabled, autoStatus.CollectRunning = false, false
 	end)
 	gui.Destroying:Connect(function()
 		heartbeat:Disconnect()

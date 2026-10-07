@@ -330,16 +330,11 @@ test("path zones: actual authored route centers, all rotated plots and off-map p
 	assert(not rules.Find(zones, -114, 100, -200, config.RootHeight))
 end)
 
-test("catalog auto collect: inside owned living plot only; fractional/manual ledgers cannot double credit", function()
+test("catalog auto collect: anywhere for owned living plot; fractional/manual ledgers cannot double credit", function()
 	local e, player, p, commerce, config = catalogPlayer(414)
 	config.Gamepasses.AutoCollect.Id = 8001
 	p.Monetization.Passes.AutoCollect = true
-	local localPosition = { X = 0, Y = 3, Z = 0 }
-	e.World.Assigned[player].LayoutCFrame = {
-		PointToObjectSpace = function()
-			return localPosition
-		end,
-	}
+	player.Distance = 400
 	p.Income.Pending = { ["1"] = commerce.Income.Config.UnitsPerCoin * 10 + 1 }
 	local writes = e.Store.Writes
 	commerce:Collect(player)
@@ -347,12 +342,7 @@ test("catalog auto collect: inside owned living plot only; fractional/manual led
 	commerce:Collect(player)
 	assert(p.Coins == 10)
 	p.Income.Pending["1"] = commerce.Income.Config.UnitsPerCoin * 5
-	for _, position in ipairs({ { X = 25, Y = 3, Z = 0 }, { X = 0, Y = 30, Z = 0 }, { X = 0 / 0, Y = 3, Z = 0 } }) do
-		localPosition = position
-		commerce:Collect(player)
-		assert(p.Coins == 10)
-	end
-	localPosition = { X = 0, Y = 3, Z = 0 }
+	e.Now += 5
 	player.Health = 0
 	commerce:Collect(player)
 	assert(p.Coins == 10)
@@ -365,6 +355,7 @@ test("catalog auto collect: inside owned living plot only; fractional/manual led
 	commerce:Collect(player)
 	assert(p.Coins == 10)
 	e.Data.Saving[player] = nil
+	player.Distance = 0
 	e:Fire("CollectIncome", player)
 	commerce:Collect(player)
 	assert(p.Coins == 15)

@@ -1,16 +1,14 @@
 local Shared = game.ReplicatedStorage.Shared
 local Config = require(Shared.Config.Monetization)
-local Layout = require(Shared.Config.MapLayout)
 local Profile = require(Shared.CommerceProfile)
 local Paid = require(Shared.PaidBenefits)
 local Rebirth = require(Shared.RebirthRules).new(require(Shared.Config.Rebirth))
-local PathRules = require(Shared.PathBoostRules)
 local Players = game:GetService("Players")
 local Marketplace = game:GetService("MarketplaceService")
 local Lucky = require(script.Parent.LuckyService)
 local Commerce = {}
 Commerce.__index = Commerce
-function Commerce.new(data, world, sync)
+function Commerce.new(data, world, sync, automation)
 	local income = require(Shared.IncomeAccrual).new(
 		require(Shared.Config.Income),
 		require(Shared.Config.Items),
@@ -24,6 +22,8 @@ function Commerce.new(data, world, sync)
 		Data = data,
 		World = world,
 		Sync = sync,
+		Automation = automation,
+		CollectStatus = {},
 		Income = income,
 		Prompting = {},
 		Receipts = require(script.Parent.ReceiptService).new(data, income, if ok then archive else nil, sync),
@@ -58,33 +58,40 @@ function Commerce:Snapshot(profile, player)
 		CanResume = player ~= nil and not self.Prompting[player],
 	}
 end
-function Commerce:InPlot(player)
+function Commerce:HasAutoCollect(profile)
+	return profile ~= nil and (Paid.Owns(profile, "AutoCollect") or Rebirth:Bonus(profile).AutoCollect)
+end
+function Commerce:CanCollect(player)
 	local plot = self.World.Assigned[player]
-	local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
-	local humanoid = player.Character and player.Character:FindFirstChildWhichIsA("Humanoid")
-	if not plot or plot.Owner ~= player or not root or not humanoid or not (humanoid.Health > 0) then
+	if not plot or plot.Owner ~= player or not self.Automation or not self.Automation:Living(player) then
 		return false
 	end
-	local p = plot.LayoutCFrame:PointToObjectSpace(root.Position)
-	return PathRules.InRectangle(
-		p.X,
-		p.Y,
-		p.Z,
-		{ X = 0, Z = 0, Y = 0, Width = Layout.PlotWidth, Depth = Layout.PlotDepth, Cos = 1, Sin = 0 },
-		7
-	)
+	local profile = self.Data:Get(player)
+	return self:HasAutoCollect(profile), profile
+end
+function Commerce:SyncCollectStatus(player, force)
+	local status = self.Automation:AutoStatus(player)
+	local signature = tostring(status.CollectEnabled) .. tostring(status.CollectRunning) .. tostring(status.Paused)
+	if force or self.CollectStatus[player] ~= signature then
+		self.CollectStatus[player] = signature
+		self.Sync(player)
+	end
 end
 function Commerce:Collect(player)
-	if not self:InPlot(player) or self.Data.Saving[player] then
+	local eligible, profile = self:CanCollect(player)
+	if not eligible or self.Data.Saving[player] or self.Automation:IdlePaused(player) then
 		return
 	end
-	local profile = self.Data:Get(player)
-	if not profile or not (Paid.Owns(profile, "AutoCollect") or Rebirth:Bonus(profile).AutoCollect) then
+	-- Server-only cadence, including empty ticks; manual input shares the collection budget.
+	if not self.Limiter:Allow(player, "AutoCollect") then
+		return
+	end
+	if self.Income:PendingCoins(profile) == 0 or not self.Limiter:Allow(player, "CollectIncome") then
 		return
 	end
 	if self.Income:Collect(profile) > 0 then
 		-- Ordinary autosave persists both debit and credit; no extra DataStore write every tick.
-		self.Sync(player)
+		self:SyncCollectStatus(player, true)
 	end
 end
 function Commerce:Start(limiter, remotes)
@@ -228,12 +235,15 @@ function Commerce:Start(limiter, remotes)
 	end)
 	Players.PlayerRemoving:Connect(function(player)
 		self.Prompting[player] = nil
+		self.CollectStatus[player] = nil
 	end)
 	task.spawn(function()
 		while not self.Data.Stopping do
 			task.wait(Config.AutoCollectSeconds)
 			for _, player in ipairs(Players:GetPlayers()) do
 				self:Collect(player)
+				-- Publish lifecycle/save transitions even with zero pending income; unchanged ticks stay quiet.
+				self:SyncCollectStatus(player)
 			end
 		end
 	end)

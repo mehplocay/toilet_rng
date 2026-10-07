@@ -20,8 +20,12 @@ return {
 		LuckyFlush1 = { Icon = "LuckyFlush1", Color = { 145, 230, 130 }, Description = "10x luck for one flush" },
 		LuckyFlush5 = { Icon = "LuckyFlush5", Color = { 110, 220, 175 }, Description = "Five single-use luck charges" },
 		LuckyFlush20 = { Icon = "LuckyFlush20", Color = { 120, 190, 255 }, Description = "20 single-use luck charges" },
-		DoubleCash = { Icon = "DoubleCash", Color = { 255, 204, 66 }, Description = "2x coin income, capped" },
-		AutoCollect = { Icon = "AutoCollect", Color = { 100, 230, 160 }, Description = "Collect while in your plot" },
+		DoubleCash = { Icon = "DoubleCash", Color = { 255, 204, 66 }, Description = "2x coin income." },
+		AutoCollect = {
+			Icon = "AutoCollect",
+			Color = { 100, 230, 160 },
+			Description = "Collect every 5s anywhere on the map",
+		},
 		OfflinePlus = { Icon = "OfflinePlus", Color = { 180, 140, 255 }, Description = "Double offline tank capacity" },
 		VIPPack = { Icon = "VIP", Color = { 255, 185, 35 }, Description = "Premium benefits. No luck." },
 		Coins10Minutes = {
