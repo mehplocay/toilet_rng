@@ -14,7 +14,7 @@ test("wired passes: exact ownership IDs, prompts, callback mapping and bundle im
 		table.insert(prompts, id)
 	end
 	local player, p = e:Join(1300)
-	assert(#queries == #config.PassOrder - 1, "Wrong join query count: " .. #queries)
+	assert(#queries == #config.PassOrder, "Wrong join query count: " .. #queries)
 	local i = 0
 	for _, key in ipairs(config.PassOrder) do
 		if config.Gamepasses[key].Id > 0 then
@@ -41,9 +41,7 @@ test("wired passes: exact ownership IDs, prompts, callback mapping and bundle im
 	e.Marketplace.PromptGamePassPurchaseFinished:Fire(player, config.Gamepasses.UltimateBundle.Id, true)
 	local paid = e:Load("src/shared/PaidBenefits")
 	for _, key in ipairs(config.PassOrder) do
-		assert(
-			service:EffectiveOwned(player)[key] == (key ~= "DoubleLuck") and paid.Owns(p, key) == (key ~= "DoubleLuck")
-		)
+		assert(service:EffectiveOwned(player)[key] == true and paid.Owns(p, key) == true)
 	end
 	assert(p.Coins == 0 and p.DisplaySlots == 3 and p.Monetization.LuckyFlushes == 0)
 	assert(p.Monetization.PathExpires == 0 and service.Commerce.Income.Upgrades:Cash(p) == 3)

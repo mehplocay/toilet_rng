@@ -2,7 +2,7 @@
 
 Experience **10769513431**, group **Dreadlight Studio**. Owner-reported creation/settings, recorded 2026-10-07; this task did not change or independently verify Hub settings. The game remains private. The owner reports the Maturity and Compliance Questionnaire is complete with paid random items disclosed.
 
-Production config: src/shared/Config/Monetization.luau. **23 wired offers: 15 passes and eight developer products.** VIPStar has been renamed **Star Tag** in the Hub; its config key and ID remain stable.
+Production config: src/shared/Config/Monetization.luau. **24 wired offers: 16 passes and eight developer products.** VIPStar has been renamed **Star Tag** in the Hub; its config key and ID remain stable.
 
 | Config key | Hub name | Type | Created Hub ID | Production Id | Base Robux | Sale / wiring state |
 |---|---|---|---|---|---|---|
@@ -14,7 +14,7 @@ Production config: src/shared/Config/Monetization.luau. **23 wired offers: 15 pa
 | AutoCollect | Auto Collect | Pass | 2014760290 | 2014760290 | 149 | wired; for sale in Hub |
 | OfflinePlus | Offline Plus | Pass | 2013200307 | 2013200307 | 129 | wired; for sale in Hub |
 | VIPPack | VIP | Pass | 2013872290 | 2013872290 | 399 | wired; for sale in Hub |
-| DoubleLuck | 2x Luck | Pass | pending | 0 | 399 | Coming soon; manager creates pass and wires ID |
+| DoubleLuck | 2x Luck | Pass | 2014088425 | 2014088425 | 399 | wired; for sale in Hub; icon upload pending |
 | RainbowName | Rainbow Name | Pass | 2014136291 | 2014136291 | 39 | wired; for sale in Hub |
 | ConfettiReveal | Confetti Reveal | Pass | 2013332295 | 2013332295 | 39 | wired; for sale in Hub |
 | GoldenName | Golden Name | Pass | 2012846305 | 2012846305 | 49 | wired; for sale in Hub |
@@ -42,4 +42,4 @@ Pass management: https://create.roblox.com/dashboard/creations/experiences/10769
 Product management: https://create.roblox.com/dashboard/creations/experiences/10769513431/monetization/developer-products
 
 
-DoubleLuck is included by Ultimate Bundle only after its ID is wired; ID 0 cannot query, prompt or grant. Upload the new 512 px icon and wire `Assets.Icons.DoubleLuck`. VIP and Bundle Hub descriptions also need the exact updates in [the catalog](monetization-catalog.md#permanent-paid-luck-release-contract-2026-10-07).
+DoubleLuck is included by Ultimate Bundle. Its icon upload and `Assets.Icons.DoubleLuck` asset ID remain pending. An ID 0 fixture must continue to prove that disabled passes cannot query, prompt or grant. VIP and Bundle Hub descriptions also need the exact updates in [the catalog](monetization-catalog.md#permanent-paid-luck-release-contract-2026-10-07).

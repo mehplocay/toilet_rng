@@ -198,7 +198,7 @@ test("creator passes: verified ownership stays true throughout yielded refresh",
 		e.Now += 1
 		e:Fire("State", player)
 		for _, key in ipairs(e:Load("src/shared/Config/Monetization").PassOrder) do
-			assert(purchaseState(e).OwnedPasses[key] == (key ~= "DoubleLuck"), "Refresh flickered ownership: " .. key)
+			assert(purchaseState(e).OwnedPasses[key] == true, "Refresh flickered ownership: " .. key)
 		end
 		e:Resume(refresh)
 	end

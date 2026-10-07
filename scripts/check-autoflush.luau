@@ -93,7 +93,12 @@ local productPrices = {
 for _, key in ipairs(Config.ProductOrder) do
 	assert(Config.DeveloperProducts[key].Price == productPrices[key])
 end
-assert(Config.Gamepasses.DoubleLuck.Id == 0 and Config.Gamepasses.AutoFlush == nil)
+assert(Config.Gamepasses.DoubleLuck.Id == 2014088425 and Config.Gamepasses.AutoFlush == nil)
+local disabledPassConfig = table.clone(Config)
+disabledPassConfig.Gamepasses = table.clone(Config.Gamepasses)
+disabledPassConfig.Gamepasses.DoubleLuck = table.clone(Config.Gamepasses.DoubleLuck)
+disabledPassConfig.Gamepasses.DoubleLuck.Id = 0
+assert(Rules.PassKey(disabledPassConfig, 0) == nil and Rules.PassKey(disabledPassConfig, 2014088425) == nil)
 assert(Rules.Pass(Config, {}) == nil and Rules.Pass(Config, "Unknown") == nil)
 assert(Rules.PassKey(Config, 0) == nil)
 local catalog = { PassOrder = { "Test" }, Gamepasses = { Test = { Id = 42 } } }

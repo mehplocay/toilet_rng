@@ -3,6 +3,7 @@ do
 	H.UseCommerceIds(true)
 	H.Services.MarketplaceService = H.Services.MarketplaceService or {}
 	local config = H.Load("src/shared/Config/Monetization")
+	config.Gamepasses.DoubleLuck.Id = 0 -- Explicit unavailable-offer fixture.
 	local original = H.Services.MarketplaceService.GetProductInfoAsync
 	H.Services.MarketplaceService.GetProductInfoAsync = function()
 		return { IsForSale = true, PriceInRobux = 399 }
