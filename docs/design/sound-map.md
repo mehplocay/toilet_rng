@@ -1,5 +1,7 @@
 # Sound coverage map
 
+2026-10-07 music level fix: measured all shipped OGGs, balanced music to approximately -30 estimated LUFS at 60% default, eased ducking to 60% with a 1.5 s release, and repaired timeout recovery. Versioned profile migration and preview controls are covered by regressions. See [measurements and limitations](../research/music-level.md).
+
 Wave 1 update, 2026-10-06: Celestial is now a live rarity and uses the existing Godly stinger with identical cue settings through the `Celestial` logical sound key. This replaces the provisional Mythic-at-65% hook described below. There are 54 logical slots and 53 unique audio IDs; only the Godly/Celestial alias is permitted by coverage checks. No new audio asset was introduced.
 
 2026-10-06 `feature/reveals2` presentation follow-up: the finder now receives only its rarity reveal stinger, so the higher-priority generic Event fanfare cannot replace it. Other Secret event recipients use the existing Secret slot; other events retain ServerEvent. The five-second event duck is unchanged. Celestial provisionally reuses Mythic at 65% gain until a distinct soft choir/chime asset exists. Secret retains its unique 2.4 s asset during a 4.8 s reveal. See [tiered reveals](rare-drop-reveal.md); no audio assets, mixer limits or server rules changed.
@@ -14,7 +16,7 @@ The runtime defines **48 SFX slots plus five music slots**. All 53 now use the e
 
 12 managed SFX voices: UI 3, action 4, reward 3, stinger 1, ambient 1. Each row also lists its slot cap/gap; rejected sounds drop immediately without a backlog. A higher-priority cue can preempt a lower-priority voice if a class/global budget is full. Equal/lower stingers never interrupt an active stronger cue. Two extra positional world flush voices are independently bounded, admitted only within 65 studs of the camera. At 0.4 s flush cadence, sequence gating deliberately skips some plumbing layers while every result remains visible.
 
-Gain in the slot table is the source gain before the class multiplier and SFX slider (default 0.70), not a mastering loudness target. Stingers duck music to 0.40 and ambience to 0.25 of the selected mix, restoring with 1.2 s release. Muting/zeroing SFX stops all its voices and invalidates scheduled flush tails. Music mute/zero stops ambience and fades music before pausing; unmute resumes music at its saved position and restores one bed when its cooldown permits. The existing settings retain independent Music/SFX controls; ambience requires both to be audible. Cancellation and teardown release voices for 20 ms before destruction; loops attack over 20 ms after loading. Sound.Ended immediately reclaims naturally completed one-shots.
+Gain in the slot table is the source gain before the class multiplier and SFX slider (default 0.70), not a mastering loudness target. Stingers duck music to 0.60 and ambience to 0.25 of the selected mix, restoring with 1.5 s release. Muting/zeroing SFX stops all its voices and invalidates scheduled flush tails. Music mute/zero stops ambience and fades music before pausing; unmute resumes music at its saved position and restores one bed when its cooldown permits. The existing settings retain independent Music/SFX controls; ambience requires both to be audible. Cancellation and teardown release voices for 20 ms before destruction; loops attack over 20 ms after loading. Sound.Ended immediately reclaims naturally completed one-shots.
 
 ### Default runtime volume sanity
 
@@ -22,7 +24,7 @@ Effective gain = source gain × class multiplier × slider × duck, before devic
 
 | Class | Class multiplier | Default slider | Effective unducked gain | Examples |
 | --- | ---: | ---: | ---: | --- |
-| Music | 1 | 0.25 | 0.25; 0.10 ducked | All five tracks; 2.5 s first attack, ≤3 s transitions |
+| Music | 0.62 / 0.49 / 0.43 / 0.51 / 0.55 track trims | 0.60 | 0.258–0.372; 0.1548–0.2232 ducked | All five tracks; 2.5 s first attack, ≤3 s transitions |
 | UI | 1 | 0.70 | 0.056–0.294 | LeaderboardUpdate 0.056; Hover 0.098; Click 0.294 |
 | action | 1 | 0.70 | 0.070–0.315 | Flush 0.280; RebirthHold 0.175 |
 | reward | 0.80 | 0.70 | 0.0896–0.308 | CoinPopup 0.0896; Sell 0.2688 |
@@ -102,11 +104,11 @@ Client locations are relative to `src/client/` unless marked server. A named fun
 
 | Moment | Trigger code location | Slot key | Style / length notes | Volume class | Pitch / variation | Cooldown / spam limits | Slot exists? |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Relaxed ongoing play | `AudioService:_playlist` after profile/game/character readiness | `Music[1]` | Warm lo-fi keys; 90–180 s seamless instrumental loop | ambient (Music bus, default 0.25) | Fixed 1x; shuffled selection | Two decks, no adjacent repeats, up to 3 s crossfade | Uploaded batch 1 |
-| Relaxed ongoing play | `AudioService:_playlist` after profile/game/character readiness | `Music[2]` | Tropical plucks; 90–180 s seamless instrumental loop | ambient (Music bus, default 0.25) | Fixed 1x; shuffled selection | Two decks, no adjacent repeats, up to 3 s crossfade | Uploaded batch 1 |
-| Relaxed ongoing play | `AudioService:_playlist` after profile/game/character readiness | `Music[3]` | Dreamy synth; 90–180 s seamless instrumental loop | ambient (Music bus, default 0.25) | Fixed 1x; shuffled selection | Two decks, no adjacent repeats, up to 3 s crossfade | Uploaded batch 1 |
-| Relaxed ongoing play | `AudioService:_playlist` after profile/game/character readiness | `Music[4]` | Cozy jazz-hop; 90–180 s seamless instrumental loop | ambient (Music bus, default 0.25) | Fixed 1x; shuffled selection | Two decks, no adjacent repeats, up to 3 s crossfade | Uploaded batch 1 |
-| Relaxed ongoing play | `AudioService:_playlist` after profile/game/character readiness | `Music[5]` | Chill marimba; 90–180 s seamless instrumental loop | ambient (Music bus, default 0.25) | Fixed 1x; shuffled selection | Two decks, no adjacent repeats, up to 3 s crossfade | Uploaded batch 1 |
+| Relaxed ongoing play | `AudioService:_playlist` after profile/game/character readiness | `Music[1]` | Warm lo-fi keys; 90–180 s seamless instrumental loop | ambient (Music bus, default 0.60) | Fixed 1x; shuffled selection | Two decks, no adjacent repeats, up to 3 s crossfade | Uploaded batch 1 |
+| Relaxed ongoing play | `AudioService:_playlist` after profile/game/character readiness | `Music[2]` | Tropical plucks; 90–180 s seamless instrumental loop | ambient (Music bus, default 0.60) | Fixed 1x; shuffled selection | Two decks, no adjacent repeats, up to 3 s crossfade | Uploaded batch 1 |
+| Relaxed ongoing play | `AudioService:_playlist` after profile/game/character readiness | `Music[3]` | Dreamy synth; 90–180 s seamless instrumental loop | ambient (Music bus, default 0.60) | Fixed 1x; shuffled selection | Two decks, no adjacent repeats, up to 3 s crossfade | Uploaded batch 1 |
+| Relaxed ongoing play | `AudioService:_playlist` after profile/game/character readiness | `Music[4]` | Cozy jazz-hop; 90–180 s seamless instrumental loop | ambient (Music bus, default 0.60) | Fixed 1x; shuffled selection | Two decks, no adjacent repeats, up to 3 s crossfade | Uploaded batch 1 |
+| Relaxed ongoing play | `AudioService:_playlist` after profile/game/character readiness | `Music[5]` | Chill marimba; 90–180 s seamless instrumental loop | ambient (Music bus, default 0.60) | Fixed 1x; shuffled selection | Two decks, no adjacent repeats, up to 3 s crossfade | Uploaded batch 1 |
 
 ## Protocol audit and intentionally silent changes
 

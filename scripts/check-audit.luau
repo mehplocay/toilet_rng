@@ -325,7 +325,7 @@ test("merged profile fields survive sanitize, save and rejoin", function()
 				SkipAnimation = true,
 				PlotColor = "Mint",
 				AutoFlush = true,
-				MusicVolume = 0.25,
+				MusicVolume = 0.6,
 				SFXVolume = 0.75,
 				MusicMuted = true,
 				SFXMuted = true,
@@ -352,7 +352,7 @@ test("merged profile fields survive sanitize, save and rejoin", function()
 	local function verify(profile)
 		assert(profile.TutorialDone and not profile.Settings.Sound and profile.Settings.SkipAnimation)
 		assert(profile.Settings.PlotColor == "Mint" and profile.Settings.AutoFlush == nil)
-		assert(profile.Settings.MusicVolume == 0.25 and profile.Settings.SFXVolume == 0.75)
+		assert(profile.Settings.MusicVolume == 0.6 and profile.Settings.SFXVolume == 0.75)
 		assert(profile.Settings.MusicMuted and profile.Settings.SFXMuted)
 		assert(profile.Income.UpdatedAt == e.Now and profile.Income.Pending["1"] == 6001)
 		local pendingSlots = 0
@@ -569,7 +569,7 @@ test("audio preferences validate, rate limit, persist and migrate legacy profile
 	local e = server()
 	local player, profile = e:Join(31)
 	local request = { MusicVolume = 0.35, SFXVolume = 0.8, MusicMuted = true, SFXMuted = false }
-	assert(profile.Settings.MusicVolume == 0.25 and profile.Settings.SFXVolume == 0.7)
+	assert(profile.Settings.MusicVolume == 0.6 and profile.Settings.SFXVolume == 0.7)
 	for _, bad in ipairs({
 		{ MusicVolume = 0.5 },
 		{ MusicVolume = 0 / 0, SFXVolume = 0.8, MusicMuted = false, SFXMuted = false },
@@ -580,9 +580,9 @@ test("audio preferences validate, rate limit, persist and migrate legacy profile
 	}) do
 		e:Fire("Settings", player, bad)
 	end
-	assert(profile.Settings.MusicVolume == 0.25 and profile.Coins == 0)
+	assert(profile.Settings.MusicVolume == 0.6 and profile.Coins == 0)
 	e:Fire("Settings", player, request, true)
-	assert(profile.Settings.MusicVolume == 0.25, "Extra arguments bypassed validation")
+	assert(profile.Settings.MusicVolume == 0.6, "Extra arguments bypassed validation")
 	e:Fire("Settings", player, request)
 	assert(profile.Settings.MusicVolume == 0.35 and profile.Settings.MusicMuted and not profile.Settings.SFXMuted)
 	assert(profile.Settings.PlotColor == "Default" and profile.Settings.SkipAnimation == false)
@@ -602,7 +602,35 @@ test("audio preferences validate, rate limit, persist and migrate legacy profile
 	local legacy = e:Player(32)
 	data:Load(legacy)
 	local migrated = data:Get(legacy).Settings
-	assert(migrated.MusicVolume == 0.25 and migrated.SFXVolume == 1 and migrated.MusicMuted and migrated.SFXMuted)
+	assert(migrated.MusicVolume == 0.6 and migrated.SFXVolume == 1 and migrated.MusicMuted and migrated.SFXMuted)
+end)
+
+test("music default migrates once and custom 25 percent survives save and reload", function()
+	local e = server()
+	local data = e:Load(dataPath)
+	e.Store.Records.Player_33 = { Data = { Settings = { MusicVolume = 0.25, SFXVolume = 0.4, MusicMuted = true } } }
+	local player, profile = e:Join(33)
+	assert(profile.Settings.MusicVolume == 0.6 and profile.Settings.SFXVolume == 0.4 and profile.Settings.MusicMuted)
+	assert(profile.Settings.AudioSettingsVersion == 2 and not profile.Settings.MusicVolumeCustomized)
+	e:Fire("Settings", player, { MusicVolume = 0.25, SFXVolume = 0.4, MusicMuted = false, SFXMuted = false })
+	assert(profile.Settings.MusicVolume == 0.25 and profile.Settings.MusicVolumeCustomized)
+	data:Close(player)
+	local rejoined = e:Player(33)
+	data:Load(rejoined)
+	local saved = data:Get(rejoined).Settings
+	assert(saved.MusicVolume == 0.25 and saved.MusicVolumeCustomized and saved.AudioSettingsVersion == 2)
+	data:Close(rejoined)
+	for id, settings in pairs({
+		[34] = { MusicVolume = 0, SFXVolume = 0.2 },
+		[35] = { MusicVolume = 0.35 },
+		[36] = { MusicVolume = 0.25, MusicVolumeCustomized = true },
+		[37] = { MusicVolume = 0.25, AudioSettingsVersion = 2 },
+	}) do
+		e.Store.Records["Player_" .. id] = { Data = { Settings = settings } }
+		local joined, restored = e:Join(id)
+		assert(restored.Settings.MusicVolume == settings.MusicVolume)
+		data:Close(joined)
+	end
 end)
 
 test("manual, prompt and auto flush share cooldown and server-owned RNG", function()

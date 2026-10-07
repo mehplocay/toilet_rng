@@ -62,7 +62,8 @@ function Service:_mix()
 		local tween = self:_fade(
 			self.Music,
 			if target == 0 then Audio.StopFade else (if duck < 1 then Audio.DuckAttack else Audio.DuckRelease),
-			{ Volume = target }
+			{ Volume = target },
+			Enum.EasingStyle.Sine
 		)
 		if target == 0 then
 			tween.Completed:Once(function()
@@ -116,6 +117,21 @@ function Service:ApplySettings(raw)
 			self:_playlist()
 		end)
 	end
+end
+function Service:Preview(bus)
+	if bus == "SFX" then
+		return self:Play("PurchaseSuccess") ~= nil
+	end
+	if bus ~= "Music" or not self.Ready or self.Settings.MusicMuted or self.Settings.MusicVolume <= 0 then
+		return false
+	end
+	-- Preview the actual playlist at the saved mix; never bypass mute or ducking.
+	-- A separate music sample would double the bed and misrepresent its level.
+	self:_mix()
+	if self.Current and self.Current.IsLoaded and self.Current.IsPlaying then
+		return true
+	end
+	return false
 end
 function Service:Play(key, amount, volumeScale)
 	if self.Destroyed or not self.Ready or self.Settings.SFXMuted or self.Settings.SFXVolume <= 0 then
@@ -284,38 +300,52 @@ function Service:_release(sound, duration)
 end
 function Service:_loadMusic(id)
 	if self.Destroyed or self.MusicPreloadBusy then
-		return nil -- A hung fetch cannot accumulate worker threads or further requests.
+		return nil -- At most one fetch worker is alive.
 	end
 	local sound = self:_sound(id, self.Music, 0, true)
 	self.Loading = sound
 	self.MusicPreloadBusy = true
 	local finished, failed = false, false
-	task.spawn(function()
+	local worker = task.spawn(function()
 		local ok = pcall(function()
 			ContentProvider:PreloadAsync({ sound }, function(_, status)
 				failed = status ~= Enum.AssetFetchStatus.Success
 			end)
 		end)
 		failed, finished = failed or not ok, true
-		self.MusicPreloadBusy = false
 	end)
+	self.MusicPreloadThread = worker
 	local deadline = os.clock() + Audio.LoadTimeout
-	while not self.Destroyed and not failed and not sound.IsLoaded and not finished and os.clock() < deadline do
+	-- Successful preload can finish before IsLoaded/TimeLength become visible.
+	while
+		not self.Destroyed
+		and not failed
+		and not (sound.IsLoaded and sound.TimeLength > 0)
+		and os.clock() < deadline
+	do
 		task.wait(0.1)
 	end
+	if not finished then
+		pcall(task.cancel, worker)
+	end
+	self.MusicPreloadThread, self.MusicPreloadBusy = nil, false
 	self.Loading = nil
 	if self.Destroyed or failed or not sound.IsLoaded or sound.TimeLength <= 0 then
+		if not self.Destroyed then
+			warn("Music could not load; retrying playlist: " .. id)
+		end
 		self:_release(sound)
 		return nil
 	end
 	return sound
 end
 function Service:_playlist()
-	local tracks = {}
-	for _, value in ipairs(Assets.Music or {}) do
+	local tracks, gains = {}, {}
+	for index, value in ipairs(Assets.Music or {}) do
 		local id = assetId(value)
 		if id and not table.find(tracks, id) then
 			table.insert(tracks, id)
+			gains[id] = Audio.MusicTrackGains[index] or 1
 		end
 	end
 	if #tracks == 0 then
@@ -381,7 +411,7 @@ function Service:_playlist()
 			self:_fade(
 				nextSound,
 				if current then fade else math.min(Audio.FadeIn, nextSound.TimeLength / 2),
-				{ Volume = 1 }
+				{ Volume = gains[id] }
 			)
 			if current then
 				self:_fade(current, fade, { Volume = 0 })
@@ -394,7 +424,7 @@ function Service:_playlist()
 				return -- One configured track loops without reloading/crossfading itself.
 			end
 		else
-			task.wait(1) -- Failed playlists cannot spin or flood fetch requests.
+			task.wait(Audio.MusicRetryDelay) -- Failed playlists cannot spin or flood fetch requests.
 		end
 	end
 end
@@ -403,6 +433,10 @@ function Service:Destroy()
 		return
 	end
 	self.Destroyed = true
+	if self.MusicPreloadThread then
+		pcall(task.cancel, self.MusicPreloadThread)
+		self.MusicPreloadThread, self.MusicPreloadBusy = nil, false
+	end
 	for _, connection in ipairs(self.Connections) do
 		connection:Disconnect()
 	end

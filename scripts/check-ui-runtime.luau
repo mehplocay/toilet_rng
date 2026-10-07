@@ -553,7 +553,16 @@ assert(not clientRoot.HUD.Visible and clientRoot.ModalBackdrop.Visible, "Modal f
 local musicCard = settings:FindFirstChild("MusicAudio", true)
 local sfxCard = settings:FindFirstChild("SFXAudio", true)
 assert(musicCard.MusicMute.Text == "Music: ON" and sfxCard.SFXMute.Text == "SFX: ON")
+assert(musicCard.MusicPercentage.Text == "60%" and sfxCard.SFXPercentage.Text == "70%")
+local previewCalls = #H.Calls
+musicCard.MusicPreview.Activated:Fire()
+assert(musicCard.MusicPreview.Text == "Music loading; try again")
+sfxCard.SFXPreview.Activated:Fire()
+assert(sfxCard.SFXPreview.Text == "Try again shortly", "Empty SFX asset claimed audible playback")
+assert(#H.Calls == previewCalls, "Preview saved settings")
 musicCard.MusicMute.Activated:Fire()
+musicCard.MusicPreview.Activated:Fire()
+assert(musicCard.MusicPreview.Text == "Unmute to preview")
 sfxCard.SFXIncrease.Activated:Fire()
 local countBefore = #H.Calls
 H.Advance(1.1)
@@ -727,11 +736,14 @@ voice.Ended:Fire()
 assert(voice._dead, "Ended voice leaked")
 audio:Duck("Reveal", 2.4)
 audio:Duck("Event", 5)
-assert(math.abs(audio.Music.Volume - 0.1) < 1e-10)
+assert(math.abs(audio.Music.Volume - AudioConfig.Defaults.MusicVolume * AudioConfig.DuckGain) < 1e-10)
 H.Advance(2.5)
-assert(math.abs(audio.Music.Volume - 0.1) < 1e-10, "Reveal ending released overlapping event duck")
+assert(
+	math.abs(audio.Music.Volume - AudioConfig.Defaults.MusicVolume * AudioConfig.DuckGain) < 1e-10,
+	"Reveal ending released overlapping event duck"
+)
 audio:ApplySettings({ MusicVolume = 0.5, SFXVolume = 0.2, MusicMuted = false, SFXMuted = true })
-assert(math.abs(audio.Music.Volume - 0.2) < 1e-10 and audio.SFX.Volume == 0)
+assert(math.abs(audio.Music.Volume - 0.5 * AudioConfig.DuckGain) < 1e-10 and audio.SFX.Volume == 0)
 H.Advance(2.6)
 assert(audio.Music.Volume == 0.5 and audio.Equalizer.HighGain == 0)
 audio:Destroy()
@@ -747,7 +759,7 @@ music:ApplySettings(AudioConfig.Defaults)
 H.StartTasks() -- Playlist waits for first preload.
 H.StartTasks() -- First preload resolves.
 H.ResumeTasks() -- First deck starts; next deck preloads.
-assert(music.Current and music.Current.IsPlaying and music.Current.Volume == 1)
+assert(music.Current and music.Current.IsPlaying and music.Current.Volume == AudioConfig.MusicTrackGains[1])
 assert(music.Current.SoundId == "rbxassetid://201", "Startup preload was not reused as the first track")
 local first = music.Current
 first.TimePosition = 110
@@ -756,7 +768,11 @@ H.StartTasks()
 H.ResumeTasks() -- Second deck ready, waiting for crossfade position.
 first.TimePosition = 117
 H.ResumeTasks()
-assert(music.Current ~= first and music.Current.Volume == 1 and first.Volume == 0, "Crossfade did not swap decks")
+local nextIndex = table.find(Assets.Music, music.Current.SoundId:match("(%d+)$"))
+assert(
+	music.Current ~= first and music.Current.Volume == AudioConfig.MusicTrackGains[nextIndex] and first.Volume == 0,
+	"Crossfade did not swap decks"
+)
 H.ResumeTasks()
 assert(first._dead, "Outgoing music deck leaked")
 music:Destroy()
@@ -769,14 +785,19 @@ held:ApplySettings(AudioConfig.Defaults)
 H.StartTasks()
 H.StartTasks()
 local fetchCount = #H.Preloads
+local stalledWorker = held.MusicPreloadThread
 H.Advance(11)
 H.ResumeTasks()
 for _ = 1, 5 do
 	H.ResumeTasks()
 end
 assert(#H.Preloads == fetchCount, "Hung preload accumulated fetch workers")
-held:Destroy()
+assert(coroutine.status(stalledWorker) == "dead", "Timed-out fetch worker kept blocking retries")
 H.HoldPreload = false
+H.StartTasks()
+H.ResumeTasks()
+assert(held.Current and held.Current.IsPlaying, "Music never recovered after a hung fetch")
+held:Destroy()
 H.ResumeTasks()
 Assets.Music = { "", "", "", "", "" }
 
@@ -799,20 +820,43 @@ H.StartTasks()
 H.StartTasks()
 H.ResumeTasks()
 assert(single.Current and single.Current.Looped, "Single music track did not loop")
+assert(single:Preview("Music") and not single:Preview("Unknown"))
 local current, preloads = single.Current, #H.Preloads
+assert(current.Parent == H.Services.SoundService and current.SoundGroup == single.Music)
+assert(
+	current.Volume == AudioConfig.MusicTrackGains[1] and single.Music.Volume == AudioConfig.Defaults.MusicVolume,
+	"Deck and bus applied the music slider twice"
+)
+-- The global music deck survives hub/plot/path movement, Settings, respawn,
+-- and the Settings snapshots emitted after a rebirth.
+for _, area in ipairs({ "Hub", "Plot", "Path", "Settings", "Respawn", "Rebirth" }) do
+	if area == "Respawn" then
+		H.Services.Players.LocalPlayer.Character = nil
+		H.Advance(0.2)
+		H.Services.Players.LocalPlayer.Character = H.Instance.new("Model")
+	elseif area == "Rebirth" then
+		single:ApplySettings(AudioConfig.Defaults)
+	end
+	H.Advance(0.2)
+	assert(
+		single.Current == current and current.IsPlaying and current.SoundGroup == single.Music,
+		area .. " silenced music"
+	)
+end
 H.ResumeTasks()
 H.StartTasks()
 assert(single.Current == current and #H.Preloads == preloads, "Single track reloaded itself")
 current.TimePosition = 42
-single:ApplySettings({ MusicVolume = 0.25, MusicMuted = true, SFXVolume = 0.7, SFXMuted = false })
+single:ApplySettings({ MusicVolume = 0.6, MusicMuted = true, SFXVolume = 0.7, SFXMuted = false })
 assert(current.IsPlaying, "Music paused before its release finished")
 H.Advance(AudioConfig.StopFade / 2)
 assert(current.IsPlaying)
 H.Advance(AudioConfig.StopFade / 2 + 0.001)
 assert(not current.IsPlaying and current.TimePosition == 42, "Pause lost the playback position")
+assert(not single:Preview("Music"), "Preview bypassed music mute")
 single:ApplySettings(AudioConfig.Defaults)
 assert(current.IsPlaying and current.TimePosition == 42 and current.Resumes == 1, "Unmute restarted music")
-single:ApplySettings({ MusicVolume = 0.25, MusicMuted = true, SFXVolume = 0.7, SFXMuted = false })
+single:ApplySettings({ MusicVolume = 0.6, MusicMuted = true, SFXVolume = 0.7, SFXMuted = false })
 single:ApplySettings(AudioConfig.Defaults)
 H.Advance(AudioConfig.StopFade + 0.001)
 assert(current.IsPlaying, "Rapid unmute retained a stale pause callback")

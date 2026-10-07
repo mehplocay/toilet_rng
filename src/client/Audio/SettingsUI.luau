@@ -35,10 +35,11 @@ function UI.Create(parent, remote, audio)
 	for i, title in ipairs({ "Music", "SFX" }) do
 		local volume, mute = title .. "Volume", title .. "Muted"
 		local card = C.Card(parent, C.Blue)
-		card.Name, card.Size, card.LayoutOrder = title .. "Audio", UDim2.new(1, -18, 0, 164), i + 1
+		card.Name, card.Size, card.LayoutOrder = title .. "Audio", UDim2.new(1, -18, 0, 220), i + 1
 		C.Text(card, title .. " volume", UDim2.new(1, -100, 0, 28), UDim2.fromOffset(12, 10), 23).TextXAlignment =
 			Enum.TextXAlignment.Left
 		local value = C.Text(card, "", UDim2.fromOffset(70, 28), UDim2.new(1, -82, 0, 10), 22)
+		value.Name = title .. "Percentage"
 		local track = C.New("TextButton", card, {
 			Name = title .. "Slider",
 			Text = "",
@@ -67,6 +68,26 @@ function UI.Create(parent, remote, audio)
 		local toggle = C.Button(card, "", UDim2.new(1, -24, 0, 44), UDim2.fromOffset(12, 106), function()
 			change(mute, not desired[mute])
 		end, C.Green, { Name = title .. "Mute", TextSize = 20 })
+		local preview, previewGeneration = nil, 0
+		local previewTitle = if title == "Music" then "Preview music" else "Test sound"
+		preview = C.Button(card, previewTitle, UDim2.new(1, -24, 0, 44), UDim2.fromOffset(12, 162), function()
+			previewGeneration += 1
+			local token = previewGeneration
+			if desired[mute] then
+				preview.Text = "Unmute to preview"
+			elseif desired[volume] <= 0 then
+				preview.Text = "Raise volume to preview"
+			elseif audio:Preview(title) then
+				preview.Text = "Playing at " .. value.Text
+			else
+				preview.Text = if title == "Music" then "Music loading; try again" else "Try again shortly"
+			end
+			task.delay(3, function()
+				if preview.Parent and token == previewGeneration then
+					preview.Text = previewTitle
+				end
+			end)
+		end, C.Blue, { Name = title .. "Preview", TextSize = 18 })
 		table.insert(rows, {
 			Title = title,
 			Volume = volume,
@@ -77,8 +98,10 @@ function UI.Create(parent, remote, audio)
 			Toggle = toggle,
 			Decrease = decrease,
 			Increase = increase,
+			Preview = preview,
 		})
 		decrease.Interactable, increase.Interactable, toggle.Interactable = false, false, false
+		preview.Interactable = false
 		local dragging
 		local function pointer(input)
 			if track.AbsoluteSize.X > 0 then
@@ -132,6 +155,7 @@ function UI.Create(parent, remote, audio)
 			loaded = true
 			for _, row in ipairs(rows) do
 				row.Decrease.Interactable, row.Increase.Interactable, row.Toggle.Interactable = true, true, true
+				row.Preview.Interactable = true
 			end
 			local saved = Settings.Sanitize(raw, Audio.Defaults)
 			local matches = true

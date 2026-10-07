@@ -77,7 +77,7 @@ Each track has 40 bars: eight-bar theme, theme variation, contrasting contour, s
 
 The 16 one-shots are `Click`, `Hover`, `Open`, `Close`, `CoinCollect`, `Flush`, `FlushRumble`, `Epic`, `Legendary`, `Mythic`, `Godly`, `Secret`, `ServerEvent`, `PurchaseSuccess`, `Error` and `AutoFlushTick`. UI, coin, confirmation, error, rumble and tick are mono. Flush and the reveal/event cues use restrained stereo. Enveloped noise supplies swooshes/water; harmonic and lightly inharmonic partials supply bubbles, keys and sparkles. Rarity cues gain orchestration and harmonic color; ServerEvent has a separate rhythmic fanfare. Secret moves from C-sharp minor shimmer into C-sharp major celebration.
 
-All one-shot durations meet [audio-sourcing.md](audio-sourcing.md). Stingers measure approximately -14 LUFS; UI is deliberately quieter. Music decoded peaks are about -6.2 to -6.1 dBFS, estimated loudness -21.4 to -18.2 LUFS. Sources retain headroom for the existing 25% music / 70% SFX default mix. Short clips under 400 ms have no meaningful standard integrated measurement here: their manifest LUFS field is null, with an explicitly labeled K-weighted proxy instead.
+All one-shot durations meet [audio-sourcing.md](audio-sourcing.md). Stingers measure approximately -14 LUFS; UI is deliberately quieter. Music decoded peaks are about -6.2 to -6.1 dBFS, estimated loudness -21.4 to -18.2 LUFS. Sources retain headroom; the 2026-10-07 runtime mix now uses 60% music / 70% SFX with measured track trims. See [music level measurements](research/music-level.md). Short clips under 400 ms have no meaningful standard integrated measurement here: their manifest LUFS field is null, with an explicitly labeled K-weighted proxy instead.
 
 ## Regenerate and check
 
