@@ -3,6 +3,10 @@ param([switch]$Baseline, [switch]$Audit2Baseline, [switch]$DisplayCollectBaselin
 $ErrorActionPreference = 'Stop'
 $workspaceRoot = Split-Path $PSScriptRoot -Parent
 if (!$Baseline -and !$Audit2Baseline -and !$DisplayCollectBaseline) {
+    & luau (Join-Path $PSScriptRoot 'check-monetization-ids.luau')
+    if ($LASTEXITCODE -ne 0) { throw 'Production monetization ID checks failed' }
+}
+if (!$Baseline -and !$Audit2Baseline -and !$DisplayCollectBaseline) {
     $chatConfig = (Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $workspaceRoot 'default.project.json') | ConvertFrom-Json).tree.TextChatService
     if ($chatConfig.'$properties'.ChatVersion -ne 'TextChatService' -or !$chatConfig.'$properties'.CreateDefaultTextChannels -or !$chatConfig.ChatWindowConfiguration.'$properties'.Enabled) {
         throw 'Modern default chat channels and window must be enabled in the built place'
@@ -59,6 +63,7 @@ if (!$Baseline -and !$Audit2Baseline -and !$DisplayCollectBaseline) {
     $parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'audit-rebirth-balance.luau')))
     $parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'audit-wave1.luau')))
     $parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'audit-luck-linear.luau')))
+    $parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'audit-wire-ids.luau')))
     $parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'audit3-server.luau')))
 }
 $parts.Add('do')

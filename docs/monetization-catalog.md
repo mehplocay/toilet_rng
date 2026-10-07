@@ -1,8 +1,8 @@
 # Creator Hub monetization catalog
 
-2026-10-06. Authoritative creation list for feature/catalog2; supersedes earlier catalog prices and benefits in historical design/audit notes. **15 passes and 8 developer products.** Keep all existing config keys and enabled ID mappings stable. VIPStar is the existing **2008628314** pass: rename it **Star Tag** manually in Creator Hub; its price stays 59 Robux. Every other ID remains **0** (Coming soon).
+Updated 2026-10-07. Authoritative catalog; supersedes earlier catalog prices and benefits in historical design/audit notes. **15 passes and 8 developer products.** Keep config keys and enabled ID mappings stable. VIPStar is **2008628314**, now renamed **Star Tag** in Creator Hub; its base price stays 59 Robux. Production has **20 wired offers (15 passes + five products)**. The three Lucky Flush products are **created, not wired**, and remain `Id = 0` (Coming soon). Hub creation/settings below are owner-reported; this task did not independently verify or change them.
 
-Create/update the passes in the order below, then the products. Prices are base Robux targets; in-game enabled buttons show MarketplaceService's current price (including regional pricing). VIP must never be priced below 250 Robux; target 399. No gifting implementation is included.
+All passes and products below have been created. Use this order for future catalog review. Prices are base Robux targets; in-game enabled buttons show MarketplaceService's current price (including regional pricing). VIP must never be priced below 250 Robux; target 399. No gifting implementation is included.
 
 Icon paths below are creation targets for the separate art session, not claims of present/uploaded files. The in-game keys already have vector fallbacks. Upload the matching finished PNG when available; do not invent asset IDs. For existing Sparkle Trail, Custom Plot Color and Fast Flush, current Gem/Home/Flush art remains available in game.
 
@@ -32,6 +32,36 @@ Icon paths below are creation targets for the separate art session, not claims o
 | 22 | Developer product | Lucky Flush 5-Pack | 5 single-use 10x luck charges. Total luck capped at 10x. Review all odds before purchase and use. | 99 | DeveloperProducts.LuckyFlush5 | assets/icons/passes/LuckyFlush5.png / LuckyFlush5 |
 | 23 | Developer product | Lucky Flush 20-Pack | 20 single-use 10x luck charges. Total luck capped at 10x. Review all odds before purchase and use. | 349 | DeveloperProducts.LuckyFlush20 | assets/icons/passes/LuckyFlush20.png / LuckyFlush20 |
 
+## Created IDs and sale state
+
+| Config key | Created Hub ID | Production / sale state |
+|---|---|---|
+| Gamepasses.SparkleTrail | 2008550322 | wired; for sale in Hub |
+| Gamepasses.VIPStar | 2008628314 | wired; for sale in Hub; renamed Star Tag |
+| Gamepasses.CustomPlotColor | 2006679679 | wired; for sale in Hub |
+| Gamepasses.FastFlush | 2005125786 | wired; for sale in Hub |
+| Gamepasses.DoubleCash | 2014052290 | wired; for sale in Hub |
+| Gamepasses.AutoCollect | 2014760290 | wired; for sale in Hub |
+| Gamepasses.OfflinePlus | 2013200307 | wired; for sale in Hub |
+| Gamepasses.VIPPack | 2013872290 | wired; for sale in Hub |
+| Gamepasses.RainbowName | 2014136291 | wired; for sale in Hub |
+| Gamepasses.ConfettiReveal | 2013332295 | wired; for sale in Hub |
+| Gamepasses.GoldenName | 2012846305 | wired; for sale in Hub |
+| Gamepasses.DancePack | 2012936292 | wired; for sale in Hub |
+| Gamepasses.ToiletGlow | 2013494299 | wired; for sale in Hub |
+| Gamepasses.Companion | 2013812281 | wired; for sale in Hub |
+| Gamepasses.UltimateBundle | 2013272293 | wired; for sale in Hub |
+| DeveloperProducts.Coins10Minutes | 3716998619 | wired; Item for sale on |
+| DeveloperProducts.Coins1Hour | 3716998683 | wired; Item for sale on |
+| DeveloperProducts.Coins6Hours | 3716998719 | wired; Item for sale on |
+| DeveloperProducts.PathBoost10Minutes | 3716998748 | wired; Item for sale on |
+| DeveloperProducts.Coins24Hours | 3716998799 | wired; Item for sale on |
+| DeveloperProducts.LuckyFlush1 | 3716998840 | created, not wired; production Id = 0 (Coming soon); Hub Item for sale on |
+| DeveloperProducts.LuckyFlush5 | 3716998876 | created, not wired; production Id = 0 (Coming soon); Hub Item for sale on |
+| DeveloperProducts.LuckyFlush20 | 3716998923 | created, not wired; production Id = 0 (Coming soon); Hub Item for sale on |
+
+All **eight developer products** were created with **Managed Pricing off** and **Item for sale on**. This includes Lucky Flush: their Hub sale flag is on while production IDs remain zero. The owner must set Lucky products' **external sales off** if the Hub offers that control; use **Unlisted / Hide from Shop** under Monetization > Shop where available. External-sales/listing settings have not been verified in this wiring task. Zero production IDs prevent in-experience prompts and new receipt grants, but do not switch off Hub sales. See [current API and listing research](research/wire-ids-commerce.md).
+
 ## Entitlements and limits
 
 Display slots are never sold. All ten slots remain free through coin upgrades, index rewards and rebirth. Existing valid saved DisplaySlots capacity (including legacy purchases and above-ten profiles up to the existing 100-slot schema limit) is retained without subtraction on load, refresh, save or rebirth. Retired ownership and the obsolete AppliedSlots marker are discarded; they no longer grant slots. Unused retired icon files may remain in assets.
@@ -54,7 +84,7 @@ Before purchasing, each Lucky card displays normal/boosted rarity percentages an
 
 Normal and enhanced item/rarity probabilities derive from RollService.Distribution, also used by the independent rare-first roll. The boost multiplies current free luck by ten under its own 10x and the global cap. Every non-fallback check is min(1, total luck / base odds), including Celestial and Secret. Final outcome probabilities include earlier failed checks. Percentages retain at least four decimal places beyond the first nonzero digit; the rounding disclaimer is visible. There are no urgency countdowns or random bundle rewards.
 
-Keep Lucky product **external sales disabled**: external purchase pages cannot show this player's live odds or policy eligibility. Complete Roblox's experience questionnaire and isolated published purchase/receipt/PolicyService tests before enabling IDs. Current policy research: [paid random items](research/catalog2-policy.md).
+Keep Lucky product **external sales disabled**: external purchase pages cannot show this player's live odds or policy eligibility. Complete Roblox's experience questionnaire and isolated published purchase/receipt/PolicyService tests before enabling IDs. The three created Hub IDs above remain **created, not wired**, with production `Id = 0`. The owner must disable external sales using any available Hub control (including Unlisted / Hide from Shop) and verify that state before release. Current policy research: [paid random items](research/catalog2-policy.md).
 
 ## Presentation and rollout
 

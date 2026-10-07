@@ -387,6 +387,14 @@ end)
 
 local function server(options)
 	local e = environment(options)
+	if options and options.ZeroCommerceIds then
+		local config = e:Load("src/shared/Config/Monetization")
+		for _, group in ipairs({ config.Gamepasses, config.DeveloperProducts }) do
+			for _, offer in pairs(group) do
+				offer.Id = 0 -- Explicit disabled-commerce fixture, isolated to this environment.
+			end
+		end
+	end
 	local world = {
 		Assigned = {},
 		Start = function() end,
@@ -399,7 +407,16 @@ local function server(options)
 	-- Network-only startup is covered by check-icons; keep auto-flush scheduler isolation.
 	e:Override("src/server/Services/IconResolver", { Start = function() end })
 	-- Geometry is outside this security harness; retain the actual cosmetic/ownership service.
-	e:Override("src/shared/Visuals/Primitives", {})
+	e:Override("src/shared/Visuals/Primitives", {
+		Particles = function(parent, name, color, rate, options)
+			local emitter = e.Globals.Instance.new("ParticleEmitter")
+			emitter.Name, emitter.Parent, emitter.Color, emitter.Rate = name, parent, color, rate
+			for key, value in pairs(options or {}) do
+				emitter[key] = value
+			end
+			return emitter
+		end,
+	})
 	e:Override("src/server/World/RebirthCosmetics", { Character = function() end, Plot = function() end })
 	e:Load("src/server")
 	e.Remotes = {}

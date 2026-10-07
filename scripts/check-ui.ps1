@@ -1,6 +1,8 @@
 param([string]$SnapshotDirectory)
 $ErrorActionPreference = 'Stop'
 $workspaceRoot = Split-Path $PSScriptRoot -Parent
+& luau (Join-Path $PSScriptRoot 'check-monetization-ids.luau')
+if ($LASTEXITCODE -ne 0) { throw 'Production monetization ID checks failed' }
 $generatedPath = Join-Path $workspaceRoot '.ui-check.generated.luau'
 $parts = [System.Collections.Generic.List[string]]::new()
 $parts.Add('local sources = {}')
@@ -60,6 +62,7 @@ $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-admin.luau')))
 $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-flushanywhere.luau')))
 $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-wave1.luau')))
 $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-toast.luau')))
+$parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-wire-ids.luau')))
 try {
     [IO.File]::WriteAllText($generatedPath, ($parts -join "`n"), [Text.UTF8Encoding]::new($false))
     $output = & luau $generatedPath

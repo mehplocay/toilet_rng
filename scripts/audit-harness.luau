@@ -102,9 +102,9 @@ local function environment(options)
 		end
 		self.LastProduct = { Player = player, Id = id }
 	end
-	function marketplace:UserOwnsGamePassAsync()
+	function marketplace:UserOwnsGamePassAsync(userId, passId)
 		if self.Lookup then
-			return self.Lookup()
+			return self.Lookup(userId, passId)
 		end
 		return false
 	end
@@ -186,10 +186,39 @@ local function environment(options)
 	end
 	local globals = {
 		Enum = {
+			Font = { GothamBold = "GothamBold" },
 			Material = { Neon = "Neon" },
 			ProductPurchaseDecision = { NotProcessedYet = "NotProcessedYet", PurchaseGranted = "PurchaseGranted" },
 			EasingStyle = { Sine = "Sine" },
 			EasingDirection = { InOut = "InOut" },
+		},
+		UDim2 = {
+			fromOffset = function(x, y)
+				return { X = x, Y = y }
+			end,
+			fromScale = function(x, y)
+				return { X = x, Y = y }
+			end,
+		},
+		ColorSequence = {
+			new = function(...)
+				return { ... }
+			end,
+		},
+		NumberSequence = {
+			new = function(...)
+				return { ... }
+			end,
+		},
+		NumberRange = {
+			new = function(...)
+				return { ... }
+			end,
+		},
+		Vector2 = {
+			new = function(x, y)
+				return { X = x, Y = y }
+			end,
 		},
 		TweenInfo = {
 			new = function(...)
@@ -268,6 +297,10 @@ local function environment(options)
 		new = function(class)
 			local object = if class == "RemoteEvent" then env:Remote() else {}
 			object.ClassName = class
+			function object:SetAttribute(key, value)
+				self.Attributes = self.Attributes or {}
+				self.Attributes[key] = value
+			end
 			if class == "ProximityPrompt" then
 				object.Triggered = signal()
 			end

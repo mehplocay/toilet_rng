@@ -1,0 +1,11 @@
+# Real commerce IDs and sale controls
+
+Checked 2026-10-07 before reviewing the existing commerce APIs. No secrets sent; no Hub settings changed or live purchases performed.
+
+- https://create.roblox.com/docs/reference/engine/classes/MarketplaceService — GetProductInfoAsync accepts the pass/product ID plus the correct Enum.InfoType; unknown IDs can throw. GetProductInfo is deprecated. Prices belong in client lookups; server UserOwnsGamePassAsync uses the pass ID, not an asset ID. ProcessReceipt remains the durable developer-product grant path; a prompt-completion event is not delivery evidence.
+- https://create.roblox.com/docs/production/monetization/developer-products — listed external products use the same receipt handler. Cross-game developer-product sales were disabled starting May 30, 2026. Wiring uses this experience's owner-supplied IDs, never inferred IDs.
+- https://create.roblox.com/docs/production/monetization/shop — current listing controls are Listed versus Unlisted (Hide from Shop); unlisted developer products do not appear in Shop or external surfaces but can still be purchased through custom in-experience flows. A zero config ID only disables our flows; the owner must separately disable Lucky external sales/listing. The owner's actual Hub controls/state are unverified here.
+- https://create.roblox.com/docs/production/monetization/paid-random-items — paid luck modifiers require outcome probabilities and per-user PolicyService restrictions. Keep Lucky IDs zero until the existing questionnaire/published-test release contract is complete, even though the products have been created for sale in Hub.
+- https://devforum.roblox.com/t/updates-to-marketplaceservice-getproductinfo-return-values/4666671 — staff announcement search excerpt reports a July 6 change to creator-information ID fields. Full page was bot-gated; no implementation relies on that excerpt. This code uses configured offer IDs, PriceInRobux and IsForSale, not creator-information IDs.
+
+Decision: preserve all existing server validation, rate limits, ownership monotonicity and durable receipt dedupe. Test production mappings separately from explicit zero/synthetic fixtures. Hub creation/sale/Managed Pricing settings are owner-reported facts, not API-test results.

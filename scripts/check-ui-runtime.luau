@@ -1,4 +1,5 @@
 -- Bundled by check-ui.ps1 with the production modules and ui-harness.luau.
+H.UseCommerceIds(false) -- Explicit zero-ID fixture for disabled offers and single-ID price tests.
 local C = H.Load("src/client/UI/Components")
 local Assets = H.Load("src/shared/Config/Assets")
 local shippedMusic, shippedSounds = table.clone(Assets.Music), table.clone(Assets.Sounds)
@@ -298,8 +299,8 @@ assert(not H.Services.Lighting.PassesBlur.Enabled, "Closing passes left blur ena
 -- Mock-only product ID and metadata exercise the original BuyPass path.
 local productCalls, productInfo = 0, { IsForSale = true, PriceInRobux = 79 }
 H.Services.MarketplaceService.GetProductInfoAsync = function(_, id, infoType)
-	assert(id == 123 and infoType == "InfoType.GamePass")
 	productCalls += 1
+	assert(id == 123 and infoType == "InfoType.GamePass")
 	if productInfo == false then
 		error("Test price lookup failure")
 	end

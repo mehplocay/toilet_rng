@@ -77,7 +77,6 @@ local expectedPrices = {
 }
 for _, key in ipairs(Config.PassOrder) do
 	assert(Rules.Pass(Config, key).Price == expectedPrices[key])
-	assert(Config.Gamepasses[key].Id == (if key == "VIPStar" then 2008628314 else 0))
 end
 assert(#Config.PassOrder == 15 and #Config.ProductOrder == 8)
 local productPrices = {
@@ -92,7 +91,6 @@ local productPrices = {
 }
 for _, key in ipairs(Config.ProductOrder) do
 	assert(Config.DeveloperProducts[key].Price == productPrices[key])
-	assert(Config.DeveloperProducts[key].Id == 0)
 end
 assert(Config.Gamepasses.DoubleLuck == nil and Config.Gamepasses.AutoFlush == nil)
 assert(Rules.Pass(Config, {}) == nil and Rules.Pass(Config, "Unknown") == nil)
@@ -100,6 +98,8 @@ assert(Rules.PassKey(Config, 0) == nil)
 local catalog = { PassOrder = { "Test" }, Gamepasses = { Test = { Id = 42 } } }
 assert(Rules.PassKey(catalog, 42) == "Test")
 assert(Rules.PassKey(catalog, "42") == nil and Rules.PassKey(catalog, 999) == nil)
+catalog.Gamepasses.Test.Id = 0 -- Explicit disabled-pass fixture, independent of shipped IDs.
+assert(Rules.PassKey(catalog, 0) == nil and Rules.PassKey(catalog, 42) == nil)
 
 local owned = {}
 Rules.MergeOwnership(owned, "VIPStar", false, true)

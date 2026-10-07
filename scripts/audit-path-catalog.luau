@@ -1,5 +1,5 @@
 local function catalogPlayer(id)
-	local e = server()
+	local e = server({ ZeroCommerceIds = true })
 	local config = e:Load("src/shared/Config/Monetization")
 	for index, key in ipairs(config.ProductOrder) do
 		config.DeveloperProducts[key].Id = 9000 + index

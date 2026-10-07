@@ -561,6 +561,27 @@ function H.Reload(path)
 	cache[path] = nil
 	return loadModule(path)
 end
+-- Preserve a separate shipped config; UI suites explicitly select their ID fixtures.
+H.ProductionCommerce = loadModule("src/shared/Config/Monetization")
+local function cloneConfig(value)
+	if type(value) ~= "table" then
+		return value
+	end
+	local result = {}
+	for key, entry in pairs(value) do
+		result[key] = cloneConfig(entry)
+	end
+	return result
+end
+cache["src/shared/Config/Monetization"] = cloneConfig(H.ProductionCommerce)
+function H.UseCommerceIds(production)
+	local config = loadModule("src/shared/Config/Monetization")
+	for _, group in ipairs({ "Gamepasses", "DeveloperProducts" }) do
+		for key, offer in pairs(config[group]) do
+			offer.Id = if production then H.ProductionCommerce[group][key].Id else 0
+		end
+	end
+end
 -- Geometry is exercised by check-world.ps1. UI tests mock only its engine boundary.
 local function previewModel(parent, name)
 	H.PreviewBuilds = (H.PreviewBuilds or 0) + 1

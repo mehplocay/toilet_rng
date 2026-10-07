@@ -175,9 +175,7 @@ test("audit2: unexpected/replayed product receipts defer without granting", func
 end)
 
 test("audit2: zero/unknown passes never query, prompt or grant", function()
-	local e = server()
-	e:Load("src/shared/Config/Monetization").Gamepasses.VIPStar.Id = 0
-	local player, profile = e:Join(205)
+	local e = server({ ZeroCommerceIds = true })
 	local service = e:Load("src/server/Services/MonetizationService")
 	local queries, prompts = 0, 0
 	e.Marketplace.Lookup = function()
@@ -187,7 +185,15 @@ test("audit2: zero/unknown passes never query, prompt or grant", function()
 	e.Marketplace.PromptGamePassPurchase = function()
 		prompts += 1
 	end
-	for _, key in ipairs({ "VIPStar", "FastFlush", "Unknown", {}, 0 / 0, string.rep("A", 10000) }) do
+	local raw = e.Data.DefaultProfile()
+	raw.Monetization.Passes = { VIPStar = true, FastFlush = true }
+	e.Store.Records.Player_205 = { Data = raw }
+	local player, profile = e:Join(205)
+	local keys = table.clone(e:Load("src/shared/Config/Monetization").PassOrder)
+	for _, key in ipairs({ "Unknown", {}, 0 / 0, string.rep("A", 10000) }) do
+		table.insert(keys, key)
+	end
+	for _, key in ipairs(keys) do
 		e.Now += 5
 		e:Fire("BuyPass", player, key)
 	end
@@ -199,11 +205,11 @@ test("audit2: zero/unknown passes never query, prompt or grant", function()
 end)
 
 test("audit2: verified pass grant survives a yielded stale lookup and callback replay", function()
-	local e = server()
+	local e = server({ ZeroCommerceIds = true })
 	local player = e:Join(206)
 	local service = e:Load("src/server/Services/MonetizationService")
 	local config = e:Load("src/shared/Config/Monetization")
-	config.Gamepasses.VIPStar.Id = 123 -- Mock only; no production pass is enabled.
+	config.Gamepasses.VIPStar.Id = 123 -- Only this fixture pass is enabled.
 	e.Marketplace.Lookup = function()
 		coroutine.yield("ownership held")
 		return false
@@ -216,6 +222,7 @@ test("audit2: verified pass grant survives a yielded stale lookup and callback r
 		e.Marketplace.PromptGamePassPurchaseFinished:Fire(player, 123, true)
 	end
 	e:Resume(lookup)
+	assert(coroutine.status(lookup) == "dead", "Fixture lookup did not finish")
 	assert(service.Owned[player].VIPStar == true)
 	e.Marketplace.PromptGamePassPurchaseFinished:Fire(player, 123, false)
 	assert(service.Owned[player].VIPStar == true)
