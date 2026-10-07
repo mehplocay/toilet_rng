@@ -1,6 +1,7 @@
 -- Subcoin accounting: exact at ordinary scales, approximate above 2^53. Mutations never yield.
 local Income = {}
 local CashMath = require(if script then script.Parent.CashMath else "./CashMath")
+local Social = require(if script then script.Parent.SocialBoostRules else "./SocialBoostRules")
 function Income.new(config, items, upgrades)
 	local self = { Config = config, Items = {}, Upgrades = upgrades }
 	for _, item in ipairs(items) do
@@ -17,7 +18,7 @@ end
 function Income:CapacityMultiplier(profile)
 	return if self.Upgrades and profile
 		then CashMath.Product(
-			self.Upgrades:Cash(profile),
+			self.Upgrades:Cash(profile, nil, 1), -- Social boosts increase rates, not storage capacity.
 			self.Upgrades:OfflineMinutes(profile, self.Config.OfflineMinutes) / self.Config.OfflineMinutes
 		)
 		else 1
@@ -92,14 +93,14 @@ end
 function Income:PendingCoins(profile)
 	return self:WholeCoins(self:TotalUnits(profile))
 end
-function Income:Rates(profile)
+function Income:Rates(profile, socialFactor)
 	local c, rates, total = self.Config, {}, 0
 	local tier = c.TierMultipliers[profile.ToiletTier] or 0
 	if tier <= 0 then
 		return rates
 	end
 	local slots = math.min(profile.DisplaySlots, c.MaxSlots)
-	local cash = if self.Upgrades then self.Upgrades:Cash(profile, tier) else tier
+	local cash = if self.Upgrades then self.Upgrades:Cash(profile, tier, socialFactor) else tier
 	-- Sum unmultiplied weights first, so even 100 extreme slots cannot overflow.
 	local slotCap = (c.SlotRateCaps[profile.ToiletTier] or 0) / tier / 60
 	for slot = 1, slots do
@@ -160,8 +161,9 @@ function Income:Settle(profile, now, offline)
 			else c.OfflineMinutes
 		elapsed = math.min(elapsed, math.min(minutes, c.MaxOfflineMinutes) * 60)
 	end
+	local socialFactor = Social.Average(profile, ledger.UpdatedAt, ledger.UpdatedAt + elapsed, offline)
 	ledger.UpdatedAt = now -- Consume capped time too; reconnecting cannot reclaim it.
-	local rates = self:Rates(profile)
+	local rates = self:Rates(profile, socialFactor)
 	local before = self:TotalUnits(profile)
 	local room = self:StorageUnits(profile, false) - before
 	local slotStorage = self:StorageUnits(profile, true)

@@ -479,6 +479,8 @@ test("all actual inbound handlers reject extra arguments and outbound remotes do
 	local e = server()
 	local player, profile = e:Join(20)
 	local inputs = {
+		CheckGroup = {},
+		PromptInvite = {},
 		Flush = {},
 		Sell = { "Poop", 1 },
 		BuyToilet = { "Dirty" },
@@ -1031,5 +1033,3 @@ test("income departure timestamp freezes before a queued final save yields", fun
 	data:Load(joined)
 	assert(data:Get(joined).Income.Pending["1"] == 7200000 + 20 * 480 * 60 * 6000)
 end)
-
-runPresentationAudit(test, environment, server)

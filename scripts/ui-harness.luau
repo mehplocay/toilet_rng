@@ -628,6 +628,8 @@ end
 function H.Remotes()
 	local remotes = {}
 	for _, name in ipairs({
+		"CheckGroup",
+		"PromptInvite",
 		"Flush",
 		"PresentationSettings",
 		"DropAnnouncement",

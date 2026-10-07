@@ -6,6 +6,7 @@ local Monetization = require(Shared.Config.Monetization)
 local AutoConfig = require(Shared.Config.AutoFlush)
 local Rewards = require(Shared.Config.Rewards)
 local Schedule = require(Shared.RewardSchedule)
+local SocialUI = require(script.Parent.SocialBoosts)
 local rebirth = require(Shared.RebirthRules).new(require(Shared.Config.Rebirth))
 local Odds = require(script.Parent.LuckyOdds)
 local HUD = {}
@@ -63,6 +64,10 @@ function HUD.Create(root, remotes, open, prompts, shopNavigation)
 	end)
 	local boost = C.New("Frame", gui, { Name = "Boosts", BackgroundTransparency = 1 })
 	local luckChip, serverText = C.Chip(boost, "Luck x1", C.Navy, UDim2.new(0.5, -4, 1, 0))
+	local socialChip = C.Button(gui, SocialUI.ChipText(nil), UDim2.fromOffset(240, 44), nil, function()
+		open("Social")
+	end, C.Navy, { Name = "SocialBoostsChip", TextSize = 16 })
+	local socialState, socialAt = {}, os.clock()
 	local _, personalText = C.Chip(boost, "Daily luck", C.Navy, UDim2.new(0.5, -4, 1, 0), UDim2.fromScale(0.5, 0))
 	serverText.TextColor3, personalText.TextColor3 = Color3.fromRGB(151, 255, 128), Color3.fromRGB(221, 173, 255)
 	serverText.Name = "TotalLuck"
@@ -191,6 +196,7 @@ function HUD.Create(root, remotes, open, prompts, shopNavigation)
 			[settings] = layout.Settings,
 			[wallet] = layout.Coins,
 			[boost] = layout.Boosts,
+			[socialChip] = layout.SocialBoosts,
 			[hint] = layout.Hint,
 			[action] = layout.Action,
 			[offers] = layout.Offers,
@@ -281,6 +287,7 @@ function HUD.Create(root, remotes, open, prompts, shopNavigation)
 		end
 		local hintLeft = if tutorial and hintUntil > 0 then 1 else hintUntil - os.clock()
 		hint.Visible = hintLeft > 0 and not revealing and not eventActive and not coinPopup
+		socialChip.Visible = not revealing and not coinPopup
 		hint.GroupTransparency = math.clamp(1 - hintLeft / 0.5, 0, 1)
 	end)
 	local characterRemoving = game:GetService("Players").LocalPlayer.CharacterRemoving:Connect(function()
@@ -293,6 +300,7 @@ function HUD.Create(root, remotes, open, prompts, shopNavigation)
 	end)
 	task.spawn(function()
 		while gui.Parent do
+			socialChip.Text = SocialUI.ChipText(socialState, os.clock() - socialAt)
 			local now = workspace:GetServerTimeNow()
 			local serverLeft, personalLeft =
 				math.max(0, math.ceil(serverExpiry - now)), math.max(0, math.ceil(personalExpiry - now))
@@ -393,6 +401,8 @@ function HUD.Create(root, remotes, open, prompts, shopNavigation)
 			revealing = not visible
 		end,
 		Update = function(snapshot)
+			socialState, socialAt = snapshot.Social or {}, os.clock()
+			socialChip.Text = SocialUI.ChipText(socialState)
 			state = snapshot
 			autoStatus, statusAt = state.AutoStatus or {}, os.clock()
 			rebirthBadge.Set(if rebirth:Eligible(state, rebirth:Level(state)) then 1 else 0)

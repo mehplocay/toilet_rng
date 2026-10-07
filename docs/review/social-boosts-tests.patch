@@ -1,0 +1,618 @@
+diff --git a/scripts/audit-social.luau b/scripts/audit-social.luau
+new file mode 100644
+index 0000000..c0e3c1a
+--- /dev/null
++++ b/scripts/audit-social.luau
+@@ -0,0 +1,253 @@
++local function socialServer()
++	local e = server()
++	e.Groups, e.Friends, e.Joins, e.GroupCalls, e.FriendCalls = {}, {}, {}, 0, 0
++	local playerFactory = e.Player
++	function e:Player(id)
++		local player = playerFactory(self, id)
++		function player:IsInGroupAsync(groupId)
++			e.GroupCalls += 1
++			assert(groupId == 711692751)
++			if e.GroupLookup then
++				return e.GroupLookup(self)
++			end
++			if e.GroupError then
++				error("Lookup failed")
++			end
++			return e.Groups[id] == true
++		end
++		function player:IsFriendsWithAsync(otherId)
++			e.FriendCalls += 1
++			if e.FriendLookup then
++				return e.FriendLookup(self, otherId)
++			end
++			return e.Friends[math.min(id, otherId) .. ":" .. math.max(id, otherId)] == true
++		end
++		function player:GetJoinData()
++			return e.Joins[id] or {}
++		end
++		return player
++	end
++	function e:SocialAdvance(seconds)
++		self.Now += seconds
++		-- Existing lease tests cover backend ownership; these scenarios model successful autosaves.
++		for player in pairs(self.Data.Profiles) do
++			self.Data.LeaseExpires[player] = self.Now + 180
++			local record = self.Store.Records["Player_" .. player.UserId]
++			if record and record.Lock then
++				record.Lock.Expires = self.Now + 180
++			end
++		end
++	end
++	return e
++end
++test("social group: join verification, cooldown, false/error fail closed and periodic refresh", function()
++	local e = socialServer()
++	e.Groups[501] = true
++	local player, profile = e:Join(501)
++	assert(profile.SocialRuntime.GroupMember and e.GroupCalls == 1)
++	for _ = 1, 30 do
++		e:Fire("CheckGroup", player)
++	end
++	assert(e.GroupCalls == 1)
++	e:SocialAdvance(30)
++	e.Groups[501] = false
++	e:Fire("CheckGroup", player)
++	assert(not profile.SocialRuntime.GroupMember and e.GroupCalls == 2)
++	e:SocialAdvance(300)
++	e.Groups[501] = true
++	e.Data.Social:Tick()
++	assert(profile.SocialRuntime.GroupMember)
++	e:SocialAdvance(30)
++	e.GroupError = true
++	e:Fire("CheckGroup", player)
++	assert(not profile.SocialRuntime.GroupMember and profile.SocialRuntime.GroupStatus == "Unavailable")
++end)
++test("social friends: each live pair is cached once; leave/rejoin updates both sides", function()
++	local e = socialServer()
++	e.Friends["501:502"] = true
++	local a, pa = e:Join(501)
++	local b, pb = e:Join(502)
++	assert(pa.SocialRuntime.FriendCount == 1 and pb.SocialRuntime.FriendCount == 1 and e.FriendCalls == 1)
++	e.Data.Social:Tick()
++	assert(e.FriendCalls == 1)
++	e.Players.PlayerRemoving:Fire(b)
++	b.Parent = nil
++	assert(pa.SocialRuntime.FriendCount == 0 and next(e.Data.Social.Sessions[a].Pairs) == nil)
++	local replacement, pr = e:Join(502)
++	assert(replacement ~= b and pr.SocialRuntime.FriendCount == 1 and e.FriendCalls == 2)
++end)
++test("social callbacks: late group/friend results cannot resurrect departed sessions", function()
++	local e = socialServer()
++	local a = e:Join(501)
++	e.GroupLookup = function()
++		coroutine.yield("group")
++		return true
++	end
++	e:SocialAdvance(30)
++	local pending = e:Spawn(function()
++		e:Fire("CheckGroup", a)
++	end)
++	e.Players.PlayerRemoving:Fire(a)
++	a.Parent = nil
++	e:Resume(pending)
++	assert(e.Data.Social.Sessions[a] == nil)
++	e.GroupLookup = nil
++	local b = e:Join(502)
++	local thread
++	e.FriendLookup = function()
++		thread = coroutine.running()
++		coroutine.yield("friends")
++		return true
++	end
++	local c = e:Join(503)
++	e.Players.PlayerRemoving:Fire(c)
++	c.Parent = nil
++	if coroutine.status(thread) == "suspended" then
++		e:Resume(thread)
++	end
++	assert(e.Data:Get(b).SocialRuntime.FriendCount == 0)
++end)
++
++test("social rewards: UTC limit, full duration, immutable dedupe and expiry survive saves", function()
++	local e = socialServer()
++	local inviter, profile = e:Join(501)
++	local rules = e:Load("src/shared/SocialBoostRules")
++	local config = e:Load("src/shared/Config/SocialBoosts")
++	for id = 1, config.InviteDailyLimit do
++		assert(rules.Award(profile, 501, 1000 + id, e.Now))
++	end
++	assert(not rules.Award(profile, 501, 2000, e.Now))
++	assert(e.Data:Save(inviter, false))
++	e.Players.PlayerRemoving:Fire(inviter)
++	inviter.Parent = nil
++	inviter, profile = e:Join(501)
++	assert(profile.Social.DailyCount == config.InviteDailyLimit and not rules.Award(profile, 501, 1001, e.Now))
++	e:SocialAdvance(config.SecondsPerDay)
++	assert(rules.Multiplier(profile, e.Now) == 1)
++	assert(rules.Award(profile, 501, 2000, e.Now))
++	profile.Social.InviteExpires = e.Now + config.InviteMaxSeconds
++	assert(not rules.Award(profile, 501, 2001, e.Now))
++	assert(#profile.Social.Rewarded == config.InviteDailyLimit + 1)
++end)
++
++test("social referral: inviter may return, invitee departure resets incomplete progress", function()
++	local e = socialServer()
++	local inviter = e:Join(501)
++	e.Joins[502] = { ReferredByPlayerId = 501 }
++	local invitee = e:Join(502)
++	e.Data.Social.Sessions[invitee].Flushes = 20
++	e.Players.PlayerRemoving:Fire(inviter)
++	inviter.Parent = nil
++	e:SocialAdvance(300)
++	e.Data.Social:Tick()
++	assert(not e.Data.Social.Sessions[invitee].Done)
++	local returned = e:Join(501)
++	e.Data.Social:Tick()
++	assert(e.Data:Get(returned).Social.DailyCount == 1)
++	e.Joins[503] = { ReferredByPlayerId = 501 }
++	local incomplete = e:Join(503)
++	e.Data.Social.Sessions[incomplete].Flushes = 19
++	e.Players.PlayerRemoving:Fire(incomplete)
++	incomplete.Parent = nil
++	local rejoined = e:Join(503)
++	e:SocialAdvance(300)
++	e.Data.Social:Tick()
++	assert(e.Data.Social.Sessions[rejoined].Flushes == 0 and e.Data:Get(returned).Social.DailyCount == 1)
++end)
++
++test("social invite save: in-flight save cannot replay an award", function()
++	local e = socialServer()
++	local inviter = e:Join(501)
++	e.Joins[502] = { ReferredByPlayerId = 501 }
++	local invitee = e:Join(502)
++	local candidate = e.Data.Social.Sessions[invitee]
++	candidate.Flushes = 20
++	e:SocialAdvance(300)
++	local writes = e.Store.Writes
++	e.Store.Before = function()
++		coroutine.yield("saving")
++	end
++	local pending = e:Spawn(function()
++		e.Data.Social:Qualify(invitee, candidate)
++	end)
++	assert(e.Data:Get(inviter) == nil and candidate.Done)
++	e.Data.Social:Qualify(invitee, candidate)
++	assert(e.Store.Writes == writes)
++	e.Store.Before = nil
++	e:Resume(pending)
++	assert(e.Data:Get(inviter).Social.DailyCount == 1 and #e.Store.Records.Player_501.Data.Social.Rewarded == 1)
++end)
++
++test("social invite save: ambiguous committed failure reloads its durable dedupe", function()
++	local e = socialServer()
++	local inviter = e:Join(501)
++	e.Joins[502] = { ReferredByPlayerId = 501 }
++	local invitee = e:Join(502)
++	local candidate = e.Data.Social.Sessions[invitee]
++	candidate.Flushes = 20
++	e:SocialAdvance(300)
++	e.Store.After = function()
++		error("Response lost after commit")
++	end
++	local pending = e:Spawn(function()
++		e.Data.Social:Qualify(invitee, candidate)
++	end)
++	while coroutine.status(pending) ~= "dead" do
++		e:Resume(pending)
++	end
++	assert(e.Data.Closing[inviter] and not candidate.Done)
++	e.Store.After = nil
++	e.Players.PlayerRemoving:Fire(inviter)
++	inviter.Parent = nil
++	local returned, profile = e:Join(501)
++	e.Data.Social:Qualify(invitee, candidate)
++	assert(candidate.Done and profile.Social.DailyCount == 1 and #profile.Social.Rewarded == 1)
++	assert(e.Data:Get(returned) == profile)
++end)
++test("social invite: modal and launch data grant nothing; qualified referral commits once across rejoin", function()
++	local e = socialServer()
++	local inviter = e:Join(501)
++	e.Joins[502] = { ReferredByPlayerId = 501 }
++	local invitee = e:Join(502)
++	local candidate = e.Data.Social.Sessions[invitee]
++	e:Fire("PromptInvite", inviter)
++	assert(e.Data:Get(inviter).Social.InviteExpires == 0)
++	for _ = 1, 19 do
++		e:Fire("Flush", invitee)
++		e:SocialAdvance(3)
++	end
++	e:SocialAdvance(300)
++	e.Data.Social:Tick()
++	assert(e.Data:Get(inviter).Social.InviteExpires == 0)
++	e:Fire("Flush", invitee)
++	e.Data.Social:Tick()
++	local profile = e.Data:Get(inviter)
++	assert(candidate.Done and profile.Social.InviteExpires == e.Now + 1800 and #profile.Social.Rewarded == 1)
++	assert(e.Store.Records.Player_501.Data.Social.Rewarded[1] == 502)
++	e.Data.Social:Tick()
++	assert(profile.Social.DailyCount == 1)
++	e.Players.PlayerRemoving:Fire(invitee)
++	invitee.Parent = nil
++	local again = e:Join(502)
++	local nextCandidate = e.Data.Social.Sessions[again]
++	nextCandidate.Flushes = 20
++	e:SocialAdvance(300)
++	e.Data.Social:Tick()
++	assert(e.Data:Get(inviter).Social.DailyCount == 1 and nextCandidate.Done)
++	local forged = e:Join(503)
++	e.Joins[503] = { LaunchData = '{"inviter":501}' }
++	assert(not e.Data.Social.Sessions[forged].Referrer)
++end)
++test("social data: migration drops persisted membership; admin reset/import preserve immutable rewards", function()
++	local e = socialServer()
++	local player, profile = e:Join(501)
++	local migrated = e.Data.Sanitize({ SocialRuntime = { GroupMember = true, FriendCount = 11 } })
++	assert(migrated.Social.InviteExpires == 0 and migrated.SocialRuntime == nil)
++	local rules = e:Load("src/shared/SocialBoostRules")
++	assert(rules.Award(profile, 501, 502, e.Now))
++	for _, action in ipairs({ "Reset", "Import" }) do
++		local result = e:Load("src/server/Admin/Mutations").Build(e.Data, profile, action, {}, e.Now, {})
++		assert(result.Social.Rewarded[1] == 502 and result.Social.InviteExpires == profile.Social.InviteExpires)
++	end
++	assert(e.Data.Social.Sessions[player])
++end)
+diff --git a/scripts/audit3-server.luau b/scripts/audit3-server.luau
+index 47dec20..25a5213 100644
+--- a/scripts/audit3-server.luau
++++ b/scripts/audit3-server.luau
+@@ -9,7 +9,7 @@ test("audit3: every public remote rejects surplus arguments without relaying pay
+ 		count += 1
+ 		e:Fire(name, player, cycle, cycle, cycle, cycle)
+ 	end
+-	assert(count == 29, "Update the audit inventory when public remotes change")
++	assert(count == 31, "Update the audit inventory when public remotes change")
+ 	assert(#e.Results == before + 1 and e.Store.Writes == writes)
+ 	local rejection = e.Results[#e.Results].Payload
+ 	assert(rejection[1] == "BuyProduct" and rejection[2].Success == false)
+diff --git a/scripts/check-audit.luau b/scripts/check-audit.luau
+index acb7008..cf1476e 100644
+--- a/scripts/check-audit.luau
++++ b/scripts/check-audit.luau
+@@ -479,6 +479,8 @@ test("all actual inbound handlers reject extra arguments and outbound remotes do
+ 	local e = server()
+ 	local player, profile = e:Join(20)
+ 	local inputs = {
++		CheckGroup = {},
++		PromptInvite = {},
+ 		Flush = {},
+ 		Sell = { "Poop", 1 },
+ 		BuyToilet = { "Dirty" },
+diff --git a/scripts/check-audit.ps1 b/scripts/check-audit.ps1
+index f1cf1c4..ee1a237 100644
+--- a/scripts/check-audit.ps1
++++ b/scripts/check-audit.ps1
+@@ -71,6 +71,9 @@ if (!$Baseline -and !$Audit2Baseline -and !$DisplayCollectBaseline) {
+     $parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'audit-autocollect-anywhere.luau')))
+ }
+ $parts.Add('do')
++if (!$Baseline -and !$Audit2Baseline -and !$DisplayCollectBaseline) {
++    $parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'audit-social.luau')))
++}
+ $parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'ui-harness.luau')))
+ if (!$Baseline -and !$Audit2Baseline -and !$DisplayCollectBaseline) {
+     $parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'rebirth-click-ui-checks.luau')))
+diff --git a/scripts/check-social.luau b/scripts/check-social.luau
+new file mode 100644
+index 0000000..8ed193a
+--- /dev/null
++++ b/scripts/check-social.luau
+@@ -0,0 +1,79 @@
++local Rules = require("../src/shared/SocialBoostRules")
++local Config = require("../src/shared/Config/SocialBoosts")
++local U = require("../src/shared/UpgradeRules").new(require("../src/shared/Config/Upgrades"))
++local Income = require("../src/shared/IncomeAccrual").new(
++	require("../src/shared/Config/Income"),
++	require("../src/shared/Config/Items"),
++	U
++)
++local function profile()
++	return {
++		Social = Rules.Sanitize(nil, 1000),
++		Upgrades = U:Sanitize(nil),
++		RebirthLevel = 0,
++		Monetization = { Passes = {} },
++		ToiletTier = 1,
++		DisplaySlots = 1,
++		Displays = { ["1"] = "Poop" },
++		Income = { UpdatedAt = 1000, Pending = {} },
++		Coins = 0,
++		Stats = { Earned = 0 },
++	}
++end
++local p = profile()
++assert(Rules.Multiplier(p, 1000) == 1 and U:Cash(p) == 1)
++assert(not Rules.GroupResult(false, true) and not Rules.GroupResult(true, "true") and Rules.GroupResult(true, true))
++p.SocialRuntime = { GroupMember = true, FriendCount = 3 }
++p.Social.InviteExpires = os.time() + Config.InviteSeconds
++assert(math.abs(U:Cash(p) - 1.518) < 1e-12)
++p.Monetization.Passes.DoubleCash, p.Monetization.Passes.VIPPack = true, true
++assert(math.abs(U:Cash(p) - 4.554) < 1e-12)
++assert(U:Luck(p, 1) == 1 and U:Cooldown(p, 3) == 3)
++local originalCapacity = Income:StorageUnits(p, false)
++p.SocialRuntime, p.Social.InviteExpires = nil, 0
++assert(Income:StorageUnits(p, false) == originalCapacity)
++for _, value in ipairs({ -1, math.huge, 0 / 0, "yes", {} }) do
++	local safe = Rules.Sanitize({ InviteExpires = value, Day = value, DailyCount = value }, 1000)
++	assert(safe.InviteExpires == 0 and safe.Day == 0)
++end
++assert(Rules.Sanitize({ InviteExpires = 30000000000 }, 1000).InviteExpires == 1000 + Config.InviteMaxSeconds)
++assert(Rules.Sanitize({ Rewarded = { 1, 1 } }, 1000).HistoryFull)
++assert(Rules.Sanitize({ Rewarded = { ["oops"] = 1 } }, 1000).HistoryFull)
++assert(Rules.Sanitize({ Rewarded = "corrupt" }, 1000).HistoryFull)
++assert(Rules.Sanitize({ Version = Config.Version }, 1000).HistoryFull)
++local large = {}
++for i = 1, Config.InviteHistoryLimit + 1 do
++	large[i] = i
++end
++local safe = Rules.Sanitize({ Rewarded = large }, 1000)
++assert(safe.HistoryFull and #safe.Rewarded <= Config.InviteHistoryLimit)
++p = profile()
++assert(Rules.Referrer({ LaunchData = "123" }, 1) == nil)
++assert(Rules.Referrer({ ReferredByPlayerId = 1 }, 1) == nil)
++assert(Rules.Referrer({ ReferredByPlayerId = 2 }, 1) == 2)
++local candidate = { Referrer = 2, JoinedAt = 1000, Flushes = 19 }
++assert(not Rules.Qualified(candidate, 1300))
++candidate.Flushes = 20
++assert(not Rules.Qualified(candidate, 1299) and Rules.Qualified(candidate, 1300))
++for id = 2, 6 do
++	assert(Rules.Award(p, 1, id, 1300))
++end
++assert(p.Social.InviteExpires == 1300 + Config.InviteSeconds * 5)
++assert(not Rules.Award(p, 1, 7, 1300))
++assert(not Rules.Award(p, 1, 2, 86400))
++assert(Rules.Award(p, 1, 7, 86400))
++assert(not Rules.Award(p, 1, 1, 86400))
++assert(Rules.Multiplier(p, p.Social.InviteExpires) == 1)
++p = profile()
++p.Social.InviteExpires = 1050
++assert(math.abs(Rules.Average(p, 1000, 1100) - 1.1) < 1e-12)
++local baseline = profile()
++Income:Settle(baseline, 1100, false)
++Income:Settle(p, 1100, false)
++assert(math.abs(p.Income.Pending["1"] / baseline.Income.Pending["1"] - 1.1) < 0.001)
++p = profile()
++p.SocialRuntime = { GroupMember = true, FriendCount = 11 }
++assert(Rules.Average(p, 1000, 1100, true) == 1, "Offline time cannot retain in-server friends or cached group status")
++print(
++	"Social rules: stacking, unaffected luck/speed, migration, corruption, bounded history, daily limits, duplicate referrals and interval expiry passed"
++)
+diff --git a/scripts/check-ui-layout.luau b/scripts/check-ui-layout.luau
+index 0985a1f..c7abe3e 100644
+--- a/scripts/check-ui-layout.luau
++++ b/scripts/check-ui-layout.luau
+@@ -54,6 +54,7 @@ for caseIndex, case in ipairs(cases) do
+ 		Coins = layout.Coins,
+ 		PendingIncome = layout.PendingIncome,
+ 		Boosts = layout.Boosts,
++		SocialBoosts = layout.SocialBoosts,
+ 		Hint = layout.Hint,
+ 		Action = layout.Action,
+ 	}
+@@ -77,7 +78,8 @@ for caseIndex, case in ipairs(cases) do
+ 	end
+ 	-- Reveals replace the center hint/board; event banners replace travel/board.
+ 	for name, r in pairs(elements) do
+-		if name ~= "Hint" and name ~= "Board" then
++		-- Social chip is hidden for reveal and coin animation presentation.
++		if name ~= "Hint" and name ~= "Board" and name ~= "SocialBoosts" then
+ 			assert(
+ 				not overlap(r, revealLayout.Toast),
+ 				string.format("%dx%d compact drop overlaps %s", width, height, name)
+diff --git a/scripts/check-ui.ps1 b/scripts/check-ui.ps1
+index 7466daa..66205cf 100644
+--- a/scripts/check-ui.ps1
++++ b/scripts/check-ui.ps1
+@@ -68,6 +68,7 @@ $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-toast.luau')))
+ $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-wire-ids.luau')))
+ $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'purchase-ui-checks.luau')))
+ $parts.Add('H.CheckPurchaseUI(); print("Purchase UI regressions passed")')
++$parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-social.luau')))
+ $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-plot-color.luau')))
+ $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'plot-color-cosmetic-checks.luau')))
+ try {
+diff --git a/scripts/check-visuals.ps1 b/scripts/check-visuals.ps1
+index 51fe4a8..a728763 100644
+--- a/scripts/check-visuals.ps1
++++ b/scripts/check-visuals.ps1
+@@ -10,6 +10,7 @@ $generatedPath = Join-Path $workspaceRoot '.visual-check.generated.luau'
+ $harness = "local testMode = '$MeshMode'`nlocal checkWorld = $($World.IsPresent.ToString().ToLower())`nlocal snapshot = $($Snapshot.IsPresent.ToString().ToLower())`n"
+ $harness += Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'world-harness.luau')
+ $modulePaths = @(
++    'src/shared/SocialBoostRules.luau', 'src/shared/Config/SocialBoosts.luau',
+     'src/shared/Config/MapLayout.luau', 'src/server/World/Kit.luau', 'src/server/World/DisplayRows.luau',
+     'src/shared/CashMath.luau', 'src/shared/NumberFormat.luau', 'src/shared/IncomeAccrual.luau', 'src/shared/LeaderboardStats.luau',
+     'src/shared/Config/Admin.luau',
+diff --git a/scripts/social-balance.luau b/scripts/social-balance.luau
+new file mode 100644
+index 0000000..68561e8
+--- /dev/null
++++ b/scripts/social-balance.luau
+@@ -0,0 +1,41 @@
++local Config = require("../src/shared/Config/SocialBoosts")
++local Rules = require("../src/shared/SocialBoostRules")
++local U = require("../src/shared/UpgradeRules").new(require("../src/shared/Config/Upgrades"))
++local Items = require("../src/shared/Config/Items")
++local Toilets = require("../src/shared/Config/Toilets")
++local Income = require("../src/shared/IncomeAccrual").new(require("../src/shared/Config/Income"), Items, U)
++local p = {
++	Upgrades = U:Sanitize(nil),
++	RebirthLevel = 0,
++	Monetization = { Passes = {} },
++	Social = Rules.Sanitize(nil),
++	DisplaySlots = 1,
++	Displays = { ["1"] = "Poop" },
++}
++print("SOCIAL BOOSTS: fixed loadout, unchanged base economy; continuous rates before whole-coin rounding")
++print("Scenario | Free social factor | Relative coin-gated time (fixed rates)")
++for _, row in ipairs({
++	{ "Typical", false, 0, false },
++	{ "Group", true, 0, false },
++	{ "3 friends", false, 3, false },
++	{ "Group + 3 friends + active invite", true, 3, true },
++	{ "Group + 11 friends + active invite", true, 11, true },
++}) do
++	p.SocialRuntime = { GroupMember = row[2], FriendCount = row[3] }
++	p.Social.InviteExpires = if row[4] then os.time() + Config.InviteSeconds else 0
++	local factor = U:Cash(p)
++	print(string.format("%s | %.3fx | %.2f%%", row[1], factor, 100 / factor))
++end
++print("Tier | Typical single Poop display coins/min | Group + 3 friends + active invite coins/min")
++for _, tier in ipairs({ 1, 4, 7, #Toilets }) do
++	p.ToiletTier = tier
++	p.SocialRuntime, p.Social.InviteExpires = nil, 0
++	local base = Income:Rates(p)["1"] / 6000 * 60
++	p.SocialRuntime, p.Social.InviteExpires = { GroupMember = true, FriendCount = 3 }, os.time() + 1800
++	local boosted = Income:Rates(p)["1"] / 6000 * 60
++	assert(math.abs(boosted / base - 1.518) < 0.01)
++	print(string.format("%s | %.3f | %.3f", Toilets[tier].Name, base, boosted))
++end
++print(
++	"Invite example assumes the boost is active; actual expiry, qualification, daily limits, flush gates, RNG and collection caps affect elapsed progression."
++)
+diff --git a/scripts/ui-harness.luau b/scripts/ui-harness.luau
+index e79bf0f..a26c5af 100644
+--- a/scripts/ui-harness.luau
++++ b/scripts/ui-harness.luau
+@@ -628,6 +628,8 @@ end
+ function H.Remotes()
+ 	local remotes = {}
+ 	for _, name in ipairs({
++		"CheckGroup",
++		"PromptInvite",
+ 		"Flush",
+ 		"PresentationSettings",
+ 		"DropAnnouncement",
+diff --git a/scripts/ui-social.luau b/scripts/ui-social.luau
+new file mode 100644
+index 0000000..98a1bd6
+--- /dev/null
++++ b/scripts/ui-social.luau
+@@ -0,0 +1,122 @@
++do
++	local config = H.Load("src/shared/Config/SocialBoosts")
++	local SocialUI = H.Load("src/client/UI/SocialBoosts")
++	for _, size in ipairs(H.Viewports) do
++		local root, remotes = H.Root(size[1], size[2]), H.Remotes()
++		local passes = H.Load("src/client/UI/Passes").Create(root, remotes)
++		passes.OpenSocial()
++		local names = {}
++		for i = 1, config.MaxFriends do
++			names[i] = "FriendUsername" .. i
++		end
++		local state = {
++			Settings = {},
++			OwnedPasses = {},
++			Social = {
++				GroupMember = true,
++				GroupStatus = "Member",
++				FriendCount = 11,
++				FriendNames = names,
++				InviteRemaining = 1800,
++				DailyCount = 5,
++				RewardedCount = 50,
++			},
++		}
++		passes.Update(state)
++		H.Layout(root)
++		local section = passes.Panel:FindFirstChild("SocialBoosts", true)
++		assert(section.Visible and section.FriendStatus.Text:find("55%%"))
++		assert(section.GroupStatus.Text:find("active", 1, true) and section.InviteStatus.Text:find("30:00", 1, true))
++		assert(section.FriendNames.Text:find("FriendUsername11", 1, true))
++		assert(section.CheckGroup.AbsoluteSize.Y >= 44 and section.InviteFriends.AbsoluteSize.Y >= 44)
++		assert(section.CheckGroup.AbsoluteSize.X > 0 and section.InviteFriends.AbsoluteSize.X <= size[1])
++		local scroll = section.Parent.Parent
++		local oldScroll = scroll.CanvasPosition
++		scroll.CanvasPosition = { X = 0, Y = section.InviteFriends.AbsolutePosition.Y - scroll.AbsolutePosition.Y }
++		H.Layout(root)
++		assert(section.InviteFriends.AbsolutePosition.Y >= scroll.AbsolutePosition.Y)
++		assert(
++			section.InviteFriends.AbsolutePosition.Y + section.InviteFriends.AbsoluteSize.Y <= size[2],
++			"Invite button is not reachable by scrolling"
++		)
++		scroll.CanvasPosition = oldScroll
++		H.Layout(root)
++		local before = #H.Calls
++		section.CheckGroup.Activated:Fire()
++		section.CheckGroup.Activated:Fire()
++		-- The local control must close its own request window without waiting for state replication.
++		assert(#H.Calls == before + 1 and H.Calls[#H.Calls].Name == "CheckGroup")
++		state.Social = { GroupStatus = "Unavailable", FriendCount = 0, InviteRemaining = 0 }
++		passes.Update(state)
++		assert(
++			section.GroupStatus.Text:find("inactive", 1, true) and section.InviteStatus.Text:find("inactive", 1, true)
++		)
++		assert(SocialUI.ChipText({ FriendCount = 3, InviteRemaining = 1 }, 2):find("Social boosts", 1, true))
++		H.Snapshot(root, string.format("social-%dx%d", size[1], size[2]))
++		passes.Panel:Destroy()
++		root:Destroy()
++	end
++	print("Social UI: group/friends/expiry states, names, request cooldowns and 12 viewports passed")
++end
++
++do
++	local config = H.Load("src/shared/Config/SocialBoosts")
++	local previous = H.Services.SocialService
++	for _, mode in ipairs({ "allowed", "restricted", "lookup-error", "prompt-error" }) do
++		local social = { GameInvitePromptClosed = H.Signal(), Checks = 0, Prompts = 0 }
++		function social:CanSendGameInviteAsync(player)
++			assert(player == H.Services.Players.LocalPlayer)
++			self.Checks += 1
++			if mode == "lookup-error" then
++				error("Unavailable")
++			end
++			return mode ~= "restricted"
++		end
++		function social:PromptGameInvite()
++			self.Prompts += 1
++			if mode == "prompt-error" then
++				error("Unavailable")
++			end
++		end
++		H.Services.SocialService = social
++		local root, remotes = H.Root(390, 722), H.Remotes()
++		local ui = H.Load("src/client/UI/SocialBoosts").Create(root, remotes)
++		H.StartTasks()
++		local before = #H.Calls
++		remotes.Result.OnClientEvent:Fire("PromptInvite", { Success = true })
++		assert(social.Checks == 0, "Unsolicited acknowledgement opened a modal")
++		ui.Frame.InviteFriends.Activated:Fire()
++		ui.Frame.InviteFriends.Activated:Fire()
++		assert(#H.Calls == before + 1 and H.Calls[#H.Calls].Name == "PromptInvite")
++		remotes.Result.OnClientEvent:Fire("PromptInvite", { Success = true })
++		H.StartTasks()
++		assert(social.Checks == 1)
++		assert(social.Prompts == (if mode == "allowed" or mode == "prompt-error" then 1 else 0))
++		if mode == "allowed" then
++			social.GameInvitePromptClosed:Fire(H.Services.Players.LocalPlayer, { 123, 456 })
++			assert(ui.Frame.InviteFeedback.Text:find("qualifying", 1, true))
++		end
++		assert(#H.Calls == before + 1, "Modal/recipient results sent a reward claim")
++		H.Advance(config.InvitePromptSeconds + 1)
++		H.ResumeTasks()
++		assert(ui.Frame.InviteFriends.Interactable)
++		ui.Frame:Destroy()
++		root:Destroy()
++	end
++	H.Services.SocialService = previous
++	print(
++		"Social invite UI: native capability gate, errors, unsolicited results, cooldowns and untrusted closure passed"
++	)
++end
++
++do
++	local C = H.Load("src/client/UI/Components")
++	local root = H.Root(1280, 684)
++	local panel = C.Panel(root, "Upgrade cash check", C.Blue)
++	local tracks = H.Load("src/client/UI/UpgradeTracks").Create(panel.ContentScroll.Body, H.Remotes())
++	tracks.Update({ Coins = 0, Upgrades = {}, DisplaySlots = 3, UpgradeStats = { CashMultiplier = 1.518 } })
++	assert(tracks.Frame.CashBoost.Effect.Text == H.Load("src/shared/NumberFormat").Compact(1.518, 2) .. "x coins")
++	panel:Destroy()
++	root:Destroy()
++	print("Social upgrade UI: authoritative cash factor is displayed")
++end

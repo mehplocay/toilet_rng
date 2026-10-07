@@ -9,6 +9,8 @@ local folder = Instance.new("Folder")
 folder.Name = definitions.Folder
 local remotes = {}
 for _, key in ipairs({
+	"CheckGroup",
+	"PromptInvite",
 	"Flush",
 	"PresentationSettings",
 	"DropAnnouncement",
@@ -81,6 +83,7 @@ local function sync(player)
 		world:Refresh(player, profile)
 		world:RefreshIncome(player, income:PendingCoins(profile))
 		remotes.State:FireClient(player, {
+			Social = require(ReplicatedStorage.Shared.SocialBoostRules).Snapshot(profile),
 			Commerce = monetization.Commerce and monetization.Commerce:Snapshot(profile, player),
 			RebirthLevel = profile.RebirthLevel,
 			RunFlushes = profile.RunFlushes,
@@ -180,7 +183,9 @@ Players.PlayerRemoving:Connect(function(player)
 	events:Remove(player)
 end)
 local admin = require(script.Services.AdminService).Start(data, sync, world, events, remotes)
+local social = require(script.Services.SocialBoostService).Start(data, limiter, remotes, sync)
 data.Loaded = function(player)
+	social:Load(player)
 	sync(player)
 	monetization:Load(player)
 	sync(player)

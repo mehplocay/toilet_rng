@@ -1,0 +1,66 @@
+﻿Social UI: group/friends/expiry states, names, request cooldowns and 12 viewports passed
+Social invite UI: native capability gate, errors, unsolicited results, cooldowns and untrusted closure passed
+Social upgrade UI: authoritative cash factor is displayed
+Production monetization IDs passed: 15 passes + 8 products wired; Lucky charges and caps preserved
+Icon/shop checks passed: 81 upload mappings, async preload, fallbacks, 7 card layouts, prices, ownership and disabled gifting
+Audit2 UI boot: 10098 descendants, 3688 GuiObjects, 229 ancestor-visible (headless fixture, not draw calls)
+Audit2 UI collection/rewards visited: 15606 descendants, 5688 GuiObjects, 410 ancestor-visible (headless fixture, not draw calls)
+UI runtime checks passed: all screen constructors, hidden/diffed collection, current sell callbacks, disabled input, image fallback lifecycle, flush remote and cooldown
+Audio runtime checks passed: silent placeholders, controls, stale snapshots, voice cap, cleanup, crossfades and ducking
+Shop routing passed: entry tabs/titles, toggles, manual tabs, close paths, travel, tutorial and 12 viewports with mouse/touch/controller/keyboard callbacks
+Presentation runtime passed: reveal lifecycle, delayed rich-text chat, three chat modes and native PlayerList retry without custom Tab binding
+Reveals2 passed: nine-tier activation, signatures, discovery, conceal/reveal, mobile caps, queue pressure, all modes, shared sky and teardown
+Upgrade UI passed: tabs, latest-level purchases, affordability/max/cap states, desktop/mobile cards and bounded reveal timing
+Rebirth click UI passed: immediate mouse/touch/gamepad activation, unmet gates, repeated taps, pending lock through refresh/timeout/reopen, result ordering and cleanup
+Rebirth UI passed: rewards/reset/keep previews above click button, max state, celebration expiry and desktop/mobile layout
+Economy UI passed: actual wallet, pending, popup, shop, upgrades, rebirth and player-list abbreviations
+Path feedback passed: moving arrows, speed chip, Reduced/Off, camera replacement, exact FOV restore, death and cleanup
+Catalog UI passed: Passes/Boosts tabs, product phone layouts, zero IDs, platform prices, quotes, resume and VIP chest
+Catalog2 UI passed: fail-closed visibility, Coming soon, odds before prompt/use, tiny percentages, bundle ownership and responsive review
+Catalog2 effects passed: seven-part companion, reuse/death/leave/teardown, menu toggle, bounded confetti and Off
+Catalog2 server cosmetics passed: bundle attributes, Star Tag/VIP distinction, name distance restore, gold trim/glow, idempotence and plot cleanup
+Catalog2 chat passed: native prefix markup, golden/rainbow precedence, VIP star and filtered content preservation
+PASS celebration: HUD starts immediately, visible Stop label and both stop actions clear immediately
+PASS celebration: four independent toggles, menu access and capped repeated presses
+PASS celebration: death, removing and added reset without auto-restart or stale death listeners
+PASS celebration: plot change, rebirth state/success, ownership changes and grants reset the session
+PASS celebration: Reduced applies immediately, Off clears both channels and never restarts
+PASS celebration: all-pass names/trails remain independent and reveal confetti always expires
+PASS celebration: root teardown disconnects every callback and releases UI, companions and death listeners
+PASS celebration: Confetti Reveal without Dance Pack survives ordinary sync and expires once
+PASS celebration: local player leave stops and disconnects the controller immediately
+PASS merged cosmetics: all rebirth levels and paid trail combinations use one trail and bounded effects
+PASS merged cosmetics: respawn, leave, repeated cleanup and plot reassignment release effects and connections
+PASS merged chat: rebirth tag, exactly one VIP/Star tag and rainbow/gold precedence preserve filtered content
+Sound coverage runtime passed: stinger priority, ambience ducking, loop lifetime, mute, amount pitch, flush cancellation and disabled hit-testing
+Admin UI: lazy tabs, responsive 44px controls, request serialization, reset guard, JSON export and cleanup pass
+PASS auto HUD: far confirmed cycles pulse once, expire, pause, disable and respawn
+PASS away UI: join, repeated snapshots, double-click, error, timeout, pad collect and session restore
+PASS away UI: phone/desktop/landscape Collect stays reachable through scrolling
+PASS idle UI: switch shows uptime/countdown, pause has an input-only resume and cleanup
+PASS merged HUD: capped luck and idle resume share safe action bounds on every supported viewport
+PASS activity UI: genuine input coalesces, idle/focus loss sends nothing, any input resumes
+PASS far audio: actual class mixer scales the stinger without ducking music
+PASS far reveals: bounded coalesced toast, quiet classes, rarest find retained and no cinematic
+PASS auto collect HUD: running/waiting/paused states share one chip and Still-there action
+Wave 1 UI: 12 viewports, 47 collection cards, nine rarity groups, 15 shop cards, scrolling and final-tier purchase passed
+Result toast passed: all 12 windows at 12 viewports, mouse/touch, compact safe bounds, headers/Close/Admin/actions, fade, replacement and cleanup
+Wired catalog UI passed: all 23 production price mappings, reviewed Lucky purchases, policy hiding and bundle states
+Purchase UI regressions passed
+Social UI: group/friends/expiry states, names, request cooldowns and 12 viewports passed
+Plot color UI: swatches, confirmation, ownership gate, purchase timeout isolation and Lucky tab transitions
+PASS plot color: textured/PBR finishes restore exactly; VIP/rebirth coexist; next owner cannot inherit tint
+PASS UI 711x787 -> safe 711x751; portrait; 4 collection columns
+PASS UI 711x787 -> safe 711x731; portrait; 4 collection columns
+PASS UI 360x640 -> safe 360x518; portrait; 1 collection columns
+PASS UI 390x844 -> safe 390x722; portrait; 2 collection columns
+PASS UI 640x360 -> safe 640x303; short landscape; 3 collection columns
+PASS UI 1920x1080 -> safe 1920x1044; wide; 5 collection columns
+PASS UI 1280x720 -> safe 1280x684; wide; 5 collection columns
+PASS UI 375x812 -> safe 375x690; portrait; 2 collection columns
+PASS UI 812x375 -> safe 724x318; short landscape; 4 collection columns
+PASS UI 1024x768 -> safe 1024x712; wide; 5 collection columns
+PASS UI 768x1024 -> safe 768x968; wide; 4 collection columns
+PASS UI 1170x540 -> safe 1116x483; short landscape; 5 collection columns
+Viewport cases checked: 972
+UI layout checks passed: safe areas, pairwise overlap, touch corners, modal scroll space, grid widths

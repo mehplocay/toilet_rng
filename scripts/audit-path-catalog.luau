@@ -224,10 +224,11 @@ test(
 		local rules = e:Load("src/shared/UpgradeRules").new(e:Load("src/shared/Config/Upgrades"))
 		local paid = e:Load("src/shared/PaidBenefits")
 		assert(
-			rules:Cash(p) == 3 and service:Luck(player) == 1.25 and math.abs(paid.Cash(p, 1e300) / 3e300 - 1) < 1e-12
+			rules:Cash(p) == 3 and service:Luck(player) == 1.25 and math.abs(paid.Cash(p, 1e299) / 3e299 - 1) < 1e-12,
+			"base paid cash factors changed"
 		)
 		p.RebirthLevel, p.Upgrades.CashBoost = 15, 10
-		assert(math.abs(rules:Cash(p) - 96) < 1e-9)
+		assert(math.abs(rules:Cash(p) - 96) < 1e-9, "rebirth cash factor changed")
 		p.Inventory.Rat = 3
 		local item
 		for _, candidate in ipairs(e:Load("src/shared/Config/Items")) do
@@ -235,8 +236,8 @@ test(
 				item = candidate
 			end
 		end
-		assert(e:Load("src/server/Services/EconomyService").Sell(p, "Rat", 1))
-		assert(p.Coins == math.floor(item.Value * 96 + 1e-9))
+		assert(e:Load("src/server/Services/EconomyService").Sell(p, "Rat", 1), "paid sale rejected")
+		assert(p.Coins == math.floor(item.Value * 96 + 1e-9), "paid sale factor changed")
 		local serviceCoins = e:Load("src/server/Services/ServiceCoinService")
 			.Grant(p, e:Load("src/shared/Config/Toilets")[1], rules:Cash(p))
 		assert(serviceCoins > 0)

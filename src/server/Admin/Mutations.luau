@@ -108,6 +108,8 @@ function Mutations.Build(data, profile, action, args, now, imported)
 		-- Commerce is account history, not editable test progression. Never rewind
 		-- receipt dedupe, paid timers, saved quotes or daily VIP claim identity.
 		candidate.Monetization = require(Shared.CommerceProfile).Copy(profile.Monetization)
+		-- Social awards are immutable account history, including their once-ever dedupe IDs.
+		candidate.Social = require(Shared.CommerceProfile).Copy(profile.Social)
 	end
 	-- A timestamp import/reset must not mint offline time during this live session.
 	candidate.Income.UpdatedAt = math.max(now, profile.Income.UpdatedAt)

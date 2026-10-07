@@ -16,7 +16,7 @@ function Layout.Compute(w, h, touch)
 		Short = short,
 		Travel = rect((w - travelW) / 2 - (if portrait then 24 else 0), 10, travelW, travelH),
 		Settings = rect(w - margin - 44, 10, 44, 44),
-		OffersVisible = not compact and h >= (if touch then 700 else 600),
+		OffersVisible = not compact and h >= (if touch then 760 else 660),
 		Nav = {},
 	}
 	if short then
@@ -60,9 +60,18 @@ function Layout.Compute(w, h, touch)
 	end
 	result.PendingIncome = if portrait
 		then rect(76, 162, math.min(200, w - 90), 26)
-		elseif short then rect(w - 132, 114, 120, 26)
+		elseif short then rect(w - 132, 112, 120, 24)
 		else rect(result.Coins.X, result.Coins.Y - 20, math.min(200, result.Coins.W), 18)
 	result.Offers = rect(w - 190, math.max(190, h * 0.29), 168, 292)
+	result.SocialBoosts = if portrait
+		then rect(76, 284, w - 90, 44)
+		elseif short then rect(
+			w - math.min(132, (w - math.min(330, w - 280)) / 2 - 24) - 12,
+			138,
+			math.min(132, (w - math.min(330, w - 280)) / 2 - 24),
+			44
+		)
+		else rect(result.Boosts.X, result.Boosts.Y - 54, result.Boosts.W, 44)
 	local flushW = result.Action.W - 96
 	result.Pointer = if portrait
 		then rect(result.Action.X + flushW * 0.78 - 16, result.Action.Y + result.Action.H + 6, 32, 32)

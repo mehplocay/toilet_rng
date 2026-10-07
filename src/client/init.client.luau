@@ -7,6 +7,8 @@ local definitions, Items = require(Config.Remotes), require(Config.Items)
 local folder = game.ReplicatedStorage:WaitForChild(definitions.Folder)
 local remotes = {}
 for _, name in ipairs({
+	"CheckGroup",
+	"PromptInvite",
 	"Flush",
 	"PresentationSettings",
 	"DropAnnouncement",
@@ -209,6 +211,9 @@ local function open(name)
 		show(rewards.Panel)
 	elseif name == "Passes" then
 		show(passes.Panel)
+	elseif name == "Social" then
+		closeAll()
+		passes.OpenSocial()
 	elseif name == "Settings" then
 		show(settings)
 	end
@@ -303,6 +308,9 @@ script.Destroying:Connect(function()
 	audioHeartbeat:Disconnect()
 end)
 remotes.Result.OnClientEvent:Connect(function(action, payload)
+	if action == "CheckGroup" or action == "InviteReward" then
+		toast(payload.Message or "Social boost updated.", if payload.Success then C.Green else C.Gold)
+	end
 	if not feedback:Result(action, payload) then
 		return
 	end

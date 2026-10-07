@@ -54,6 +54,7 @@ for caseIndex, case in ipairs(cases) do
 		Coins = layout.Coins,
 		PendingIncome = layout.PendingIncome,
 		Boosts = layout.Boosts,
+		SocialBoosts = layout.SocialBoosts,
 		Hint = layout.Hint,
 		Action = layout.Action,
 	}
@@ -77,7 +78,8 @@ for caseIndex, case in ipairs(cases) do
 	end
 	-- Reveals replace the center hint/board; event banners replace travel/board.
 	for name, r in pairs(elements) do
-		if name ~= "Hint" and name ~= "Board" then
+		-- Social chip is hidden for reveal and coin animation presentation.
+		if name ~= "Hint" and name ~= "Board" and name ~= "SocialBoosts" then
 			assert(
 				not overlap(r, revealLayout.Toast),
 				string.format("%dx%d compact drop overlaps %s", width, height, name)
