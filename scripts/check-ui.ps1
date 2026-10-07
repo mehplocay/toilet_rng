@@ -49,6 +49,7 @@ foreach ($file in (Get-ChildItem -LiteralPath (Join-Path $workspaceRoot 'src') -
 $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-harness.luau')))
 $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'rebirth-click-ui-checks.luau')))
 $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'check-ui-runtime.luau')))
+$parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-shop-routing.luau')))
 $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'presentation-ui-checks.luau')))
 $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'reveals2-ui-checks.luau')))
 $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-upgrades.luau')))
