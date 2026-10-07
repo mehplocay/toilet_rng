@@ -49,7 +49,11 @@ do
 		assets.Sounds[key] = tostring(800 + i)
 	end -- Mock-only IDs, never persisted.
 	local epic = service:Play("Epic")
-	assert(epic and service.Music.Volume == 0.1 and service.Buses.Ambience.Volume == config.AmbienceDuckGain)
+	assert(
+		epic
+			and service.Music.Volume == config.Defaults.MusicVolume * config.DuckGain
+			and service.Buses.Ambience.Volume == config.AmbienceDuckGain
+	)
 	local secret = service:Play("Secret")
 	assert(secret and service.Releasing[epic] and not epic._dead and #service.Voices == 1)
 	assert(secret.Volume == config.Cues.Secret.Gain * config.ClassGains.stinger)
@@ -58,7 +62,7 @@ do
 	local rebirth = service:Play("RebirthSuccess")
 	assert(rebirth and service.Releasing[secret])
 	rebirth.Ended:Fire()
-	assert(service.Music.Volume == 0.25 and service.Buses.Ambience.Volume == 1, "Ended stinger kept ducking")
+	assert(service.Music.Volume == 0.6 and service.Buses.Ambience.Volume == 1, "Ended stinger kept ducking")
 	local hold = service:Play("RebirthHold")
 	assert(hold and hold.Looped and not service:Play("RebirthHold"))
 	assert(hold.Volume == 0, "Unloaded loop skipped its quiet attack")
@@ -104,7 +108,7 @@ do
 		end
 	end
 	assert(swoosh, "Accepted flush lost its scheduled swoosh")
-	service:ApplySettings({ MusicMuted = false, MusicVolume = 0.25, SFXMuted = true, SFXVolume = 0.7 })
+	service:ApplySettings({ MusicMuted = false, MusicVolume = 0.6, SFXMuted = true, SFXVolume = 0.7 })
 	service:ApplySettings(config.Defaults)
 	H.Advance(1)
 	for _, voice in ipairs(service.Voices) do
@@ -132,7 +136,7 @@ do
 	assert(bed.Volume == config.Cues.Ambience.Gain * config.ClassGains.ambient)
 	arrival:Duck("Event", 5)
 	assert(arrival.Buses.Ambience.Volume == config.AmbienceDuckGain)
-	arrival:ApplySettings({ MusicVolume = 0.25, MusicMuted = true, SFXVolume = 0.7, SFXMuted = false })
+	arrival:ApplySettings({ MusicVolume = 0.6, MusicMuted = true, SFXVolume = 0.7, SFXMuted = false })
 	assert(arrival.Releasing[bed] and not arrival:Play("Ambience"), "Music mute kept the bed playing")
 	H.Advance(2.1)
 	arrival:ApplySettings(config.Defaults)
@@ -143,7 +147,7 @@ do
 		end
 	end
 	assert(replacement and replacement ~= bed and bed._dead, "Unmute did not restore the quiet bed")
-	arrival:ApplySettings({ MusicVolume = 0.25, MusicMuted = true, SFXVolume = 0.7, SFXMuted = false })
+	arrival:ApplySettings({ MusicVolume = 0.6, MusicMuted = true, SFXVolume = 0.7, SFXMuted = false })
 	arrival:ApplySettings(config.Defaults)
 	H.Advance(2.1)
 	local beds = 0

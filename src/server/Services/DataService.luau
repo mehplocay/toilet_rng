@@ -57,7 +57,7 @@ local function integer(value, default)
 end
 
 function DataService.DefaultProfile()
-	local settings = AudioSettings.Sanitize(nil, Audio.Defaults)
+	local settings = AudioSettings.Migrate(nil, Audio.Defaults)
 	settings.Sound, settings.SkipAnimation, settings.PlotColor = true, false, "Default"
 	PresentationSettings.Apply(settings, PresentationSettings.Sanitize(nil))
 	return {
@@ -95,7 +95,10 @@ local function sanitize(raw, withoutAdmin)
 	profile.TutorialDone = raw.TutorialDone == true
 	profile.Monetization = CommerceProfile.Sanitize(raw.Monetization)
 	MonetizationRules.RestoreSettings(profile.Settings, raw.Settings, Monetization)
-	AudioSettings.Apply(profile.Settings, AudioSettings.Sanitize(raw.Settings, Audio.Defaults))
+	for key, value in pairs(AudioSettings.Migrate(raw.Settings, Audio.Defaults)) do
+		profile.Settings[key] = value
+	end
+	profile.Settings.Sound = not (profile.Settings.MusicMuted and profile.Settings.SFXMuted)
 	PresentationSettings.Apply(profile.Settings, PresentationSettings.Sanitize(raw.Settings))
 	profile.Coins = integer(raw.Coins, 0)
 	profile.LastClaimDay = integer(raw.LastClaimDay, 0)

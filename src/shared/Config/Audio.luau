@@ -1,6 +1,9 @@
 -- Length is the source's maximum seconds, including its tail; also bounds stale voices.
 local Audio = {
-	Defaults = { MusicVolume = 0.25, SFXVolume = 0.7, MusicMuted = false, SFXMuted = false },
+	Defaults = { MusicVolume = 0.6, SFXVolume = 0.7, MusicMuted = false, SFXMuted = false },
+	-- Trim the decoded tracks to about -30 LUFS at the default bus level.
+	-- Ordered exactly like Assets.Music; unknown tracks retain unity gain.
+	MusicTrackGains = { 0.62, 0.49, 0.43, 0.51, 0.55 },
 	Crossfade = 3,
 	FadeIn = 2.5,
 	StopFade = 0.02,
@@ -8,11 +11,12 @@ local Audio = {
 	PreloadMaxLength = 3,
 	-- Source mastering is louder for fanfares; keep their class below ordinary SFX.
 	ClassGains = { UI = 1, action = 1, reward = 0.8, stinger = 0.45, ambient = 1 },
-	DuckGain = 0.4,
+	DuckGain = 0.6,
 	DuckAttack = 0.15,
-	DuckRelease = 1.2,
+	DuckRelease = 1.5,
 	AmbienceDuckGain = 0.25,
 	LoadTimeout = 10,
+	MusicRetryDelay = 5,
 	MaxVoices = 12,
 	WorldMaxVoices = 2,
 	WorldFlushGap = 0.7,

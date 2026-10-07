@@ -3,6 +3,7 @@ local H = {
 	Objects = {},
 	Delays = {},
 	Spawned = {},
+	SpawnThreads = setmetatable({}, { __mode = "k" }),
 	Calls = {},
 	Writes = 0,
 	Now = 100,
@@ -501,7 +502,13 @@ local task = {
 		table.insert(H.Timers, { At = H.Now + seconds, Fn = fn })
 	end,
 	spawn = function(fn)
+		local thread = coroutine.create(fn)
+		H.SpawnThreads[fn] = thread
 		table.insert(H.Spawned, fn)
+		return thread
+	end,
+	cancel = function(thread)
+		coroutine.close(thread)
 	end,
 	wait = function()
 		coroutine.yield()
@@ -860,7 +867,10 @@ function H.StartTasks()
 	local pending = H.Spawned
 	H.Spawned = {}
 	for _, fn in ipairs(pending) do
-		local thread = coroutine.create(fn)
+		local thread = H.SpawnThreads[fn] or coroutine.create(fn)
+		if coroutine.status(thread) == "dead" then
+			continue
+		end
 		local ok, err = coroutine.resume(thread)
 		assert(ok, err)
 		if coroutine.status(thread) ~= "dead" then
@@ -885,6 +895,9 @@ function H.ResumeTasks()
 	local pending = H.Threads
 	H.Threads = {}
 	for _, thread in ipairs(pending) do
+		if coroutine.status(thread) == "dead" then
+			continue
+		end
 		local ok, err = coroutine.resume(thread)
 		assert(ok, err)
 		if coroutine.status(thread) ~= "dead" then

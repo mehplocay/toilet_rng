@@ -63,7 +63,7 @@ local function runPresentationAudit(test, environment, server)
 			e:Fire("PresentationSettings", player, { RevealIntensity = "Reduced" })
 		end
 		assert(#e.Results == results + 2)
-		assert(profile.Settings.MusicVolume == 0.25 and profile.Coins == 0)
+		assert(profile.Settings.MusicVolume == 0.6 and profile.Coins == 0)
 		e.Data:Close(player)
 		local replacement = e:Join(81)
 		local saved = e.Data:Get(replacement).Settings

@@ -171,7 +171,7 @@ test("chat: mode fuzz/migration, rate limit, independent settings persistence an
 	for _ = 1, 1000 do
 		e:Fire("PresentationSettings", player, { ChatMessages = "All" })
 	end
-	assert(#e.Results == results + 2 and profile.Settings.MusicVolume == 0.25 and profile.Coins == 0)
+	assert(#e.Results == results + 2 and profile.Settings.MusicVolume == 0.6 and profile.Coins == 0)
 	e.Data:Close(player)
 	local _, saved = e:Join(909)
 	assert(saved.Settings.ChatMessages == "All" and saved.Settings.ChatAnnouncements)
