@@ -27,6 +27,11 @@ return {
 		{ Id = "Gold", Name = "Gold", RGB = { 235, 185, 70 } },
 		{ Id = "Lavender", Name = "Lavender", RGB = { 170, 125, 230 } },
 	},
+	PlotColorStyle = {
+		Floor = { RGB = { 255, 255, 255 }, Blend = 0 },
+		Carpet = { RGB = { 30, 45, 65 }, Blend = 0.22 },
+		Trim = { RGB = { 255, 255, 255 }, Blend = 0.4 },
+	},
 	SparkleRGB = { 215, 160, 255 },
 	VIPTrailRGB = { 255, 185, 35 },
 	SparkleRate = 8,

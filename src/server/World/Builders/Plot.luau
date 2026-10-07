@@ -25,8 +25,8 @@ function Plot.Build(root, cf, index)
 				table.insert(rebirthSteps[step].Surfaces, { Part = piece.PrimaryPart, Color = piece.PrimaryPart.Color })
 			end
 		end
-		if entry.Asset == "PlotPlatform" then
-			piece.PrimaryPart:SetAttribute("PlotTint", true)
+		if entry.PlotTint then
+			piece.PrimaryPart:SetAttribute("PlotTint", entry.PlotTint)
 		end
 		if entry.ToiletRing then
 			piece.Name = "ToiletGlowRing"
@@ -100,6 +100,7 @@ function Plot.Build(root, cf, index)
 		RebirthSteps = rebirthSteps,
 		Displays = displays,
 	}
+	require(script.Parent.Parent.PlotTint).Capture(plot)
 	require(script.Parent.Parent.RebirthStairs).Refresh(plot, nil, nil)
 	require(script.Parent.Parent.DisplayRows).Build(plot, { ToiletTier = 1, DisplaySlots = 0, Displays = {} })
 	return plot

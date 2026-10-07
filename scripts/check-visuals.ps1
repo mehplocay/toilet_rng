@@ -26,7 +26,7 @@ $modulePaths = @(
     'src/server/World/MeshLoader.luau', 'src/server/World/Models.luau', 'src/server/World/Builders/Decor.luau',
     'src/server/World/Builders/Island.luau', 'src/server/World/Builders/Lighting.luau',
     'src/server/World/Builders/Hub.luau', 'src/server/World/Builders/Plot.luau',
-    'src/server/World/WorldService.luau'
+    'src/server/World/WorldService.luau', 'src/server/World/PlotTint.luau'
 )
 foreach ($modulePath in $modulePaths) {
     $source = Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $workspaceRoot $modulePath)
@@ -47,6 +47,7 @@ $harness += "}`n"
 $harness += & (Join-Path $PSScriptRoot 'read-model-templates.ps1')
 $harness += Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'world-checks.luau')
 $harness += Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'rebirth-stairs-checks.luau')
+$harness += Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'plot-tint-world-checks.luau')
 $harness += Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'autoflush-animation-checks.luau')
 if ($World) { $harness += Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'map-layout-checks.luau') }
 try {
