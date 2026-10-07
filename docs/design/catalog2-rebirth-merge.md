@@ -19,7 +19,7 @@ UI icon checks retain all 37 existing upload mappings. Unuploaded catalog artwor
 
 ## Pacing integration
 
-The requested `balance.luau` initially reproduced the failure already documented by the rebirth-rewards branch: normal R5 at 1.725h (minimum 2h) and R15 at 65.25h (minimum 80h). Stronger rewards also accelerated early upgrade milestones. The instruction to fix every failure was interpreted as authorization to retune coin gates while retaining the full reward table, cash/luck caps, speed floors, toilet/upgrade prices, permanent progression and existing balance assertions.
+The requested `balance.luau` initially reproduced the failure already documented by the rebirth-rewards branch: normal R5 at 1.725h (minimum 2h) and R15 at 65.25h (minimum 80h). Stronger rewards also accelerated early upgrade milestones. The instruction to fix every failure was interpreted as authorization to retune coin gates while retaining the full reward table, cash/luck stacking, speed floors, toilet/upgrade prices, permanent progression and existing balance assertions.
 
 | Gate | Before | Merged |
 | --- | ---: | ---: |

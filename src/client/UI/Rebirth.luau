@@ -84,7 +84,7 @@ function Rebirth.Create(root, remotes)
 		tierBar.Set(if nextBonus then state.Coins / nextBonus.RequiredCoins else 1)
 		preview.Text = if nextBonus
 			then string.format(
-				"NEXT: +%d%% cash / +%d%% luck / +%d%% speed\nStarter: %s Coins. Cash multiplies other bonuses. Luck cap and speed floor apply.",
+				"NEXT: +%d%% cash / +%d%% luck / +%d%% speed\nStarter: %s Coins. Cash multiplies other bonuses. Luck stacks without a cap. Speed floor applies.",
 				math.round(nextBonus.Cash * 100),
 				math.round(nextBonus.Luck * 100),
 				math.round(nextBonus.Speed * 100),

@@ -24,7 +24,7 @@ local failures = {}
 local function percentile(values, fraction)
 	return Cohort.Percentile(table.clone(values), fraction)
 end
-print("WAVE 1: INTEGRATED CONFIG; luck cap 10x; full luck on every item check.")
+print("WAVE 1: INTEGRATED CONFIG; uncapped luck; full luck on every item check.")
 print("Cash: upgrade, rebirth, toilet and paid factors multiply without a multiplier cap.")
 print("POOL | item | outcome at total luck 1x / 5x / 10x; Poop is the remainder")
 for tier, toilet in ipairs(Toilets) do

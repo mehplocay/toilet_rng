@@ -99,7 +99,7 @@ function Tutorial.Create(_player, remotes, hud, prompts, hooks)
 			"Tap Home to return to your toilet.",
 			"Tap FLUSH or press E. Every flush gives an item and coins.",
 			"Open Index. Display a copy to earn coins, or sell a spare. First copies stay yours.",
-			"Open Upgrades for Coin Upgrades, or Shop for Toilets in the Toilet Shop. Buy one; keep flushing to save up!",
+			"Open Upgrades for Coin Upgrades, or Shop for Toilets in the Toilet Shop. Buy one. Luck stacks without a cap!",
 			"Rebirth spends coins in one click; toilets and upgrades stay. Passes are optional. Replay in Settings.",
 		}
 		if step == 3 and not hasCopies() then

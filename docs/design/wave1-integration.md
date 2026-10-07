@@ -5,7 +5,7 @@ Current owner decision, 2026-10-07: **every toilet can drop every item**. The ca
 ## Runtime contract
 
 - `Config/Items.luau` supplies all candidates to `RollService.Distribution` for every valid toilet tier. There are no runtime pool fields. JSON `FirstToiletTier` is uniformly 1 and is informational only.
-- Checks run in descending base denominator order, with stable ID tie-breaking. Every successful flush returns one item; Poop is the fallback. Check probability is `min(1, totalLuck / Chance)`, with total luck capped at 10x and no diminishing returns. Actual outcome probability includes all preceding failures.
+- Checks run in descending base denominator order, with stable ID tie-breaking. Every successful flush returns one item; Poop is the fallback. Check probability is `min(1, totalLuck / Chance)`, with uncapped total luck and no diminishing returns. Actual outcome probability includes all preceding failures.
 - Better toilets increase configured luck, speed and existing income factors. Only prices, luck, rarity income and rebirth coin gates are retuned for all-pools. Existing service awards, cooldowns, display multipliers, upgrade prices/effects, rebirth bonuses and the 300-fresh-flush requirement remain intact.
 - The Lucky disclosure uses the same server distribution as flushing. Every tier discloses all 47 outcomes and all nine rarity totals. Its review token invalidates on tier or luck changes. The fixed-size readable text wraps in one scroll viewport, with measured row heights and a separate confirmation button.
 - Index cards show base checks even when undiscovered, with Poop labelled as the fallback. Shop, tutorial, hub and admin copy explain universal eligibility. The admin selector derives IDs from Config.Items.

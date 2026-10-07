@@ -4,9 +4,9 @@
 
 ## Rules and economy decisions
 
-`RollService` clones the complete item catalog. Independent checks remain rare-first, ordered by descending denominator then ID, with Poop as the final fallback. `check = min(1, totalLuck / baseDenominator)`; total luck caps at 10x with no diminishing returns or extra odds multiplier. Actual outcome probability is `check * product(1 - earlierCheck)`.
+`RollService` clones the complete item catalog. Independent checks remain rare-first, ordered by descending denominator then ID, with Poop as the final fallback. `check = min(1, totalLuck / baseDenominator)`; total luck has no ceiling or diminishing returns or extra odds multiplier. Actual outcome probability is `check * product(1 - earlierCheck)`.
 
-Toilet-only luck rises from 1x to 2.9x. Staying below the smallest non-fallback denominator (Suds Slug, 3) keeps all 47 outcomes positive on every unboosted toilet. At boosted luck, saturated earlier checks can make later common outcomes zero; this is the required clamped roll rule, not a tier lock. Every independent check and every cumulative rare threshold improves monotonically with toilet tier; individual common outcome probabilities need not increase. At the 10x cap, higher toilet luck cannot further improve RNG.
+Toilet-only luck rises from 1x to 2.9x. Staying below the smallest non-fallback denominator (Suds Slug, 3) keeps all 47 outcomes positive on every unboosted toilet. At boosted luck, saturated earlier checks can make later common outcomes zero; this is the required clamped roll rule, not a tier lock. Every independent check and every cumulative rare threshold improves monotonically with toilet tier; individual common outcome probabilities need not increase. Higher toilet luck continues to improve unsaturated checks at every total multiplier.
 
 Economy retuning is confined to configuration: toilet prices and luck; Mythic display income 1,000 → 500/s; Godly 6,000 → 4,000/s; selected rebirth coin gates below. Other rarity rates, item IDs/base odds/sale values, service awards, cooldowns, toilet display factors, upgrade prices/effects, rebirth bonuses and 300 fresh flushes are unchanged. Early rare displays are still valuable, but their ordinary progression impact is smaller.
 

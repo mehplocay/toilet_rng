@@ -23,7 +23,7 @@ do
 		ToiletTier = 1,
 		DisplaySlots = 3,
 		Upgrades = {},
-		UpgradeStats = { Cooldown = 1.5, AutoInterval = 3, OfflineMinutes = 480, LuckCapped = false },
+		UpgradeStats = { Cooldown = 1.5, AutoInterval = 3, OfflineMinutes = 480 },
 	}
 	panel.Update(state)
 	local before = #H.Calls
@@ -52,11 +52,10 @@ do
 		state.Upgrades[track.Id] = track.MaxLevel
 	end
 	state.DisplaySlots = 10
-	state.UpgradeStats =
-		{ Cooldown = 0.4, AutoInterval = 0.4, OfflineMinutes = 1440, LuckCapped = true, LuckMultiplier = 10 }
+	state.UpgradeStats = { Cooldown = 0.4, AutoInterval = 0.4, OfflineMinutes = 1440, LuckMultiplier = 10 }
 	panel.Update(state)
-	assert(string.find(tracks.LuckBoost.Effect.Text, "Luck +900%", 1, true))
-	assert(string.find(tracks.LuckBoost.Effect.Text, "10x CAP REACHED", 1, true))
+	assert(string.find(tracks.LuckBoost.Effect.Text, "Luck x10", 1, true))
+	assert(not string.find(tracks.LuckBoost.Effect.Text, "CAP", 1, true))
 	assert(tracks.OfflineTank.Effect.Text == "24 hours offline cap")
 	for _, track in ipairs(config.Tracks) do
 		assert(not tracks[track.Id].Buy.Interactable and tracks[track.Id].Buy.Text == "Max")

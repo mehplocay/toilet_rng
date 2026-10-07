@@ -131,7 +131,7 @@ test("extended odds: every tier and multiplier matches roll entries and exact ra
 		for _, level in ipairs({ 0, 10, 50 }) do
 			p.ToiletTier, p.Upgrades.LuckBoost = tier, level
 			local odds = lucky:Odds(p)
-			assert(odds.Luck == 10 and odds.BaseLuck <= 10)
+			assert(odds.Luck == odds.BaseLuck * 10)
 			local boosted = roll.Distribution(items, toilets, tier, odds.Luck)
 			local normal = roll.Distribution(items, toilets, tier, odds.BaseLuck)
 			local sums = { Normal = 0, Boosted = 0 }
@@ -159,7 +159,7 @@ test("extended odds: every tier and multiplier matches roll entries and exact ra
 			end
 			assert(math.abs(rsum - 1) < 1e-12)
 			for _, entry in ipairs(boosted) do
-				local check = if entry.Item.Id == "Poop" then 1 else math.min(1, 10 / entry.Item.Chance)
+				local check = if entry.Item.Id == "Poop" then 1 else math.min(1, odds.Luck / entry.Item.Chance)
 				assert(math.abs(entry.Check - check) < 1e-14)
 			end
 		end

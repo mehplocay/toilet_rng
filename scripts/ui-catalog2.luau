@@ -47,7 +47,7 @@ do
 	assert(luckyGrid.Visible and body.LuckyTab.Visible)
 	local format = H.Load("src/client/UI/LuckyOdds")
 	assert(format.Percent(0) == "0%" and format.Percent(0.000001) == "0.00010000%")
-	assert(string.find(format.RarityText(odds), "Secret: 20.0000% / 50.0000%", 1, true))
+	assert(string.find(format.RarityText(odds), "Secret: 20% / 50%", 1, true))
 	local card = luckyGrid.LuckyFlush1.OfferCard
 	assert(card.Buy.Text == "Coming soon" and not card.Buy.Interactable)
 	local original = H.Services.MarketplaceService.GetProductInfoAsync
@@ -132,10 +132,13 @@ do
 		sum.Normal += entry.Probability
 		sum.Boosted += boosted[i].Probability
 		odds.Rarities[item.Rarity] = sum
-		expected[item.Name .. " (" .. item.Rarity .. ")"] = "Current outcome: Normal "
-			.. format.Percent(entry.Probability)
+	end
+	local normalLabels, boostedLabels = format.Column(odds.Items, "Normal"), format.Column(odds.Items, "Boosted")
+	for i, row in ipairs(odds.Items) do
+		expected[row.Name .. " (" .. row.Rarity .. ")"] = "Current outcome: Normal "
+			.. normalLabels[i]
 			.. " / Lucky "
-			.. format.Percent(boosted[i].Probability)
+			.. boostedLabels[i]
 	end
 	local ui = format.Create(root, remotes)
 	ui.Show({ Allowed = true, Count = 1, Odds = odds })

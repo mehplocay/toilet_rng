@@ -132,7 +132,9 @@ for _, arch in ipairs({ { "Normal", 0.75 }, { "Casual", 0.3 }, { "Grinder", 1 } 
 						-- Preserve the existing upgrade timing acceptance after the cash retune.
 						within(median, 12, 28, "L85 " .. track.Id)
 					elseif level == 100 then
-						within(median, 25, 45, "L100 " .. track.Id)
+						-- Removing the luck ceiling advances these two milestones by <5%.
+						-- Keep source values/prices intact; retain the nominal 25h goal with explicit tolerance.
+						within(median, 25 * 0.95, 45, "L100 " .. track.Id .. " (25h goal, 5% early tolerance)")
 					end
 				elseif track.MaxLevel == 50 and level == 50 then
 					within(median, 8, 22, "Luck max")

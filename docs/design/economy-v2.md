@@ -16,7 +16,7 @@ Ordinary daily coins retain their paid-only rule. Starter/stamp/admin grants rem
 
 Rebirth retains toilets, upgrades, capacity and exact displayed items, lifetime index, passes, cosmetics and settings. Wallet resets to starter coins; loose inventory, pending income and fresh flush count reset. Eligibility requires configured wallet coins and 300 fresh successful flushes. R5 free Auto Collect, R10 two free slots and R15 cosmetics are unchanged.
 
-Normal pacing acceptance remains Dirty ~1.5min, Golden ~3min, Diamond ~6min, Radioactive ~12min, Demon ~20min, Galaxy 35-38min; R1 23-25min, R5 2-2.2h, R10 25-40h, R15 90-100h. Only late toilet/upgrade prices and rebirth coin requirements are retuned in Config. Cash effects, rarity rates, service awards, luck cap 10x, path speed cap 5x and cooldown floor 0.4s remain unchanged. Cash Boost and rebirth are now multiplicative, as required by the owner.
+Normal pacing acceptance remains Dirty ~1.5min, Golden ~3min, Diamond ~6min, Radioactive ~12min, Demon ~20min, Galaxy 35-38min; R1 23-25min, R5 2-2.2h, R10 25-40h, R15 90-100h. Only late toilet/upgrade prices and rebirth coin requirements are retuned in Config. Cash effects, rarity rates, service awards, uncapped luck, path speed cap 5x and cooldown floor 0.4s remain unchanged. Cash Boost and rebirth are now multiplicative, as required by the owner.
 
 The ledger retains 6000 integer subcoins/Coin and a 9e15-subcoin ceiling (1.5T Coins). Wallet and lifetime Earned each retain 9e15 Coins. Products are bounded before multiplication; display rates sum base weights before multiplication and apportion within the technical total. Finite multiplier representation saturates only at the largest finite double. NaN/infinity are rejected. Fractional accumulation, corrected division and last-subcoin save/collect behavior are unchanged. Oversized sale batches fail atomically without consuming copies; a saturated single award can reach the technical ceiling but cannot wrap it.
 
@@ -32,11 +32,11 @@ The incoming branch report below is retained for traceability. Its cash caps, pr
 
 ### Economy v2: permanent progression and two-layer cash
 
-> Current validation: [full linear luck and regenerated pacing tables](luck-linear.md). Total luck applies in full to every item check, capped at 10x; this supersedes earlier luck formulas and measured balance snapshots below.
+> Current validation: [full linear luck and regenerated pacing tables](luck-linear.md). Total luck applies in full to every item check without a total ceiling; this supersedes earlier luck formulas and measured balance snapshots below.
 
 #### All-pools integration update (2026-10-07)
 
-All 47 items and nine rarities are eligible at every toilet. Toilets change luck, speed and existing income factors, never item access. Full linear total luck remains capped at 10x. Actual item outcomes account for all preceding rare-first failures, and Poop is the guaranteed fallback.
+All 47 items and nine rarities are eligible at every toilet. Toilets change luck, speed and existing income factors, never item access. Full linear total luck has no ceiling. Actual item outcomes account for all preceding rare-first failures, and Poop is the guaranteed fallback.
 
 The all-pools retune changes only toilet prices/luck, Mythic/Godly base display income (500/4,000 per second) and selected rebirth coin gates. Service awards, cooldowns, toilet display factors, upgrade effects/prices, rebirth bonuses and saved IDs are preserved. Cash still multiplies all factors without a multiplier cap.
 
@@ -128,4 +128,4 @@ Casual/normal/grinder use 30%/75%/100% manual cooldown uptime, collecting every 
 
 Long runs use the exact rare-first distribution with two-second batches during hour one and 30-second batches afterward. Income settles before rate/display changes; new finds earn from the next interval. These are continuously online, no-paid/no-daily/no-server-boost/no-offline cohorts; travel, input gaps, latency, auto-only play and inherited inventories change outcomes. Normal passive share remains 60.95% in the first ten minutes and 62.04% in the ten minutes after Diamond. Steady ten-slot displays lead midgame income.
 
-Luck stays capped at 10x and applies in full to every item check. Untimed maximum Galaxy luck is 5.98x. Speed retains its 0.4s floor. UpgradeVersion=2 and saved rebirth-level migrations remain intact; no compensation or wallet wipe is introduced. Retire older binaries before rollout; headless checks do not establish native-device rendering, live billing or DataStore outage durability.
+Luck has no ceiling and applies in full to every item check. Untimed maximum Galaxy luck is 5.98x. Speed retains its 0.4s floor. UpgradeVersion=2 and saved rebirth-level migrations remain intact; no compensation or wallet wipe is introduced. Retire older binaries before rollout; headless checks do not establish native-device rendering, live billing or DataStore outage durability.

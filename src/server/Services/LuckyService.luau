@@ -52,9 +52,8 @@ function Lucky:BaseLuck(profile, player, offer)
 end
 function Lucky:Odds(profile, player, offer)
 	local base, vip, double = self:BaseLuck(profile, player)
-	local boosted = if offer
-		then self:BaseLuck(profile, player, offer)
-		else math.min(Config.LuckyLuckCap, Upgrades.Config.LuckCap, base * Config.LuckyMultiplier)
+	local boosted = if offer then self:BaseLuck(profile, player, offer) else base * Config.LuckyMultiplier
+	assert(boosted >= 1 and boosted < math.huge, "Lucky Flush multiplication overflow")
 	local normal = Roll.Distribution(Items, Toilets, profile.ToiletTier, base)
 	local enhanced = Roll.Distribution(Items, Toilets, profile.ToiletTier, boosted)
 	local rows, rarities = {}, {}

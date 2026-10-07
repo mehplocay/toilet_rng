@@ -49,23 +49,69 @@ for i = 1, 6 do
 		)
 	)
 end
-print("\nBoth passes reach the cap when free total luck reaches 4x; 2x Luck alone at 5x; VIP alone at 8x.")
-print("\n| Toilet | Both passes, no rebirth | Both passes, R15 | Both + server/daily x2, no rebirth |")
-print("|---|---:|---:|---:|")
-local function capLevel(t, rebirth, boost)
-	p.RebirthLevel = rebirth
-	for level = 0, 50 do
-		p.Upgrades.LuckBoost = level
-		if U:Luck(p, t.Luck, 2.5, boost) >= 10 then
-			return tostring(level)
+print(
+	"\nUncapped heavy stacking: Infinity Flush, Luck L50, with/without R15. Sustained paid luck requires a separately reviewed charge for EVERY flush. Times assume a theoretical 0.4s cadence and exclude review time; temporary boosts must remain active."
+)
+print(
+	"\n| Stack | Luck | Outcome | Chance % | Mean flushes | p50 flushes / minutes | p90 flushes / minutes | 20-flush chance % |"
+)
+print("|---|---:|---|---:|---:|---:|---:|---:|")
+local function quantile(probability, target)
+	if probability == 1 then
+		return 1
+	end
+	if probability == 0 then
+		return math.huge
+	end
+	return math.ceil(math.log(1 - target) / math.log(1 - probability))
+end
+local function report(label, rebirth, factor, temporary)
+	p.RebirthLevel, p.Upgrades.LuckBoost = rebirth, 50
+	local luck = U:Luck(p, Toilets[15].Luck, factor, temporary)
+	local entries = Roll.Distribution(Items, Toilets, 15, luck)
+	local outcomes = { Secret = 0, Celestial = 0 }
+	for _, entry in ipairs(entries) do
+		if outcomes[entry.Item.Rarity] then
+			outcomes[entry.Item.Rarity] += entry.Probability
 		end
 	end
-	return "Not reached by L50"
+	local cases = {
+		{ "Any Secret", outcomes.Secret },
+		{ "Any Celestial", outcomes.Celestial },
+		{ entries[1].Item.Name, entries[1].Probability },
+	}
+	for _, entry in ipairs(entries) do
+		if entry.Item.Rarity == "Celestial" then
+			table.insert(cases, { entry.Item.Name, entry.Probability })
+			break
+		end
+	end
+	for _, case in ipairs(cases) do
+		local probability = case[2]
+		local median, tail = quantile(probability, 0.5), quantile(probability, 0.9)
+		print(
+			string.format(
+				"| %s | %.4g | %s | %.9f | %.2f | %.0f / %.2f | %.0f / %.2f | %.6f |",
+				label,
+				luck,
+				case[1],
+				probability * 100,
+				1 / probability,
+				median,
+				median * 0.4 / 60,
+				tail,
+				tail * 0.4 / 60,
+				(1 - (1 - probability) ^ 20) * 100
+			)
+		)
+	end
+	assert(luck == U:Luck(p, Toilets[15].Luck) * factor * temporary)
 end
-for _, tier in ipairs({ 1, 7, 15 }) do
-	local t = Toilets[tier]
-	print(string.format("| %s | %s | %s | %s |", t.Name, capLevel(t, 0, 1), capLevel(t, 15, 1), capLevel(t, 0, 2)))
-end
+report("Free L50/R15", 15, 1, 1)
+report("VIP + 2x L50/R15", 15, 2.5, 1)
+report("VIP + 2x + charge L50/R0", 0, 25, 1)
+report("VIP + 2x + charge L50/R15", 15, 25, 1)
+report("Above + daily x2 + server x2", 15, 25, 4)
 print(
-	"\nAt the 10x cap, a Lucky Flush charge adds zero probability benefit and is still consumed if reviewed and used. Below the cap, it raises total luck to 10x; e.g. both passes at Basic L0 start at 2.5x, so a charge improves rarest-item odds only 4x. VIP alone reduces expected rarest flushes by 20% before the cap; both passes by 60%. No diminishing returns beyond the existing cap and sequential survival probabilities."
+	"\nEvery independent check scales linearly until probability 1. Earlier rare checks can suppress later outcomes. With total luck >=15,000,000, Cosmic Courtesy is certain and every later item (including Celestial and Poop) has zero outcome probability. No total or per-source luck cap is introduced."
 )

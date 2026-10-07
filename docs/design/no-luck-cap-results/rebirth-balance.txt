@@ -1,0 +1,15 @@
+Rebirth 1 | 6500000 coins + 300 fresh flushes | p50 0.42h / p90 0.52h
+Rebirth 2 | 15000000 coins + 300 fresh flushes | p50 0.51h / p90 0.62h
+Rebirth 3 | 70000000 coins + 300 fresh flushes | p50 0.82h / p90 1.05h
+Rebirth 4 | 2300000000 coins + 300 fresh flushes | p50 1.69h / p90 2.42h
+Rebirth 5 | 5000000000 coins + 300 fresh flushes | p50 2.12h / p90 3.13h
+Rebirth 6 | 18000000000 coins + 300 fresh flushes | p50 2.58h / p90 3.71h
+Rebirth 7 | 100000000000 coins + 300 fresh flushes | p50 3.98h / p90 5.30h
+Rebirth 8 | 1000000000000 coins + 300 fresh flushes | p50 6.63h / p90 8.93h
+Rebirth 9 | 30000000000000 coins + 300 fresh flushes | p50 20.91h / p90 27.29h
+Rebirth 10 | 60000000000000 coins + 300 fresh flushes | p50 26.40h / p90 33.61h
+Rebirth 11 | 100000000000000 coins + 300 fresh flushes | p50 30.38h / p90 37.67h
+Rebirth 12 | 200000000000000 coins + 300 fresh flushes | p50 36.38h / p90 44.76h
+Rebirth 13 | 400000000000000 coins + 300 fresh flushes | p50 46.02h / p90 55.17h
+Rebirth 14 | 700000000000000 coins + 300 fresh flushes | p50 57.35h / p90 68.18h
+Rebirth 15 | 2400000000000000 coins + 300 fresh flushes | p50 90.61h / p90 101.72h

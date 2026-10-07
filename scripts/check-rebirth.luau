@@ -12,7 +12,7 @@ local previous = { Cash = 0, Luck = 0, Speed = 0 }
 
 for level, bonus in ipairs(Config.Levels) do
 	assert(bonus.Cash >= previous.Cash and bonus.Cash < math.huge)
-	assert(bonus.Luck >= previous.Luck and bonus.Luck <= Config.LuckBonusCap)
+	assert(bonus.Luck >= previous.Luck and bonus.Luck < math.huge)
 	assert(bonus.Speed >= previous.Speed and bonus.Speed <= Config.SpeedBonusCap)
 	previous = bonus
 	assert(bonus.StarterCoins <= 10000 and #bonus.Perks >= 1 and bonus.Title and bonus.Badge)
@@ -36,10 +36,15 @@ for level, bonus in ipairs(Config.Levels) do
 				end
 				assert(total <= 9e15 and total <= math.floor(IncomeConfig.PlayerRateCaps[tier] * multiplier * 100) + 1)
 				assert(Income:StorageUnits(p, false) == IncomeConfig.MaxLedgerUnits)
-				assert(U:Luck(p, toilet.Luck, 2, 2, 1e300) == UpgradeConfig.LuckCap)
+				assert(U:Luck(p, toilet.Luck, 2, 2, 1e300) == U:Luck(p, toilet.Luck, 2, 2) * 1e300)
 			end
 		end
-		local distribution = Roll.Distribution(Items, Toilets, tier, UpgradeConfig.LuckCap)
+		local distribution = Roll.Distribution(
+			Items,
+			Toilets,
+			tier,
+			U:Luck({ RebirthLevel = level, Upgrades = { LuckBoost = 50 } }, toilet.Luck)
+		)
 		local total = 0
 		for _, entry in ipairs(distribution) do
 			total += entry.Probability
@@ -52,5 +57,5 @@ for _, invalid in ipairs({ -1, 0.5, math.huge, 0 / 0, "1", {} }) do
 end
 assert(rules:Level({ RebirthLevel = 100 }) == #Config.Levels)
 print(
-	"Rebirth math passed: 15 explicit cumulative reward levels, global luck/cooldown caps, probability sum 1, exact bounded income across all Cash/Speed/tier/rebirth combinations"
+	"Rebirth math passed: 15 explicit cumulative reward levels, uncapped luck and cooldown floor, probability sum 1, exact bounded income across all Cash/Speed/tier/rebirth combinations"
 )

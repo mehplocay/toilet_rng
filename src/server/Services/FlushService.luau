@@ -113,7 +113,6 @@ function FlushService.Start(data, limiter, remotes, sync, world, events, monetiz
 				Cooldown = cooldown,
 				ServiceCoins = serviceCoins,
 				LuckMultiplier = luck,
-				LuckCapped = luck >= upgrades.Config.LuckCap,
 			},
 			world,
 			events,

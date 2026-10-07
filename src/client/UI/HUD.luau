@@ -9,6 +9,7 @@ local Schedule = require(Shared.RewardSchedule)
 local SocialUI = require(script.Parent.SocialBoosts)
 local rebirth = require(Shared.RebirthRules).new(require(Shared.Config.Rebirth))
 local Odds = require(script.Parent.LuckyOdds)
+local Format = require(Shared.NumberFormat)
 local HUD = {}
 function HUD.Create(root, remotes, open, prompts, shopNavigation)
 	local gui = C.New("Frame", root, { Name = "HUD", Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1 })
@@ -311,10 +312,10 @@ function HUD.Create(root, remotes, open, prompts, shopNavigation)
 				else (luckState and luckState.FreeLuck)
 					or (state and state.UpgradeStats and state.UpgradeStats.LuckMultiplier)
 					or 1
-			serverText.Text = string.format("Luck x%.3g%s", total, if total >= 10 then " (cap)" else "")
+			serverText.Text = (if total >= 1e6 then "Luck\nx" else "Luck x") .. Format.Luck(total)
 			breakdown.Text = string.format(
-				"Total luck x%.4g (cap 10x)\n%s\n%s\nRounded; see Info for all item odds.",
-				total,
+				"Total luck x%s (no cap)\n%s\n%s\nRounded; see Info for all item odds.",
+				Format.Luck(total, true),
 				if eligible
 					then (if odds and odds.VIPLuck then "VIP +25% luck" else "VIP luck: inactive")
 					else "VIP luck unavailable in your region",

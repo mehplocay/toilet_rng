@@ -32,4 +32,9 @@ end
 function Format.Rate(value)
 	return Format.Compact(value, 2)
 end
+-- Significant digits keep even the largest finite multiplier readable.
+function Format.Luck(value, detailed)
+	assert(type(value) == "number" and value >= 1 and value < math.huge, "Invalid luck")
+	return (string.format(if detailed then "%.12g" else "%.3g", value):gsub("e%+0*", "e"))
+end
 return Format

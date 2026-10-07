@@ -1,5 +1,5 @@
 -- Full-game follow-up: actual production handlers, controlled backend yields.
-test("audit2: all tier/track/rebirth/boost combinations obey the total luck and cooldown caps", function()
+test("audit2: all tier/track/rebirth/boost combinations preserve full luck products and the cooldown floor", function()
 	local e = environment()
 	local rules = e:Load("src/shared/UpgradeRules").new(e:Load("src/shared/Config/Upgrades"))
 	local profile = e:Load(dataPath).DefaultProfile()
@@ -12,17 +12,16 @@ test("audit2: all tier/track/rebirth/boost combinations obey the total luck and 
 					for event = 1, 2 do
 						for pass = 1, 2 do
 							local luck = rules:Luck(profile, toilet.Luck, event, pass, daily)
-							assert(luck >= 1 and luck <= 10)
-							local expected = math.min(
-								10,
+							assert(luck >= 1 and luck < math.huge)
+							local expected = (
 								toilet.Luck
-									* (1 + math.min(level, 10) * 0.1 + math.max(0, level - 10) * 0.04 + rules:RebirthBonus(
-										profile,
-										"Luck"
-									))
-									* event
-									* pass
-									* daily
+								* (1 + math.min(level, 10) * 0.1 + math.max(0, level - 10) * 0.04 + rules:RebirthBonus(
+									profile,
+									"Luck"
+								))
+								* event
+								* pass
+								* daily
 							)
 							assert(math.abs(luck - expected) < 1e-12)
 							assert(rules:Cooldown(profile, toilet.Cooldown * 0.8) >= 0.4)

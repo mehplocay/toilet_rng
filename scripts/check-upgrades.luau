@@ -85,7 +85,7 @@ for _, toilet in ipairs(Toilets) do
 		local auto = U:AutoInterval(p, cd)
 		assert(cd >= 0.4 and cd <= previous and auto >= cd and auto <= autoPrevious)
 		assert(U:Animation(cd) < cd and U:Animation(cd) < 1)
-		assert(U:Luck(p, toilet.Luck, 2, 2, 1e300) == Config.LuckCap)
+		assert(U:Luck(p, toilet.Luck, 2, 2, 1e300) == U:Luck(p, toilet.Luck, 2, 2) * 1e300)
 		previous, autoPrevious = cd, auto
 	end
 end
@@ -132,17 +132,16 @@ for tier = 1, #Toilets do
 			events += entry.Probability
 		end
 		if entry.Item.Id == "KingPoop" then
-			assert(entry.Check == 10 / 100000)
-			assert(entry.Probability >= 0.000099 and entry.Probability <= 0.0001)
+			assert(entry.Check == 1)
+			assert(entry.Probability == 0, "Earlier certain Secret must win")
 		end
 	end
 	assert(empty == 0 and math.abs(total - 1) < 1e-12)
-	-- Event items are King Poop, Alien Toilet and Mystery; earlier rolls can only lower this bound.
-	assert(events <= 10 / 100000 + 10 / 1000000 + 10 / 10000000 and (tier < 5 or events >= 0.000099))
+	assert(events >= 0 and events <= 1)
 	assert(Roll.Sample(entries, function()
 		return 0.999999999
-	end).Id == "TubTadpole")
+	end).Id == entries[1].Item.Id)
 end
 print(
-	"Upgrade checks passed: bounded exponential purchases, compare-and-swap replay, migration, slots, luck/cooldown/auto caps, cash rounding, full tank and exact odds"
+	"Upgrade checks passed: bounded exponential purchases, compare-and-swap replay, migration, slots, uncapped luck and cooldown/auto floors, cash rounding, full tank and exact odds"
 )

@@ -91,7 +91,6 @@ function Runtime.new(data, world, events, remotes)
 			Cooldown = 1.5,
 			ServiceCoins = 0,
 			LuckMultiplier = 1,
-			LuckCapped = false,
 		}, world, events, remotes, 0.9)
 	end
 	local function character(player)

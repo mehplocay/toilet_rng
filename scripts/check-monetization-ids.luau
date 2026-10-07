@@ -48,11 +48,11 @@ for group, expected in pairs({ Gamepasses = passes, DeveloperProducts = products
 	end
 end
 assert(wired == 24 and held == 0)
-assert(config.LuckyFlushCap == 1000 and config.LuckyMultiplier == 10 and config.LuckyLuckCap == 10)
+assert(config.LuckyFlushCap == 1000 and config.LuckyMultiplier == 10 and config.LuckyLuckCap == nil)
 for key, charges in pairs({ LuckyFlush1 = 1, LuckyFlush5 = 5, LuckyFlush20 = 20 }) do
 	assert(config.DeveloperProducts[key].LuckyCharges == charges)
 end
 assert(config.Gamepasses.VIPStar.Name == "Star Tag")
 print(
-	"Production monetization IDs passed: 16 passes + 8 products wired; Lucky charges and caps preserved"
+	"Production monetization IDs passed: 16 passes + 8 products wired; Lucky charge storage preserved; luck has no ceiling"
 )

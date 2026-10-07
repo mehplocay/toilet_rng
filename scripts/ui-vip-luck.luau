@@ -132,7 +132,7 @@ do
 	hud.Update(state)
 	H.Advance(1.01)
 	H.ResumeTasks()
-	assert(chip.Text == "Luck x10 (cap)")
+	assert(chip.Text == "Luck x10")
 	H.Advance(121)
 	H.ResumeTasks()
 	assert(chip.Text == "Luck x1" and breakdown.Text:find("unavailable in your region", 1, true))

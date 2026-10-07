@@ -1,0 +1,159 @@
+Galaxy effective odds: full linear luck, no total cap; independent rare-first checks; Poop fallback.
+1x | CosmicCourtesy | check 0.000000067 | effective 1 / 15000000.000 | observed 0 / 1000000
+1x | Mystery        | check 0.000000100 | effective 1 / 10000000.667 | observed 0 / 1000000
+1x | InfiniteOccupied | check 0.000000200 | effective 1 / 5000000.833 | observed 0 / 1000000
+1x | EmergencyUniverse | check 0.000000400 | effective 1 / 2500000.917 | observed 1 / 1000000
+1x | TheLastToilet  | check 0.000000667 | effective 1 / 1500001.150 | observed 1 / 1000000
+1x | AlienToilet    | check 0.000001000 | effective 1 / 1000001.433 | observed 1 / 1000000
+1x | StarlightSeraph | check 0.000001111 | effective 1 / 900002.190 | observed 1 / 1000000
+1x | ConstellationClam | check 0.000001538 | effective 1 / 650002.304 | observed 3 / 1000000
+1x | CometCommode   | check 0.000002222 | effective 1 / 450002.287 | observed 2 / 1000000
+1x | HaloHamster    | check 0.000003333 | effective 1 / 300002.192 | observed 5 / 1000000
+1x | PlungerPaladin | check 0.000004000 | effective 1 / 250002.660 | observed 3 / 1000000
+1x | ThroneColossus | check 0.000005556 | effective 1 / 180002.635 | observed 8 / 1000000
+1x | GeyserGorilla  | check 0.000008000 | effective 1 / 125002.524 | observed 7 / 1000000
+1x | KingPoop       | check 0.000010000 | effective 1 / 100002.819 | observed 12 / 1000000
+1x | DrainKraken    | check 0.000013333 | effective 1 / 75002.865 | observed 22 / 1000000
+1x | SewerShark     | check 0.000020000 | effective 1 / 50002.576 | observed 15 / 1000000
+1x | BathBombBehemoth | check 0.000033333 | effective 1 / 30002.146 | observed 29 / 1000000
+1x | SteamGenie     | check 0.000050000 | effective 1 / 20002.097 | observed 57 / 1000000
+1x | LaundryYeti    | check 0.000083333 | effective 1 / 12001.858 | observed 86 / 1000000
+1x | Clogtopus      | check 0.000133333 | effective 1 / 7501.787 | observed 126 / 1000000
+1x | ToiletBaby     | check 0.000200000 | effective 1 / 5001.858 | observed 216 / 1000000
+1x | GoldenGargler  | check 0.000222222 | effective 1 / 4502.573 | observed 208 / 1000000
+1x | RoyalFlushFrog | check 0.000312500 | effective 1 / 3202.541 | observed 319 / 1000000
+1x | FaucetPharaoh  | check 0.000454545 | effective 1 / 2202.435 | observed 483 / 1000000
+1x | PorcelainPoodle | check 0.000666667 | effective 1 / 1502.343 | observed 710 / 1000000
+1x | GoldenPoop     | check 0.001000000 | effective 1 / 1002.230 | observed 1044 / 1000000
+1x | TowelTornado   | check 0.001111111 | effective 1 / 902.910 | observed 1111 / 1000000
+1x | DiscoBidet     | check 0.001538462 | effective 1 / 652.827 | observed 1577 / 1000000
+1x | BathMatBat     | check 0.002222222 | effective 1 / 452.654 | observed 2192 / 1000000
+1x | PlungerPogo    | check 0.002857143 | effective 1 / 352.848 | observed 2841 / 1000000
+1x | Duck           | check 0.004000000 | effective 1 / 252.757 | observed 4018 / 1000000
+1x | BubbleBeard    | check 0.008333333 | effective 1 / 121.810 | observed 8046 / 1000000
+1x | SpongeKnight   | check 0.010000000 | effective 1 / 102.362 | observed 9642 / 1000000
+1x | Fish           | check 0.012500000 | effective 1 / 82.716 | observed 12132 / 1000000
+1x | ToothpasteGoose | check 0.020000000 | effective 1 / 52.352 | observed 19166 / 1000000
+1x | DrainCrab      | check 0.028571429 | effective 1 / 37.394 | observed 26517 / 1000000
+1x | Rat            | check 0.040000000 | effective 1 / 27.496 | observed 36287 / 1000000
+1x | CapybaraCap    | check 0.041666667 | effective 1 / 27.496 | observed 36297 / 1000000
+1x | RollMole       | check 0.055555556 | effective 1 / 21.519 | observed 46497 / 1000000
+1x | BrushBristle   | check 0.071428571 | effective 1 / 17.721 | observed 56210 / 1000000
+1x | TubTadpole     | check 0.100000000 | effective 1 / 13.632 | observed 72969 / 1000000
+1x | ToiletPaper    | check 0.125000000 | effective 1 / 12.117 | observed 82314 / 1000000
+1x | SoggySock      | check 0.166666667 | effective 1 / 10.386 | observed 96900 / 1000000
+1x | LoopyLoofah    | check 0.200000000 | effective 1 / 10.386 | observed 96124 / 1000000
+1x | PocketPuddle   | check 0.250000000 | effective 1 / 10.386 | observed 96521 / 1000000
+1x | SudsSlug       | check 0.333333333 | effective 1 / 10.386 | observed 96612 / 1000000
+1x | Poop           | check 1.000000000 | effective 1 / 5.193 | observed 192668 / 1000000
+1x | expected first Secret at 1 flush/s: 114.16 hours; event probability 0.000011100; 12 players at 0.4s floor: 1.199 events/hour
+5x | CosmicCourtesy | check 0.000000333 | effective 1 / 3000000.000 | observed 0 / 1000000
+5x | Mystery        | check 0.000000500 | effective 1 / 2000000.667 | observed 0 / 1000000
+5x | InfiniteOccupied | check 0.000001000 | effective 1 / 1000000.833 | observed 1 / 1000000
+5x | EmergencyUniverse | check 0.000002000 | effective 1 / 500000.917 | observed 1 / 1000000
+5x | TheLastToilet  | check 0.000003333 | effective 1 / 300001.150 | observed 4 / 1000000
+5x | AlienToilet    | check 0.000005000 | effective 1 / 200001.433 | observed 6 / 1000000
+5x | StarlightSeraph | check 0.000005556 | effective 1 / 180002.190 | observed 4 / 1000000
+5x | ConstellationClam | check 0.000007692 | effective 1 / 130002.304 | observed 10 / 1000000
+5x | CometCommode   | check 0.000011111 | effective 1 / 90002.287 | observed 7 / 1000000
+5x | HaloHamster    | check 0.000016667 | effective 1 / 60002.192 | observed 15 / 1000000
+5x | PlungerPaladin | check 0.000020000 | effective 1 / 50002.660 | observed 22 / 1000000
+5x | ThroneColossus | check 0.000027778 | effective 1 / 36002.635 | observed 30 / 1000000
+5x | GeyserGorilla  | check 0.000040000 | effective 1 / 25002.524 | observed 42 / 1000000
+5x | KingPoop       | check 0.000050000 | effective 1 / 20002.820 | observed 47 / 1000000
+5x | DrainKraken    | check 0.000066667 | effective 1 / 15002.865 | observed 65 / 1000000
+5x | SewerShark     | check 0.000100000 | effective 1 / 10002.577 | observed 119 / 1000000
+5x | BathBombBehemoth | check 0.000166667 | effective 1 / 6002.146 | observed 154 / 1000000
+5x | SteamGenie     | check 0.000250000 | effective 1 / 4002.098 | observed 230 / 1000000
+5x | LaundryYeti    | check 0.000416667 | effective 1 / 2401.859 | observed 426 / 1000000
+5x | Clogtopus      | check 0.000666667 | effective 1 / 1501.788 | observed 678 / 1000000
+5x | ToiletBaby     | check 0.001000000 | effective 1 / 1001.860 | observed 999 / 1000000
+5x | GoldenGargler  | check 0.001111111 | effective 1 / 902.576 | observed 1115 / 1000000
+5x | RoyalFlushFrog | check 0.001562500 | effective 1 / 642.546 | observed 1567 / 1000000
+5x | FaucetPharaoh  | check 0.002272727 | effective 1 / 442.442 | observed 2233 / 1000000
+5x | PorcelainPoodle | check 0.003333333 | effective 1 / 302.352 | observed 3338 / 1000000
+5x | GoldenPoop     | check 0.005000000 | effective 1 / 202.242 | observed 4890 / 1000000
+5x | TowelTornado   | check 0.005555556 | effective 1 / 182.933 | observed 5480 / 1000000
+5x | DiscoBidet     | check 0.007692308 | effective 1 / 132.856 | observed 7513 / 1000000
+5x | BathMatBat     | check 0.011111111 | effective 1 / 92.690 | observed 10857 / 1000000
+5x | PlungerPogo    | check 0.014285714 | effective 1 / 72.902 | observed 13576 / 1000000
+5x | Duck           | check 0.020000000 | effective 1 / 52.828 | observed 18602 / 1000000
+5x | BubbleBeard    | check 0.041666667 | effective 1 / 25.875 | observed 38212 / 1000000
+5x | SpongeKnight   | check 0.050000000 | effective 1 / 22.500 | observed 44469 / 1000000
+5x | Fish           | check 0.062500000 | effective 1 / 18.947 | observed 52850 / 1000000
+5x | ToothpasteGoose | check 0.100000000 | effective 1 / 12.632 | observed 79046 / 1000000
+5x | DrainCrab      | check 0.142857143 | effective 1 / 9.825 | observed 101996 / 1000000
+5x | Rat            | check 0.200000000 | effective 1 / 8.187 | observed 121978 / 1000000
+5x | CapybaraCap    | check 0.208333333 | effective 1 / 9.825 | observed 101423 / 1000000
+5x | RollMole       | check 0.277777778 | effective 1 / 9.307 | observed 108158 / 1000000
+5x | BrushBristle   | check 0.357142857 | effective 1 / 10.023 | observed 100002 / 1000000
+5x | TubTadpole     | check 0.500000000 | effective 1 / 11.137 | observed 89890 / 1000000
+5x | ToiletPaper    | check 0.625000000 | effective 1 / 17.819 | observed 56313 / 1000000
+5x | SoggySock      | check 0.833333333 | effective 1 / 35.639 | observed 28072 / 1000000
+5x | LoopyLoofah    | check 1.000000000 | effective 1 / 178.194 | observed 5560 / 1000000
+5x | PocketPuddle   | check 1.000000000 | effective 1 / inf | observed 0 / 1000000
+5x | SudsSlug       | check 1.000000000 | effective 1 / inf | observed 0 / 1000000
+5x | Poop           | check 1.000000000 | effective 1 / inf | observed 0 / 1000000
+5x | expected first Secret at 1 flush/s: 22.83 hours; event probability 0.000055493; 12 players at 0.4s floor: 5.993 events/hour
+10x | CosmicCourtesy | check 0.000000667 | effective 1 / 1500000.000 | observed 0 / 1000000
+10x | Mystery        | check 0.000001000 | effective 1 / 1000000.667 | observed 0 / 1000000
+10x | InfiniteOccupied | check 0.000002000 | effective 1 / 500000.833 | observed 4 / 1000000
+10x | EmergencyUniverse | check 0.000004000 | effective 1 / 250000.917 | observed 2 / 1000000
+10x | TheLastToilet  | check 0.000006667 | effective 1 / 150001.150 | observed 7 / 1000000
+10x | AlienToilet    | check 0.000010000 | effective 1 / 100001.433 | observed 19 / 1000000
+10x | StarlightSeraph | check 0.000011111 | effective 1 / 90002.190 | observed 8 / 1000000
+10x | ConstellationClam | check 0.000015385 | effective 1 / 65002.304 | observed 20 / 1000000
+10x | CometCommode   | check 0.000022222 | effective 1 / 45002.287 | observed 17 / 1000000
+10x | HaloHamster    | check 0.000033333 | effective 1 / 30002.192 | observed 32 / 1000000
+10x | PlungerPaladin | check 0.000040000 | effective 1 / 25002.660 | observed 39 / 1000000
+10x | ThroneColossus | check 0.000055556 | effective 1 / 18002.635 | observed 51 / 1000000
+10x | GeyserGorilla  | check 0.000080000 | effective 1 / 12502.525 | observed 76 / 1000000
+10x | KingPoop       | check 0.000100000 | effective 1 / 10002.820 | observed 95 / 1000000
+10x | DrainKraken    | check 0.000133333 | effective 1 / 7502.865 | observed 136 / 1000000
+10x | SewerShark     | check 0.000200000 | effective 1 / 5002.577 | observed 173 / 1000000
+10x | BathBombBehemoth | check 0.000333333 | effective 1 / 3002.147 | observed 341 / 1000000
+10x | SteamGenie     | check 0.000500000 | effective 1 / 2002.099 | observed 455 / 1000000
+10x | LaundryYeti    | check 0.000833333 | effective 1 / 1201.860 | observed 783 / 1000000
+10x | Clogtopus      | check 0.001333333 | effective 1 / 751.789 | observed 1327 / 1000000
+10x | ToiletBaby     | check 0.002000000 | effective 1 / 501.862 | observed 1924 / 1000000
+10x | GoldenGargler  | check 0.002222222 | effective 1 / 452.581 | observed 2172 / 1000000
+10x | RoyalFlushFrog | check 0.003125000 | effective 1 / 322.552 | observed 3150 / 1000000
+10x | FaucetPharaoh  | check 0.004545455 | effective 1 / 222.450 | observed 4540 / 1000000
+10x | PorcelainPoodle | check 0.006666667 | effective 1 / 152.363 | observed 6593 / 1000000
+10x | GoldenPoop     | check 0.010000000 | effective 1 / 102.257 | observed 9696 / 1000000
+10x | TowelTornado   | check 0.011111111 | effective 1 / 92.961 | observed 10838 / 1000000
+10x | DiscoBidet     | check 0.015384615 | effective 1 / 67.893 | observed 14708 / 1000000
+10x | BathMatBat     | check 0.022222222 | effective 1 / 47.737 | observed 21075 / 1000000
+10x | PlungerPogo    | check 0.028571429 | effective 1 / 37.973 | observed 26284 / 1000000
+10x | Duck           | check 0.040000000 | effective 1 / 27.921 | observed 36164 / 1000000
+10x | BubbleBeard    | check 0.083333333 | effective 1 / 13.961 | observed 71626 / 1000000
+10x | SpongeKnight   | check 0.100000000 | effective 1 / 12.691 | observed 78969 / 1000000
+10x | Fish           | check 0.125000000 | effective 1 / 11.281 | observed 88485 / 1000000
+10x | ToothpasteGoose | check 0.200000000 | effective 1 / 8.058 | observed 124372 / 1000000
+10x | DrainCrab      | check 0.285714286 | effective 1 / 7.051 | observed 142002 / 1000000
+10x | Rat            | check 0.400000000 | effective 1 / 7.051 | observed 141947 / 1000000
+10x | CapybaraCap    | check 0.416666667 | effective 1 / 11.281 | observed 88387 / 1000000
+10x | RollMole       | check 0.555555556 | effective 1 / 14.504 | observed 68696 / 1000000
+10x | BrushBristle   | check 0.714285714 | effective 1 / 25.383 | observed 38932 / 1000000
+10x | TubTadpole     | check 1.000000000 | effective 1 / 63.457 | observed 15855 / 1000000
+10x | ToiletPaper    | check 1.000000000 | effective 1 / inf | observed 0 / 1000000
+10x | SoggySock      | check 1.000000000 | effective 1 / inf | observed 0 / 1000000
+10x | LoopyLoofah    | check 1.000000000 | effective 1 / inf | observed 0 / 1000000
+10x | PocketPuddle   | check 1.000000000 | effective 1 / inf | observed 0 / 1000000
+10x | SudsSlug       | check 1.000000000 | effective 1 / inf | observed 0 / 1000000
+10x | Poop           | check 1.000000000 | effective 1 / inf | observed 0 / 1000000
+10x | expected first Secret at 1 flush/s: 11.42 hours; event probability 0.000110972; 12 players at 0.4s floor: 11.985 events/hour
+Odds simulation passed: all items, 3 million independent rolls, exact sum 1; queue/rate limit unchanged.
+Full tier-15 pool at 10x: item | rarity | check percent | outcome percent | expected flushes
+CosmicCourtesy | Secret | 0.0000666667% | 0.0000666667% | 1500000.000
+Mystery | Secret | 0.0001000000% | 0.0000999999% | 1000000.667
+InfiniteOccupied | Secret | 0.0002000000% | 0.0001999997% | 500000.833
+EmergencyUniverse | Secret | 0.0004000000% | 0.0003999985% | 250000.917
+TheLastToilet | Secret | 0.0006666667% | 0.0006666616% | 150001.150
+AlienToilet | Secret | 0.0010000000% | 0.0009999857% | 100001.433
+StarlightSeraph | Celestial | 0.0011111111% | 0.0011110841% | 90002.190
+ConstellationClam | Celestial | 0.0015384615% | 0.0015384070% | 65002.304
+CometCommode | Celestial | 0.0022222222% | 0.0022221093% | 45002.287
+HaloHamster | Celestial | 0.0033333333% | 0.0033330898% | 30002.192
+Any Celestial | 0.0082046902% | 12188.151 expected flushes
+Any Secret | 0.0024333120% | 41096.250 expected flushes

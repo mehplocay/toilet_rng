@@ -9,7 +9,7 @@ Reference: `docs/reference/quality-reference-1.webp` (a top roll-style Roblox ga
 4. Left column: big square icon buttons with a short label under the icon (Shop, Rebirth, Index). Top center: tab buttons (Hub / Home / Shop style) for teleports.
 5. Offer cards on the right edge: icon, title, price pill, timer, "OP!" sticker; collapses on small screens.
 6. Currency: very large green/gold number bottom-left with coin icon; counts up with a tween when it changes.
-7. The luck chip shows the current total multiplier and 10x cap. Tap it for the permanent-pass breakdown and exact item odds. Server and daily boost countdowns remain available; paid perks display regional unavailability when policy eligibility expires.
+7. The luck chip shows the current uncapped multiplier, using scientific notation for large values. Tap it for the permanent-pass breakdown and exact item odds. Server and daily boost countdowns remain available; paid perks display regional unavailability when policy eligibility expires.
 8. World: strongly saturated palette, colored sky with distant mountains, ocean/water, palm trees, many small props, bloom. Never large flat gray or beige surfaces.
 
 ## Asset plan
@@ -25,4 +25,4 @@ Reference: `docs/reference/quality-reference-1.webp` (a top roll-style Roblox ga
 - Offer cards on the right ("More Cash 199", "Jackpot Roll 79", "999x luck") use sticker labels ("OP!"), big outlined numbers and a coin icon; claim indicator with a red count badge on the Daily button.
 - Prompt text pulses at screen center ("Roll a unit!") to tell the player what to do next: use for the FLUSH tutorial hint.
 
-Permanent luck update (2026-10-07): VIP +25% luck and 2x Luck are random-item odds boosts, preserved through rebirth as pass entitlements, and usable only with current policy eligibility. Free upgrade/rebirth luck values are unchanged. Total luck stays capped at 10x; Lucky Flush adds no benefit at the cap. Pass cards expose Info: all item odds; the HUD and odds breakdown identify "VIP +25% luck" and "2x Luck pass", or "unavailable in your region". Percentage rounding is disclosed. [Details and balance](vip-luck-balance.md).
+Permanent luck update (2026-10-07): VIP +25% luck and 2x Luck are random-item odds boosts, preserved through rebirth as pass entitlements, and usable only with current policy eligibility. Free upgrade/rebirth luck values are unchanged. Total luck is uncapped; each Lucky Flush charge multiplies the current total by ten. Individual checks still stop at probability 1, and earlier certain outcomes suppress later items. Pass cards expose Info: all item odds; the HUD and odds breakdown identify "VIP +25% luck" and "2x Luck pass", or "unavailable in your region". Percentage rounding is disclosed. [Details and balance](vip-luck-balance.md).

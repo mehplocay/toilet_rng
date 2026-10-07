@@ -1,4 +1,4 @@
--- Every tier rolls all Config.Items. Luck shares the global 10x cap with other boosts.
+-- Every tier rolls all Config.Items. Luck stacks with other boosts without a ceiling.
 -- All-pools tuning and cohort evidence: docs/design/all-pools.md.
 -- ServiceCoins are a guaranteed award per successful flush, independent of item and luck.
 return {
