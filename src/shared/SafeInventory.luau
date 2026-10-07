@@ -51,14 +51,14 @@ function SafeInventory.Sell(profile, items, id, count, cashMultiplier)
 		return false
 	end
 	-- Round per copy, so batching or splitting sales cannot change their value.
-	local perCopy = math.floor(CashMath.Product(item.Value, multiplier, 9e15) + 1e-9)
-	local room = math.min(9e15 - profile.Coins, 9e15 - profile.Stats.Earned)
+	local perCopy = math.floor(CashMath.Product(item.Value, multiplier, CashMath.Limit) + 1e-9)
+	local room = math.min(CashMath.Limit - profile.Coins, CashMath.Limit - profile.Stats.Earned)
 	-- Reject oversized batches before multiplication can leave the exact integer range.
 	if perCopy > math.floor(room / count) then
 		return false
 	end
 	local value = perCopy * count
-	if value > 9e15 - profile.Coins or value > 9e15 - profile.Stats.Earned then
+	if not CashMath.CanGrant(profile, value) then
 		return false
 	end
 	profile.Inventory[id] -= count

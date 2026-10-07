@@ -172,14 +172,17 @@ test("rebirth rewards: R15 with both cash passes stays inside exact ledger and w
 	p.Inventory.Mystery = 100
 	p.Income.UpdatedAt = 1
 	commerce.Income:Settle(p, 9e12, false)
-	assert(commerce.Income:TotalUnits(p) == 9e15)
+	assert(commerce.Income:TotalUnits(p) > 9e15 and commerce.Income:TotalUnits(p) < 1e300)
 	for _, rate in pairs(commerce.Income:Rates(p)) do
 		assert(rate % 1 == 0 and rate < 9e15)
 	end
-	p.Coins, p.Stats.Earned = 9e15 - 7, 9e15 - 5
-	assert(commerce.Income:Collect(p) == 5)
-	assert(p.Coins == 9e15 - 2 and p.Stats.Earned == 9e15 and commerce.Income:TotalUnits(p) == 9e15 - 30000)
+	p.Coins, p.Stats.Earned = 1e300, 1e300
+	local pending = commerce.Income:TotalUnits(p)
+	assert(commerce.Income:Collect(p) == 0 and commerce.Income:TotalUnits(p) == pending)
+	p.Coins, p.Stats.Earned = 0, 0
+	assert(commerce.Income:Collect(p) > 0)
 	assert(commerce.Income:Collect(p) == 0)
+
 	local q = e.Data.Sanitize(p)
 	assert(q.Coins == p.Coins and q.Stats.Earned == p.Stats.Earned and q.RebirthLevel == 15)
 	assert(commerce.Income:TotalUnits(q) == commerce.Income:TotalUnits(p))

@@ -56,7 +56,13 @@ function Rewards.Create(gui, remotes)
 			card.Marks(not claimed and not today, claimed)
 			card.Frame.Background.UIStroke.Color = if today then C.Green elseif claimed then C.Muted else C.Gold
 			card.Value.Text = C.Commas(
-				math.floor(CashMath.Product(Schedule.Coins(index, state.ToiletTier, Config), Paid.Cash(state, 1), 9e15))
+				math.floor(
+					CashMath.Product(
+						Schedule.Coins(index, state.ToiletTier, Config),
+						Paid.Cash(state, 1),
+						CashMath.Limit
+					)
+				)
 			) .. " Coins" .. (if index == #Config.BaseCoins then "\n+ 10 min x2 Luck" else "")
 		end
 		countdown.Text = (if available then "Ready! Resets in " else "Next reward in ") .. duration(nextAt - now)

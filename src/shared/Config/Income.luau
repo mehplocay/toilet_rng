@@ -1,3 +1,4 @@
+local Limit = require(if script then script.Parent.Economy else "./Economy").MaxAmount
 return {
 	-- Coins/second at Basic, before cash and toilet multipliers.
 	RarityRates = {
@@ -33,47 +34,16 @@ return {
 	MaxOfflineMinutes = 24 * 60,
 	-- Coins/minute including the toilet factor. Rates applies that factor once,
 	-- then multiplies all cash bonuses without a gameplay multiplier ceiling.
-	-- Ten maximum-rate Secrets fit; legacy larger displays share the same player cap.
-	SlotRateCaps = {
-		6000000,
-		9000000,
-		13200000,
-		19800000,
-		31500000,
-		51000000,
-		78000000,
-		117000000,
-		175500000,
-		260000000,
-		390000000,
-		585000000,
-		877500000,
-		1300000000,
-		1950000000,
-	},
-	PlayerRateCaps = {
-		60000000,
-		90000000,
-		132000000,
-		198000000,
-		315000000,
-		510000000,
-		780000000,
-		1170000000,
-		1755000000,
-		2600000000,
-		3900000000,
-		5850000000,
-		8775000000,
-		13000000000,
-		19500000000,
-	},
-	SlotPendingCap = 37440000000,
-	PlayerPendingCap = 374400000000,
-	MaxLedgerUnits = 9e15, -- Integer subcoins, NOT coins; exact accumulation.
+	-- No design rate or storage caps, including legacy displays.
+	SlotRateCaps = table.create(15, Limit),
+	PlayerRateCaps = table.create(15, Limit),
+	-- Compatibility aliases for tooling; actual storage is governed by MaxLedgerUnits.
+	SlotPendingCap = Limit,
+	PlayerPendingCap = Limit,
+	MaxLedgerUnits = Limit, -- Persisted subcoins; approximate above 2^53.
 	MaxSlots = 100, -- Includes legacy saved capacities.
 	UnitsPerCoin = 6000, -- Persisted scale: do not change without a ledger migration.
-	MaxBalance = 9e15,
+	MaxBalance = Limit,
 	MaxTimestamp = 4102444800,
 	RefreshSeconds = 1,
 	CollectRange = 10,

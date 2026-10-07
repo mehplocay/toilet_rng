@@ -26,7 +26,7 @@ test("uncapped cash: all passes, R15, max upgrades and every display tier", func
 				assert(units % 1 == 0 and units >= 0 and units <= 9e15)
 				total += units
 			end
-			assert(math.abs(total - math.min(slots, 10) * 100000 * 204 * factor * 6000) <= 1)
+			assert(math.abs(total - slots * 100000 * 204 * factor * 6000) <= 1)
 		end
 	end
 	assert(u:Cash(p, 325) == 66300 and u:Luck(p, 10, 1e300) == 10 and u:Cooldown(p, 0.1) == 0.4)
@@ -43,7 +43,7 @@ test("uncapped cash: future factors saturate only numeric bounds and reject nonf
 	assert(paid.Cash(p, 100) == 1200, "A future paid pass must stack beyond the former 3x cap")
 	config.Gamepasses.FutureCash.CashMultiplier = 1e300
 	local factor = paid.Cash(p, 1e300)
-	assert(factor > 1e300 and factor < math.huge)
+	assert(factor == 1e300 and factor < math.huge)
 	assert(mathRules.Product(9e15 - 1, 1, 9e15) == 9e15 - 1)
 	assert(mathRules.Round(9e15 - 1) == 9e15 - 1)
 	local inventory = e:Load("src/shared/SafeInventory")
@@ -57,10 +57,10 @@ test("uncapped cash: future factors saturate only numeric bounds and reject nonf
 		assert(not pcall(service.Grant, p, toilets[1], invalid))
 		assert(p.Coins == 0 and p.Stats.Earned == 0 and p.Inventory.Poop == 2)
 	end
-	assert(service.Grant(p, toilets[1], factor) == 9e15)
+	assert(service.Grant(p, toilets[1], factor) == 1e300)
 	assert(service.Grant(p, toilets[1], factor) == nil)
 	p.Coins, p.Stats.Earned = 0, 0
-	assert(inventory.Sell(p, items, "Poop", 1, factor) and p.Coins == 9e15 and p.Stats.Earned == 9e15)
+	assert(inventory.Sell(p, items, "Poop", 1, factor) and p.Coins == 1e300 and p.Stats.Earned == 1e300)
 	local u = e:Load("src/shared/UpgradeRules").new(e:Load("src/shared/Config/Upgrades"))
 	local income = e:Load("src/shared/IncomeAccrual").new(e:Load("src/shared/Config/Income"), items, u)
 	p.ToiletTier, p.RebirthLevel, p.DisplaySlots = 15, 15, 100
@@ -73,15 +73,15 @@ test("uncapped cash: future factors saturate only numeric bounds and reject nonf
 		assert(rate % 1 == 0)
 		total += rate
 	end
-	assert(total == 9e15)
+	assert(mathRules.Near(total, 1e300))
 	p.Income = { UpdatedAt = 1000, Pending = { ["1"] = 1 } }
 	income:Settle(p, income.Config.MaxTimestamp, true)
-	assert(income:TotalUnits(p) == 9e15)
+	assert(income:TotalUnits(p) == 1e300)
 	p.Income.Pending["1"] -= 1
 	p.Income = income:Sanitize(p.Income, p)
-	assert(income:TotalUnits(p) == 9e15 - 1 and income:Collect(p) == 0)
+	assert(income:TotalUnits(p) == 1e300 and income:Collect(p) == 0)
 	p.Coins, p.Stats.Earned = 0, 0
-	assert(income:Collect(p) == 1499999999999 and income:TotalUnits(p) == 5999)
+	assert(mathRules.Near(income:Collect(p), 1e300 / 6000) and income:TotalUnits(p) == 0)
 	local format = e:Load("src/shared/NumberFormat")
 	assert(format.Compact(1e21) == "1Sx" and format.Compact(1e33) == "1Dc")
 	for _, value in ipairs({ 1e36, 1e100, 1e300, factor }) do

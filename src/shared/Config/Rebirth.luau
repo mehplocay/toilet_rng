@@ -1,3 +1,4 @@
+local Limit = require(if script then script.Parent.Economy else "./Economy").MaxAmount
 -- Cumulative rebirth cash bonus multiplies Cash Boost and display/paid factors.
 local levels = {
 	{
@@ -182,7 +183,7 @@ return {
 	DisplayCapacity = 10,
 	Cosmetics = cosmetics,
 	ResponseTimeout = 15,
-	MaxBalance = 9e15,
+	MaxBalance = Limit,
 	LuckBonusCap = 1,
 	SpeedBonusCap = 0.50,
 	-- Shares the existing announcement queue and its per-player cooldown.

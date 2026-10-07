@@ -16,7 +16,7 @@ return {
 			Color = { 255, 165, 55 },
 			Description = "All 14 other passes. No consumables",
 		},
-		Coins24Hours = { Icon = "CoinPackHuge", Color = { 255, 150, 40 }, Description = "24 hours of display income" },
+		Coins24Hours = { Icon = "CoinPackHuge", Color = { 255, 150, 40 }, Description = "= 24 hours of income" },
 		LuckyFlush1 = { Icon = "LuckyFlush1", Color = { 145, 230, 130 }, Description = "10x luck for one flush" },
 		LuckyFlush5 = { Icon = "LuckyFlush5", Color = { 110, 220, 175 }, Description = "Five single-use luck charges" },
 		LuckyFlush20 = { Icon = "LuckyFlush20", Color = { 120, 190, 255 }, Description = "20 single-use luck charges" },
@@ -31,10 +31,10 @@ return {
 		Coins10Minutes = {
 			Icon = "CoinPackMini",
 			Color = { 255, 225, 110 },
-			Description = "10 minutes of display income",
+			Description = "= 10 minutes of income",
 		},
-		Coins1Hour = { Icon = "CoinPackSmall", Color = { 255, 200, 75 }, Description = "1 hour of display income" },
-		Coins6Hours = { Icon = "CoinPackLarge", Color = { 255, 170, 50 }, Description = "6 hours of display income" },
+		Coins1Hour = { Icon = "CoinPackSmall", Color = { 255, 200, 75 }, Description = "= 1 hour of income" },
+		Coins6Hours = { Icon = "CoinPackLarge", Color = { 255, 170, 50 }, Description = "= 6 hours of income" },
 		PathBoost10Minutes = {
 			Icon = "PathBoost",
 			Color = { 80, 240, 255 },

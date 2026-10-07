@@ -1,5 +1,7 @@
 > Superseded catalog: the owner-authorized extended catalog now includes premium VIP, cosmetics, eight products and policy-gated Lucky Flush. [Authoritative creation list and current transaction contract](../monetization-catalog.md). Historical implementation notes below describe the prior catalog, including obsolete no-paid-luck statements.
 
+> Current monetary contract (2026-10-07, fix/raise-bounds): all monetary validation and products use `Config/Economy.MaxAmount = 1e300`. No design cap remains on wallet, earned, income, pending storage or rewards. Packs grant current display coins/s × 600 / 3,600 / 21,600 / 86,400, floored to whole coins with a 100-coin minimum and only the technical bound. Scientific formatting supports huge amounts. Paid receipts defer intact when room is insufficient. Existing progression prices, level counts and offline time windows are unchanged. See [coin bound audit](coin-bounds.md) for precision, persistence limits and the complete changed-bound list. Earlier numeric ceilings below are historical.
+
 # Fair monetization: implemented catalog
 
 Current Lucky Flush odds use full linear luck on every item check, capped at 10x total and probability 1. The disclosure lists actual rare-first outcome probabilities from the production roll distribution. See [linear luck validation](luck-linear.md); cash factors now multiply without any multiplier cap; see [uncapped cash](no-cash-cap.md).
@@ -34,7 +36,7 @@ Display slots are never sold. All ten slots are available through coin upgrades,
 
 Offline Plus doubles both the earned tank duration and pending storage capacity. Saved verified ownership is restored before offline settlement/sanitization. Auto Collect runs every five seconds anywhere on the map for the living owner of an assigned plot, with a live session and the verified pass/bundle or free R5 perk; it credits the same pending ledger as manual collection without creating income. Mutation is non-yielding and ordinary autosave/close persists debit and credit together. It skips active saves; manual collection still uses its existing durable save/limits. A crash can lose unsaved ordinary accrual/collection, just like existing gameplay.
 
-VIP daily chest uses ten minutes of current display income, floored/clamped to 100–1,000,000,000 coins, once per UTC day. Claim marker and coins are one guarded replacement/save. Duplicate requests, rejoin and rebirth retain the day marker. No automatic daily purchase prompts.
+VIP daily chest uses ten minutes of current display income, floored to whole coins with a 100-coin minimum and the shared 1e300 technical bound, once per UTC day. Claim marker and coins are one guarded replacement/save. Duplicate requests, rejoin and rebirth retain the day marker. No automatic daily purchase prompts.
 
 ## Products and recovery
 

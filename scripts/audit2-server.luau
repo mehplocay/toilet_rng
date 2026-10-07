@@ -103,9 +103,9 @@ end)
 test("audit2: Studio grants reject Earned saturation atomically", function()
 	local e = server({ Studio = true })
 	local player, profile = e:Join(201)
-	profile.Stats.Earned = 9e15
+	profile.Stats.Earned = 1e300
 	e:Fire("DevGrant", player, "1000")
-	assert(profile.Coins == 0 and profile.Stats.Earned == 9e15)
+	assert(profile.Coins == 0 and profile.Stats.Earned == 1e300)
 end)
 
 test("audit2: yielding saves cannot accumulate upgrade/index/daily save waiters", function()

@@ -1,4 +1,4 @@
--- Pure fixed-point accounting; callers own the session lease and never yield during mutation.
+-- Subcoin accounting: exact at ordinary scales, approximate above 2^53. Mutations never yield.
 local Income = {}
 local CashMath = require(if script then script.Parent.CashMath else "./CashMath")
 function Income.new(config, items, upgrades)
@@ -22,15 +22,9 @@ function Income:CapacityMultiplier(profile)
 		)
 		else 1
 end
--- Keep the persisted scale; cap subcoins separately from wallet coins.
-function Income:StorageUnits(profile, perSlot)
-	local c = self.Config
-	local coins = CashMath.Product(
-		if perSlot then c.SlotPendingCap else c.PlayerPendingCap,
-		self:CapacityMultiplier(profile),
-		math.floor(c.MaxLedgerUnits / c.UnitsPerCoin)
-	)
-	return math.floor(math.min(coins, math.floor(c.MaxLedgerUnits / c.UnitsPerCoin))) * c.UnitsPerCoin
+-- Retain the persisted scale and apply the same technical bound in subcoin units.
+function Income:StorageUnits(_profile, _perSlot)
+	return self.Config.MaxLedgerUnits
 end
 function Income:Sanitize(raw, profile)
 	local c = self.Config
@@ -49,11 +43,11 @@ function Income:Sanitize(raw, profile)
 		local units = math.min(bounded(value, slotStorage), remaining)
 		if units > 0 then
 			result.Pending[key] = units
-			remaining -= units
+			remaining = math.max(0, remaining - units)
 		end
 	end
 	if type(raw.Offline) == "table" then
-		local total = self:StorageUnits(profile, false) - remaining
+		local total = self:TotalUnits({ Income = result })
 		local units = math.min(total, bounded(raw.Offline.Units, c.MaxLedgerUnits))
 		if units > 0 then
 			result.Offline = {
@@ -85,15 +79,15 @@ end
 function Income:TotalUnits(profile)
 	local total = 0
 	for _, units in pairs(profile.Income.Pending) do
-		total += units
+		total = CashMath.Add(total, units, self.Config.MaxLedgerUnits)
 	end
 	return total
 end
--- Division can round (9e15 - 1)/6000 up to a whole coin. Correct using exact integers.
+-- Correct division rounding while subcoins are exact; larger amounts intentionally approximate.
 function Income:WholeCoins(units)
 	local scale = self.Config.UnitsPerCoin
 	local coins = math.floor(units / scale)
-	return if coins * scale > units then coins - 1 else coins
+	return if units < 2 ^ 53 and coins * scale > units then coins - 1 else coins
 end
 function Income:PendingCoins(profile)
 	return self:WholeCoins(self:TotalUnits(profile))
@@ -112,14 +106,14 @@ function Income:Rates(profile)
 		local key = tostring(slot)
 		local item = self.Items[profile.Displays[key]]
 		if item then
-			local weight = math.min(c.RarityRates[item.Rarity] or 0, slotCap) * c.UnitsPerCoin
-			rates[key], total = weight, total + weight
+			local weight = CashMath.Product(math.min(c.RarityRates[item.Rarity] or 0, slotCap), c.UnitsPerCoin)
+			rates[key], total = weight, CashMath.Add(total, weight)
 		end
 	end
 	if total == 0 then
 		return rates
 	end
-	local playerCap = (c.PlayerRateCaps[profile.ToiletTier] or 0) / tier / 60 * c.UnitsPerCoin
+	local playerCap = CashMath.Product((c.PlayerRateCaps[profile.ToiletTier] or 0) / tier / 60, c.UnitsPerCoin)
 	local base = math.min(total, playerCap)
 	local cap = math.floor(CashMath.Product(base, cash, c.MaxLedgerUnits))
 	if total <= playerCap and cash < c.MaxLedgerUnits / total then
@@ -135,7 +129,7 @@ function Income:Rates(profile)
 		local allocated = 0
 		for slot = 1, slots do
 			local key = tostring(slot)
-			local units = math.min(cap - allocated, math.floor((rates[key] or 0) / total * cap))
+			local units = math.min(math.max(0, cap - allocated), math.floor((rates[key] or 0) / total * cap))
 			rates[key], allocated = units, allocated + units
 		end
 		local remaining = cap - allocated
@@ -232,23 +226,41 @@ function Income:Collect(profile, slot, maximum)
 		else self:PendingCoins(profile)
 	local coins =
 		math.min(available, maximum or c.MaxBalance, c.MaxBalance - profile.Coins, c.MaxBalance - profile.Stats.Earned)
-	if coins <= 0 then
+	if coins <= 0 or not CashMath.CanGrant(profile, coins) then
 		return 0
 	end
-	local remaining = coins * c.UnitsPerCoin
+	local remaining = CashMath.Product(coins, c.UnitsPerCoin)
+	local pendingCopy = table.clone(profile.Income.Pending)
 	for index = slot or 1, slot or c.MaxSlots do
 		local key = tostring(index)
 		local pending = profile.Income.Pending[key] or 0
-		local debit = math.min(pending, remaining)
-		profile.Income.Pending[key] = if pending > debit then pending - debit else nil
-		remaining -= debit
+		-- At approximate magnitudes consume conversion dust together with the award.
+		-- Exact subcoin tails below 2^53 remain untouched.
+		local debit = if pending >= 2 ^ 53
+				and remaining > 0
+				and CashMath.Near(pending, remaining)
+			then pending
+			else math.min(pending, remaining)
+		local after = pending - debit
+		if debit > 0 and after == pending then
+			return 0
+		end
+		pendingCopy[key] = if after > 0 then after else nil
+		remaining = math.max(0, remaining - debit)
 	end
+	if remaining > 0 and not CashMath.Near(remaining, 0) and remaining > coins * c.UnitsPerCoin * 2 ^ -48 then
+		return 0
+	end
+	profile.Income.Pending = pendingCopy
 	profile.Coins += coins
 	profile.Stats.Earned += coins
 	-- Coins are fungible: every pad/jar/away collection consumes offline credit first.
 	local report = profile.Income.Offline
 	if report then
-		report.Units = math.max(0, report.Units - coins * c.UnitsPerCoin)
+		local debit = CashMath.Product(coins, c.UnitsPerCoin)
+		report.Units = if report.Units >= 2 ^ 53 and CashMath.Near(report.Units, debit)
+			then 0
+			else math.max(0, report.Units - debit)
 		if report.Units == 0 then
 			profile.Income.Offline = nil
 		end

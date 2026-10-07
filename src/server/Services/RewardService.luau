@@ -21,9 +21,13 @@ function RewardService:Claim(profile)
 	-- Daily tuning is independent of display rates and coin/rebirth upgrades.
 	-- Apply paid cash once; pending income already includes its own multipliers.
 	local coins = math.floor(
-		CashMath.Product(self.Schedule.Coins(day, profile.ToiletTier, self.Config), Paid.Cash(profile, 1), 9e15)
+		CashMath.Product(
+			self.Schedule.Coins(day, profile.ToiletTier, self.Config),
+			Paid.Cash(profile, 1),
+			CashMath.Limit
+		)
 	)
-	if coins > 9e15 - profile.Coins or coins > 9e15 - profile.Stats.Earned then
+	if not CashMath.CanGrant(profile, coins) then
 		return { Success = false, Message = "Coin limit reached." }
 	end
 	-- No yields: eligibility and all reward mutations are one server-side operation.

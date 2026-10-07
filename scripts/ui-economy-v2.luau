@@ -1,8 +1,8 @@
 do
 	local root, remotes = H.Root(390, 722), H.Remotes()
 	local state = {
-		Coins = 9e15,
-		PendingCoins = 34560000000,
+		Coins = 1e300,
+		PendingCoins = 1.23e200,
 		ToiletTier = 7,
 		LifetimeFlushes = 3300,
 		RunFlushes = 3300,
@@ -27,13 +27,13 @@ do
 	})
 	hud.Update(state)
 	-- Exercise the actual NumberValue -> wallet label callback, independently of the tween mock.
-	root.HUD.Wallet.NumberValue.Changed:Fire(9e15)
-	assert(contains(root.HUD.Wallet, "9Qa"))
+	root.HUD.Wallet.NumberValue.Changed:Fire(1e300)
+	assert(contains(root.HUD.Wallet, "1.00e300"))
 	local pending = H.Load("src/client/UI/IncomeChip").Create(root)
 	pending.Update(state.PendingCoins)
-	assert(contains(root.PendingIncome, "Pending: 34.5B"))
-	H.Load("src/client/UI/CoinPopup").Create(root)(1500000000000, true)
-	assert(contains(root.ServiceCoinPopup, "+1.5T"))
+	assert(contains(root.PendingIncome, "Pending: 1.23e200"))
+	H.Load("src/client/UI/CoinPopup").Create(root)(1.23e100, true)
+	assert(contains(root.ServiceCoinPopup, "+1.23e100"))
 	-- Generic tween completion is deliberately outside this UI double; remove transient fixtures for snapshots.
 	for _, object in ipairs(root:GetChildren()) do
 		if object.Name == "ServiceCoinPopup" or object.Name == "IncomeCoinFlight" then
@@ -43,7 +43,7 @@ do
 	local rebirth = H.Load("src/client/UI/Rebirth").Create(root, remotes)
 	rebirth.Update(state)
 	rebirth.Panel.Visible = true
-	assert(contains(rebirth.Panel, "9Qa wallet Coins + 34.5B pending Coins reset."))
+	assert(contains(rebirth.Panel, "1.00e300 wallet Coins + 1.23e200 pending Coins reset."))
 	H.Layout(root)
 	local scroll, body = rebirth.Panel.ContentScroll, rebirth.Panel.ContentScroll.Body
 	scroll.CanvasPosition = Vector2.new(0, math.max(0, body.AbsoluteSize.Y - scroll.AbsoluteSize.Y))
@@ -51,13 +51,13 @@ do
 	rebirth.Panel.Visible = false
 	local shop = H.Load("src/client/UI/Upgrades").Create(root, remotes)
 	shop.Update({
-		Coins = 9e15,
+		Coins = 1e300,
 		ToiletTier = 6,
 		DisplaySlots = 10,
 		Upgrades = { CashBoost = 9, LuckBoost = 9, OfflineTank = 9 },
 	})
 	shop.Panel.Visible = true
-	assert(contains(shop.Panel, "16.5M Coins") and contains(shop.Panel, "9Qa Coins"))
+	assert(contains(shop.Panel, "16.5M Coins") and contains(shop.Panel, "1.00e300 Coins"))
 	shop.Panel.ContentScroll.Body:FindFirstChild("Coin Upgrades", true).Activated:Fire()
 	H.Snapshot(root, "income-first-upgrades-phone")
 	root:Destroy()

@@ -71,6 +71,9 @@ if (!$Baseline -and !$Audit2Baseline -and !$DisplayCollectBaseline) {
     $parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'audit-autocollect-anywhere.luau')))
     $parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'audit-tutorial.luau')))
 }
+if (!$Baseline -and !$Audit2Baseline -and !$DisplayCollectBaseline) {
+    $parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'audit-coin-bounds.luau')))
+}
 $parts.Add('do')
 $parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'ui-harness.luau')))
 if (!$Baseline -and !$Audit2Baseline -and !$DisplayCollectBaseline) {

@@ -1,3 +1,4 @@
+local Limit = require(if script then script.Parent.Economy else "./Economy").MaxAmount
 -- Identity is checked only by the server. Names are never credentials.
 return {
 	UserIds = { [1212975135] = true },
@@ -6,7 +7,7 @@ return {
 	AuthorizationCacheSeconds = 60,
 	CountAdminProfilesInRankings = true,
 	MaxItemGrant = 10000,
-	MaxCoins = 1e12,
+	MaxCoins = Limit,
 	MaxCounter = 1000000000,
 	MaxImportBytes = 100000,
 	MaxImportNodes = 4096,
@@ -22,7 +23,7 @@ return {
 		Mutation = { Capacity = 1, Refill = 0.2 },
 		World = { Capacity = 1, Refill = 0.125 },
 	},
-	CoinPresets = { 1000, 10000, 100000, 1000000, 1000000000, 1000000000000 },
+	CoinPresets = { 1000, 10000, 100000, 1000000, 1000000000, 1000000000000, 1e30, 1e100, Limit },
 	LightingPresets = {
 		Day = { ClockTime = 14, Brightness = 3 },
 		Sunset = { ClockTime = 18, Brightness = 2 },

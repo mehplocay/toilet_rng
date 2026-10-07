@@ -1,4 +1,4 @@
--- Presentation only; wallet validation remains capped at 9e15 on the server.
+-- Shared presentation for all finite coin amounts, including scientific notation.
 local Format = {}
 local suffixes = { "", "K", "M", "B", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "Dc" }
 local scales = { 1, 1e3, 1e6, 1e9, 1e12, 1e15, 1e18, 1e21, 1e24, 1e27, 1e30, 1e33 }
@@ -7,7 +7,7 @@ function Format.Compact(value, decimals)
 		return "0"
 	end
 	if value >= 1e36 then
-		return string.format("%.2e", value)
+		return (string.format("%.2e", value):gsub("e%+0*", "e"))
 	end
 	local index = 1
 	while index < #suffixes and value >= scales[index + 1] do

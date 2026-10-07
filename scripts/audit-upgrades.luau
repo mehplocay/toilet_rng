@@ -293,9 +293,9 @@ test("upgrades: numeric ceilings reject the entire flush before currency or inve
 		local e = server()
 		local player, p = e:Join(78)
 		if field == "Coins" then
-			p.Coins = 9e15
+			p.Coins = 1e300
 		elseif field == "Earned" or field == "Flushes" then
-			p.Stats[field] = 9e15
+			p.Stats[field] = if field == "Earned" then 1e300 else 9e15
 		else
 			p[field].Poop = 9e15
 		end

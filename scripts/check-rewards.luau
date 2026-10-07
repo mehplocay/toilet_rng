@@ -47,7 +47,7 @@ now = (profile.LastClaimDay + 1) * Config.DaySeconds
 profile.ToiletTier = 7
 assert(service:Claim(profile).Coins == Config.BaseCoins[2] * Config.TierMultipliers[7])
 now += Config.DaySeconds
-profile.Coins = 9e15
+profile.Coins = 1e300
 local lastDay = profile.LastClaimDay
 assert(not service:Claim(profile).Success and profile.LastClaimDay == lastDay)
 
@@ -141,10 +141,10 @@ for _, double in ipairs({ false, true }) do
 					assert(service:Claim(paidProfile).Coins == expected and balance[field] == 9e15)
 					paidProfile = fresh()
 					balance = if field == "Coins" then paidProfile else paidProfile.Stats
-					balance[field] = 9e15 - expected + 1
+					balance[field] = 1e300
 					local last = paidProfile.LastClaimDay
 					assert(not service:Claim(paidProfile).Success)
-					assert(balance[field] == 9e15 - expected + 1 and paidProfile.LastClaimDay == last)
+					assert(balance[field] == 1e300 and paidProfile.LastClaimDay == last)
 					assert(paidProfile.Streak == rewardDay - 1 and paidProfile.RewardLuckExpires == 0)
 				end
 			end

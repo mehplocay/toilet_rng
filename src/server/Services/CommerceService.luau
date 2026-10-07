@@ -1,3 +1,5 @@
+local NumberFormat = require(game.ReplicatedStorage.Shared.NumberFormat)
+local CashMath = require(game.ReplicatedStorage.Shared.CashMath)
 local Shared = game.ReplicatedStorage.Shared
 local Config = require(Shared.Config.Monetization)
 local Profile = require(Shared.CommerceProfile)
@@ -102,6 +104,9 @@ function Commerce:Start(limiter, remotes)
 			remotes.Result:FireClient(player, "BuyProduct", { Success = success, Message = message })
 		end
 	end
+	self.Receipts.Notify = function(player, message)
+		result(player, false, message)
+	end
 	Marketplace.ProcessReceipt = function(info)
 		return self.Receipts:Process(info)
 	end
@@ -155,9 +160,17 @@ function Commerce:Start(limiter, remotes)
 		end
 		local coins = if quote then quote.Coins else self.Receipts:Quote(profile, key)
 		-- Client amount is only a stale-quote check; it is never a grant source.
-		if expectedCoins ~= coins then
+		if not CashMath.Amount(expectedCoins) or not CashMath.Near(expectedCoins, coins) then
 			self.Sync(player)
 			result(player, false, "Income changed. Review the updated coin amount and try again.")
+			return
+		end
+		if product.IncomeSeconds and not CashMath.CanGrant(profile, coins) then
+			result(
+				player,
+				false,
+				"Make room in your wallet before buying this pack. Paid purchases remain pending until delivery."
+			)
 			return
 		end
 		self.Prompting[player] = product.Id
@@ -217,7 +230,7 @@ function Commerce:Start(limiter, remotes)
 			return
 		end
 		local coins = Paid.CoinGrant(self.Receipts:Rate(profile), Config.VIPChestSeconds)
-		if profile.Coins > 9e15 - coins or profile.Stats.Earned > 9e15 - coins then
+		if not CashMath.CanGrant(profile, coins) then
 			return
 		end
 		local replacement = Profile.Copy(profile)
@@ -229,7 +242,7 @@ function Commerce:Start(limiter, remotes)
 			remotes.Result:FireClient(
 				player,
 				"ClaimVIP",
-				{ Success = true, Coins = coins, Message = "+" .. coins .. " VIP daily Coins!" }
+				{ Success = true, Coins = coins, Message = "+" .. NumberFormat.Compact(coins) .. " VIP daily Coins!" }
 			)
 		end
 	end)

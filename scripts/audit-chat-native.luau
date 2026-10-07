@@ -208,7 +208,7 @@ test(
 		local player = e:Player(910)
 		e.Players.List = { player }
 		local profile =
-			{ Coins = 9e15, RebirthLevel = 3, Stats = { RarestItemId = "Fish" }, Settings = {}, Secret = "private" }
+			{ Coins = 1e300, RebirthLevel = 3, Stats = { RarestItemId = "Fish" }, Settings = {}, Secret = "private" }
 		local data = {
 			Get = function()
 				return profile
@@ -222,7 +222,7 @@ test(
 			end
 		end
 		assert(folder.Parent == player and #e.Objects == 8)
-		assert(stats.Coins.ClassName == "NumberValue" and stats.Coins.Value == 9e15)
+		assert(stats.Coins.ClassName == "NumberValue" and stats.Coins.Value == 1e300)
 		assert(stats.Rebirths.ClassName == "IntValue" and stats.Rebirths.Value == 3)
 		assert(stats.Rarest.ClassName == "StringValue" and stats.Rarest.Value == "Rare")
 		local priorities, primary = {}, nil
@@ -241,7 +241,7 @@ test(
 		service.Refresh()
 		assert(writes == before, "Unchanged stats were assigned")
 		profile.Coins = 3400000000
-		assert(stats.Coins.Value == 9e15)
+		assert(stats.Coins.Value == 1e300)
 		assert(e:Resume(e.Threads[1]) == 1)
 		assert(stats.Coins.Value == 3400000000 and writes == before + 1)
 		profile.Coins = 1200000

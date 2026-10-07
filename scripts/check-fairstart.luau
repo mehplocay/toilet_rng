@@ -21,10 +21,10 @@ for tier, toilet in ipairs(Toilets) do
 			assert(profile.Inventory.Poop == 1) -- Currency grant does not alter items.
 		end
 	end
-	local full = { Coins = 9e15, Stats = { Earned = 0 } }
-	assert(ServiceCoins.Grant(full, toilet) == nil and full.Coins == 9e15 and full.Stats.Earned == 0)
-	local earnedFull = { Coins = 0, Stats = { Earned = 9e15 } }
-	assert(ServiceCoins.Grant(earnedFull, toilet) == nil and earnedFull.Coins == 0 and earnedFull.Stats.Earned == 9e15)
+	local full = { Coins = 1e300, Stats = { Earned = 0 } }
+	assert(ServiceCoins.Grant(full, toilet) == nil and full.Coins == 1e300 and full.Stats.Earned == 0)
+	local earnedFull = { Coins = 0, Stats = { Earned = 1e300 } }
+	assert(ServiceCoins.Grant(earnedFull, toilet) == nil and earnedFull.Coins == 0 and earnedFull.Stats.Earned == 1e300)
 	local boundary = { Coins = 9e15 - toilet.ServiceCoins, Stats = { Earned = 9e15 - toilet.ServiceCoins } }
 	assert(ServiceCoins.Grant(boundary, toilet) == toilet.ServiceCoins)
 	assert(boundary.Coins == 9e15 and boundary.Stats.Earned == 9e15)

@@ -61,10 +61,10 @@ assert(Income:PendingCoins(p) == 780000000 * 480 * 0.5, "Offline interval not ca
 Income:Settle(p, p.Income.UpdatedAt, true)
 assert(Income:PendingCoins(p) == 780000000 * 480 * 0.5, "Same timestamp replayed offline award")
 Income:Settle(single, 1000 + 86400 * 30, false)
-assert(Income:PendingCoins(single) == Config.SlotPendingCap)
-assert(Income:PendingCoins(p) == Config.PlayerPendingCap * 0.5)
+assert(Income:PendingCoins(single) == 1300000 * 86400 * 30)
+assert(Income:PendingCoins(p) == 187200000000)
 local fullTime = p.Income.UpdatedAt
-assert(Income:Collect(p) == Config.PlayerPendingCap * 0.5)
+assert(Income:Collect(p) == 187200000000)
 Income:Settle(p, fullTime, false)
 assert(units(p) == 0, "Collect recovered time discarded at cap")
 
@@ -74,8 +74,8 @@ p.Coins = Config.MaxBalance
 assert(Income:Collect(p) == 0 and units(p) == 2400 * Config.UnitsPerCoin)
 p.Coins, p.Stats.Earned = Config.MaxBalance - 1, Config.MaxBalance
 assert(Income:Collect(p) == 0 and units(p) == 2400 * Config.UnitsPerCoin)
-p.Stats.Earned = Config.MaxBalance - 1
-assert(Income:Collect(p) == 1 and p.Coins == Config.MaxBalance and p.Stats.Earned == Config.MaxBalance)
+p.Coins, p.Stats.Earned = 9e15 - 1, 9e15 - 1
+assert(Income:Collect(p) == 2400 and p.Coins == 9e15 + 2399 and p.Stats.Earned == 9e15 + 2399)
 
 for _, bad in ipairs({ false, "bad", 5, { UpdatedAt = 0 / 0 }, { UpdatedAt = math.huge }, { UpdatedAt = -1 } }) do
 	local clean = Income:Sanitize(bad)
@@ -90,18 +90,19 @@ clean.Pending["4"] = nil
 assert(next(clean.Pending) == nil)
 local raw = { UpdatedAt = 1234, Pending = {} }
 for slot = 1, 100 do
-	raw.Pending[tostring(slot)] = 9e15
+	raw.Pending[tostring(slot)] = Config.MaxLedgerUnits
 end
 p.Income = Income:Sanitize(raw)
-assert(Income:PendingCoins(p) == Config.PlayerPendingCap)
+assert(Income:PendingCoins(p) == Income:WholeCoins(Config.MaxLedgerUnits))
 for _, value in pairs(p.Income.Pending) do
 	assert(value <= Config.SlotPendingCap * Config.UnitsPerCoin)
 end
 -- Pending survives empty displays and capacity reductions; it belongs to the player.
 p.Displays, p.DisplaySlots = {}, 1
+p.Coins = Config.MaxBalance
 assert(Income:Collect(p) == 0) -- Full wallet is unchanged.
 p.Coins, p.Stats.Earned = 0, 0
-assert(Income:Collect(p) == Config.PlayerPendingCap)
+assert(Income:Collect(p) == Income:WholeCoins(Config.MaxLedgerUnits))
 p.Income = Income:Sanitize(nil)
 Income:Settle(p, 2000000, true)
 assert(units(p) == 0 and p.Income.UpdatedAt == 2000000)

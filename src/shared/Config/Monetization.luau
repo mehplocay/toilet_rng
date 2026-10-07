@@ -1,3 +1,4 @@
+local Limit = require(if script then script.Parent.Economy else "./Economy").MaxAmount
 return {
 	AutoFlushUnlock = 100,
 	FlushRange = 14,
@@ -8,14 +9,14 @@ return {
 	ReceiptHistoryLimit = 128,
 	ReceiptReadySeconds = 30,
 	CoinGrantMin = 100,
-	CoinGrantMax = 1000000000,
+	CoinGrantMax = Limit,
 	VIPChestSeconds = 600,
 	OfferRotateSeconds = 180,
 	LuckyFlushCap = 1000,
 	LuckyMultiplier = 10,
 	LuckyLuckCap = 10,
 	PolicySeconds = 120,
-	VIPPad = { X = 46, Y = 1, Z = -62, Radius = 8, Cooldown = 300, IncomeSeconds = 5, Min = 10, Max = 10000 },
+	VIPPad = { X = 46, Y = 1, Z = -62, Radius = 8, Cooldown = 300, IncomeSeconds = 5, Min = 10, Max = Limit },
 	Celebrations = { "Sparkles", "Gold burst", "Rainbow halo", "Victory pulse" },
 	CelebrationEffects = {
 		UpdateSeconds = 0.1,

@@ -1,5 +1,7 @@
 # Economy v2: uncapped cash progression
 
+> Current monetary contract (2026-10-07, fix/raise-bounds): all monetary validation and products use `Config/Economy.MaxAmount = 1e300`. No design cap remains on wallet, earned, income, pending storage or rewards. Packs grant current display coins/s × 600 / 3,600 / 21,600 / 86,400, floored to whole coins with a 100-coin minimum and only the technical bound. Scientific formatting supports huge amounts. Paid receipts defer intact when room is insufficient. Existing progression prices, level counts and offline time windows are unchanged. See [coin bound audit](coin-bounds.md) for precision, persistence limits and the complete changed-bound list. Earlier numeric ceilings below are historical.
+
 Current contract (2026-10-07): [uncapped cash balance report](no-cash-cap.md), [numeric research](../research/uncapped-cash-numerics.md). Earlier dated balance reports are historical evidence, not active multiplier limits.
 
 Cash = (1 + CashBoostEffect) * (1 + RebirthCash) * displayToiletFactor * every owned paid cash factor.

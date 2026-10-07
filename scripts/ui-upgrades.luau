@@ -40,7 +40,7 @@ do
 	before = #H.Calls
 	tracks.CashBoost.Buy.Activated:Fire()
 	assert(#H.Calls == before and not tracks.CashBoost.Buy.Interactable)
-	state.Coins = 9e15
+	state.Coins = 1e300
 	state.Upgrades.CashBoost, state.Upgrades.LuckBoost, state.Upgrades.OfflineTank = 9, 9, 9
 	panel.Update(state)
 	assert(tracks.CashBoost.Price.Text == "16K Coins")

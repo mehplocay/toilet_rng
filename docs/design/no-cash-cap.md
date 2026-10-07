@@ -1,10 +1,12 @@
 # Uncapped cash: implementation and balance review
 
+> Current monetary contract (2026-10-07, fix/raise-bounds): all monetary validation and products use `Config/Economy.MaxAmount = 1e300`. No design cap remains on wallet, earned, income, pending storage or rewards. Packs grant current display coins/s × 600 / 3,600 / 21,600 / 86,400, floored to whole coins with a 100-coin minimum and only the technical bound. Scientific formatting supports huge amounts. Paid receipts defer intact when room is insufficient. Existing progression prices, level counts and offline time windows are unchanged. See [coin bound audit](coin-bounds.md) for precision, persistence limits and the complete changed-bound list. Earlier numeric ceilings below are historical.
+
 2026-10-07, feature/no-cash-cap. No commit or push. Baseline: ea0d3feb039de37a4a1b8eff9eb7e835803da03f.
 
 Cash Boost, rebirth, toilet display and every owned paid cash factor multiply without a gameplay multiplier cap. Removed FreeCap, PaidCap, TotalCap, CashMultiplierCap and Rebirth.CashCap. Assumption: the explicit multiplicative-stacking instruction also replaces the old addition of Cash Boost and rebirth bonuses; milestone titles remain cosmetic. Upgrade/rebirth level counts stay unchanged.
 
-Technical safety remains: finite factors, 9e15 Coins each for wallet/Earned, 9e15 integer subcoins for pending income, 6000 subcoins/Coin, fractional carry and exact final-tail collection. Products are checked before multiplication, large rates apportioned from base weights, oversized sales rejected atomically, and NaN/inf rejected. Cash itself only saturates at the finite-double representation limit. No new design cap is introduced. Luck 10x, path speed 5x and cooldown floor 0.4s are unchanged.
+Technical safety now uses the shared 1e300 monetary bound. Products are checked before multiplication; NaN/inf are rejected. The 6000-subcoin persisted scale and exact ordinary fractional accrual are retained. Above 2^53, approximate units are intentional; conservative representable debits prevent free purchases and paid credits defer if they cannot change the wallet. See the coin bound audit for all removed caps. Luck 10x, path speed 5x and cooldown floor 0.4s are unchanged.
 
 ## Normal acceptance and payer comparison
 
@@ -104,7 +106,7 @@ Cash/Tank cost anchors at L35/L60/L85/L100 become 600M/240B/1.5T/10T (was 120M/2
 - Normal: R15 98.53h free versus 48.98h with all passes (2.01x faster).
 - Grinder: R15 90.37h free versus 44.59h with all passes (2.03x faster).
 
-Early prices become very small for a heavy payer: normal Dirty takes 32 seconds, Golden about 66 seconds, and Galaxy 14.55 minutes. Max Cash Boost still takes 14.02h; R10 takes 15.01h and R15 48.98h. Later progression is not instant under this fresh-account policy, but early cost tiers are trivial once large stacks/rare displays are established. Existing 1B coin-pack/chest amounts also become negligible at the theoretical maximum (about 0.015 seconds of paid income); their separate product bounds were not changed. No replacement cash cap was added.
+Early prices become very small for a heavy payer: normal Dirty takes 32 seconds, Golden about 66 seconds, and Galaxy 14.55 minutes. Max Cash Boost still takes 14.02h; R10 takes 15.01h and R15 48.98h. Later progression is not instant under this fresh-account policy, but early cost tiers are trivial once large stacks/rare displays are established. Coin packs and the VIP chest now scale with current display income without the former 1B clamp; the follow-up coin-bounds change preserves the advertised durations. No replacement cash cap was added.
 
 All passes + R15 + max upgrades gives 204x service/sales and 66,300x Infinity Flush displays. Ten Secrets yield 66.3B/s, filling the technical 1.5T pending storage in 22.62 seconds (free: 22.1B/s, 67.87 seconds). Extreme future passes are tested beyond the old limits and beyond finite-product range. Technical wallet/Earned saturation can eventually stop new credit; that existing safety is intentional. Ordinary oversized sale batches reject before consuming inventory.
 

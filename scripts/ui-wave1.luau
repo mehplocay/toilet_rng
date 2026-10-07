@@ -2,7 +2,7 @@ do
 	local items, toilets = H.Load("src/shared/Config/Items"), H.Load("src/shared/Config/Toilets")
 	local root, remotes = H.Root(1280, 684), H.Remotes()
 	local state = {
-		Coins = 9e15,
+		Coins = 1e300,
 		ToiletTier = 14,
 		Inventory = {},
 		Collection = {},

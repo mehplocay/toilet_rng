@@ -1,3 +1,4 @@
+local CashMath = require(if script then script.Parent.CashMath else "./CashMath")
 -- Pure validation for persisted server-awarded records. Never accept client ranking values.
 local Stats = {}
 local Admin = require(if script then script.Parent.Config.Admin else "./Config/Admin")
@@ -16,7 +17,7 @@ function Stats:Sanitize(raw)
 	local item = if type(raw.RarestItemId) == "string" then self.Items[raw.RarestItemId] else nil
 	return {
 		Flushes = Stats.Integer(raw.Flushes),
-		Earned = Stats.Integer(raw.Earned),
+		Earned = CashMath.Sanitize(raw.Earned),
 		RarestItemId = if item then item.Id else "",
 		RarestChance = if item then item.Chance else 0,
 	}
@@ -41,7 +42,7 @@ function Stats:Rank(entries, key)
 		end
 		local stats = self:Sanitize(entry.Profile.Stats)
 		local value = if key == "Coins"
-			then Stats.Integer(entry.Profile.Coins)
+			then CashMath.Sanitize(entry.Profile.Coins)
 			elseif key == "Rarest" then stats.RarestChance
 			else stats.Flushes
 		table.insert(rows, { Name = entry.Name, UserId = entry.UserId, Value = value })
