@@ -104,7 +104,7 @@ test("admin: argument bounds, missing/extra values, replay and mutation bucket",
 		{ Amount = 0 / 0 },
 		{ Amount = math.huge },
 		{ Amount = -1 },
-		{ Amount = 1e12 + 1 },
+		{ Amount = 2e300 },
 		{ Amount = "1000" },
 		{ Amount = 1, UserId = 52 },
 		{},
@@ -236,16 +236,16 @@ test("admin: full display slots, pending caps and numeric ceilings reject atomic
 	e:Command(owner, "Remove", { ItemId = "Poop", Count = 1 })
 	assert(not e:Last().Success and p.Inventory.Poop == 1)
 	e:Advance()
-	e:Command(owner, "Pending", { Slot = 1, Amount = 1e12 })
+	e:Command(owner, "Pending", { Slot = 1, Amount = 1e300 })
 	assert(not e:Last().Success)
 	p.Inventory.Poop = 9e15
 	e:Advance()
 	e:Command(owner, "Give", { ItemId = "Poop", Count = 1 })
 	assert(not e:Last().Success and p.Inventory.Poop == 9e15)
-	p.Coins = 9e15
+	p.Coins = 1e300
 	e:Advance()
 	e:Command(owner, "AddCoins", { Amount = 1 })
-	assert(not e:Last().Success and p.Coins == 9e15)
+	assert(not e:Last().Success and p.Coins == 1e300)
 end)
 
 test("admin economy: full upgraded ledger rejects pending overflow without clipping or saving", function()
@@ -259,20 +259,20 @@ test("admin economy: full upgraded ledger rejects pending overflow without clipp
 	)
 	e:Command(owner, "IncomeCap")
 	p = e.Data:Get(owner)
-	assert(e:Last().Success and income:TotalUnits(p) == 9e15)
+	assert(e:Last().Success and income:TotalUnits(p) == 1e300)
 	assert(p.Income.Pending["10"] == nil)
 	local writes = e.Store.Writes
 	e:Advance()
 	e:Command(owner, "Pending", { Slot = 10, Amount = 1 })
 	assert(not e:Last().Success, "Overflow must reject instead of acknowledging a clipped award")
-	assert(e.Data:Get(owner) == p and e.Store.Writes == writes and income:TotalUnits(p) == 9e15)
+	assert(e.Data:Get(owner) == p and e.Store.Writes == writes and income:TotalUnits(p) == 1e300)
 	-- Replacing a funded slot must keep its exact requested amount and the other ledgers.
 	local old = p.Income.Pending["1"]
 	e:Advance()
 	e:Command(owner, "Pending", { Slot = 1, Amount = 100000000000 })
 	p = e.Data:Get(owner)
 	assert(e:Last().Success and p.Income.Pending["1"] == 600000000000000)
-	assert(income:TotalUnits(p) == 9e15 - old + 600000000000000)
+	assert(income:TotalUnits(p) == 1e300 - old + 600000000000000)
 	e.Data:Close(owner)
 	local joined = e:JoinAdmin()
 	local restored = e.Data:Get(joined)

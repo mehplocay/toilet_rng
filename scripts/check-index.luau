@@ -125,9 +125,9 @@ for _, count in ipairs({ 0, -1, 1.5, 0 / 0, math.huge, "1", {}, 1000001 }) do
 	assert(not Safe.Sell(inv, Items, "Poop", count))
 end
 assert(not Safe.Sell(inv, Items, {}, 1) and not Safe.Sell(inv, Items, "Unknown", 1))
-inv.Inventory.Poop, inv.Coins = 4, 9e15
+inv.Inventory.Poop, inv.Coins = 4, 1e300
 assert(not Safe.Sell(inv, Items, "Poop", 1) and inv.Inventory.Poop == 4)
-inv.Coins, inv.Stats.Earned = 0, 9e15
+inv.Coins, inv.Stats.Earned = 0, 1e300
 assert(not Safe.Sell(inv, Items, "Poop", 1) and inv.Inventory.Poop == 4)
 
 -- Exercise the remote handler without Roblox: validation, limits and save-before-success.

@@ -1,3 +1,4 @@
+local CashMath = require(game.ReplicatedStorage.Shared.CashMath)
 local Shared = game.ReplicatedStorage.Shared
 local Config = require(Shared.Config.Admin)
 local Items = require(Shared.Config.Items)
@@ -42,7 +43,7 @@ function Mutations.Build(data, profile, action, args, now, imported)
 	elseif action == "Collection" then
 		candidate.Collection[args.ItemId] = args.Count
 	elseif action == "AddCoins" then
-		if candidate.Coins > 9e15 - args.Amount then
+		if not CashMath.CanCredit(candidate.Coins, args.Amount) then
 			return nil
 		end
 		candidate.Coins += args.Amount
@@ -53,7 +54,10 @@ function Mutations.Build(data, profile, action, args, now, imported)
 			return nil
 		end
 		local cap = income:StorageUnits(candidate, true)
-		local units = args.Amount * IncomeConfig.UnitsPerCoin
+		if args.Amount > cap / IncomeConfig.UnitsPerCoin then
+			return nil
+		end
+		local units = CashMath.Product(args.Amount, IncomeConfig.UnitsPerCoin)
 		local key = tostring(args.Slot)
 		if
 			units > cap

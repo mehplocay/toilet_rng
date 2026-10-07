@@ -111,7 +111,9 @@ test("merge economy: paid offline ledger round-trips exact fractions and collect
 	assert(income:Rates(p)["1"] == 100000 * 1248 * 6000)
 	p.Income.UpdatedAt = e.Now - 86400
 	income:Settle(p, e.Now, true)
-	assert(income:TotalUnits(p) == 9e15 and income:StorageUnits(p, false) == 9e15)
+	assert(income:TotalUnits(p) == 100000 * 1248 * 6000 * 10 * 43200 and income:StorageUnits(p, false) == 1e300)
+	-- Keep a separate exactly representable one-subcoin save/collect fixture.
+	p.Income.Pending = { ["1"] = 9e15 }
 	p.Income.Pending["1"] -= 1
 	assert(e.Data:Save(player, false))
 	e.Data:Close(player)

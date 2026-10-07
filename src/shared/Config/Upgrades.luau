@@ -1,7 +1,8 @@
+local Limit = require(if script then script.Parent.Economy else "./Economy").MaxAmount
 local rebirth = require(if script then script.Parent.Rebirth else "./Rebirth")
 return {
 	Rebirth = rebirth,
-	MaxBalance = 9e15,
+	MaxBalance = Limit,
 	LuckCap = 10,
 	Version = 2,
 	MilestoneEvery = 10,

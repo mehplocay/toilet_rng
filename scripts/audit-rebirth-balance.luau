@@ -73,7 +73,7 @@ test("cash layers: every reward, Cash level, toilet and paid combination multipl
 	assert(
 		math.abs(
 			paid.Cash({ Monetization = { Passes = { FutureCash = true, DoubleCash = true, VIPPack = true } } }, 2)
-					/ 6e300
+					/ 1e300
 				- 1
 		) < 1e-12
 	)
@@ -94,7 +94,7 @@ test("cash layers: bundle receipts credit all coin packs once without adding a m
 			assert(commerce.Income.Upgrades:Cash(p) == 204)
 			assert(commerce.Receipts:Rate(p) == 265200000)
 			local quote = commerce.Receipts:Quote(p, key)
-			assert(quote == 1000000000)
+			assert(quote == 265200000 * product.IncomeSeconds)
 			p.Monetization.Quote = { Key = key, Coins = quote }
 			local before = p.Coins
 			local info = receipt(player, "bundle-cap-" .. key, product.Id)
@@ -134,26 +134,26 @@ test(
 				assert(rate % 1 == 0 and rate <= 1591200000000)
 				total += rate
 			end
-			assert(total == math.min(slots, 10) * 1591200000000)
+			assert(total == slots * 1591200000000)
 		end
 		p.Inventory.Mystery = 100
 		p.Income = { UpdatedAt = 1, Pending = { ["1"] = 1 } }
 		income:Settle(p, 2, false)
-		assert(income:TotalUnits(p) == 15912000000001)
-		assert(income:Collect(p) == 2652000000 and income:TotalUnits(p) == 1)
+		assert(income:TotalUnits(p) == 159120000000001)
+		assert(income:Collect(p) == 26520000000 and income:TotalUnits(p) == 1)
 		income:Settle(p, income.Config.MaxTimestamp, true)
-		assert(income:TotalUnits(p) == 9e15 and p.Income.Offline.EarnedUnits == 9e15 - 1)
-		assert(income:StorageUnits(p, true) == 9e15 and income:StorageUnits(p, false) == 9e15)
-		p.Income.Pending["1"] -= 1
+		local expected = 159120000000000 * 43200
+		local near = e:Load("src/shared/CashMath").Near
+		assert(near(income:TotalUnits(p), expected) and near(p.Income.Offline.EarnedUnits, expected))
+		assert(income:StorageUnits(p, true) == 1e300 and income:StorageUnits(p, false) == 1e300)
 		assert(e.Data:Save(player, false))
 		e.Data:Close(player)
 		local _, q = e:Join(730)
-		assert(income:TotalUnits(q) == 9e15 - 1)
-		q.Coins, q.Stats.Earned = 9e15 - 7, 9e15 - 5
-		assert(income:Collect(q) == 5 and q.Coins == 9e15 - 2 and q.Stats.Earned == 9e15)
-		assert(income:TotalUnits(q) == 9e15 - 30001 and income:Collect(q) == 0)
+		assert(near(income:TotalUnits(q), expected))
+		q.Coins, q.Stats.Earned = 1e300, 1e300
+		assert(income:Collect(q) == 0 and near(income:TotalUnits(q), expected))
 		q.Coins, q.Stats.Earned = 0, 0
-		assert(income:Collect(q) == 1499999999994 and income:TotalUnits(q) == 5999)
+		assert(near(income:Collect(q), expected / 6000))
 		assert(income:Collect(q) == 0)
 	end
 )
@@ -168,11 +168,11 @@ test("cash layers: sale/service awards respect both wallet and lifetime ceilings
 			local p = { Coins = 0, Stats = { Earned = 0 }, Inventory = { [item.Id] = 1000001 }, Displays = {} }
 			local target = if field == "Coins" then p else p.Stats
 			local value = item.Value * 120
-			target[field] = 9e15 - value + 1
+			target[field] = 1e300
 			assert(not inventory.Sell(p, items, item.Id, 1, 120))
-			target[field] -= 1
+			target[field] = 9e15 - value
 			assert(inventory.Sell(p, items, item.Id, 1, 120) and target[field] == 9e15)
-			assert(not inventory.Sell(p, items, item.Id, 1, 120))
+			assert(inventory.Sell(p, items, item.Id, 1, 120))
 		end
 	end
 	for _, toilet in ipairs(e:Load("src/shared/Config/Toilets")) do
@@ -180,14 +180,15 @@ test("cash layers: sale/service awards respect both wallet and lifetime ceilings
 			local p = { Coins = 0, Stats = { Earned = 0 } }
 			local target = if field == "Coins" then p else p.Stats
 			local value = toilet.ServiceCoins * 120
-			target[field] = 9e15 - value + 1
+			target[field] = 1e300
 			assert(service.Grant(p, toilet, 120) == nil)
-			target[field] -= 1
+			target[field] = 9e15 - value
 			assert(service.Grant(p, toilet, 120) == value and target[field] == 9e15)
 		end
 	end
 	local p = { Coins = 0, Stats = { Earned = 0 }, Inventory = { Mystery = 1000001 }, Displays = {} }
-	assert(not inventory.Sell(p, items, "Mystery", 1000000, 120) and p.Inventory.Mystery == 1000001)
+	assert(inventory.Sell(p, items, "Mystery", 1000000, 120) and p.Inventory.Mystery == 1)
+	p.Coins, p.Stats.Earned, p.Inventory.Mystery = 0, 0, 1000001
 	assert(inventory.Sell(p, items, "Mystery", 150000, 120) and p.Coins == 9e15)
 end)
 

@@ -1,3 +1,4 @@
+local CashMath = require(game.ReplicatedStorage.Shared.CashMath)
 local Items = require(game.ReplicatedStorage.Shared.Config.Items)
 local Toilets = require(game.ReplicatedStorage.Shared.Config.Toilets)
 local SafeInventory = require(game.ReplicatedStorage.Shared.SafeInventory)
@@ -15,10 +16,10 @@ function EconomyService.BuyToilet(profile, id)
 	end
 	local nextTier = profile.ToiletTier + 1
 	local toilet = Toilets[nextTier]
-	if not toilet or toilet.Id ~= id or profile.Coins < toilet.Price then
+	if not toilet or toilet.Id ~= id or not CashMath.Affords(profile.Coins, toilet.Price) then
 		return false
 	end
-	profile.Coins -= toilet.Price
+	profile.Coins = CashMath.Debit(profile.Coins, toilet.Price)
 	profile.ToiletTier = nextTier
 	return true
 end

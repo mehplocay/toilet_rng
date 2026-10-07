@@ -1,3 +1,4 @@
+local CashMath = require(game.ReplicatedStorage.Shared.CashMath)
 local RunService = game:GetService("RunService")
 
 local DevGrantService = {}
@@ -13,7 +14,7 @@ function DevGrantService.Start(data, limiter, remotes, sync)
 		end
 		local amount = grants[grantKey]
 		local profile = data:Get(player)
-		if not amount or not profile or profile.Coins + amount > 9e15 or profile.Stats.Earned + amount > 9e15 then
+		if not amount or not profile or not CashMath.CanGrant(profile, amount) then
 			return
 		end
 		profile.Coins += amount

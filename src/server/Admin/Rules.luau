@@ -1,3 +1,5 @@
+local Limit =
+	require(if script then game.ReplicatedStorage.Shared.Config.Economy else "../../shared/Config/Economy").MaxAmount
 -- Pure request validation. The command vocabulary is intentionally closed.
 local Rules = {}
 function Rules.Integer(value, low, high)
@@ -25,7 +27,7 @@ function Rules.JsonTree(value, config)
 		end
 		return kind == "boolean"
 			or (kind == "string" and #entry <= 256)
-			or (kind == "number" and entry == entry and math.abs(entry) <= 9e15)
+			or (kind == "number" and entry == entry and math.abs(entry) <= Limit)
 	end
 	return type(value) == "table" and visit(value, 0)
 end

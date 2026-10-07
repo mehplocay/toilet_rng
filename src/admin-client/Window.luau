@@ -185,12 +185,7 @@ function Window.Create(gui, remote, C, reloadLabels)
 			SortOrder = Enum.SortOrder.LayoutOrder,
 		})
 		for index, value in ipairs(values) do
-			local label = if value >= 1e12
-				then "1T"
-				elseif value >= 1e9 then "1B"
-				elseif value >= 1e6 then "1M"
-				elseif value >= 1000 then tostring(value / 1000) .. "K"
-				else tostring(value)
+			local label = C.Commas(value)
 			local preset = C.Button(row, label, UDim2.fromOffset(68, 44), nil, function()
 				box.Text = tostring(value)
 			end, C.Navy, { TextSize = 17 })
@@ -252,7 +247,7 @@ function Window.Create(gui, remote, C, reloadLabels)
 	end
 	function builders.Economy()
 		local body = page("Economy")
-		local amount = field(body, "Coins / counter (custom whole number)", 1000)
+		local amount = field(body, "Coins / counter (whole number; e.g. 1e100)", 1000)
 		presets(body, amount, Config.CoinPresets)
 		button(body, "Add coins", function()
 			send("AddCoins", { Amount = tonumber(amount.Text) })

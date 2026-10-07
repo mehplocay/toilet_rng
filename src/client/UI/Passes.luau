@@ -319,7 +319,7 @@ function Passes.Create(gui, remotes)
 	C.Grid(swatches, 142, 48)
 	local details = C.BodyText(
 		content,
-		"VIP: 1.5x cash, +1 path speed step, +50% offline tank, gold star/trail/sign trim, daily chest and VIP hub pad. No luck.\nCoin packs and VIP chest: 100 to 1,000,000,000 Coins. Cash bonuses multiply without a cap; path speed caps at 5x.",
+		"VIP: 1.5x cash, +1 path speed step, +50% offline tank, gold star/trail/sign trim, daily chest and VIP hub pad. No luck.\nCoin packs match the shown income duration, with a 100 Coin minimum. Cash bonuses multiply without a cap; path speed caps at 5x.",
 		UDim2.new(1, -12, 0, 112)
 	)
 	details.LayoutOrder = 5

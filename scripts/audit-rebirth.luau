@@ -204,7 +204,7 @@ test("rebirth: malformed requests, requirements, cap and numeric ceilings reject
 		p[field] = old
 		assert(p.RebirthLevel == 0)
 	end
-	p.Stats.Earned = 9e15
+	p.Stats.Earned = 1e300
 	e.Now += 6
 	e:Fire("Rebirth", player, 0)
 	assert(p.RebirthLevel == 0 and p.Coins == e:Load("src/shared/Config/Rebirth").Levels[1].RequiredCoins)

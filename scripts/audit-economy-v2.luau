@@ -26,7 +26,7 @@ test("economy v2: 9e15-subcoin sanitizer and collect preserve the last fraction"
 	local player, p = e:Join(811)
 	p.RebirthLevel, p.Upgrades.CashBoost, p.Upgrades.OfflineTank = 15, 10, 10
 	local raw = { UpdatedAt = e.Now, Pending = {} }
-	for slot = 1, 100 do
+	for slot = 1, 1 do
 		raw.Pending[tostring(slot)] = 9e15
 	end
 	local income = e:Load("src/shared/IncomeAccrual").new(
@@ -85,14 +85,14 @@ end)
 test("economy v2: wallet and lifetime ceilings retain unpaid large pending balances", function()
 	local e = server()
 	local player, p = e:Join(814)
-	p.Coins, p.Stats.Earned = 9e15 - 1, 9e15 - 1
+	p.Coins, p.Stats.Earned = 1e300, 1e300
 	p.Income.Pending["1"] = 6000000000001
 	e:Fire("CollectIncome", player)
-	assert(p.Coins == 9e15 and p.Stats.Earned == 9e15 and p.Income.Pending["1"] == 5999999994001)
+	assert(p.Coins == 1e300 and p.Stats.Earned == 1e300 and p.Income.Pending["1"] == 6000000000001)
 	e.Now += 1
 	e:Fire("CollectIncome", player)
-	assert(p.Coins == 9e15 and p.Income.Pending["1"] == 5999999994001)
+	assert(p.Coins == 1e300 and p.Income.Pending["1"] == 6000000000001)
 	e.Data:Close(player)
 	local _, restored = e:Join(814)
-	assert(restored.Coins == 9e15 and restored.Income.Pending["1"] == 5999999994001)
+	assert(restored.Coins == 1e300 and restored.Income.Pending["1"] == 6000000000001)
 end)

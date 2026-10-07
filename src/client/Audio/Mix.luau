@@ -1,3 +1,5 @@
+local Limit =
+	require(if script then game.ReplicatedStorage.Shared.Config.Economy else "../../shared/Config/Economy").MaxAmount
 -- Engine-independent scheduling and gain math, exercised by check-audio.luau.
 local Mix = {}
 function Mix.Volume(volume, muted, duck)
@@ -71,7 +73,7 @@ function Mix.Admit(config, key, now, last, voices)
 	return true
 end
 function Mix.AmountPitch(amount)
-	local value = if type(amount) == "number" and amount == amount then math.clamp(amount, 0, 9e15) else 0
+	local value = if type(amount) == "number" and amount == amount then math.clamp(amount, 0, Limit) else 0
 	return 1 + math.min(0.24, math.log10(1 + value) * 0.04)
 end
 return Mix

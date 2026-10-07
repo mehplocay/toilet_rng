@@ -1,3 +1,4 @@
+local CashMath = require(if script then script.Parent.CashMath else "./CashMath")
 -- Pure reset construction. The caller swaps this complete tree without yielding.
 local Rules = {}
 Rules.__index = Rules
@@ -19,7 +20,7 @@ function Rules.new(config)
 end
 function Rules:Level(profile)
 	local value = profile and profile.RebirthLevel
-	return if integer(value, self.Config.MaxBalance) then math.min(value, #self.Config.Levels) else 0
+	return if integer(value, 9e15) then math.min(value, #self.Config.Levels) else 0
 end
 function Rules:Bonus(profile)
 	return self.Config.Levels[self:Level(profile)]
@@ -38,14 +39,14 @@ function Rules:Restore(profile, raw)
 	self:ApplySlots(profile, raw)
 	local flushes = raw and raw.RunFlushes
 	-- Legacy lifetime rolls count toward the first run, never toward later runs.
-	profile.RunFlushes = if integer(flushes, self.Config.MaxBalance)
+	profile.RunFlushes = if integer(flushes, 9e15)
 		then flushes
 		elseif profile.RebirthLevel == 0 then profile.Stats.Flushes
 		else 0
 	profile.ProtectedInventory = {}
 	for id, count in pairs(profile.Inventory) do
 		local protected = raw and type(raw.ProtectedInventory) == "table" and raw.ProtectedInventory[id]
-		if integer(protected, self.Config.MaxBalance) then
+		if integer(protected, 9e15) then
 			profile.ProtectedInventory[id] = math.min(count, protected)
 		end
 	end
@@ -54,7 +55,7 @@ function Rules:Eligible(profile, expectedLevel)
 	return profile ~= nil
 		and integer(expectedLevel, #self.Config.Levels - 1)
 		and self:Level(profile) == expectedLevel
-		and integer(profile.RunFlushes, self.Config.MaxBalance)
+		and integer(profile.RunFlushes, 9e15)
 		and profile.RunFlushes >= self.Config.RequiredFlushes
 		and integer(profile.Coins, self.Config.MaxBalance)
 		and profile.Coins >= self.Config.Levels[expectedLevel + 1].RequiredCoins
@@ -67,7 +68,10 @@ function Rules:Build(profile, expectedLevel, now)
 	result.RebirthLevel, result.RunFlushes = expectedLevel + 1, 0
 	local bonus = self:Bonus(result)
 	self:ApplySlots(result, profile)
-	if result.Stats.Earned > self.Config.MaxBalance - bonus.StarterCoins then
+	if
+		not CashMath.Amount(result.Stats.Earned)
+		or bonus.StarterCoins > self.Config.MaxBalance - result.Stats.Earned
+	then
 		return nil
 	end
 	result.Coins = bonus.StarterCoins

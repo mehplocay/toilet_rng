@@ -317,7 +317,7 @@ test("extended VIP pad: ownership, health, finite distance, cooldown/rejoin and 
 	e.Data:Close(joined)
 	joined.Parent = nil
 	joined, restored = e:Join(657)
-	restored.Coins = 9e15
+	restored.Coins = 1e300
 	assert(not pad.Claim(commerce, joined) and restored.Monetization.VIPPadAt == p.Monetization.VIPPadAt)
 end)
 

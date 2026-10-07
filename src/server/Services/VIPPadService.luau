@@ -1,3 +1,4 @@
+local CashMath = require(game.ReplicatedStorage.Shared.CashMath)
 local Shared = game.ReplicatedStorage.Shared
 local Config = require(Shared.Config.Monetization)
 local Paid = require(Shared.PaidBenefits)
@@ -27,8 +28,12 @@ function Pad.Claim(commerce, player)
 	if now < profile.Monetization.VIPPadAt + config.Cooldown then
 		return false
 	end
-	local coins = math.clamp(math.floor(commerce.Receipts:Rate(profile) * config.IncomeSeconds), config.Min, config.Max)
-	if profile.Coins > 9e15 - coins or profile.Stats.Earned > 9e15 - coins then
+	local coins = math.clamp(
+		math.floor(CashMath.Product(commerce.Receipts:Rate(profile), config.IncomeSeconds)),
+		config.Min,
+		config.Max
+	)
+	if not CashMath.CanGrant(profile, coins) then
 		return false
 	end
 	local replacement = Copy(profile)

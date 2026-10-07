@@ -40,7 +40,7 @@ for _, track in ipairs(Config.Tracks) do
 		end)
 		assert(coroutine.resume(thread) and coroutine.status(thread) == "dead", "Purchase yielded")
 		spent += price
-		assert(p.Coins == Config.MaxBalance - spent and U:Level(p, track.Id) == level + 1)
+		assert(p.Coins == 9e15 - spent and U:Level(p, track.Id) == level + 1)
 		assert(not U:Buy(p, track.Id, level), "Replay bought another level")
 	end
 	assert(not U:Buy(p, track.Id, track.MaxLevel) and U:Price(track.Id, track.MaxLevel) == nil)
@@ -54,7 +54,7 @@ for _, bad in ipairs({ 0 / 0, {}, false, 1, "", "Unknown", string.rep("A", 10000
 	assert(not U:Buy(p, bad, 0))
 end
 assert(not U:Buy(p, nil, 0) and not U:Buy(p, "CashBoost", nil))
-for _, bad in ipairs({ -1, 0 / 0, math.huge, 1.5, "30", 9e15 + 1 }) do
+for _, bad in ipairs({ -1, 0 / 0, math.huge, 1.5, "30", Config.MaxBalance * 2 }) do
 	p.Coins = bad
 	assert(not U:Buy(p, "CashBoost", 0))
 end
@@ -102,7 +102,7 @@ for _ = 1, 8 do
 	assert(Inventory.Sell(b, Items, "Poop", 1, 1.3))
 end
 assert(a.Coins == b.Coins and a.Inventory.Poop == 2)
-a.Coins = 9e15
+a.Coins = 1e300
 assert(not Inventory.Sell(a, Items, "Poop", 1, 2) and a.Inventory.Poop == 2)
 
 p = profile()

@@ -1,3 +1,4 @@
+local CashMath = require(if script then script.Parent.CashMath else "./CashMath")
 -- Pure UTC calendar math shared by the server and the reward preview.
 local Schedule = {}
 
@@ -11,7 +12,7 @@ function Schedule.Progress(lastClaimDay, streak, now, config)
 end
 
 function Schedule.Coins(day, tier, config)
-	return config.BaseCoins[day] * config.TierMultipliers[tier]
+	return CashMath.Product(config.BaseCoins[day], config.TierMultipliers[tier])
 end
 
 return Schedule

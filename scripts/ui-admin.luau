@@ -15,7 +15,7 @@ do
 	assert(window.Panel.Visible and remote.Calls[2][2] == "Snapshot")
 	remote.OnClientEvent:Fire(
 		2,
-		{ Success = true, Message = "Ready", Data = { Coins = 1000, ToiletTier = 1, RebirthLevel = 0 } }
+		{ Success = true, Message = "Ready", Data = { Coins = 1e300, ToiletTier = 1, RebirthLevel = 0 } }
 	)
 	local initialCalls = #remote.Calls
 	for _, args in ipairs({

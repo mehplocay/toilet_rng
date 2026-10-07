@@ -15,7 +15,10 @@ function Rules.new(config)
 		local previous = 0
 		for level = 0, track.MaxLevel - 1 do
 			local price = self:Price(track.Id, level)
-			assert(integer(price, config.MaxBalance) and price > previous, "Invalid upgrade curve")
+			assert(
+				integer(price, config.MaxBalance) and (price > previous or price == config.MaxBalance),
+				"Invalid upgrade curve"
+			)
 			previous = price
 		end
 	end
@@ -24,7 +27,7 @@ end
 function Rules:Level(profile, id)
 	local raw = profile and profile.Upgrades
 	local value = if type(raw) == "table" then raw[id] else nil
-	return if integer(value, self.Config.MaxBalance) then math.min(value, self.ById[id].MaxLevel) else 0
+	return if integer(value, 9e15) then math.min(value, self.ById[id].MaxLevel) else 0
 end
 function Rules:Sanitize(raw)
 	local levels = {}
@@ -60,11 +63,11 @@ function Rules:Price(id, level)
 		for i = 2, #track.Costs do
 			local a, b = track.Costs[i - 1], track.Costs[i]
 			if target <= b[1] then
-				return math.ceil(a[2] * (b[2] / a[2]) ^ ((target - a[1]) / (b[1] - a[1])))
+				return math.ceil(CashMath.Product(a[2], CashMath.Power(b[2] / a[2], (target - a[1]) / (b[1] - a[1]))))
 			end
 		end
 	end
-	return math.ceil(track.BaseCost * track.Growth ^ level)
+	return math.ceil(CashMath.Product(track.BaseCost, CashMath.Power(track.Growth, level)))
 end
 function Rules:Effect(profile, id)
 	local track, level = self.ById[id], self:Level(profile, id)
@@ -142,7 +145,7 @@ function Rules:Buy(profile, id, expectedLevel)
 		level ~= expectedLevel
 		or not price
 		or not integer(profile.Coins, self.Config.MaxBalance)
-		or profile.Coins < price
+		or not CashMath.Affords(profile.Coins, price)
 	then
 		return false
 	end
@@ -150,7 +153,7 @@ function Rules:Buy(profile, id, expectedLevel)
 		return false
 	end
 	profile.Upgrades = profile.Upgrades or self:Sanitize(nil)
-	profile.Coins -= price
+	profile.Coins = CashMath.Debit(profile.Coins, price)
 	profile.Upgrades[id] = level + 1
 	if id == "DisplaySlots" then
 		profile.DisplaySlots += 1

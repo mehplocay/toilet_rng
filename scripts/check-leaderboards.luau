@@ -1,6 +1,6 @@
 local Items = require("../src/shared/Config/Items")
 local Stats = require("../src/shared/LeaderboardStats").new(Items)
-for _, value in ipairs({ false, "0", -1, math.huge, 0 / 0, 9e16 }) do
+for _, value in ipairs({ false, "0", -1, math.huge, 0 / 0, 2e300 }) do
 	local result = Stats:Sanitize({ Flushes = value, Earned = value, RarestChance = value, RarestItemId = value })
 	assert(result.Flushes == 0 and result.Earned == 0 and result.RarestChance == 0 and result.RarestItemId == "")
 end

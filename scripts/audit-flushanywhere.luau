@@ -238,6 +238,8 @@ test("offline: full storage timing, bounded reports, fractions, empty display an
 	local income = accounting(e)
 	local p = e.Data.DefaultProfile()
 	p.Displays["1"], p.Income.UpdatedAt = "Poop", 1000
+	income.Config = table.clone(income.Config)
+	income.Config.MaxLedgerUnits = 9e15 -- Exercise exact subcoin tails with an isolated small technical bound.
 	local cap = income:StorageUnits(p, true)
 	p.Income.Pending["1"] = cap - 3000
 	income:Settle(p, 4600, true)
@@ -277,16 +279,16 @@ test("offline: ordinary pads consume the same credit; saturated wallet leaves re
 	local e, player, p = awayFixture(907)
 	local income = accounting(e)
 	e.World.Assigned[player].CollectSlots = { [1] = e.World.Assigned[player].IncomePoint }
-	p.Coins = 9e15 - 100
+	p.Coins = 1e300
 	e:Fire("CollectIncome", player, 1)
-	assert(p.Coins == 9e15 and income:OfflineSnapshot(p).Coins == 1700)
+	assert(p.Coins == 1e300 and income:OfflineSnapshot(p).Coins == 1800)
 	e.Now += 1
 	e:Fire("CollectOffline", player)
-	assert(income:OfflineSnapshot(p).Coins == 1700)
+	assert(income:OfflineSnapshot(p).Coins == 1800)
 	p.Coins = 0
 	e.Now += 1
 	e:Fire("CollectIncome", player)
-	assert(income:OfflineSnapshot(p) == nil and p.Coins == 1702)
+	assert(income:OfflineSnapshot(p) == nil and p.Coins == 1802)
 end)
 
 test("offline: dead, missing, foreign and expired sessions cannot collect the window", function()

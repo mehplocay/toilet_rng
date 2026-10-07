@@ -1,3 +1,4 @@
+local CashMath = require(game.ReplicatedStorage.Shared.CashMath)
 local DataStoreService = game:GetService("DataStoreService")
 local HttpService = game:GetService("HttpService")
 local Players = game:GetService("Players")
@@ -100,7 +101,7 @@ local function sanitize(raw, withoutAdmin)
 	end
 	profile.Settings.Sound = not (profile.Settings.MusicMuted and profile.Settings.SFXMuted)
 	PresentationSettings.Apply(profile.Settings, PresentationSettings.Sanitize(raw.Settings))
-	profile.Coins = integer(raw.Coins, 0)
+	profile.Coins = CashMath.Sanitize(raw.Coins)
 	profile.LastClaimDay = integer(raw.LastClaimDay, 0)
 	profile.Streak = math.clamp(integer(raw.Streak, 0), 0, #Rewards.BaseCoins)
 	if profile.LastClaimDay == 0 or profile.Streak == 0 then

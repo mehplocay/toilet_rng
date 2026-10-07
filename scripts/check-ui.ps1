@@ -70,6 +70,7 @@ $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'purchase-ui-checks.l
 $parts.Add('H.CheckPurchaseUI(); print("Purchase UI regressions passed")')
 $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-plot-color.luau')))
 $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'plot-color-cosmetic-checks.luau')))
+$parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'ui-coin-bounds.luau')))
 try {
     [IO.File]::WriteAllText($generatedPath, ($parts -join "`n"), [Text.UTF8Encoding]::new($false))
     $output = & luau $generatedPath

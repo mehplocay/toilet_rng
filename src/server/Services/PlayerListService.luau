@@ -1,6 +1,6 @@
 local Players = game:GetService("Players")
 local Shared = game.ReplicatedStorage.Shared
-local Rules = require(Shared.PresentationRules)
+local CashMath = require(Shared.CashMath)
 local Items = require(Shared.Config.Items)
 local Config = require(Shared.Config.Presentation)
 local rebirth = require(Shared.RebirthRules).new(require(Shared.Config.Rebirth))
@@ -18,7 +18,7 @@ function Service.Start(data)
 				if not row then
 					local folder = Instance.new("Folder")
 					folder.Name = "leaderstats"
-					-- NumberValue is a double: every integer through the 9e15 wallet cap is exact.
+					-- NumberValue is a double: huge wallets intentionally use approximate units above 2^53.
 					local coins, rebirths, rarest =
 						Instance.new("NumberValue"), Instance.new("IntValue"), Instance.new("StringValue")
 					coins.Name, rebirths.Name, rarest.Name = "Coins", "Rebirths", "Rarest"
@@ -37,7 +37,7 @@ function Service.Start(data)
 				if row.Rebirths.Value ~= level then
 					row.Rebirths.Value = level
 				end
-				local coins, rarest = Rules.Integer(profile.Coins), if item then item.Rarity else "None"
+				local coins, rarest = CashMath.Sanitize(profile.Coins), if item then item.Rarity else "None"
 				if row.Coins.Value ~= coins then
 					row.Coins.Value = coins
 				end

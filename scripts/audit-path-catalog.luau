@@ -20,10 +20,10 @@ test("catalog receipts: malformed identity and saturated balances defer without 
 	end
 	assert(e.Marketplace.ProcessReceipt(nil) == "NotProcessedYet")
 	assert(e.Marketplace.ProcessReceipt({ ProductId = 9001, PurchaseId = "missing-player" }) == "NotProcessedYet")
-	p.Coins = 9e15
+	p.Coins = 1e300
 	assert(e.Marketplace.ProcessReceipt(receipt(player, "full-wallet")) == "NotProcessedYet")
-	assert(p.Coins == 9e15 and p.Stats.Earned == 0 and #p.Monetization.Receipts == 0)
-	p.Coins, p.Stats.Earned = 0, 9e15
+	assert(p.Coins == 1e300 and p.Stats.Earned == 0 and #p.Monetization.Receipts == 0)
+	p.Coins, p.Stats.Earned = 0, 1e300
 	assert(e.Marketplace.ProcessReceipt(receipt(player, "full-earned")) == "NotProcessedYet")
 	assert(p.Coins == 0 and #p.Monetization.Receipts == 0)
 end)
@@ -221,7 +221,7 @@ test("catalog cash: sales, service, passive, daily and offline caps honor paid f
 	service.Commerce:Apply(player, service.Owned[player])
 	local rules = e:Load("src/shared/UpgradeRules").new(e:Load("src/shared/Config/Upgrades"))
 	local paid = e:Load("src/shared/PaidBenefits")
-	assert(rules:Cash(p) == 3 and service:Luck(player) == 1 and math.abs(paid.Cash(p, 1e300) / 3e300 - 1) < 1e-12)
+	assert(rules:Cash(p) == 3 and service:Luck(player) == 1 and math.abs(paid.Cash(p, 1e300) / 1e300 - 1) < 1e-12)
 	p.RebirthLevel, p.Upgrades.CashBoost = 15, 10
 	assert(math.abs(rules:Cash(p) - 96) < 1e-9)
 	p.Inventory.Rat = 3

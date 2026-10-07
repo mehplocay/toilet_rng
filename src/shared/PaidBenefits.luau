@@ -13,7 +13,7 @@ function Benefits.Owns(profile, key)
 end
 function Benefits.Cash(profile, base)
 	assert(CashMath.Finite(base) and base >= 1, "Invalid base cash factor")
-	local factor = base
+	local factor = math.min(base, CashMath.Limit)
 	for key, pass in pairs(Config.Gamepasses) do
 		if pass.CashMultiplier and Benefits.Owns(profile, key) then
 			assert(pass.CashMultiplier >= 1 and pass.CashMultiplier < math.huge, "Invalid paid cash factor")

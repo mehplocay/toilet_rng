@@ -35,7 +35,7 @@ for level, bonus in ipairs(Config.Levels) do
 					total += units
 				end
 				assert(total <= 9e15 and total <= math.floor(IncomeConfig.PlayerRateCaps[tier] * multiplier * 100) + 1)
-				assert(Income:StorageUnits(p, false) <= 9e15)
+				assert(Income:StorageUnits(p, false) == IncomeConfig.MaxLedgerUnits)
 				assert(U:Luck(p, toilet.Luck, 2, 2, 1e300) == UpgradeConfig.LuckCap)
 			end
 		end

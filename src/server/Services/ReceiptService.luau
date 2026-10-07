@@ -1,3 +1,4 @@
+local CashMath = require(game.ReplicatedStorage.Shared.CashMath)
 -- One atomic profile write includes both benefit and PurchaseId. Only acknowledged
 -- old entries may move to permanent tombstones before bounded-history eviction.
 local Shared = game.ReplicatedStorage.Shared
@@ -7,6 +8,15 @@ local Paid = require(Shared.PaidBenefits)
 local Players = game:GetService("Players")
 local Lucky = require(script.Parent.LuckyService)
 local Receipt = {}
+function Receipt:Deferred(player)
+	if self.Notify then
+		pcall(
+			self.Notify,
+			player,
+			"Paid coins are saved for delivery. Make room in your wallet, then rejoin to receive them."
+		)
+	end
+end
 Receipt.__index = Receipt
 function Receipt.new(data, income, archive, sync)
 	return setmetatable({ Data = data, Income = income, Archive = archive, Sync = sync, Busy = {} }, Receipt)
@@ -109,12 +119,8 @@ function Receipt:Process(info)
 		if product.IncomeSeconds then
 			local quote = commerce.Quote
 			local coins = if quote and quote.Key == key then quote.Coins else self:Quote(profile, key)
-			if
-				not coins
-				or coins < Config.CoinGrantMin
-				or profile.Coins > 9e15 - coins
-				or profile.Stats.Earned > 9e15 - coins
-			then
+			if not coins or coins < Config.CoinGrantMin or not CashMath.CanGrant(profile, coins) then
+				self:Deferred(player)
 				return pending
 			end
 			replacement.Coins += coins
