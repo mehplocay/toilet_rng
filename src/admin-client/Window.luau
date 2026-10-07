@@ -112,6 +112,26 @@ function Window.Create(gui, remote, C, reloadLabels)
 		{ TextSize = 20 }
 	)
 	open.Name = "AdminButton"
+	local PhoneLayout = C.Layout
+	local function resizeButton()
+		local layout = PhoneLayout.Compute(
+			root.AbsoluteSize.X,
+			root.AbsoluteSize.Y,
+			game:GetService("UserInputService").TouchEnabled
+		)
+		if layout.Phone then
+			C.Place(open, layout.Admin)
+			open.Label.UITextSizeConstraint.MinTextSize = 12
+			open.Label.UITextSizeConstraint.MaxTextSize = 12
+			open.Label.Text = "ADM"
+		else
+			open.Size, open.Position = UDim2.fromOffset(88, 44), UDim2.new(1, -100, 0, 80)
+			open.Label.UITextSizeConstraint.MinTextSize, open.Label.UITextSizeConstraint.MaxTextSize = 10, 20
+			open.Label.Text = "Admin"
+		end
+	end
+	root:GetPropertyChangedSignal("AbsoluteSize"):Connect(resizeButton)
+	resizeButton()
 	local function page(name)
 		local frame = C.New("Frame", content, {
 			Name = name,

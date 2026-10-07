@@ -11,7 +11,7 @@ do
 			object.Visible = false
 		end
 	end
-	assert(#panels == 13, "Missing a window in the toast regression")
+	assert(#panels == 14, "Missing a window in the toast regression")
 	local function overlap(a, b)
 		local ap, as, bp, bs = a.AbsolutePosition, a.AbsoluteSize, b.AbsolutePosition, b.AbsoluteSize
 		return ap.X < bp.X + bs.X and bp.X < ap.X + as.X and ap.Y < bp.Y + bs.Y and bp.Y < ap.Y + as.Y

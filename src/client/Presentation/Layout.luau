@@ -1,5 +1,6 @@
+local HUDLayout = require(if script then script.Parent.Parent.UI.Layout else "../UI/Layout")
 local Layout = {}
-function Layout.Compute(w, h)
+function Layout.Compute(w, h, touch)
 	w, h = math.max(1, w), math.max(1, h)
 	local compactHUD = h < 500
 	local portrait = w < 760 and h > w
@@ -11,8 +12,9 @@ function Layout.Compute(w, h)
 		Odds = { X = 12, Y = h * 0.735, W = math.max(1, w - 24), H = h * 0.08 },
 		Skip = { X = (w - math.min(240, w - 24)) / 2, Y = h - 56, W = math.min(240, w - 24), H = 44 },
 		Banner = { X = 0, Y = h * 0.34, W = w, H = math.min(120, h * 0.27) },
-		Toast = if portrait
-			then { X = 88, Y = math.max(174, h - 104), W = w - 106, H = 44 }
+		Toast = if HUDLayout.IsPhone(w, h, touch)
+			then HUDLayout.Toast(w, h, touch)
+			elseif portrait then { X = 88, Y = math.max(174, h - 104), W = w - 106, H = 44 }
 			elseif compactHUD then { X = w - 142, Y = 146, W = 132, H = 44 }
 			else { X = (w - 340) / 2, Y = 174, W = 340, H = 44 },
 		List = {

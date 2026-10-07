@@ -1,9 +1,9 @@
-param([string]$SnapshotDirectory)
+param([string]$SnapshotDirectory, [switch]$MobileOnly)
 $ErrorActionPreference = 'Stop'
 $workspaceRoot = Split-Path $PSScriptRoot -Parent
 & luau (Join-Path $PSScriptRoot 'check-monetization-ids.luau')
 if ($LASTEXITCODE -ne 0) { throw 'Production monetization ID checks failed' }
-$generatedPath = Join-Path $workspaceRoot '.ui-check.generated.luau'
+$generatedPath = Join-Path $workspaceRoot ('.ui-check-' + $PID + '.generated.luau')
 $parts = [System.Collections.Generic.List[string]]::new()
 $parts.Add('local sources = {}')
 $parts.Add('local expectedIcons = {}')
@@ -77,6 +77,7 @@ $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-plot-color.luau')
 $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'plot-color-cosmetic-checks.luau')))
 $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-tutorial.luau')))
 $parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'ui-coin-bounds.luau')))
+$parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-mobile-hud.luau')))
 try {
     [IO.File]::WriteAllText($generatedPath, ($parts -join "`n"), [Text.UTF8Encoding]::new($false))
     $output = & luau --codegen -O2 $generatedPath
@@ -91,8 +92,11 @@ try {
         } else { Write-Output $line }
     }
     if ($code -ne 0) { throw 'UI runtime checks failed' }
+    & luau (Join-Path $PSScriptRoot 'check-mobile-hud.luau')
+    if ($LASTEXITCODE -ne 0) { throw 'Mobile layout checks failed' }
     & luau (Join-Path $PSScriptRoot 'check-ui-layout.luau')
     if ($LASTEXITCODE -ne 0) { throw 'UI layout checks failed' }
 } finally {
     if (Test-Path -LiteralPath $generatedPath) { Remove-Item -LiteralPath $generatedPath }
 }
+$parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-mobile-hud.luau')))

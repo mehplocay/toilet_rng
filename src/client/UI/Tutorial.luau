@@ -119,7 +119,13 @@ function Tutorial.Create(_player, remotes, hud, prompts, hooks)
 		local bounds = if hud.Frame.Visible
 			then Layout.Compute(w, h, game:GetService("UserInputService").TouchEnabled).Hint
 			else { X = 12, Y = 6, W = w - 24, H = 78 }
-		bounds.H = if hud.Frame.Visible then 96 else 78
+		local phone = Layout.IsPhone(w, h, game:GetService("UserInputService").TouchEnabled)
+		bounds.H = if phone and hud.Frame.Visible then bounds.H elseif hud.Frame.Visible then 96 else 78
+		title.UITextSizeConstraint.MinTextSize = if phone then 14 else 10
+		title.UITextSizeConstraint.MaxTextSize = if phone then 14 else 22
+		detail.UITextSizeConstraint.MinTextSize = if phone then 12 else 10
+		detail.UITextSizeConstraint.MaxTextSize = if phone then 12 else 17
+		skip.Label.UITextSizeConstraint.MinTextSize = if phone then 14 else 10
 		-- Keep Skip reachable during reveals without covering the item or result toast.
 		local reveal = hud.Frame:FindFirstChild("FlushReveal")
 		local layer = root:FindFirstChild("RareReveal")
@@ -138,7 +144,9 @@ function Tutorial.Create(_player, remotes, hud, prompts, hooks)
 			end
 		end
 		if busy then
-			bounds = { X = w - 100, Y = 6, W = 88, H = 56 }
+			bounds = if phone
+				then { X = bounds.X + bounds.W - 62, Y = bounds.Y, W = 62, H = 56 }
+				else { X = w - 100, Y = 6, W = 88, H = 56 }
 		end
 		title.Visible, detail.Visible = not busy, not busy
 		card.Visible = step < 5 or not busy

@@ -50,8 +50,18 @@ function Controller.Create(root, hud, audio)
 		return if rgb then Color3.fromRGB(rgb[1], rgb[2], rgb[3]) else Rarities[item.Rarity].Color
 	end
 	local function resize()
-		local layout = Layout.Compute(root.AbsoluteSize.X, root.AbsoluteSize.Y)
-		C.Place(card, HUDLayout.Compute(hud.Frame.AbsoluteSize.X, hud.Frame.AbsoluteSize.Y, false).Reveal)
+		local layout = Layout.Compute(root.AbsoluteSize.X, root.AbsoluteSize.Y, Input.TouchEnabled)
+		local hudLayout = HUDLayout.Compute(hud.Frame.AbsoluteSize.X, hud.Frame.AbsoluteSize.Y, Input.TouchEnabled)
+		if hudLayout.Phone then
+			toast.UITextSizeConstraint.MinTextSize = 14
+			if root:GetAttribute("TutorialActive") then
+				layout.Toast.W = math.max(100, layout.Toast.W - 70)
+				hudLayout.Reveal.W = math.max(100, hudLayout.Reveal.W - 70)
+			end
+		else
+			toast.UITextSizeConstraint.MinTextSize = 10
+		end
+		C.Place(card, hudLayout.Reveal)
 		C.Place(toast, layout.Toast)
 		if self.Queue.Active and Rules.Big(self.Queue.Active.Tier) then
 			-- Keep overflow readable above the large moment, outside its model/name.

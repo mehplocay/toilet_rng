@@ -63,7 +63,14 @@ do
 	end
 	check("celebration: HUD starts immediately, visible Stop label and both stop actions clear immediately", function()
 		local root, _, _, ui, _, _, pieces, _, stop, _, destroy = fixture()
-		assert(root.CelebrationMenu.Text == "Celebrate" and root.CelebrationMenu.Label.Text == "Celebrate")
+		assert(
+			root.CelebrationMenu.Text == "Celebrate"
+				and root.CelebrationMenu.Label.Text
+					== (if H.Load("src/client/UI/Layout")
+							.IsPhone(root.AbsoluteSize.X, root.AbsoluteSize.Y, H.Services.UserInputService.TouchEnabled)
+						then "Dance"
+						else "Celebrate")
+		)
 		root.CelebrationMenu.Activated:Fire()
 		assert(root.CelebrationMenu.Text == "Stop" and root.CelebrationMenu.Label.Text == "Stop")
 		assert(#pieces() > 0 and ui.Menu.Visible)
@@ -77,7 +84,14 @@ do
 		assert(#pieces() == 0, "Stopped effect restarted on heartbeat")
 		root.CelebrationMenu.Activated:Fire()
 		stop()
-		assert(#pieces() == 0 and root.CelebrationMenu.Label.Text == "Celebrate")
+		assert(
+			#pieces() == 0
+				and root.CelebrationMenu.Label.Text
+					== (if H.Load("src/client/UI/Layout")
+							.IsPhone(root.AbsoluteSize.X, root.AbsoluteSize.Y, H.Services.UserInputService.TouchEnabled)
+						then "Dance"
+						else "Celebrate")
+		)
 		beat:Fire(5)
 		assert(#pieces() == 0)
 		destroy()
@@ -128,7 +142,15 @@ do
 		local old = player.Character
 		old.Humanoid.Health = 0
 		old.Humanoid.Died:Fire()
-		assert(#pieces() == 0 and #pieces("RevealConfetti") == 0 and root.CelebrationMenu.Label.Text == "Celebrate")
+		assert(
+			#pieces() == 0
+				and #pieces("RevealConfetti") == 0
+				and root.CelebrationMenu.Label.Text
+					== (if H.Load("src/client/UI/Layout")
+							.IsPhone(root.AbsoluteSize.X, root.AbsoluteSize.Y, H.Services.UserInputService.TouchEnabled)
+						then "Dance"
+						else "Celebrate")
+		)
 		root.CelebrationMenu.Activated:Fire()
 		assert(#pieces() == 0, "Dead character started celebration")
 		player.CharacterRemoving:Fire(old)
@@ -210,7 +232,14 @@ do
 		state.Settings.RevealIntensity = "Full"
 		sync()
 		beat:Fire(5)
-		assert(#pieces() == 0 and root.CelebrationMenu.Label.Text == "Celebrate")
+		assert(
+			#pieces() == 0
+				and root.CelebrationMenu.Label.Text
+					== (if H.Load("src/client/UI/Layout")
+							.IsPhone(root.AbsoluteSize.X, root.AbsoluteSize.Y, H.Services.UserInputService.TouchEnabled)
+						then "Dance"
+						else "Celebrate")
+		)
 		destroy()
 	end)
 	check("celebration: all-pass names/trails remain independent and reveal confetti always expires", function()
