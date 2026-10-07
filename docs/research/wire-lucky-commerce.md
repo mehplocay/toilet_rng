@@ -1,0 +1,12 @@
+# Lucky Flush ID wiring research
+
+Checked 2026-10-07. This task wires owner-supplied IDs only; no API migration or Hub/publication changes.
+
+- [PolicyService](https://create.roblox.com/docs/reference/engine/classes/PolicyService): ArePaidRandomItemsRestricted is a field returned by GetPolicyInfoForPlayerAsync, not a method. Preserve explicit false-only permission; lookup errors, missing flags and expired eligibility fail closed.
+- [Paid random items](https://create.roblox.com/docs/production/monetization/paid-random-items): paid luck modifiers fall within paid randomness and require eligibility checks and numerical outcome disclosure. Keep the existing linear, rare-first outcome dialog before purchase and each use.
+- [MarketplaceService.ProcessReceipt](https://create.roblox.com/docs/reference/engine/classes/MarketplaceService#ProcessReceipt): receipts can be redelivered; acknowledge after durable credit and deduplicate by PurchaseId. PromptProductPurchaseFinished is not proof of delivery. Retain the existing receipt handler and atomic charge/item saves.
+- [Developer products](https://create.roblox.com/docs/production/monetization/developer-products) and [Shop](https://create.roblox.com/docs/production/monetization/shop): Listed products can surface outside the game; Unlisted permits the in-game flow without Shop surfacing. Owner must check available external sales/listing controls and keep Lucky external sales off so live policy/odds review precedes purchase.
+- [Roblox platform clarification](https://devforum.roblox.com/t/clarifying-requirements-for-paid-random-items/4654622) reiterates paid-random eligibility requirements. The [release-notes index](https://devforum.roblox.com/c/updates/release-notes/62) was checked, but detailed forum content was unavailable through this browser; no release-note compatibility claim is made. Current Engine references still document the existing APIs.
+- [Rojo build](https://rojo.space/docs/v7/getting-started/new-game/), [StyLua](https://github.com/JohnnyMorganz/StyLua), [Selene library](https://kampfkarren.github.io/selene/usage/std.html): build.rbxl is the binary build output, StyLua Windows means CRLF, Roblox linting requires its generated standard library.
+
+The owner's questionnaire completion and product IDs/prices are supplied task facts. No live purchase, rejoin, PolicyService or Hub-setting result is implied by offline tests; those remain owner-run checks on the private published experience.

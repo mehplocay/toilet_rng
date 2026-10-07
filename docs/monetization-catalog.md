@@ -1,6 +1,6 @@
 # Creator Hub monetization catalog
 
-Updated 2026-10-07. Authoritative catalog; supersedes earlier catalog prices and benefits in historical design/audit notes. **15 passes and 8 developer products.** Keep config keys and enabled ID mappings stable. VIPStar is **2008628314**, now renamed **Star Tag** in Creator Hub; its base price stays 59 Robux. Production has **20 wired offers (15 passes + five products)**. The three Lucky Flush products are **created, not wired**, and remain `Id = 0` (Coming soon). Hub creation/settings below are owner-reported; this task did not independently verify or change them.
+Updated 2026-10-07. Authoritative catalog; supersedes earlier catalog prices and benefits in historical design/audit notes. **15 passes and 8 developer products.** Keep config keys and enabled ID mappings stable. VIPStar is **2008628314**, now renamed **Star Tag** in Creator Hub; its base price stays 59 Robux. Production has **23 wired offers (15 passes + eight products)**. LuckyFlush1/5/20 are **wired** as 3716998840 / 3716998876 / 3716998923. The owner reports the Maturity and Compliance Questionnaire is complete with paid random items disclosed; the game remains private for published tests. Hub creation/settings below are owner-reported; this task did not independently verify or change them.
 
 All passes and products below have been created. Use this order for future catalog review. Prices are base Robux targets; in-game enabled buttons show MarketplaceService's current price (including regional pricing). VIP must never be priced below 250 Robux; target 399. No gifting implementation is included.
 
@@ -56,11 +56,11 @@ Icon paths below are creation targets for the separate art session, not claims o
 | DeveloperProducts.Coins6Hours | 3716998719 | wired; Item for sale on |
 | DeveloperProducts.PathBoost10Minutes | 3716998748 | wired; Item for sale on |
 | DeveloperProducts.Coins24Hours | 3716998799 | wired; Item for sale on |
-| DeveloperProducts.LuckyFlush1 | 3716998840 | created, not wired; production Id = 0 (Coming soon); Hub Item for sale on |
-| DeveloperProducts.LuckyFlush5 | 3716998876 | created, not wired; production Id = 0 (Coming soon); Hub Item for sale on |
-| DeveloperProducts.LuckyFlush20 | 3716998923 | created, not wired; production Id = 0 (Coming soon); Hub Item for sale on |
+| DeveloperProducts.LuckyFlush1 | 3716998840 | wired; published tests pending; Hub Item for sale on |
+| DeveloperProducts.LuckyFlush5 | 3716998876 | wired; published tests pending; Hub Item for sale on |
+| DeveloperProducts.LuckyFlush20 | 3716998923 | wired; published tests pending; Hub Item for sale on |
 
-All **eight developer products** were created with **Managed Pricing off** and **Item for sale on**. This includes Lucky Flush: their Hub sale flag is on while production IDs remain zero. The owner must set Lucky products' **external sales off** if the Hub offers that control; use **Unlisted / Hide from Shop** under Monetization > Shop where available. External-sales/listing settings have not been verified in this wiring task. Zero production IDs prevent in-experience prompts and new receipt grants, but do not switch off Hub sales. See [current API and listing research](research/wire-ids-commerce.md).
+All **eight developer products** were created with **Managed Pricing off** and **Item for sale on**. This includes Lucky Flush: their Hub sale flag is on and production IDs are wired. The owner must set Lucky products' **external sales off** if the Hub offers that control; use **Unlisted / Hide from Shop** under Monetization > Shop where available. External-sales/listing settings have not been verified in this wiring task. Zero-ID fixtures still prevent in-experience prompts and new receipt grants; config IDs do not switch off Hub sales. See [current API and listing research](research/wire-lucky-commerce.md).
 
 ## Entitlements and limits
 
@@ -84,7 +84,13 @@ Before purchasing, each Lucky card displays normal/boosted rarity percentages an
 
 Normal and enhanced item/rarity probabilities derive from RollService.Distribution, also used by the independent rare-first roll. The boost multiplies current free luck by ten under its own 10x and the global cap. Every non-fallback check is min(1, total luck / base odds), including Celestial and Secret. Final outcome probabilities include earlier failed checks. Percentages retain at least four decimal places beyond the first nonzero digit; the rounding disclaimer is visible. There are no urgency countdowns or random bundle rewards.
 
-Keep Lucky product **external sales disabled**: external purchase pages cannot show this player's live odds or policy eligibility. Complete Roblox's experience questionnaire and isolated published purchase/receipt/PolicyService tests before enabling IDs. The three created Hub IDs above remain **created, not wired**, with production `Id = 0`. The owner must disable external sales using any available Hub control (including Unlisted / Hide from Shop) and verify that state before release. Current policy research: [paid random items](research/catalog2-policy.md).
+Keep Lucky product **external sales disabled**: external purchase pages cannot show this player's live odds or policy eligibility. The owner reports questionnaire completion with paid random items disclosed and authorized wiring while the game stays private. Remaining manual owner steps before release:
+
+1. Run published test purchases for all three products; verify native prompts and ProcessReceipt credit exactly 1/5/20 charges. Test restricted/failed PolicyService lookups hiding the tab and preventing prompts/new grants/use, plus odds review before purchase and each use.
+2. Verify rejoin preserves unused charges and the spent-charge balance; receipt replay/retry must not grant again. Check the 1,000-charge cap and pending receipt recovery when capacity becomes available.
+3. Check the external sales setting in the Hub if available; keep it off, and use Unlisted / Hide from Shop where exposed. Record the observed state before release.
+
+This task did not inspect/change Hub settings or publish the game. Headless scenarios cover wired-ID prompt, durable receipt, credit, authorized use, replay/rejoin, zero-ID rejection, capacity and fail-closed policy; they do not certify real billing or PolicyService responses. Current policy/API research: [Lucky wiring](research/wire-lucky-commerce.md).
 
 ## Presentation and rollout
 

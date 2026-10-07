@@ -1,8 +1,8 @@
 # Creator Hub monetization IDs
 
-Experience **10769513431**, group **Dreadlight Studio**. Owner-reported creation/settings, recorded 2026-10-07; this task did not change or independently verify Hub settings. The experience was private at creation.
+Experience **10769513431**, group **Dreadlight Studio**. Owner-reported creation/settings, recorded 2026-10-07; this task did not change or independently verify Hub settings. The game remains private. The owner reports the Maturity and Compliance Questionnaire is complete with paid random items disclosed.
 
-Production config: src/shared/Config/Monetization.luau. **20 wired offers: 15 passes and five developer products.** The task's reference to 19 wired offers is a counting mismatch; every supplied positive ID is retained. VIPStar has been renamed **Star Tag** in the Hub; its config key and ID remain stable.
+Production config: src/shared/Config/Monetization.luau. **23 wired offers: 15 passes and eight developer products.** VIPStar has been renamed **Star Tag** in the Hub; its config key and ID remain stable.
 
 | Config key | Hub name | Type | Created Hub ID | Production Id | Base Robux | Sale / wiring state |
 |---|---|---|---|---|---|---|
@@ -26,13 +26,13 @@ Production config: src/shared/Config/Monetization.luau. **20 wired offers: 15 pa
 | Coins6Hours | Coin Pack Large | Developer product | 3716998719 | 3716998719 | 249 | wired; for sale in Hub |
 | PathBoost10Minutes | Path Boost: 10 Minutes | Developer product | 3716998748 | 3716998748 | 29 | wired; for sale in Hub |
 | Coins24Hours | Coin Pack Huge | Developer product | 3716998799 | 3716998799 | 799 | wired; for sale in Hub |
-| LuckyFlush1 | Lucky Flush | Developer product | 3716998840 | 0 | 25 | created, not wired; Coming soon; Hub Item for sale on |
-| LuckyFlush5 | Lucky Flush 5-Pack | Developer product | 3716998876 | 0 | 99 | created, not wired; Coming soon; Hub Item for sale on |
-| LuckyFlush20 | Lucky Flush 20-Pack | Developer product | 3716998923 | 0 | 349 | created, not wired; Coming soon; Hub Item for sale on |
+| LuckyFlush1 | Lucky Flush | Developer product | 3716998840 | 3716998840 | 25 | wired; published tests pending; Hub Item for sale on |
+| LuckyFlush5 | Lucky Flush 5-Pack | Developer product | 3716998876 | 3716998876 | 99 | wired; published tests pending; Hub Item for sale on |
+| LuckyFlush20 | Lucky Flush 20-Pack | Developer product | 3716998923 | 3716998923 | 349 | wired; published tests pending; Hub Item for sale on |
 
 All **eight developer products** were created with **Managed Pricing off** and **Item for sale on**, including the three Lucky products. Item for sale is a Hub setting, not evidence that an offer is enabled in this build. The in-game shop reads the current platform price rather than using the configured base price as a purchase price.
 
-LuckyFlush1/5/20 are **created, not wired**. Keep their production Id = 0 until the owner completes Roblox's experience questionnaire and isolated published purchase/receipt/PolicyService tests described in [the Lucky Flush release contract](monetization-catalog.md#lucky-flush-release-contract). These three created IDs are recorded in documentation only. The owner must set Lucky products' **external sales off** if the Hub offers that control; where Monetization > Shop listing is available, leave them **Unlisted / Hide from Shop**. Their external-sales/listing state has not been verified in this task. A config ID of zero cannot disable an external Hub sale.
+LuckyFlush1/5/20 are **wired** at the owner's request after questionnaire completion. Remaining owner steps: published purchase/receipt/PolicyService tests, verify charges and spent-charge receipt replay after rejoin, and check the external sales setting in the Hub if available. See [the Lucky Flush release contract](monetization-catalog.md#lucky-flush-release-contract). Keep Lucky products' **external sales off**; where Monetization > Shop listing is available, leave them **Unlisted / Hide from Shop**. Their external-sales/listing state has not been verified in this task. A config ID of zero cannot disable an external Hub sale.
 
 Ultimate Bundle includes all 14 other passes, with no consumables or display-slot grants. Display slots remain free; do not create or enable the retired slot pass. Existing valid saved capacity is retained; see [the slot migration contract](design/monetization.md).
 
