@@ -191,8 +191,15 @@ local function open(name)
 		closeAll()
 		require(script.WorldNavigation).Travel(name)
 		if name == "TravelShop" then
-			show(upgrades.Panel)
+			upgrades.Open("Toilets")
 		end
+	elseif name == "Shop" or name == "Upgrades" then
+		for _, panel in ipairs(panels) do
+			if panel ~= upgrades.Panel then
+				panel.Visible = false
+			end
+		end
+		upgrades.Toggle(if name == "Shop" then "Toilets" else "Coin Upgrades")
 	elseif name == "Collection" then
 		show(collection.Panel)
 	elseif name == "Rebirth" then
@@ -203,11 +210,9 @@ local function open(name)
 		show(passes.Panel)
 	elseif name == "Settings" then
 		show(settings)
-	else
-		show(upgrades.Panel)
 	end
 end
-hud = require(script.UI.HUD).Create(root, remotes, open, prompts)
+hud = require(script.UI.HUD).Create(root, remotes, open, prompts, upgrades.Navigation)
 require(script.WorldLabels).Start(hud.Frame)
 require(script.WorldNavigation).Start(open, toast)
 local function syncModal()
@@ -217,6 +222,7 @@ local function syncModal()
 			any = true
 		end
 	end
+	hud.SetShopNavigation(upgrades.Panel.Visible)
 	backdrop.Visible, hud.Frame.Visible = any, not any
 end
 for _, panel in ipairs(panels) do

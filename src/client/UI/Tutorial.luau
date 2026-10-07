@@ -64,14 +64,14 @@ function Tutorial.Create(player, remotes, hud, prompts)
 			"Find your toilet!",
 			"Let's FLUSH!",
 			"Your collection is growing!",
-			"Time for an upgrade!",
+			"Time for a better toilet!",
 			"Go find something legendary!",
 		}
 		local details = {
 			"1/5 • Tap Home to get there",
 			"2/5 • Tap FLUSH or press E",
 			"3/5 • Open Index. Sell a spare copy",
-			"4/5 • Open Upgrades. Buy your next tier",
+			"4/5 • Open Shop. Buy your next toilet",
 			"Tutorial complete!",
 		}
 		hud.SetTutorial(
@@ -86,7 +86,7 @@ function Tutorial.Create(player, remotes, hud, prompts)
 		local button = if step == 1
 			then hud.Navigation.Home
 			elseif step == 3 then hud.Navigation.Collection
-			elseif step == 4 then hud.Navigation.Upgrades
+			elseif step == 4 then hud.Navigation.Shop
 			else nil
 		if button ~= highlightedButton then
 			clearHighlight()

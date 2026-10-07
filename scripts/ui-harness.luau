@@ -455,7 +455,10 @@ function services.TweenService:Create(object, info, props)
 		Destroy = function() end,
 	}
 end
-function services.ContextActionService:BindAction() end
+H.Actions = {}
+function services.ContextActionService:BindAction(name, callback, _, ...)
+	H.Actions[name] = { Callback = callback, Keys = { ... } }
+end
 services.Players.LocalPlayer = Instance.new("Player")
 services.Players.LocalPlayer.UserId = 7
 services.Players.LocalPlayer.DisplayName = "TestPlayer"

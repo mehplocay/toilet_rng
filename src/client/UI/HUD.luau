@@ -8,7 +8,7 @@ local Rewards = require(Shared.Config.Rewards)
 local Schedule = require(Shared.RewardSchedule)
 local rebirth = require(Shared.RebirthRules).new(require(Shared.Config.Rebirth))
 local HUD = {}
-function HUD.Create(root, remotes, open, prompts)
+function HUD.Create(root, remotes, open, prompts, shopNavigation)
 	local gui = C.New("Frame", root, { Name = "HUD", Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1 })
 	local navigation, buttons = {}, {}
 	local names = { "Shop", "Rebirth", "Collection", "Upgrades", "Passes", "Daily" }
@@ -158,11 +158,13 @@ function HUD.Create(root, remotes, open, prompts)
 	end
 	offer(0, "STYLE UP!", "Explore passes", "Crown", C.Purple, "Passes")
 	local _, luckyText = offer(154, "FEELING LUCKY?", "Daily rewards", "Luck", C.Green, "Daily")
-	local layout, eventActive, revealing = nil, false, false
+	local layout, eventActive, revealing, shopOpen = nil, false, false, false
 	local function resize()
 		layout = Layout.Compute(root.AbsoluteSize.X, root.AbsoluteSize.Y, UserInputService.TouchEnabled)
 		for i, button in ipairs(buttons) do
-			C.Place(button, layout.Nav[i])
+			if not shopOpen or (button ~= navigation.Shop and button ~= navigation.Upgrades) then
+				C.Place(button, layout.Nav[i])
+			end
 		end
 		for object, r in pairs({
 			[travel] = layout.Travel,
@@ -296,6 +298,33 @@ function HUD.Create(root, remotes, open, prompts)
 	return {
 		Frame = gui,
 		Navigation = navigation,
+		SetShopNavigation = function(active)
+			if not shopNavigation or shopOpen == active then
+				return
+			end
+			shopOpen = active
+			-- Keep the actual HUD buttons reachable while the rest of the HUD is hidden.
+			for i, name in ipairs({ "Shop", "Upgrades" }) do
+				local button = navigation[name]
+				button.Parent = if active then shopNavigation else gui
+				local z = if active then shopNavigation.ZIndex + 2 else gui.ZIndex + 2
+				local delta = z - button.ZIndex
+				button.ZIndex = z
+				for _, object in ipairs(button:GetDescendants()) do
+					if object:IsA("GuiObject") then
+						object.ZIndex += delta
+					end
+				end
+				button[name .. "Icon"].Visible = not active
+				button.Label.Position = if active then UDim2.fromScale(0.06, 0.12) else UDim2.fromScale(0.02, 0.7)
+				button.Label.Size = if active then UDim2.fromScale(0.88, 0.76) else UDim2.fromScale(0.96, 0.25)
+				if active then
+					button.Size = UDim2.new(0.5, -5, 0, 44)
+					button.Position = UDim2.new((i - 1) * 0.5, (i - 1) * 5, 0, 0)
+				end
+			end
+			resize()
+		end,
 		Hint = hint,
 		EventActive = function(active)
 			eventActive = active
