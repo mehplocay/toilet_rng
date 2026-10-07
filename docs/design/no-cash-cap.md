@@ -6,7 +6,7 @@
 
 Cash Boost, rebirth, toilet display and every owned paid cash factor multiply without a gameplay multiplier cap. Removed FreeCap, PaidCap, TotalCap, CashMultiplierCap and Rebirth.CashCap. Assumption: the explicit multiplicative-stacking instruction also replaces the old addition of Cash Boost and rebirth bonuses; milestone titles remain cosmetic. Upgrade/rebirth level counts stay unchanged.
 
-Technical safety now uses the shared 1e300 monetary bound. Products are checked before multiplication; NaN/inf are rejected. The 6000-subcoin persisted scale and exact ordinary fractional accrual are retained. Above 2^53, approximate units are intentional; conservative representable debits prevent free purchases and paid credits defer if they cannot change the wallet. See the coin bound audit for all removed caps. Luck 10x, path speed 5x and cooldown floor 0.4s are unchanged.
+Technical safety now uses the shared 1e300 monetary bound. Products are checked before multiplication; NaN/inf are rejected. The 6000-subcoin persisted scale and exact ordinary fractional accrual are retained. Above 2^53, approximate units are intentional; conservative representable debits prevent free purchases and paid credits defer if they cannot change the wallet. See the coin bound audit for all removed caps. Luck is now uncapped (see no-luck-cap.md); path speed 5x and cooldown floor 0.4s are unchanged.
 
 ## Normal acceptance and payer comparison
 

@@ -2,8 +2,8 @@ local Roll = require("../src/server/Services/RollService")
 local Items = require("../src/shared/Config/Items")
 local Toilets = require("../src/shared/Config/Toilets")
 local Config = require("../src/shared/Config/Upgrades")
-assert(Config.LuckCap == 10)
-print("Galaxy effective odds: full linear luck, capped at 10x; independent rare-first checks; Poop fallback.")
+assert(Config.LuckCap == nil)
+print("Galaxy effective odds: full linear luck, no total cap; independent rare-first checks; Poop fallback.")
 for _, luck in ipairs({ 1, 5, 10 }) do
 	local entries, empty = Roll.Distribution(Items, Toilets, 7, luck)
 	local total, secrets, events = 0, 0, 0

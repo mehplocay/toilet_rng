@@ -184,7 +184,6 @@ return {
 	Cosmetics = cosmetics,
 	ResponseTimeout = 15,
 	MaxBalance = Limit,
-	LuckBonusCap = 1,
 	SpeedBonusCap = 0.50,
 	-- Shares the existing announcement queue and its per-player cooldown.
 	FriendAnnouncementLevel = 3,

@@ -17,10 +17,22 @@ return {
 			Description = "All 15 other passes. No consumables",
 		},
 		Coins24Hours = { Icon = "CoinPackHuge", Color = { 255, 150, 40 }, Description = "= 24 hours of income" },
-		LuckyFlush1 = { Icon = "LuckyFlush1", Color = { 145, 230, 130 }, Description = "10x luck for one flush" },
-		LuckyFlush5 = { Icon = "LuckyFlush5", Color = { 110, 220, 175 }, Description = "Five single-use luck charges" },
-		LuckyFlush20 = { Icon = "LuckyFlush20", Color = { 120, 190, 255 }, Description = "20 single-use luck charges" },
-		DoubleLuck = { Icon = "DoubleLuck", Color = { 255, 204, 66 }, Description = "Permanent 2x random-item luck" },
+		LuckyFlush1 = { Icon = "LuckyFlush1", Color = { 145, 230, 130 }, Description = "One uncapped x10 luck charge" },
+		LuckyFlush5 = {
+			Icon = "LuckyFlush5",
+			Color = { 110, 220, 175 },
+			Description = "Five uncapped x10 luck charges",
+		},
+		LuckyFlush20 = {
+			Icon = "LuckyFlush20",
+			Color = { 120, 190, 255 },
+			Description = "20 uncapped x10 luck charges",
+		},
+		DoubleLuck = {
+			Icon = "DoubleLuck",
+			Color = { 255, 204, 66 },
+			Description = "Permanent x2 luck; stacks without a cap",
+		},
 		DoubleCash = { Icon = "DoubleCash", Color = { 255, 204, 66 }, Description = "2x coin income." },
 		AutoCollect = {
 			Icon = "AutoCollect",
@@ -28,7 +40,7 @@ return {
 			Description = "Collect every 5s anywhere on the map",
 		},
 		OfflinePlus = { Icon = "OfflinePlus", Color = { 180, 140, 255 }, Description = "Double offline tank capacity" },
-		VIPPack = { Icon = "VIP", Color = { 255, 185, 35 }, Description = "Premium benefits and +25% luck" },
+		VIPPack = { Icon = "VIP", Color = { 255, 185, 35 }, Description = "Premium benefits; x1.25 luck stacks" },
 		Coins10Minutes = {
 			Icon = "CoinPackMini",
 			Color = { 255, 225, 110 },

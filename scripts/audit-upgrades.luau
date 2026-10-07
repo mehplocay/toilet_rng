@@ -41,7 +41,7 @@ test("merge: capped RNG odds, cash, lifetime collection and animation survive ma
 			local animation = animations[#animations]
 			assert(payload.Rarity == animation.Item.Rarity and payload.Chance == animation.Item.Chance)
 			assert(payload.Probability == expected[payload.ItemId] and payload.LuckMultiplier == luck)
-			assert(payload.LuckCapped == false and payload.Cooldown == cooldown)
+			assert(payload.LuckCapped == nil and payload.Cooldown == cooldown)
 			assert(animation.Duration > 0 and animation.Duration < cooldown)
 			assert(payload.ServiceCoins == toilets[p.ToiletTier].ServiceCoins * (if upgraded then 2 else 1))
 			assert(p.Coins == coins + payload.ServiceCoins and p.Stats.Earned == p.Coins)

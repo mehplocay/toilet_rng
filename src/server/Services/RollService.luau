@@ -1,10 +1,8 @@
-local Luck = require(if script then game.ReplicatedStorage.Shared.Config.Upgrades else "../../shared/Config/Upgrades")
 local RollService = {}
 function RollService.Distribution(items, toilets, tier, luckOverride)
 	assert(toilets[tier], "Invalid toilet tier")
 	local luck = luckOverride or toilets[tier].Luck
-	assert(luck >= 1 and luck < math.huge, "Invalid luck")
-	luck = math.min(luck, Luck.LuckCap)
+	assert(type(luck) == "number" and luck >= 1 and luck < math.huge, "Invalid luck")
 	-- Every toilet uses the complete catalog; tier changes luck, never eligibility.
 	local sorted = table.clone(items)
 	table.sort(sorted, function(a, b)

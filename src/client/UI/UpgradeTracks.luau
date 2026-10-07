@@ -14,7 +14,7 @@ function Tracks.Create(body, remotes)
 	local colors = { C.Gold, C.Purple, C.Green, C.Blue, C.Purple, C.Gold }
 	local descriptions = {
 		CashBoost = require(Shared.Config.Cash).Explanation,
-		LuckBoost = "Cap: 10x total (+900%). Full luck applies to every item check.",
+		LuckBoost = "Luck stacks without a cap. Each item check can reach 100%.",
 		FlushSpeed = "Shorter shared cooldown. Always at least " .. Config.CooldownFloor .. " seconds.",
 		AutoFlushSpeed = "Faster auto interval, never below your flush cooldown. Free at 100 flushes.",
 		DisplaySlots = "+1 display slot per purchase. Ten physical slots; index rewards kept.",
@@ -88,11 +88,7 @@ function Tracks.Create(body, remotes)
 				local effects = {
 					CashBoost = Format.Compact((state.UpgradeStats or {}).CashMultiplier or rules:Cash(state), 2)
 						.. "x coins",
-					LuckBoost = string.format(
-						"Luck +%d%%%s",
-						math.round(((stats.LuckMultiplier or 1) - 1) * 100),
-						if stats.LuckCapped then " | " .. Config.LuckCap .. "x CAP REACHED" else ""
-					),
+					LuckBoost = "Luck x" .. Format.Luck(stats.LuckMultiplier or 1),
 					FlushSpeed = string.format("%.2fs current cooldown", stats.Cooldown or 1.5),
 					AutoFlushSpeed = string.format("%.2fs current auto interval", stats.AutoInterval or 3),
 					DisplaySlots = tostring(state.DisplaySlots or 3) .. " slots unlocked",

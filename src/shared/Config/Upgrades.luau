@@ -3,7 +3,6 @@ local rebirth = require(if script then script.Parent.Rebirth else "./Rebirth")
 return {
 	Rebirth = rebirth,
 	MaxBalance = Limit,
-	LuckCap = 10,
 	VipLuckBonus = 0.25,
 	DoubleLuckMultiplier = 2,
 	Version = 2,

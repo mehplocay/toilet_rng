@@ -158,7 +158,7 @@ do
 		end
 		root:Destroy()
 	end)
-	check("merged HUD: capped luck and idle resume share safe action bounds on every supported viewport", function()
+	check("merged HUD: uncapped luck and idle resume share safe action bounds on every supported viewport", function()
 		local root, remotes = H.Root(390, 722), H.Remotes()
 		local hud = H.Load("src/client/UI/HUD").Create(root, remotes, function() end, {
 			Near = function()
@@ -173,14 +173,14 @@ do
 			LifetimeFlushes = 100,
 			AutoFlush = true,
 			AutoStatus = { Uptime = 1800, IdleRemaining = 0, Paused = true },
-			UpgradeStats = { LuckMultiplier = 10, LuckCapped = true },
+			UpgradeStats = { LuckMultiplier = 10 },
 			LastClaimDay = 0,
 			Streak = 0,
 		}
 		hud.Update(state)
 		H.Advance(1.01)
 		H.StartTasks()
-		assert(contains(root.HUD.Boosts, "Luck x10 (cap)"), "Merged HUD lost capped luck")
+		assert(contains(root.HUD.Boosts, "Luck x10"), "Merged HUD lost total luck")
 		local action = root.HUD.FlushActions
 		local resume, switch = action.IdleGuard, action.AutoFlushSwitch
 		local manual

@@ -4,7 +4,7 @@
 
 > Historical cash/balance snapshot. The 2026-10-07 owner decision removes all cash multiplier caps; see [current uncapped contract](../design/no-cash-cap.md). Earlier measurements below are retained as dated evidence, not runtime limits.
 
-> Current validation: [full linear luck and regenerated pacing tables](luck-linear.md). Total luck applies in full to every item check, capped at 10x; this supersedes earlier luck formulas and measured balance snapshots below.
+> Current validation: [full linear luck and regenerated pacing tables](luck-linear.md). Total luck applies in full to every item check without a total ceiling; this supersedes earlier luck formulas and measured balance snapshots below.
 
 Integration update (2026-10-06): [Wave 1 integration](wave1-integration.md) records the actual 47-item/15-toilet implementation, saved-profile behavior and capped balance results. The long proof embedded below is historical: its uncapped cash assumptions do not describe the merged economy. Use [the regenerated production-config proof](wave1-balance.txt). Four conditional targets in the JSON now preserve their historical values separately and reflect the 40x free cash cap.
 
@@ -22,14 +22,14 @@ Precedence: this task's owner decisions override historical progression/world pr
 
 There is a real timing conflict: economy-v2 measured normal Galaxy at **89.37 minutes** with a 90-minute target; the owner now wants **about 35 minutes**. The parallel branch owns that retune. This proposal neither claims 95M currently buys Galaxy in 35 minutes nor rewrites its price. Tiers 1–7 in JSON are explicitly labeled economy-v2 snapshots for reproducible calculations. The all-pools decision now owns prices and luck; preserve cooldown and service settings. The proof's post-Galaxy experiment starts at a synthetic minute-35 Galaxy state and therefore cannot validate the first 35 minutes.
 
-The proposal originally used a **5x** luck ceiling and **0.4-second** cooldown floor. Current production caps total luck at **10x**, applying it in full to every item check; the cooldown floor is still **0.4 seconds**. Luck in the regenerated tables is total luck, not an additional factor multiplied by toilet luck.
+Production luck is uncapped and applies in full to every item check; the cooldown floor remains **0.4 seconds**. Luck in the regenerated tables is total luck, not an additional factor multiplied by toilet luck.
 
 ### Data application recipe
 
 1. Merge permanent upgrades/rebirth first. Append the eight new toilet records in order; keep all existing item and toilet IDs.
 2. Import item `Id, Name, Rarity, Chance, Value, Event`; use `Rarities.IncomePerSecond` to populate `Income.RarityRates`. Make all items eligible from Basic; never gate on `FirstToiletTier`. No new selected-world state.
 3. New toilet price is `160000000 * 2.5^(tier-8)`, charged as a sequential incremental purchase. Use the table's concrete values when Galaxy's baseline remains 0.8s / 1.3 luck / 12x display.
-4. If the merged Galaxy baseline changes, derive new cooldown as `max(mergedFloor, mergedGalaxyCooldown * candidateCooldown / 0.8)`; luck as `min(mergedCap, mergedGalaxyLuck * candidateLuck / 1.3)`; display multiplier as `mergedGalaxyIncome * candidateIncome / 12`. Then replace the proof inputs and rerun; these ratios are a rebase recipe, not permission to skip balance verification. Preserve the merged upgrade formulas and all total caps.
+4. If the merged Galaxy baseline changes, derive new cooldown as `max(mergedFloor, mergedGalaxyCooldown * candidateCooldown / 0.8)`; luck as `mergedGalaxyLuck * candidateLuck / 1.3`; display multiplier as `mergedGalaxyIncome * candidateIncome / 12`. Then replace the proof inputs and rerun; these ratios are a rebase recipe, not permission to skip balance verification. Preserve the merged upgrade formulas; total luck is uncapped.
 5. Extend parallel per-tier arrays, append art mappings, and apply the rarity presentation/index migration below. Nothing may index a seven-entry array with a tier of 8–15.
 6. After integrating the content, rerun the merged fresh-account and rebirth cohorts with actual permanent upgrades, purchased slots, retained displays and the complete catalog. Recalibrate first-seven prices to the owner's Galaxy target in that branch if needed. Do not copy economy-v2's historical first-session metrics as new results.
 
@@ -461,7 +461,7 @@ Icon: Glove, lever and golden orbit are the hero shapes; show the grin between t
 
 Every toilet is a sequential purchase and remains owned and equipped through rebirth. Every item remains eligible at every tier. Ownership does not require a particular item, a new world, a paid product or a rebirth reset.
 
-Cooldown multipliers below are relative to the unupgraded Basic baseline of 1.5s. Apply the merged Flush Speed and rebirth reductions afterward, with the authoritative 0.4s floor. Luck is the toilet's base factor before merged upgrades/events; clamp **total** luck to 10x. Display multipliers affect all placed items and use the existing cash factor, not a new multiplicative upgrade track.
+Cooldown multipliers below are relative to the unupgraded Basic baseline of 1.5s. Apply the merged Flush Speed and rebirth reductions afterward, with the authoritative 0.4s floor. Luck is the toilet's base factor before merged upgrades/events; keep **total** luck uncapped. Display multipliers affect all placed items and use the existing cash factor, not a new multiplicative upgrade track.
 
 | Tier / ID | Name / theme | Incremental price | Target cumulative active minutes | Cooldown factor / seconds | Toilet luck | Display income | Service/flush |
 |---|---|---:|---:|---|---:|---:|---:|
@@ -552,7 +552,7 @@ Icon: Both infinity loops and white glove must fit inside the frame; bowl remain
 
 ### Rebirth interplay
 
-Use this table to gate the **next** rebirth level. Existing saved levels never decrease; raised requirements apply only to the next action. Retain the merged permanent branch's toilet/upgrade reset contract, protection rules, exact display slots and cash/luck/speed caps. The toilet tier never resets; all items remain eligible. Keep the merged fresh-flush requirement; the snapshot baseline is 3,300 new successful flushes, so its minimum at the 0.4s floor is still 22 minutes. No rare-item sacrifice, extra fee or forced toilet repurchase.
+Use this table to gate the **next** rebirth level. Existing saved levels never decrease; raised requirements apply only to the next action. Retain the merged permanent branch's toilet/upgrade reset contract, protection rules, exact display slots and cash/luck stacking and speed limits. The toilet tier never resets; all items remain eligible. Keep the merged fresh-flush requirement; the snapshot baseline is 3,300 new successful flushes, so its minimum at the 0.4s floor is still 22 minutes. No rare-item sacrifice, extra fee or forced toilet repurchase.
 
 | Next rebirth level | Minimum permanent toilet |
 |---:|---|
@@ -703,7 +703,7 @@ rojo build -o build.rbxl
 
 The execution-policy option applies only to that child process. The wrapper parses **the canonical JSON**, serializes a temporary data-only Luau module, copies/runs [wave1-balance.luau](../../scripts/wave1-balance.luau) and cleans up its own verified scratch directory. Standalone Luau lacks ordinary file I/O; there is no checked-in duplicate balance table and no engine dependency. Running the .luau directly without the wrapper does not provide its input module. `-WriteOutput` saves [wave1-balance.txt](wave1-balance.txt). The complete captured output is embedded below.
 
-The proof checks 47/36 items, four new per rarity, 15/8 toilets, unique IDs/pool membership, band/income monotonicity, 45 normalized outcome distributions, an independently calculated fallback product, triangle/size limits, sequential exponential prices, cooldown/luck bounds, income caps, rebirth gates and deterministic cohort replay. Typical mid/late display-income share is asserted within economy-v2's 70–90% comparison band. Conditional toilet p50 targets have ±20% tolerance.
+The proof checks 47/36 items, four new per rarity, 15/8 toilets, unique IDs/pool membership, band/income monotonicity, 45 normalized outcome distributions, an independently calculated fallback product, triangle/size limits, sequential exponential prices, cooldown bounds and finite uncapped luck, income caps, rebirth gates and deterministic cohort replay. Typical mid/late display-income share is asserted within economy-v2's 70–90% comparison band. Conditional toilet p50 targets have ±20% tolerance.
 
 Three different measurements are deliberately separated:
 
@@ -720,7 +720,7 @@ The exact-mean calculation is an uncapped gross income rate at the specified cas
 
 ```text
 WAVE 1 | JSON-derived data | 47 items / 36 new / 9 rarities / 15 toilets / 8 new
-1x and 5x are total effective luck overrides; 10x is uncapped stress-only, production cap remains 5x.
+1x, 5x and 10x are sample total effective luck overrides; production luck has no ceiling.
 Base odds ordering is strict between rarity bands. Effective outcomes may invert under sequential checks/saturation.
 RARITY | order | total/new | base income/s
 Common | 1 | 5/4 | 1
@@ -1305,6 +1305,6 @@ PASS: counts, IDs, 9 ordered bands, exact income ladder, unique cumulative pools
 - **Passed:** StyLua check on the added Luau script; `rojo build -o build.rbxl`; `git diff --check`.
 - **Unavailable:** Selene was attempted but the repository's configured `roblox` standard library is missing. No lint-pass claim.
 - **Scope:** only the Wave 1 documents/research and proof scripts are added; `src/` and `assets/` remain unchanged. No commit or push. Build output is ignored by the existing project.
-- **Assumptions:** owner Galaxy target is an input to the conditional experiment, not a tested first-run result; 10x is stress-only; merged permanent-upgrade tuning must be rerun with the actual expanded pools.
+- **Assumptions:** owner Galaxy target is an input to the conditional experiment, not a tested first-run result; 10x is a sample multiplier; merged permanent-upgrade tuning must be rerun with the actual expanded pools.
 
 The short [research note](../research/wave1-collectibles.md) links the official collect-game examples and current technical sources. Funny/shareable character criteria are design inferences, not a claimed retention study. Final art quality, imported dimensions/pivots, uploaded permissions, live UI effects and fresh-account permanent-upgrade timing remain implementation/art acceptance work. This delivery intentionally implements no production catalog, mutation, Divine tier or world.

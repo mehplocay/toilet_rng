@@ -103,15 +103,15 @@ function Rules:RebirthBonus(profile, key)
 	return if bonus then bonus[key] else 0
 end
 function Rules:Luck(profile, tier, ...)
-	local cap = self.Config.LuckCap
+	assert(type(tier) == "number" and tier >= 1 and tier < math.huge, "Invalid toilet luck")
 	local luck = tier * (1 + self:Effect(profile, "LuckBoost") + self:RebirthBonus(profile, "Luck"))
-	assert(luck >= 1 and luck < math.huge)
-	luck = math.min(cap, luck)
+	assert(luck >= 1 and luck < math.huge, "Non-finite luck")
 	for i = 1, select("#", ...) do
 		local factor = select(i, ...)
 		assert(type(factor) == "number" and factor >= 1 and factor < math.huge)
-		-- Clamp each positive factor before multiplication to prevent overflow.
-		luck = math.min(cap, luck * math.min(cap, factor))
+		luck *= factor
+		-- Reject numeric overflow; never silently clip a valid luck multiplier.
+		assert(luck < math.huge, "Luck multiplication overflow")
 	end
 	return luck
 end
@@ -165,8 +165,6 @@ function Rules:Snapshot(profile, cooldown, luck, offlineBase)
 	return {
 		CashMultiplier = self:Cash(profile),
 		LuckMultiplier = luck,
-		LuckCap = self.Config.LuckCap,
-		LuckCapped = luck >= self.Config.LuckCap,
 		Cooldown = cooldown,
 		AutoInterval = self:AutoInterval(profile, cooldown),
 		OfflineMinutes = self:OfflineMinutes(profile, offlineBase),

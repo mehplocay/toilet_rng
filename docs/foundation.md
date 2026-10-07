@@ -3,7 +3,7 @@
 Rebirth adds `Rebirth(expectedLevel)` and State fields `RebirthLevel`, `RunFlushes`,
 and `ProtectedInventory`. A reset exclusively replaces and immediately saves one
 complete profile under the existing lease. Coin upgrade tracks now reset on rebirth;
-permanent rebirth bonuses compose within the existing luck/speed caps.
+permanent rebirth bonuses compose within the uncapped luck stacking and existing speed limits.
 See [rebirth contract, tuning and recovery limits](design/rebirth.md).
 
 The server builds the plaza and ten plots on startup. Slots are assigned on join
@@ -15,7 +15,7 @@ All gameplay text is English. Placeholder geometry and colors are configured in
 
 Permanent upgrades add `BuyUpgrade(trackId, expectedLevel)` (coins only, server price,
 stale-level replay rejection) and State fields `Upgrades` / `UpgradeStats`. Current cooldowns,
-total luck cap, save migration and rebalanced prices supersede the provisional values below;
+uncapped luck stacking, save migration and rebalanced prices supersede the provisional values below;
 see [upgrade tracks](design/upgrades.md).
 
 Client requests: `Flush()`, `Sell(itemId, integerCount)`, `BuyToilet(toiletId)`,

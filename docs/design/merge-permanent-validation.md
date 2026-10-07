@@ -10,7 +10,7 @@
 - HUD idle resume replaces the manual action while paused and leaves Auto-Flush visible, avoiding the old extra row crossing navigation/hints on small screens. Luck percentages, upgrade levels and milestone UI remain. Inspected offline raster previews for 360x518 / 640x303 HUD and 390x722 upgrades/rebirth. These are headless approximations: [phone](permanent-previews/merged-idle-phone.png), [landscape](permanent-previews/merged-idle-landscape.png).
 - src/shared/UpgradeRules.luau: cap reported/effective Offline Plus minutes to Config/Income's existing 24-hour limit at new L100. The regression checks L0..100, both entitlement states, exact half-rate credit and no replay.
 - src/server/Admin/Mutations.luau: setting DisplaySlots L10 cannot create 13 ordinary slots; existing legacy capacity survives. Added persistence/gate coverage for extended tracks, display items and R15, plus real admin UI button tests for caps and rebirth.
-- Paid checks cover CashBoost L0..100 and R0..15 with no passes, Double Cash, VIP and both. Maximum progression is 5.85x before passes; combined cash clamps to 10x. Actual sell/flush/display collection and quoted receipt replay tests verify no second multiplication. Luck remains independent of paid cash, capped at 10x with full luck on every item check.
+- Paid checks cover CashBoost L0..100 and R0..15 with no passes, Double Cash, VIP and both. Maximum progression is 5.85x before passes; combined cash clamps to 10x. Actual sell/flush/display collection and quoted receipt replay tests verify no second multiplication. Luck remains independent of paid cash, uncapped with full luck on every item check.
 - Updated merge/offline design notes and [API research](../research/permanent-main-merge.md).
 
 ## Verification

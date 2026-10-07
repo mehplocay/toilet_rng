@@ -128,7 +128,7 @@ test("permanent: new cost boundaries, milestone titles and caps cannot be replay
 	end
 end)
 
-test("permanent: full luck applies to every rarity under the 10x cap", function()
+test("permanent: full luck applies to every rarity without a total cap", function()
 	local e = server()
 	local roll = e:Load("src/server/Services/RollService")
 	local items, toilets = e:Load("src/shared/Config/Items"), e:Load("src/shared/Config/Toilets")
@@ -140,7 +140,7 @@ test("permanent: full luck applies to every rarity under the 10x cap", function(
 		local entries, empty = roll.Distribution(items, toilets, 7, luck)
 		local total = 0
 		for _, entry in ipairs(entries) do
-			local effective = math.min(luck, 10)
+			local effective = luck
 			assert(entry.Check == (if entry.Item.Id == "Poop" then 1 else math.min(1, effective / entry.Item.Chance)))
 			total += entry.Probability
 		end

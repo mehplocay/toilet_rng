@@ -29,7 +29,7 @@ test("uncapped cash: all passes, R15, max upgrades and every display tier", func
 			assert(math.abs(total - slots * 100000 * 204 * factor * 6000) <= 1)
 		end
 	end
-	assert(u:Cash(p, 325) == 66300 and u:Luck(p, 10, 1e300) == 10 and u:Cooldown(p, 0.1) == 0.4)
+	assert(u:Cash(p, 325) == 66300 and u:Luck(p, 10, 1e300) == u:Luck(p, 10) * 1e300 and u:Cooldown(p, 0.1) == 0.4)
 end)
 
 test("uncapped cash: future factors saturate only numeric bounds and reject nonfinite inputs", function()

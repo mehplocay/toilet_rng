@@ -231,9 +231,23 @@ function Passes.Create(gui, remotes)
 					mark.Position = UDim2.fromOffset(12, Card.StatusY + 220)
 				end
 			end
-			luckyLabels[key] =
-				C.BodyText(card, Odds.RarityText(nil), UDim2.new(1, -16, 0, 212), UDim2.fromOffset(8, Card.StatusY))
-			luckyLabels[key].TextXAlignment = Enum.TextXAlignment.Left
+			local rarityScroll = C.Scroll(card, UDim2.new(1, -16, 0, 212), UDim2.fromOffset(8, Card.StatusY))
+			rarityScroll.Name = "RarityOddsScroll"
+			local label = C.BodyText(rarityScroll, Odds.RarityText(nil), UDim2.new(1, -20, 0, 0))
+			label.Name = "RarityOdds"
+			label.TextScaled, label.TextWrapped, label.TextSize = false, true, 17
+			label.TextXAlignment, label.TextYAlignment = Enum.TextXAlignment.Left, Enum.TextYAlignment.Top
+			label.TextTruncate = Enum.TextTruncate.None
+			local function fitOdds()
+				local width = math.max(8, rarityScroll.AbsoluteSize.X - 38)
+				local bounds = game:GetService("TextService")
+					:GetTextSize(label.Text, 17, label.Font, Vector2.new(width, 100000))
+				label.Size = UDim2.new(1, -20, 0, math.ceil(bounds.Y) + 6)
+			end
+			label:GetPropertyChangedSignal("Text"):Connect(fitOdds)
+			rarityScroll:GetPropertyChangedSignal("AbsoluteSize"):Connect(fitOdds)
+			luckyLabels[key] = label
+			fitOdds()
 			C.Button(
 				card,
 				"Info: all item odds",
@@ -351,7 +365,7 @@ function Passes.Create(gui, remotes)
 	C.Grid(swatches, 142, 48)
 	local details = C.BodyText(
 		content,
-		"VIP: 1.5x cash, +1 path speed step, +50% offline tank, +25% luck, gold star/trail/sign trim, daily chest and VIP hub pad. Luck perks depend on regional eligibility; use Info: all item odds.\nCoin packs match the shown income duration, with a 100 Coin minimum and no design cap. Cash bonuses multiply without a cap; path speed caps at 5x.",
+		"VIP: 1.5x cash, +1 path speed step, +50% offline tank, +25% luck, gold star/trail/sign trim, daily chest and VIP hub pad. Luck stacks without a cap. Luck perks depend on regional eligibility; use Info: all item odds.\nCoin packs match the shown income duration, with a 100 Coin minimum and no design cap. Cash bonuses multiply without a cap; path speed caps at 5x.",
 		UDim2.new(1, -12, 0, 112)
 	)
 	details.LayoutOrder = 5

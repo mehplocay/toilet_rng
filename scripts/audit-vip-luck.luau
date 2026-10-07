@@ -95,11 +95,11 @@ test("paid luck: every tier, free level, pass stack and charge disclose exactly 
 				p.ToiletTier, p.Upgrades.LuckBoost = tier, level
 				local factor = (if owned.VIPPack or owned.UltimateBundle then 1.25 else 1)
 					* (if owned.DoubleLuck or owned.UltimateBundle then 2 else 1)
-				local expected = math.min(10, toilets[tier].Luck * (1 + upgrades:Effect(p, "LuckBoost")) * factor)
+				local expected = toilets[tier].Luck * (1 + upgrades:Effect(p, "LuckBoost")) * factor
 				local odds = lucky:Odds(p, player)
-				assert(math.abs(odds.BaseLuck - expected) < 1e-12 and odds.Luck == 10)
+				assert(math.abs(odds.BaseLuck - expected) < 1e-12 and math.abs(odds.Luck - expected * 10) < 1e-10)
 				local normal = roll.Distribution(items, toilets, tier, expected)
-				local boosted = roll.Distribution(items, toilets, tier, 10)
+				local boosted = roll.Distribution(items, toilets, tier, expected * 10)
 				for i, row in ipairs(odds.Items) do
 					assert(
 						math.abs(row.Normal - normal[i].Probability) < 1e-12 and row.Boosted == boosted[i].Probability

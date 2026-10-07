@@ -2,34 +2,97 @@ local TextService = game:GetService("TextService")
 local C = require(script.Parent.Components)
 local Rarities = require(game.ReplicatedStorage.Shared.Config.Rarities)
 local Config = require(game.ReplicatedStorage.Shared.Config.Monetization)
+local Format = require(game.ReplicatedStorage.Shared.NumberFormat)
 local Odds = {}
 function Odds.Percent(value)
+	assert(type(value) == "number" and value >= 0 and value <= 1, "Invalid probability")
 	if value == 0 then
 		return "0%"
 	end
-	-- Keep at least four places beyond the first nonzero digit, including tiny Secrets.
-	local places = math.max(4, 4 - math.floor(math.log10(value * 100)))
-	return string.format("%." .. math.min(14, places) .. "f%%", value * 100)
+	if value == 1 then
+		return "100% (certain)"
+	end
+	local percent = value * 100
+	if percent < 1e-10 then
+		return string.format("%.6g%%", percent)
+	end
+	local places = math.max(4, 4 - math.floor(math.log10(percent)))
+	return string.format("%." .. math.min(14, places) .. "f%%", percent)
+end
+-- Largest-remainder rounding in exact integer units of 1e-12 percentage points.
+-- Each complete displayed column sums to 100%; RNG always uses the raw probabilities.
+function Odds.Column(rows, key)
+	local scale, total, mass, units, order = 1e14, 0, 0, {}, {}
+	for i, row in ipairs(rows) do
+		local value = row[key]
+		assert(type(value) == "number" and value >= 0 and value <= 1, "Invalid probability")
+		local scaled = value * scale
+		units[i] = math.floor(scaled)
+		total += units[i]
+		mass += value
+		table.insert(order, { Index = i, Remainder = scaled - units[i] })
+	end
+	table.sort(order, function(a, b)
+		return if a.Remainder == b.Remainder then a.Index < b.Index else a.Remainder > b.Remainder
+	end)
+	if math.abs(mass - 1) < 1e-12 then
+		local remainder = scale - total
+		assert(math.abs(remainder) <= #rows, "Invalid odds rounding remainder")
+		for i = 1, math.abs(remainder) do
+			local index = order[i].Index
+			if remainder < 0 then
+				-- Remove floating-point excess only from positive buckets, never a zero outcome.
+				for _, candidate in ipairs(order) do
+					if units[candidate.Index] > units[index] then
+						index = candidate.Index
+					end
+				end
+			end
+			units[index] += if remainder >= 0 then 1 else -1
+		end
+	end
+	local labels = {}
+	for i, row in ipairs(rows) do
+		local whole = math.floor(units[i] / 1e12)
+		local fraction = string.format("%012.0f", units[i] % 1e12):gsub("0+$", "")
+		local text = tostring(whole) .. (if #fraction > 0 then "." .. fraction else "") .. "%"
+		if row[key] == 1 then
+			text ..= " (certain)"
+		elseif units[i] == scale then
+			text ..= " (rounded; not certain)"
+		elseif units[i] == 0 and row[key] > 0 then
+			text ..= " (raw " .. Odds.Percent(row[key]) .. ")"
+		end
+		labels[i] = text
+	end
+	return labels, units
 end
 function Odds.RarityText(odds)
 	local lines = { if odds and odds.Offer then "Rarity: current / with pass" else "Rarity: normal / Lucky" }
-	local names = {}
+	local names, rows = {}, {}
 	for name in pairs(Rarities) do
 		table.insert(names, name)
 	end
 	table.sort(names, function(a, b)
 		return Rarities[a].Order < Rarities[b].Order
 	end)
-	for _, name in ipairs(names) do
-		local entry = odds and odds.Rarities[name]
-		table.insert(
-			lines,
-			name
-				.. ": "
-				.. (if entry then Odds.Percent(entry.Normal) .. " / " .. Odds.Percent(entry.Boosted) else "0% / 0%")
-		)
+	for i, name in ipairs(names) do
+		local entry = (odds and odds.Rarities[name]) or { Normal = 0, Boosted = 0 }
+		rows[i] = {}
+		for _, key in ipairs({ "Normal", "Boosted" }) do
+			-- Summing item probabilities can exceed 1 by a floating-point rounding unit.
+			assert(
+				type(entry[key]) == "number" and entry[key] >= 0 and entry[key] <= 1 + 1e-12,
+				"Invalid rarity probability"
+			)
+			rows[i][key] = math.min(1, entry[key])
+		end
 	end
-	return table.concat(lines, "\n") .. "\nRounded; totals may differ from 100%."
+	local normal, boosted = Odds.Column(rows, "Normal"), Odds.Column(rows, "Boosted")
+	for i, name in ipairs(names) do
+		table.insert(lines, name .. ": " .. normal[i] .. " / " .. boosted[i])
+	end
+	return table.concat(lines, "\n") .. "\nRounded to 12 decimal places; complete columns total 100%."
 end
 function Odds.Create(gui, remotes, onPurchase)
 	local panel = C.Panel(gui, "Lucky Flush odds", C.Gold, 120)
@@ -74,10 +137,10 @@ function Odds.Create(gui, remotes, onPurchase)
 	scroll:GetPropertyChangedSignal("AbsoluteSize"):Connect(resize)
 	local explanation = text(
 		"Explanation",
-		"Every toilet can drop all 47 items. Better toilets increase luck.\n10x luck for one flush, capped at 10x total. Full luck applies to every item check. Every flush awards one item.\nThese are actual outcomes after earlier rare checks. Odds change with your toilet, passes and free boosts; review again if they change.",
+		"Every toilet can drop all 47 items. Better toilets increase luck.\nMultiplies your current luck by 10 for one flush, without a total cap. Each item check is base chance times luck, up to 100%. Every flush awards one item.\nThese are actual outcomes after earlier rare checks. Odds change with your toilet, passes and free boosts; review again if they change.",
 		1
 	)
-	local breakdown = C.BodyText(content, "", UDim2.new(1, 0, 0, 90))
+	local breakdown = text("LuckBreakdown", "", 2)
 	breakdown.Name, breakdown.LayoutOrder = "LuckBreakdown", 2
 	breakdown.TextScaled, breakdown.TextWrapped, breakdown.TextYAlignment, breakdown.TextSize, breakdown.TextTruncate =
 		false, true, Enum.TextYAlignment.Top, 17, Enum.TextTruncate.None
@@ -165,20 +228,20 @@ function Odds.Create(gui, remotes, onPurchase)
 				return
 			end
 			breakdown.Text = string.format(
-				"Current luck x%.4g / %s x%.4g\n%s\n%s",
-				current.BaseLuck or 1,
+				"Current luck x%s / %s x%s\n%s\n%s",
+				Format.Luck(current.BaseLuck or 1, true),
 				if current.Offer then "With pass" else "Lucky Flush",
-				current.Luck or 10,
+				Format.Luck(current.Luck or 10, true),
 				if current.VIPLuck then "VIP +25% luck" else "VIP luck: inactive",
 				if current.DoubleLuck then "2x Luck pass" else "2x Luck pass: inactive"
 			)
 			explanation.Text = (
 				if current.Offer
 					then Config.Gamepasses[current.Offer].Description
-						.. " Every toilet can drop all 47 items. Current / with-pass odds below reflect your active boosts and full item pool. At the 10x cap, further boosts add no odds."
-					else "Every toilet can drop all 47 items. Better toilets increase luck. 10x luck for one flush, capped at 10x total. Full luck applies to every item check. Every flush awards one item. At 10x total luck, a charge cannot improve odds. These are actual outcomes after earlier rare checks."
+						.. " Every toilet can drop all 47 items. Current / with-pass odds below reflect your active boosts and full item pool. Luck stacks without a cap; each item check is at most 100%."
+					else "Every toilet can drop all 47 items. Better toilets increase luck. Multiplies your current luck by 10 for one flush, without a total cap. Each item check is base chance times luck, up to 100%. Every flush awards one item. Earlier certain checks can leave later outcomes at 0%. These are actual outcomes after earlier rare checks."
 			)
-				.. "\nVIP +25% luck and 2x Luck pass effects are listed separately below. Percentages are rounded; displayed totals may differ from 100%. Review again when your tier or boosts change."
+				.. "\nVIP +25% luck and 2x Luck pass effects are listed separately below. Percentages are rounded to 12 decimal places with totals preserved at 100%. Tiny nonzero outcomes also show their raw percentage. Review again when your tier or boosts change."
 			panel.TitleBar:FindFirstChildWhichIsA("TextLabel").Text = if current.Offer
 				then Config.Gamepasses[current.Offer].Name .. " item odds"
 				else "Lucky Flush odds"
@@ -187,6 +250,7 @@ function Odds.Create(gui, remotes, onPurchase)
 				row:Destroy()
 			end
 			table.clear(rows)
+			local normal, boosted = Odds.Column(current.Items, "Normal"), Odds.Column(current.Items, "Boosted")
 			for i, item in ipairs(current.Items) do
 				local row = text(
 					item.Id,
@@ -196,9 +260,9 @@ function Odds.Create(gui, remotes, onPurchase)
 						.. ")\n"
 						.. (if item.Fallback then "Fallback" else "Base check 1 in " .. C.Commas(item.BaseChance or 0))
 						.. "\nCurrent outcome: Normal "
-						.. Odds.Percent(item.Normal)
+						.. normal[i]
 						.. (if current.Offer then " / With pass " else " / Lucky ")
-						.. Odds.Percent(item.Boosted),
+						.. boosted[i],
 					i + 3
 				)
 				row.LayoutOrder, row.TextXAlignment = i + 3, Enum.TextXAlignment.Left

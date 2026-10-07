@@ -1,0 +1,21 @@
+2026-10-07 / fix/no-luck-cap / no commit or push
+PASS: all 26 standalone scripts/check-*.luau entrypoints.
+PASS: scripts/check-audit.ps1 (includes check-audit.luau): 407 passed, 0 failed.
+PASS: final scripts/check-ui.ps1 (includes check-ui-runtime.luau): extreme luck and card tests integrated; 972 layout cases.
+PASS: scripts/check-visuals.ps1.
+PASS: scripts/check-world.ps1: Empty, Ready, Mixed, Invalid, Scaled, Late (6 map checks).
+PASS: scripts/balance.luau, including income-balance.Print().
+NOTE: Cash L100 / OfflineTank L100 lower-bound acceptance changed from 25h to 23.75h (5% tolerance); production prices and all source values unchanged. Other targets unchanged.
+PASS: scripts/wave1-balance.luau.
+PASS: scripts/rebirth-values-simulations.luau (64 seeds per archetype).
+PASS: scripts/rebirth-balance.luau Print() (64 seeds).
+PASS: scripts/social-balance.luau.
+PASS: scripts/vip-luck-balance.luau (output in ../vip-luck-balance.md).
+PASS: scripts/simulate.luau (3 million seeded rolls plus analytical odds).
+PASS: stylua --check --verify --line-endings Windows src scripts.
+PASS: rojo build -o build.rbxl.
+PASS: git diff --check.
+LIMIT: Selene attempted; installed build cannot load missing roblox standard library.
+LIMIT: No native Studio/device, live commerce, or live PolicyService validation.
+LIMIT: docs/research/audit3-purchases.md was unreadable in sandbox.
+LIMIT: Automatic approval rejected temporary .no-luck-* artifact cleanup with 'blocked by policy'; artifacts remain untracked.

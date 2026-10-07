@@ -1,16 +1,16 @@
 # Permanent upgrade tracks
 
-> Current cash validation: [uncapped cash](no-cash-cap.md). Luck validation: [full linear luck and regenerated pacing tables](luck-linear.md). Total luck applies in full to every item check, capped at 10x; this supersedes earlier luck formulas and measured balance snapshots below.
+> Current cash validation: [uncapped cash](no-cash-cap.md). Luck validation: [full linear luck and regenerated pacing tables](luck-linear.md). Total luck applies in full to every item check without a total ceiling; this supersedes earlier luck formulas and measured balance snapshots below.
 
 2026-10-06, `feature/permanent`. This replaces the old run-reset and ten-level-track design. [Measured economy and all archetype tables](economy-v2.md), [rebirth contract](rebirth.md), [research](../research/permanent-economy.md).
 
-All six coin tracks and toilet tiers **survive every rebirth**. Config/Upgrades owns piecewise exponential cost anchors, level caps, effects, milestone titles, physical capacity, total luck cap and speed floor. Coins only; server-authoritative pricing; paid permanent luck is separately policy-gated.
+All six coin tracks and toilet tiers **survive every rebirth**. Config/Upgrades owns piecewise exponential cost anchors, level caps, effects, milestone titles, physical capacity, uncapped luck stacking and speed floor. Coins only; server-authoritative pricing; paid permanent luck is separately policy-gated.
 
 | Track | Levels | Effect |
 |---|---:|---|
 | Cash Boost | 100 | L1-10 +10% each; L11-100 +2.5% each; +325% at max before rebirth/passes |
 | Offline Tank | 100 | 8h base; first ten levels +24min each, then +8min each; 24h maximum before Offline Plus/storage limits |
-| Luck | 50 | First ten levels +10% each, then +4% each; tier/daily/server factors multiply under 10x total cap |
+| Luck | 50 | First ten levels +10% each, then +4% each; tier/daily/server factors multiply without a total luck ceiling |
 | Flush Speed | 10 | 5% shorter cooldown per level; additive rebirth reduction, final floor 0.4s |
 | Auto-Flush Speed | 10 | Auto interval decreases from 2x to 1x shared cooldown; free lifetime unlock unchanged |
 | Display Slots | 10 configured | +1 per purchase; stop at ten physical slots, normally after seven purchases |
@@ -23,10 +23,10 @@ Purchase number n interpolates exponentially between explicit level/cost anchors
 
 UI cards show N / cap, a progress bar, current effect, abbreviated price, next milestone and its earned title. Titles progress through Apprentice, Adept, Specialist, Expert, Veteran, Elite, Champion, Grandmaster and Legend at ten-level boundaries; max is Master. They are derived from permanent levels and add no undocumented bonus. The capacity-limited display track shows PLOT FULL, a completed bar and Master at physical capacity, rather than charging for unavailable slots.
 
-Confirmed level changes pop the existing card; existing audio feedback plays UpgradeBuy or UpgradeMax, with UpgradeMax reused for milestone crossings. Initial/repeated snapshots are silent. Luck is shown as `Luck +N%`: +900% means 10x/1000% total, and the card explains that full luck applies to every item check. Maximum untimed Galaxy luck is 5.98x, within the requested usual late-game band.
+Confirmed level changes pop the existing card; existing audio feedback plays UpgradeBuy or UpgradeMax, with UpgradeMax reused for milestone crossings. Initial/repeated snapshots are silent. Luck is shown as `Luck xN`, with scientific notation for large values. The card explains uncapped stacking and the 100% ceiling on each probability. Upgrade levels remain a content limit; every configured level effect is retained.
 
 Verification: all configured levels/prices/caps, one-coin-short failures, invalid inputs, replay/race safety, old/new save migration, milestone titles, numeric ceilings, exact rare-first odds, cash rounding, offline ledger fractions, responsive UI and persistent rebirth behavior. The audit includes the committed-response-loss purchase at level 100. Studio/native-device and live backend QA remain outside headless evidence. Retire old server binaries before rollout.
 
 Cash stacking (2026-10-07): Cash Boost, rebirth, display toilet factors and owned paid cash factors multiply without a multiplier cap. Milestone titles add no numerical bonus. Late cost anchors are retuned in Config/Upgrades to retain pacing; level counts and effects are unchanged. Daily coins remain paid-only; collection and quoted receipts never multiply again. See [current balance and before/after tables](no-cash-cap.md).
 
-Permanent luck update (2026-10-07): VIP +25% luck and 2x Luck are random-item odds boosts, preserved through rebirth as pass entitlements, and usable only with current policy eligibility. Free upgrade/rebirth luck values are unchanged. Total luck stays capped at 10x; Lucky Flush adds no benefit at the cap. Pass cards expose Info: all item odds; the HUD and odds breakdown identify "VIP +25% luck" and "2x Luck pass", or "unavailable in your region". Percentage rounding is disclosed. [Details and balance](vip-luck-balance.md).
+Permanent luck update (2026-10-07): VIP +25% luck and 2x Luck are random-item odds boosts, preserved through rebirth as pass entitlements, and usable only with current policy eligibility. Free upgrade/rebirth luck values are unchanged. Total luck is uncapped; each Lucky Flush charge multiplies the current total by ten. Individual checks still stop at probability 1, and earlier certain outcomes suppress later items. Pass cards expose Info: all item odds; the HUD and odds breakdown identify "VIP +25% luck" and "2x Luck pass", or "unavailable in your region". Percentage rounding is disclosed. [Details and balance](vip-luck-balance.md).

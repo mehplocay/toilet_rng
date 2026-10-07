@@ -16,7 +16,7 @@ Upgrade-tracks follow-up (2026-10-05, `feature/upgrades`): `BuyUpgrade(trackId, 
 uses a 3-token / 1-per-second bucket, server pricing and a non-yielding level/coin transaction.
 Stale levels cannot buy twice. Save and lease checks precede success; levels, expanded offline
 capacity and index/display order are covered by the extended **48-case** audit harness.
-Flush now refills 3 tokens/second, keeps capacity 2, caps total luck at 5x and enforces a shared
+Flush now refills 3 tokens/second, keeps capacity 2, stacks luck without a ceiling and enforces a shared
 0.4s cooldown floor. All affected item/stat ceilings reject before a partial flush award.
 Contracts, balance assumptions and durability limits: [upgrade review](design/upgrades.md).
 

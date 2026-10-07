@@ -23,7 +23,7 @@ test("linear luck: 1x, 5x and 10x checks, sequential outcomes, probability clamp
 		local entries, empty = roll.Distribution(items, { { Pool = pool, Luck = 1 } }, 1, luck)
 		local remaining, total = 1, 0
 		for i, entry in ipairs(entries) do
-			local check = if i == #items then 1 else math.min(1, math.min(luck, 10) / items[i].Chance)
+			local check = if i == #items then 1 else math.min(1, luck / items[i].Chance)
 			assert(entry.Item.Id == items[i].Id and entry.Check == check)
 			assert(entry.Probability >= 0 and entry.Probability <= 1)
 			assert(math.abs(entry.Probability - remaining * check) < 1e-14)
@@ -31,8 +31,8 @@ test("linear luck: 1x, 5x and 10x checks, sequential outcomes, probability clamp
 			total += entry.Probability
 		end
 		assert(empty == 0 and remaining == 0 and math.abs(total - 1) < 1e-12)
-		assert(entries[1].Check == math.min(luck, 10) / 10000000)
-		assert(entries[2].Check == math.min(luck, 10) / 900000)
+		assert(entries[1].Check == math.min(1, luck / 10000000))
+		assert(entries[2].Check == math.min(1, luck / 900000))
 	end
 	local entries = roll.Distribution(items, { { Pool = pool, Luck = 1 } }, 1, 1)
 	for chosen = 1, #entries do
@@ -45,25 +45,21 @@ test("linear luck: 1x, 5x and 10x checks, sequential outcomes, probability clamp
 	end
 end)
 
-test("linear luck: every production pool has unit mass, capped checks and identical 10x/overflow outcomes", function()
+test("linear luck: every production pool has unit mass, probability-clamped checks and uncapped multipliers", function()
 	local e = server()
 	local roll = e:Load("src/server/Services/RollService")
 	local items, toilets = e:Load("src/shared/Config/Items"), e:Load("src/shared/Config/Toilets")
 	for tier = 1, #toilets do
-		local capped = roll.Distribution(items, toilets, tier, 10)
-		for _, luck in ipairs({ 1, 5, 10, 1e300 }) do
+		for _, luck in ipairs({ 1, 5, 10, 1e3, 1e6, 1e12, 1e300 }) do
 			local entries = roll.Distribution(items, toilets, tier, luck)
 			local total, remaining, rarities = 0, 1, {}
-			for i, entry in ipairs(entries) do
-				local check = if entry.Item.Id == "Poop" then 1 else math.min(1, math.min(luck, 10) / entry.Item.Chance)
+			for _, entry in ipairs(entries) do
+				local check = if entry.Item.Id == "Poop" then 1 else math.min(1, luck / entry.Item.Chance)
 				assert(entry.Check == check and math.abs(entry.Probability - remaining * check) < 1e-14)
 				assert(entry.Probability >= 0 and entry.Probability <= 1)
 				remaining *= 1 - check
 				total += entry.Probability
 				rarities[entry.Item.Rarity] = (rarities[entry.Item.Rarity] or 0) + entry.Probability
-				if luck >= 10 then
-					assert(entry.Check == capped[i].Check and entry.Probability == capped[i].Probability)
-				end
 			end
 			local rarityTotal = 0
 			for _, probability in pairs(rarities) do
