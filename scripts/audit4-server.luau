@@ -128,8 +128,10 @@ test("audit4: every toilet retains 47 independent checks and exactly one fallbac
 			survival *= 1 - entry.Check
 		end
 		assert(survival == 0 and entries[47].Item.Id == "Poop")
-		local huge = upgrades:Luck(p, toilets[tier].Luck, 1e300, 1e300, 1e300)
-		assert(huge == 10)
+		-- Luck has no design cap: a real numeric overflow is rejected, never clipped.
+		assert(not pcall(upgrades.Luck, upgrades, p, toilets[tier].Luck, 1e300, 1e300, 1e300))
+		local huge = upgrades:Luck(p, toilets[tier].Luck, 1e300)
+		assert(huge >= 1e300 and huge < math.huge)
 		for _, entry in ipairs(roll.Distribution(items, toilets, tier, huge)) do
 			assert(entry.Check >= 0 and entry.Check <= 1 and entry.Probability >= 0)
 		end
