@@ -62,7 +62,7 @@ function SafeInventory.Sell(profile, items, id, count, cashMultiplier)
 		return false
 	end
 	profile.Inventory[id] -= count
-	profile.Coins += value
+	profile.Coins = CashMath.Credit(profile.Coins, value)
 	profile.Stats.Earned += value
 	return true
 end

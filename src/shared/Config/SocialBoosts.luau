@@ -7,6 +7,7 @@ return {
 	GroupCheckSeconds = 30,
 	GroupRefreshSeconds = 300,
 	StudioLookups = false,
+	MaxConcurrentLookups = 12, -- Includes departed players until their platform calls return.
 	FriendBonus = 0.05,
 	MaxFriends = 11,
 	FriendRetrySeconds = 60,

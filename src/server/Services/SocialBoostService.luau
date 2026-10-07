@@ -7,7 +7,7 @@ local Copy = require(Shared.CommerceProfile).Copy
 local Service = {}
 
 function Service.Start(data, limiter, remotes, sync)
-	local self = { Sessions = {} }
+	local self = { Sessions = {}, Lookups = 0 }
 	data.Social = self
 	local function present(player, session)
 		return player.Parent == Players and self.Sessions[player] == session and not data.Stopping
@@ -31,7 +31,12 @@ function Service.Start(data, limiter, remotes, sync)
 	end
 	function self:CheckGroup(player, manual)
 		local session = self.Sessions[player]
-		if not session or session.GroupBusy or os.time() < session.Runtime.GroupNextCheck then
+		if
+			not session
+			or session.GroupBusy
+			or os.time() < session.Runtime.GroupNextCheck
+			or self.Lookups >= Config.MaxConcurrentLookups
+		then
 			return
 		end
 		session.GroupBusy = true
@@ -40,9 +45,11 @@ function Service.Start(data, limiter, remotes, sync)
 		local ok, member = false, false
 		local studio = RunService:IsStudio() and not Config.StudioLookups
 		if not studio then
+			self.Lookups += 1
 			ok, member = pcall(function()
 				return player:IsInGroupAsync(Config.GroupId)
 			end)
+			self.Lookups -= 1
 		end
 		if not present(player, session) then
 			return
@@ -85,15 +92,17 @@ function Service.Start(data, limiter, remotes, sync)
 		end)
 	end
 	local function checkPair(a, sa, b, sb, pair)
-		if pair.Busy or os.time() < pair.NextCheck then
+		if pair.Busy or os.time() < pair.NextCheck or self.Lookups >= Config.MaxConcurrentLookups then
 			return
 		end
 		pair.Busy, pair.NextCheck = true, os.time() + Config.FriendRetrySeconds
 		local ok, friends = false, false
 		if not RunService:IsStudio() or Config.StudioLookups then
+			self.Lookups += 1
 			ok, friends = pcall(function()
 				return a:IsFriendsWithAsync(b.UserId)
 			end)
+			self.Lookups -= 1
 		end
 		if not present(a, sa) or not present(b, sb) then
 			return

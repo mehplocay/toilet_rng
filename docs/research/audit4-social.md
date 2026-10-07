@@ -1,0 +1,10 @@
+# Audit 4: social trust and caching
+
+Checked 2026-10-07.
+
+- [Player API source](https://raw.githubusercontent.com/Roblox/creator-docs/main/content/en-us/reference/engine/classes/Player.yaml): `IsInGroupAsync` caches per peer. A server can retain membership after an in-session group departure; client prompt cache invalidation does not invalidate the server cache. `IsFriendsWith` is deprecated; the code already uses `IsFriendsWithAsync`, which also caches. Rechecking does not guarantee fresh platform state.
+- The same API documents server `GetJoinData().ReferredByPlayerId` as the inviter. Its teleport provenance statements apply to teleport data, not a blanket anti-spoof/unique-human guarantee for referrals. Do not parse `LaunchData`, `TeleportData`, `FollowUserId` or a remote argument into reward authority.
+- [Referral system](https://create.roblox.com/docs/production/promotion/referral-system) and [Roblox referral announcement](https://devforum.roblox.com/t/announcing-the-new-friend-referral-system-for-your-experiences/3623795) describe platform referral attribution. [SocialService](https://create.roblox.com/docs/reference/engine/classes/SocialService) provides the native invitation prompt, not proof that a rewarded player joined. Qualification and deduplication remain server-owned.
+- Current developer reports include [departed-player friendship lookup errors](https://devforum.roblox.com/t/feedback-on-playerisfriendswithasync/4289832) and [unexpected false friendship results](https://devforum.roblox.com/t/playerisfriendswithasync-returns-false-for-valid-connections-in-live-servers/4354096). These reports motivate error/late-result tests, not assumed platform guarantees.
+
+Audit change: shared social lookup admission retains occupied slots until actual completion, including calls for departed players. No unbounded waiting queue is created. Existing retries can resume when capacity returns. Real friends who are alts still qualify under the design; five invite rewards per UTC day, 4096 lifetime invitee IDs, five-minute presence and 20 successful flushes bound farming but do not prove distinct humans.

@@ -3,7 +3,7 @@ local Players = game:GetService("Players")
 local Config = require(game.ReplicatedStorage.Shared.Config.Monetization)
 local Rules = require(game.ReplicatedStorage.Shared.MonetizationRules)
 local AutoConfig = require(game.ReplicatedStorage.Shared.Config.AutoFlush)
-local Service = { Owned = {}, Auto = {}, Loading = {}, Pending = {}, Checking = {} }
+local Service = { Owned = {}, Auto = {}, Loading = {}, Pending = {}, Checking = {}, Lookups = 0 }
 Service.Activity = {}
 
 function Service:Living(player)
@@ -84,8 +84,14 @@ function Service:Load(player)
 	for _, key in ipairs(Config.PassOrder) do
 		local pass = Config.Gamepasses[key]
 		if pass.Id > 0 then
+			if self.Lookups >= Config.MaxConcurrentLookups then
+				complete = false
+				break
+			end
+			self.Lookups += 1
 			local ok, result =
 				pcall(MarketplaceService.UserOwnsGamePassAsync, MarketplaceService, player.UserId, pass.Id)
+			self.Lookups -= 1
 			if player.Parent ~= Players then
 				return false
 			end

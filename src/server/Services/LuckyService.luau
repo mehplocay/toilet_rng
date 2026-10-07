@@ -6,18 +6,20 @@ local Roll = require(script.Parent.RollService)
 local Upgrades = require(Shared.UpgradeRules).new(require(Shared.Config.Upgrades))
 local Players = game:GetService("Players")
 local Policy = game:GetService("PolicyService")
-local Lucky = { Policies = {}, Armed = {}, Loading = {} }
+local Lucky = { Policies = {}, Armed = {}, Loading = {}, Lookups = 0 }
 function Lucky:Allowed(player)
 	local entry = self.Policies[player]
 	return player ~= nil and player.Parent == Players and entry ~= nil and entry.Allowed and os.clock() < entry.Expires
 end
 function Lucky:Refresh(player)
-	if self.Loading[player] then
+	if self.Loading[player] or player.Parent ~= Players or self.Lookups >= Config.MaxConcurrentLookups then
 		return
 	end
 	self.Loading[player] = true
+	self.Lookups += 1
 	-- Keep an unexpired verified result while refreshing; Allowed still checks its deadline.
 	local ok, result = pcall(Policy.GetPolicyInfoForPlayerAsync, Policy, player)
+	self.Lookups -= 1
 	self.Loading[player] = nil
 	if player.Parent ~= Players then
 		return

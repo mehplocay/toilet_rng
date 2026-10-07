@@ -1,0 +1,9 @@
+# Audit 4: large doubles and persistence
+
+Checked 2026-10-07.
+
+- [Luau library](https://luau.org/library/) documents `math.frexp` / `math.ldexp`. Binary64 integer precision ends at 2^53; a finite 1e300 bound does not make arithmetic exact. The audit reproduced repeated upward-rounded wallet credits and pending settlement. `CashMath` now recovers a sum's rounding residual. Debits round downward; credits correct upward error exceeding 2^-48 of the **award**, not of the wallet. Smaller floating-point error remains within the existing approximate-money contract. Purchases charge at least their integer price. This permits conservative rounding loss above exact precision, not arbitrary-precision currency.
+- [DataStore serialization](https://create.roblox.com/docs/cloud-services/data-stores/versioning-listing-and-caching) uses JSON and advises against infinities/NaN. [Roblox's 2026 JSON change](https://devforum.roblox.com/t/changes-to-httpservicejsonencode-and-httpservicejsondecode/4400205) introduces special numeric encodings. Do not assume JSON itself rejects nonfinite values; keep application type, finite and range checks. Tagged tables are not accepted as game amounts.
+- [Historical large-number JSON report](https://devforum.roblox.com/t/httpservicejsondecode-converting-some-numbers-to-nil/279585) concerns the 1e19 range. It is not evidence of a current defect. Add 1e19, 1.84e19 and 1e300 engine/DataStore roundtrips to the published test checklist. CLI mocks test sanitation and save control flow, not Roblox's serializer. Current docs do not promise an exact application-safe maximum of 1e300.
+
+No currency schema or stored 6000-subcoin scale changed. Statistics and rate calculations remain approximate at huge magnitudes. Tiny paid credits that cannot move the wallet remain pending rather than being acknowledged without a credit.

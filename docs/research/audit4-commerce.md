@@ -1,0 +1,9 @@
+# Audit 4: ownership, policy and receipts
+
+Checked 2026-10-07.
+
+- [PolicyService](https://create.roblox.com/docs/reference/engine/classes/PolicyService/GetPolicyInfoForPlayerAsync) and [paid random items](https://create.roblox.com/docs/production/monetization/paid-random-items): protected lookups and an explicit unrestricted result are required before paid randomness. Paid odds modifiers must disclose actual outcomes. The game gates VIP luck, Double Luck and Lucky charges, including after yielding purchase/receipt operations; missing, failed and expired policy results fail closed.
+- [Marketplace API source](https://raw.githubusercontent.com/Roblox/creator-docs/main/content/en-us/reference/engine/classes/MarketplaceService.yaml): product completion is not a grant signal. `ProcessReceipt` can repeat, arrive out of order and overlap between servers. `NotProcessedYet` has no timer-driven retry; later purchases or rejoining trigger retries. A granted callback can still be redelivered if backend acknowledgement fails. Keep durable IDs, archive tombstones and benefits atomic with the protected profile save.
+- Ownership checks are cached. Existing verified ownership is retained on stale/failed checks. Bundle entitlements are derived server-side; creator-owned passes do not bypass paid-randomness policy. A saved true ownership record is not refund reconciliation.
+
+Audit change: policy and ownership each admit at most 12 outstanding platform calls, counting departed callers until completion. Saturation fails closed for new eligibility/purchase checks; periodic refresh can recover. Rate-rejected/malformed product requests share a two-second rejection-response cooldown. Configured IDs are real, but this audit did not purchase products or validate their live dashboard configuration.

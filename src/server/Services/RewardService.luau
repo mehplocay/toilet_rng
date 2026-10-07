@@ -33,7 +33,7 @@ function RewardService:Claim(profile)
 	-- No yields: eligibility and all reward mutations are one server-side operation.
 	profile.LastClaimDay = math.floor(now / self.Config.DaySeconds)
 	profile.Streak = day
-	profile.Coins += coins
+	profile.Coins = CashMath.Credit(profile.Coins, coins)
 	profile.Stats.Earned += coins
 	if day == #self.Config.BaseCoins then
 		profile.RewardLuckExpires = now + self.Config.LuckSeconds

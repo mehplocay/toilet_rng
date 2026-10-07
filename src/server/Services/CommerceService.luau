@@ -28,6 +28,7 @@ function Commerce.new(data, world, sync, automation)
 		CollectStatus = {},
 		Income = income,
 		Prompting = {},
+		RejectionAt = {},
 		Receipts = require(script.Parent.ReceiptService).new(data, income, if ok then archive else nil, sync),
 	}, Commerce)
 end
@@ -107,16 +108,23 @@ function Commerce:Start(limiter, remotes)
 	self.Receipts.Notify = function(player, message)
 		result(player, false, message)
 	end
+	local function reject(player, message)
+		-- Keep refusal feedback for ordinary UI requests, but never reply to every flood packet.
+		if player.Parent == Players and os.clock() >= (self.RejectionAt[player] or 0) then
+			self.RejectionAt[player] = os.clock() + Config.PurchaseRejectionSeconds
+			result(player, false, message)
+		end
+	end
 	Marketplace.ProcessReceipt = function(info)
 		return self.Receipts:Process(info)
 	end
 	remotes.BuyProduct.OnServerEvent:Connect(function(player, key, expectedCoins, oddsToken, ...)
 		if select("#", ...) ~= 0 then
-			result(player, false, "Invalid purchase request. Please reopen the offer and try again.")
+			reject(player, "Invalid purchase request. Please reopen the offer and try again.")
 			return
 		end
 		if not limiter:Allow(player, "BuyProduct") then
-			result(player, false, "Please wait a moment before trying another purchase.")
+			reject(player, "Please wait a moment before trying another purchase.")
 			return
 		end
 		local product = type(key) == "string" and Config.DeveloperProducts[key]
@@ -235,7 +243,7 @@ function Commerce:Start(limiter, remotes)
 		end
 		local replacement = Profile.Copy(profile)
 		replacement.Monetization.VIPDay = day
-		replacement.Coins += coins
+		replacement.Coins = CashMath.Credit(replacement.Coins, coins)
 		replacement.Stats.Earned += coins
 		if self.Data:ReplaceAndSave(player, profile, replacement) and self.Data:Get(player) == replacement then
 			self.Sync(player)
@@ -249,6 +257,7 @@ function Commerce:Start(limiter, remotes)
 	Players.PlayerRemoving:Connect(function(player)
 		self.Prompting[player] = nil
 		self.CollectStatus[player] = nil
+		self.RejectionAt[player] = nil
 	end)
 	task.spawn(function()
 		while not self.Data.Stopping do

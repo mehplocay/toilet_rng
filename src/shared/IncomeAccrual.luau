@@ -181,7 +181,7 @@ function Income:Settle(profile, now, offline)
 		-- Compare before multiplying: even decades elapsed cannot overflow subcoins.
 		local grant = if rate > math.floor(limit / elapsed) then limit else rate * elapsed
 		if grant > 0 then
-			ledger.Pending[key] = pending + grant
+			ledger.Pending[key] = CashMath.Credit(pending, grant)
 			room -= grant
 		end
 	end
@@ -247,6 +247,7 @@ function Income:Collect(profile, slot, maximum)
 		if debit > 0 and after == pending then
 			return 0
 		end
+		after = CashMath.Subtract(pending, debit)
 		pendingCopy[key] = if after > 0 then after else nil
 		remaining = math.max(0, remaining - debit)
 	end
@@ -254,7 +255,7 @@ function Income:Collect(profile, slot, maximum)
 		return 0
 	end
 	profile.Income.Pending = pendingCopy
-	profile.Coins += coins
+	profile.Coins = CashMath.Credit(profile.Coins, coins)
 	profile.Stats.Earned += coins
 	-- Coins are fungible: every pad/jar/away collection consumes offline credit first.
 	local report = profile.Income.Offline
