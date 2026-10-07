@@ -24,6 +24,25 @@ do
 		OwnedPasses = {},
 		Commerce = { Quotes = {}, Lucky = { Allowed = true, Count = 0, PolicyRemaining = 120 } },
 	}
+	local roll = H.Load("src/server/Services/RollService")
+	local items, toilets = H.Load("src/shared/Config/Items"), H.Load("src/shared/Config/Toilets")
+	local normal, boosted = roll.Distribution(items, toilets, 1, 1), roll.Distribution(items, toilets, 1, 10)
+	local odds = { Token = "1:1:10", Items = {}, Rarities = {} }
+	for i, row in ipairs(normal) do
+		local item = row.Item
+		odds.Items[i] = {
+			Id = item.Id,
+			Name = item.Name,
+			Rarity = item.Rarity,
+			Normal = row.Probability,
+			Boosted = boosted[i].Probability,
+		}
+		local sum = odds.Rarities[item.Rarity] or { Normal = 0, Boosted = 0 }
+		sum.Normal += row.Probability
+		sum.Boosted += boosted[i].Probability
+		odds.Rarities[item.Rarity] = sum
+	end
+	state.Commerce.Lucky.Odds = odds
 	for key, offer in pairs(config.DeveloperProducts) do
 		if offer.Id > 0 then
 			state.Commerce.Quotes[key] = if offer.IncomeSeconds then 4321 else 0
@@ -49,15 +68,58 @@ do
 				assert(card.Buy.Text == tostring(expected[offer.Id].Price), "Configured price replaced platform price")
 				assert(card.OfferStatus.Text ~= "Not on sale yet")
 				card.Buy.Activated:Fire()
+				if offer.LuckyCharges then
+					local dialog = root:FindFirstChild("Lucky Flush odds")
+					assert(dialog.Visible and #H.Calls == before, "Wired Lucky purchase bypassed odds review")
+					dialog:FindFirstChild("ConfirmLucky", true).Activated:Fire()
+				end
 				local call = H.Calls[#H.Calls]
 				assert(#H.Calls == before + 1 and call.Args[1] == key)
 				assert(call.Name == (if group == "Gamepasses" then "BuyPass" else "BuyProduct"))
 				if group == "DeveloperProducts" then
 					assert(call.Args[2] == state.Commerce.Quotes[key])
+					if offer.LuckyCharges then
+						assert(call.Args[3] == odds.Token)
+					end
 				end
 			end
 		end
 	end
+	local body, grid = ui.Panel.ContentScroll.Body, ui.Panel:FindFirstChild("LuckyGrid", true)
+	for _, mode in ipairs({ "restricted", "failed", "expired" }) do
+		state.Commerce.Lucky = { Allowed = true, Count = 1, Odds = odds, PolicyRemaining = 120 }
+		ui.Update(state)
+		body.LuckyTab.Activated:Fire()
+		ui.Panel:FindFirstChild("UseLucky", true).Activated:Fire()
+		assert(grid.Visible and root:FindFirstChild("Lucky Flush odds").Visible)
+		local before = #H.Calls
+		if mode == "expired" then
+			H.Advance(121)
+		else
+			-- Restricted and failed server lookups both publish a fail-closed snapshot.
+			state.Commerce.Lucky = { Allowed = false, Count = 1, PolicyRemaining = 0 }
+			ui.Update(state)
+		end
+		assert(not body.LuckyTab.Visible and not grid.Visible and not root:FindFirstChild("Lucky Flush odds").Visible)
+		body.LuckyTab.Activated:Fire()
+		for _, key in ipairs({ "LuckyFlush1", "LuckyFlush5", "LuckyFlush20" }) do
+			assert(not grid[key].OfferCard.Buy.Interactable)
+			grid[key].OfferCard.Buy.Activated:Fire()
+		end
+		root:FindFirstChild("Lucky Flush odds"):FindFirstChild("ConfirmLucky", true).Activated:Fire()
+		assert(#H.Calls == before and not grid.Visible, "Ineligible wired Lucky offer requested purchase/use")
+	end
+	state.Commerce.Lucky = { Allowed = true, Count = 0, Odds = odds, PolicyRemaining = 120 }
+	H.UseCommerceIds(false)
+	ui.Update(state)
+	local before = #H.Calls
+	for _, key in ipairs({ "LuckyFlush1", "LuckyFlush5", "LuckyFlush20" }) do
+		local card = grid[key].OfferCard
+		assert(card.Buy.Text == "Coming soon" and not card.Buy.Interactable)
+		card.Buy.Activated:Fire()
+	end
+	assert(#H.Calls == before and not queries[0], "Zero-ID fixture queried a price or offered purchase")
+	H.UseCommerceIds(true)
 	state.OwnedPasses = { UltimateBundle = true }
 	ui.Update(state)
 	for _, key in ipairs(config.PassOrder) do
@@ -69,4 +131,6 @@ do
 	H.Services.MarketplaceService.GetProductInfoAsync = original
 	H.UseCommerceIds(false)
 end
-print("Wired catalog UI passed: all 20 production price mappings, purchases, bundle states and disabled Lucky offers")
+print(
+	"Wired catalog UI passed: all 23 production price mappings, reviewed Lucky purchases, policy hiding and bundle states"
+)
