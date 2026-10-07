@@ -53,6 +53,4 @@ for key, charges in pairs({ LuckyFlush1 = 1, LuckyFlush5 = 5, LuckyFlush20 = 20 
 	assert(config.DeveloperProducts[key].LuckyCharges == charges)
 end
 assert(config.Gamepasses.VIPStar.Name == "Star Tag")
-print(
-	"Production monetization IDs passed: 16 passes + 8 products wired; Lucky charges and caps preserved"
-)
+print("Production monetization IDs passed: 16 passes + 8 products wired; Lucky charges and caps preserved")

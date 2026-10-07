@@ -123,7 +123,7 @@ function Receipt:Process(info)
 				self:Deferred(player)
 				return pending
 			end
-			replacement.Coins += coins
+			replacement.Coins = CashMath.Credit(replacement.Coins, coins)
 			replacement.Stats.Earned += coins
 		elseif product.LuckyCharges then
 			if not Lucky:Allowed(player) or commerce.LuckyFlushes > Config.LuckyFlushCap - product.LuckyCharges then

@@ -4,7 +4,10 @@ return {
 	FlushRange = 14,
 	AutoTick = 0.1,
 	OwnershipRefresh = 120,
+	-- Per lookup service, including departed players until their requests return.
+	MaxConcurrentLookups = 12,
 	PromptTimeout = 120,
+	PurchaseRejectionSeconds = 2,
 	AutoCollectSeconds = 5,
 	ReceiptHistoryLimit = 128,
 	ReceiptReadySeconds = 30,

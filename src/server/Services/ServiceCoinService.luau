@@ -14,7 +14,7 @@ function ServiceCoinService.Grant(profile, toilet, cashMultiplier)
 	if not CashMath.CanGrant(profile, amount) then
 		return nil
 	end
-	profile.Coins += amount
+	profile.Coins = CashMath.Credit(profile.Coins, amount)
 	profile.Stats.Earned += amount
 	return amount
 end

@@ -46,7 +46,7 @@ function Mutations.Build(data, profile, action, args, now, imported)
 		if not CashMath.CanCredit(candidate.Coins, args.Amount) then
 			return nil
 		end
-		candidate.Coins += args.Amount
+		candidate.Coins = CashMath.Credit(candidate.Coins, args.Amount)
 	elseif action == "SetCoins" then
 		candidate.Coins = args.Amount
 	elseif action == "Pending" then

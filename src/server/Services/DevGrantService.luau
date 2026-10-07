@@ -17,7 +17,7 @@ function DevGrantService.Start(data, limiter, remotes, sync)
 		if not amount or not profile or not CashMath.CanGrant(profile, amount) then
 			return
 		end
-		profile.Coins += amount
+		profile.Coins = CashMath.Credit(profile.Coins, amount)
 		profile.Stats.Earned += amount
 		sync(player)
 	end)

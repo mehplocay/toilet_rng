@@ -38,7 +38,7 @@ function Pad.Claim(commerce, player)
 	end
 	local replacement = Copy(profile)
 	replacement.Monetization.VIPPadAt = now
-	replacement.Coins += coins
+	replacement.Coins = CashMath.Credit(replacement.Coins, coins)
 	replacement.Stats.Earned += coins
 	if not data:ReplaceAndSave(player, profile, replacement) then
 		return false
