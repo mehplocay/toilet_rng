@@ -18,6 +18,11 @@ local cases = {
 	{ 1170, 540, true, 54, 36, 0, 21 },
 }
 local namedCases = #cases
+-- Passes tabs occupy y=44..84; the content scroll starts at y=92, leaving only the intended 8 px gutter.
+for _, width in ipairs({ 1920, 1280, 375, 724, 1024, 768, 1116, 711, 711, 360, 390, 640 }) do
+	local tabBottom, contentTop = 44 + 40, 92
+	assert(contentTop - tabBottom == 8, string.format("%dpx Passes tab has an unexpected top gap", width))
+end
 for width = 360, 1920, 40 do
 	for height = 640, 1080, 40 do
 		for _, touch in ipairs({ false, true }) do

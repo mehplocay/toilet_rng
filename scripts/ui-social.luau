@@ -1,62 +1,38 @@
 do
-	local config = H.Load("src/shared/Config/SocialBoosts")
 	local SocialUI = H.Load("src/client/UI/SocialBoosts")
+	local social = { GameInvitePromptClosed = H.Signal() }
+	function social:CanSendGameInviteAsync()
+		return true
+	end
+	function social:PromptGameInvite() end
+	H.Services.SocialService = social
+	H.Services.Players.LocalPlayer = { UserId = 101 }
 	for _, size in ipairs(H.Viewports) do
 		local root, remotes = H.Root(size[1], size[2]), H.Remotes()
 		local passes = H.Load("src/client/UI/Passes").Create(root, remotes)
 		passes.OpenSocial()
-		local names = {}
-		for i = 1, config.MaxFriends do
-			names[i] = "FriendUsername" .. i
-		end
-		local state = {
-			Settings = {},
-			OwnedPasses = {},
-			Social = {
-				GroupMember = true,
-				GroupStatus = "Member",
-				FriendCount = 11,
-				FriendNames = names,
-				InviteRemaining = 1800,
-				DailyCount = 5,
-				RewardedCount = 50,
-			},
-		}
-		passes.Update(state)
+		passes.Update({ Settings = {}, OwnedPasses = {}, Social = { FriendCount = 11, InviteRemaining = 1800 } })
+		H.StartTasks()
 		H.Layout(root)
-		local section = passes.Panel:FindFirstChild("SocialBoosts", true)
-		assert(section.Visible and section.FriendStatus.Text:find("55%%"))
-		assert(section.GroupStatus.Text:find("active", 1, true) and section.InviteStatus.Text:find("30:00", 1, true))
-		assert(section.FriendNames.Text:find("FriendUsername11", 1, true))
-		assert(section.CheckGroup.AbsoluteSize.Y >= 44 and section.InviteFriends.AbsoluteSize.Y >= 44)
-		assert(section.CheckGroup.AbsoluteSize.X > 0 and section.InviteFriends.AbsoluteSize.X <= size[1])
-		local scroll = section.Parent.Parent
-		local oldScroll = scroll.CanvasPosition
-		scroll.CanvasPosition = { X = 0, Y = section.InviteFriends.AbsolutePosition.Y - scroll.AbsolutePosition.Y }
-		H.Layout(root)
-		assert(section.InviteFriends.AbsolutePosition.Y >= scroll.AbsolutePosition.Y)
+		assert(not passes.Panel:FindFirstChild("SocialBoosts", true), "Verbose social panel remains in Passes")
+		local scroll = passes.Panel:FindFirstChild("ContentScroll")
+		local offers = scroll:FindFirstChild("OfferGrid", true)
+		assert(math.abs(offers.AbsolutePosition.Y - scroll.AbsolutePosition.Y) < 2, "Passes content has a top gap")
+		local invite = passes.Panel:FindFirstChild("InviteFriends", true)
+		assert(invite.Visible and invite.Text == "Invite friends for extra coins")
+		assert(invite.AbsoluteSize.Y == 44 and invite.AbsoluteSize.X > 0 and invite.AbsoluteSize.X <= size[1])
+		assert(invite.AbsolutePosition.Y >= passes.Panel.AbsolutePosition.Y)
+		local refresh = passes.Panel:FindFirstChild("Refresh passes", true)
 		assert(
-			section.InviteFriends.AbsolutePosition.Y + section.InviteFriends.AbsoluteSize.Y <= size[2],
-			"Invite button is not reachable by scrolling"
-		)
-		scroll.CanvasPosition = oldScroll
-		H.Layout(root)
-		local before = #H.Calls
-		section.CheckGroup.Activated:Fire()
-		section.CheckGroup.Activated:Fire()
-		-- The local control must close its own request window without waiting for state replication.
-		assert(#H.Calls == before + 1 and H.Calls[#H.Calls].Name == "CheckGroup")
-		state.Social = { GroupStatus = "Unavailable", FriendCount = 0, InviteRemaining = 0 }
-		passes.Update(state)
-		assert(
-			section.GroupStatus.Text:find("inactive", 1, true) and section.InviteStatus.Text:find("inactive", 1, true)
+			math.abs(invite.AbsolutePosition.Y - refresh.AbsolutePosition.Y) < 2,
+			"Invite text is not on refresh row"
 		)
 		assert(SocialUI.ChipText({ FriendCount = 3, InviteRemaining = 1 }, 2):find("Social boosts", 1, true))
-		H.Snapshot(root, string.format("social-%dx%d", size[1], size[2]))
+		H.Snapshot(root, string.format("social-compact-%dx%d", size[1], size[2]))
 		passes.Panel:Destroy()
 		root:Destroy()
 	end
-	print("Social UI: group/friends/expiry states, names, request cooldowns and 12 viewports passed")
+	print("Social UI: compact invite row, no social text panel and 12 viewports passed")
 end
 
 do
@@ -80,32 +56,38 @@ do
 		end
 		H.Services.SocialService = social
 		local root, remotes = H.Root(390, 722), H.Remotes()
-		local ui = H.Load("src/client/UI/SocialBoosts").Create(root, remotes)
+		local ui = H.Load("src/client/UI/Passes").Create(root, remotes)
 		H.StartTasks()
+		local button = ui.Panel:FindFirstChild("InviteFriends", true)
+		assert(
+			button.Visible == (mode ~= "restricted" and mode ~= "lookup-error"),
+			"Invite capability visibility mismatch"
+		)
 		local before = #H.Calls
 		remotes.Result.OnClientEvent:Fire("PromptInvite", { Success = true })
 		assert(social.Checks == 0, "Unsolicited acknowledgement opened a modal")
-		ui.Frame.InviteFriends.Activated:Fire()
-		ui.Frame.InviteFriends.Activated:Fire()
-		assert(#H.Calls == before + 1 and H.Calls[#H.Calls].Name == "PromptInvite")
-		remotes.Result.OnClientEvent:Fire("PromptInvite", { Success = true })
-		H.StartTasks()
-		assert(social.Checks == 1)
-		assert(social.Prompts == (if mode == "allowed" or mode == "prompt-error" then 1 else 0))
+		if button.Visible then
+			button.Activated:Fire()
+			button.Activated:Fire()
+			assert(#H.Calls == before + 1 and H.Calls[#H.Calls].Name == "PromptInvite")
+			remotes.Result.OnClientEvent:Fire("PromptInvite", { Success = true })
+			H.StartTasks()
+			assert(social.Checks == 2)
+			assert(social.Prompts == (if mode == "allowed" or mode == "prompt-error" then 1 else 0))
+		else
+			button.Activated:Fire()
+			assert(#H.Calls == before, "Unavailable invite control sent a request")
+		end
 		if mode == "allowed" then
 			social.GameInvitePromptClosed:Fire(H.Services.Players.LocalPlayer, { 123, 456 })
-			assert(ui.Frame.InviteFeedback.Text:find("qualifying", 1, true))
 		end
-		assert(#H.Calls == before + 1, "Modal/recipient results sent a reward claim")
-		H.Advance(config.InvitePromptSeconds + 1)
-		H.ResumeTasks()
-		assert(ui.Frame.InviteFriends.Interactable)
-		ui.Frame:Destroy()
+		assert(#H.Calls == before + (if button.Visible then 1 else 0), "Modal/recipient results sent a reward claim")
+		ui.Panel:Destroy()
 		root:Destroy()
 	end
 	H.Services.SocialService = previous
 	print(
-		"Social invite UI: native capability gate, errors, unsolicited results, cooldowns and untrusted closure passed"
+		"Social invite UI: hidden capability failures, server acknowledgement gate, prompt errors and no reward claims passed"
 	)
 end
 

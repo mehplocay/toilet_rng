@@ -62,8 +62,6 @@ function Passes.Create(gui, remotes)
 		{ Size = UDim2.new(1, -10, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, BackgroundTransparency = 1 }
 	)
 	C.New("UIListLayout", content, { Padding = UDim.new(0, 18), SortOrder = Enum.SortOrder.LayoutOrder })
-	local social = require(script.Parent.SocialBoosts).Create(content, remotes)
-	social.Frame.Visible = false
 	local row = C.New("Frame", content, {
 		Size = UDim2.new(1, 0, 0, 0),
 		AutomaticSize = Enum.AutomaticSize.Y,
@@ -368,7 +366,6 @@ function Passes.Create(gui, remotes)
 	local styleFeedback = C.BodyText(content, "", UDim2.new(1, -12, 0, 48))
 	styleFeedback.Name, styleFeedback.LayoutOrder = "StyleFeedback", 4
 	selectTab = function(boosts)
-		social.Frame.Visible = boosts == true
 		local lucky = boosts == "Lucky" and commerce.Lucky and commerce.Lucky.Allowed == true
 		row.Visible, boostRow.Visible, luckyRow.Visible = not boosts, boosts == true, lucky == true
 		useLucky.Visible = lucky == true
@@ -405,7 +402,83 @@ function Passes.Create(gui, remotes)
 		remotes.RefreshPasses:FireServer()
 		refreshPrices()
 	end, C.Blue, { TextSize = 18 })
+	local inviteButton = C.New("TextButton", body, {
+		Name = "InviteFriends",
+		Text = "Invite friends for extra coins",
+		TextColor3 = C.Muted,
+		TextSize = 14,
+		TextWrapped = true,
+		Font = Enum.Font.BuilderSansBold,
+		TextXAlignment = Enum.TextXAlignment.Left,
+		BackgroundTransparency = 1,
+		AutoButtonColor = false,
+		Size = UDim2.new(0.52, -8, 0, 44),
+		Position = UDim2.new(0, 4, 1, -48),
+		Visible = false,
+		Interactable = false,
+	})
+	local inviteAvailable, inviteWaiting, inviteUntil, promptOpen = false, false, 0, false
+	local socialService = game:GetService("SocialService")
+	local localPlayer = game:GetService("Players").LocalPlayer
+	local function checkInviteAvailability()
+		task.spawn(function()
+			local ok, allowed = pcall(function()
+				return socialService:CanSendGameInviteAsync(localPlayer)
+			end)
+			if alive then
+				inviteAvailable = ok and allowed == true
+				inviteButton.Visible = inviteAvailable
+				inviteButton.Interactable = inviteAvailable and not inviteWaiting and not promptOpen
+			end
+		end)
+	end
+	checkInviteAvailability()
+	inviteButton.Activated:Connect(function()
+		if not inviteAvailable or inviteWaiting or promptOpen or os.clock() < inviteUntil then
+			return
+		end
+		inviteWaiting, inviteUntil = true, os.clock() + 10
+		inviteButton.Interactable = false
+		remotes.PromptInvite:FireServer()
+	end)
+	local inviteClosed
+	if socialService.GameInvitePromptClosed then
+		inviteClosed = socialService.GameInvitePromptClosed:Connect(function(player)
+			if player == localPlayer then
+				promptOpen = false
+				inviteButton.Interactable = inviteAvailable
+			end
+		end)
+	end
 	local results = remotes.Result.OnClientEvent:Connect(function(action, payload)
+		if action == "PromptInvite" then
+			if not inviteWaiting then
+				return
+			end
+			if payload.Success ~= true or os.clock() >= inviteUntil then
+				inviteWaiting = false
+				inviteButton.Interactable = inviteAvailable and not promptOpen
+				return
+			end
+			inviteWaiting = false
+			task.spawn(function()
+				local ok, allowed = pcall(function()
+					return socialService:CanSendGameInviteAsync(localPlayer)
+				end)
+				if not alive then
+					return
+				end
+				inviteAvailable = ok and allowed == true
+				inviteButton.Visible = inviteAvailable
+				if inviteAvailable then
+					promptOpen = pcall(function()
+						socialService:PromptGameInvite(localPlayer)
+					end)
+				end
+				inviteButton.Interactable = inviteAvailable and not promptOpen
+			end)
+			return
+		end
 		if action == "PlotColor" then
 			styleFeedback.Text = payload.Message or "Request unavailable."
 		end
@@ -423,6 +496,10 @@ function Passes.Create(gui, remotes)
 		end
 	end)
 	local policyExpiry = game:GetService("RunService").Heartbeat:Connect(function()
+		if inviteWaiting and os.clock() >= inviteUntil then
+			inviteWaiting = false
+			inviteButton.Interactable = inviteAvailable and not promptOpen
+		end
 		if pendingDeadline and os.clock() >= pendingDeadline then
 			pendingAction, pendingDeadline = nil, nil
 			status.Text = "Permanent passes and consumable boosts."
@@ -444,17 +521,19 @@ function Passes.Create(gui, remotes)
 	end)
 	panel.Destroying:Connect(function()
 		results:Disconnect()
+		if inviteClosed then
+			inviteClosed:Disconnect()
+		end
 		policyExpiry:Disconnect()
 	end)
 	updateButtons()
 	return {
 		Panel = panel,
 		OpenSocial = function()
-			selectTab(true)
+			selectTab(false)
 			panel.Visible = true
 		end,
 		Update = function(state)
-			social.Update(state.Social)
 			owned = Rules.Entitlements(state.OwnedPasses, Config)
 			commerce = table.clone(state.Commerce or { Quotes = {} })
 			local lucky = commerce.Lucky
