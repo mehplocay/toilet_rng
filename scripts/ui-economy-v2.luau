@@ -57,7 +57,12 @@ do
 		Upgrades = { CashBoost = 9, LuckBoost = 9, OfflineTank = 9 },
 	})
 	shop.Panel.Visible = true
-	assert(contains(shop.Panel, "16.5M Coins") and contains(shop.Panel, "9Qa Coins"))
+	assert(
+		contains(
+			shop.Panel,
+			H.Load("src/client/UI/Components").Commas(H.Load("src/shared/Config/Toilets")[7].Price) .. " Coins"
+		) and contains(shop.Panel, "9Qa Coins")
+	)
 	shop.Panel.ContentScroll.Body:FindFirstChild("Coin Upgrades", true).Activated:Fire()
 	H.Snapshot(root, "income-first-upgrades-phone")
 	root:Destroy()

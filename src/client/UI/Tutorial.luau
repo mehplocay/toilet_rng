@@ -64,8 +64,8 @@ function Tutorial.Create(player, remotes, hud, prompts)
 			"Find your toilet!",
 			"Let's FLUSH!",
 			"Your collection is growing!",
-			"Time for a better toilet!",
-			"Go find something legendary!",
+			"Upgrade for better odds!",
+			"Every toilet can drop every item!",
 		}
 		local details = {
 			"1/5 • Tap Home to get there",

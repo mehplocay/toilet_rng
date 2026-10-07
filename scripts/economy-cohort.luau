@@ -95,7 +95,8 @@ function C.Run(population, uptime, rebirthRuns, slotLimit, stopAt, maxTier, pass
 					U:Buy(p, id, level)
 				end
 			end
-			local nextTier = Toilets[p.ToiletTier + 1]
+			-- A fast early jackpot must not overshoot the requested observation tier.
+			local nextTier = if maxTier and p.ToiletTier >= maxTier then nil else Toilets[p.ToiletTier + 1]
 			if not pendingPurchase and nextTier and p.Coins >= nextTier.Price then
 				p.Coins -= nextTier.Price
 				p.ToiletTier += 1

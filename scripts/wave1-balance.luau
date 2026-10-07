@@ -52,14 +52,14 @@ for tier, toilet in ipairs(Toilets) do
 		end
 	end
 end
-print("FIRST SIGHT: expected flushes / online minutes at first unlock; 75% uptime, no upgrades or unlock time.")
+print("FIRST SIGHT: expected flushes / online minutes from Basic; 75% uptime, no upgrades.")
 for _, item in ipairs(Spec.Items) do
 	local values = {}
 	for _, luck in ipairs({ 1, 5, 10 }) do
-		for _, entry in ipairs(Roll.Distribution(Items, Toilets, item.FirstToiletTier, luck)) do
+		for _, entry in ipairs(Roll.Distribution(Items, Toilets, 1, luck)) do
 			if entry.Item.Id == item.Id then
 				local n = if entry.Probability > 0 then 1 / entry.Probability else math.huge
-				table.insert(values, string.format("%.2f/%.2f", n, n * Toilets[item.FirstToiletTier].Cooldown / 45))
+				table.insert(values, string.format("%.2f/%.2f", n, n * Toilets[1].Cooldown / 45))
 			end
 		end
 	end

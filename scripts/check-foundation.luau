@@ -16,12 +16,12 @@ for tier = 1, #Toilets do
 		assert(Roll.Sample(entries, math.random))
 	end
 end
-assert(#Roll.Distribution(Items, Toilets, 1) == 7)
-assert(#Roll.Distribution(Items, Toilets, 5) == 24)
-assert(#Roll.Distribution(Items, Toilets, 6) == 27)
+assert(#Roll.Distribution(Items, Toilets, 1) == #Items)
+assert(#Roll.Distribution(Items, Toilets, 5) == #Items)
+assert(#Roll.Distribution(Items, Toilets, 6) == #Items)
 assert(Roll.Roll(Items, Toilets, 7, function()
 	return 0
-end).Id == "Mystery")
+end).Id == "CosmicCourtesy")
 assert(Roll.Roll(Items, Toilets, 7, function()
 	return 0.99
 end).Id == "Poop")
@@ -35,7 +35,7 @@ assert(not limiter:Allow(player, "Flush"))
 assert(not limiter:Allow(player, "Unknown"))
 limiter:Remove(player)
 assert(limiter.Players[player] == nil)
-print("Foundation checks passed: guaranteed drops, rare-first pools, luck, rate limits")
+print("Foundation checks passed: guaranteed drops, rare-first catalog, luck, rate limits")
 local Events = require("../src/server/Services/EventService")
 local Config = require("../src/shared/Config/Events")
 local now, broadcasts, updates = 100, 0, 0
@@ -64,10 +64,10 @@ assert(broadcasts == 3 and #event.Pending == 0)
 assert(not event:Trigger(owner, Items[9], 2))
 local base = Roll.Distribution(Items, Toilets, 7, Toilets[7].Luck)
 local boosted = Roll.Distribution(Items, Toilets, 7, Toilets[7].Luck * event:Multiplier() * 2)
-assert(math.abs(boosted[1].Check - 5.2 / Items[11].Chance) < 1e-12)
+assert(math.abs(boosted[1].Check - math.min(10, Toilets[7].Luck * 4) / 15000000) < 1e-12)
 assert(Roll.Sample(boosted, function()
 	return 0.999999
-end).Id == "LoopyLoofah")
+end).Id == "SoggySock")
 now = event.Expires
 assert(event:Multiplier() == 1)
 event:Remove(owner)

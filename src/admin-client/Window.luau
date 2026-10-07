@@ -202,7 +202,7 @@ function Window.Create(gui, remote, C, reloadLabels)
 		for _, item in ipairs(Items) do
 			table.insert(ids, item.Id)
 		end
-		text(parent, "Tap the picker to cycle through catalog IDs, or enter an exact ID below.")
+		text(parent, "All " .. #ids .. " items drop from every toilet. Cycle catalog IDs or enter an ID below.")
 		local input = field(parent, "Item ID", ids[1])
 		local index = 1
 		button(parent, "Next catalog item", function()

@@ -20,7 +20,7 @@ test("merge: capped RNG odds, cash, lifetime collection and animation survive ma
 			p.Upgrades.FlushSpeed, p.Upgrades.AutoFlushSpeed = 10, 10
 			p.RewardLuckExpires = e.Now + 60
 		end
-		local luck, cooldown = if upgraded then 5.2 else 1, if upgraded then 0.4 else 1.5
+		local luck, cooldown = if upgraded then 7.4 else 1, if upgraded then 0.4 else 1.5
 		local expected = {}
 		for _, entry in ipairs(roll.Distribution(items, toilets, p.ToiletTier, luck)) do
 			expected[entry.Item.Id] = entry.Probability
@@ -248,7 +248,7 @@ test("upgrades: 0.4s shared cooldown admits legitimate requests and rejects burs
 		e.World.Flush(player, true)
 		e.Now += 0.401
 	end
-	assert(p.Stats.Flushes == 120 and p.Inventory.LoopyLoofah == 20)
+	assert(p.Stats.Flushes == 120 and p.Inventory.SoggySock == 20)
 	for _ = 1, 100 do
 		e:Fire("Flush", player)
 	end
@@ -257,7 +257,7 @@ test("upgrades: 0.4s shared cooldown admits legitimate requests and rejects burs
 		if result.Payload[1] == "Flush" then
 			assert(
 				result.Payload[2].Cooldown == 0.4
-					and result.Payload[2].LuckMultiplier == 5.2
+					and result.Payload[2].LuckMultiplier == 7.4
 					and not result.Payload[2].LuckCapped
 			)
 		end

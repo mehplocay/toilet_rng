@@ -371,6 +371,7 @@ function Instance.new(class)
 	return object
 end
 local services = {
+	TextService = {},
 	StarterGui = { CoreEnabled = {}, Calls = {} },
 	ProximityPromptService = { PromptTriggered = signal(), PromptShown = signal(), PromptHidden = signal() },
 	RunService = { Heartbeat = signal(), RenderStepped = signal(), PreSimulation = signal() },
@@ -388,6 +389,15 @@ local services = {
 	Players = { PlayerAdded = signal(), PlayerRemoving = signal() },
 	ContextActionService = {},
 }
+-- Approximate font metrics at the engine boundary; native glyph rendering needs Studio QA.
+function services.TextService:GetTextSize(value, size, _font, bounds)
+	local lines = 0
+	local capacity = math.max(1, math.floor(bounds.X / (size * 0.58)))
+	for line in string.gmatch(value .. "\n", "([^\n]*)\n") do
+		lines += math.max(1, math.ceil(#line / capacity))
+	end
+	return Vector2.new(bounds.X, lines * size * 1.2)
+end
 function services.StarterGui:GetCoreGuiEnabled(kind)
 	return self.CoreEnabled[kind] ~= false
 end

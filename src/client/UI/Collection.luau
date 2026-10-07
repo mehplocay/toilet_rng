@@ -35,7 +35,8 @@ function Collection.Create(gui, remotes)
 	C.Grid(grid, 132, 366, 5)
 	local empty = C.BodyText(grid, "No discoveries match your search.", UDim2.new(1, -20, 0, 70))
 	empty.Visible = false
-	local help = C.BodyText(body, "First copies can be displayed.", UDim2.new(1, -100, 0, 26), UDim2.fromOffset(0, 166))
+	local help =
+		C.BodyText(body, "All items drop from every toilet.", UDim2.new(1, -100, 0, 26), UDim2.fromOffset(0, 166))
 	local rewards = require(script.Parent.IndexRewards).Create(body, remotes)
 	local rewardsButton = C.Button(
 		body,
@@ -185,7 +186,7 @@ function Collection.Create(gui, remotes)
 					if card.Signature ~= signature then
 						card.Signature = signature
 						card.Name.Text, card.Odds.Text =
-							name, if discovered then "1 in " .. C.Commas(item.Chance) else "Undiscovered"
+							name, if item.Id == "Poop" then "Fallback" else "Base 1 in " .. C.Commas(item.Chance)
 						card.Count.Text = "x" .. count .. " owned  |  " .. available .. " to sell"
 						card.Sell.Interactable, card.All.Interactable = available > 0, available > 0
 						card.Display.Text = if count == 0

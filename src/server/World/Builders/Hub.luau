@@ -150,7 +150,7 @@ function Hub.Build(root)
 		"UpgradeHint",
 		CFrame.new(66, 23, -66),
 		Vector3.new(26, 2.6, 0.1),
-		"Better toilets = new drops + higher odds!",
+		"Every item, every toilet. Upgrade for higher odds!",
 		Color3.fromRGB(139, 255, 155),
 		true,
 		120

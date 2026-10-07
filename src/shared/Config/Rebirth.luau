@@ -1,7 +1,7 @@
 -- Cumulative rebirth cash bonus multiplies Cash Boost and display/paid factors.
 local levels = {
 	{
-		RequiredCoins = 4000000,
+		RequiredCoins = 6500000,
 		Cash = 0.5,
 		Luck = 0.05,
 		Speed = 0.03,
@@ -31,7 +31,7 @@ local levels = {
 		Perks = { "Porcelain Keeper title" },
 	},
 	{
-		RequiredCoins = 400000000,
+		RequiredCoins = 2300000000,
 		Cash = 2.4,
 		Luck = 0.2,
 		Speed = 0.09,
@@ -41,7 +41,7 @@ local levels = {
 		Perks = { "Royal Cleaner title" },
 	},
 	{
-		RequiredCoins = 3800000000,
+		RequiredCoins = 5000000000,
 		Cash = 3,
 		Luck = 0.25,
 		Speed = 0.1,
@@ -71,7 +71,7 @@ local levels = {
 		Perks = { "Flush Captain title" },
 	},
 	{
-		RequiredCoins = 700000000000,
+		RequiredCoins = 1000000000000,
 		Cash = 5.7,
 		Luck = 0.46,
 		Speed = 0.19,
@@ -81,7 +81,7 @@ local levels = {
 		Perks = { "Bowl Champion title" },
 	},
 	{
-		RequiredCoins = 4500000000000,
+		RequiredCoins = 30000000000000,
 		Cash = 6.8,
 		Luck = 0.53,
 		Speed = 0.22,

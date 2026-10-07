@@ -1,0 +1,39 @@
+Unboosted toilet luck only; mean flushes to each named item's actual outcome (1 / probability).
+Common | Uncommon | Rare | Epic | Legendary | Mythic | Godly | Celestial | Secret
+Common: Soggy Sock (base check 1/6)
+Uncommon: Capybara Cap (base check 1/24)
+Rare: Bubble Beard (base check 1/120)
+Epic: Towel Tornado (base check 1/900)
+Legendary: Golden Gargler (base check 1/4500)
+Mythic: Bath Bomb Behemoth (base check 1/30000)
+Godly: Plunger Paladin (base check 1/250000)
+Celestial: Starlight Seraph (base check 1/900000)
+Secret: Cosmic Courtesy (base check 1/15000000)
+| Toilet | Luck | Common | Uncommon | Rare | Epic | Legendary | Mythic | Godly | Celestial | Secret |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| Basic Toilet | 1x | 10.39 | 27.50 | 121.81 | 902.91 | 4502.57 | 30002.15 | 250002.66 | 900002.19 | 15000000.00 |
+| Dirty Toilet | 1.12x | 9.93 | 24.96 | 108.96 | 806.48 | 4020.43 | 26787.86 | 223216.95 | 803573.62 | 13392857.14 |
+| Golden Toilet | 1.25x | 9.60 | 22.77 | 97.81 | 722.91 | 3602.57 | 24002.15 | 200002.66 | 720002.19 | 12000000.00 |
+| Diamond Toilet | 1.4x | 9.36 | 20.76 | 87.53 | 645.77 | 3216.86 | 21430.72 | 178574.09 | 642859.33 | 10714285.71 |
+| Radioactive Toilet | 1.55x | 9.24 | 19.14 | 79.24 | 583.56 | 2905.80 | 19356.98 | 161292.98 | 580647.35 | 9677419.35 |
+| Demon Toilet | 1.7x | 9.22 | 17.82 | 72.41 | 532.33 | 2649.63 | 17649.20 | 147061.48 | 529413.95 | 8823529.41 |
+| Galaxy Toilet | 1.85x | 9.29 | 16.73 | 66.69 | 489.40 | 2435.01 | 16218.36 | 135137.79 | 486488.68 | 8108108.11 |
+| Coral Commode | 2x | 9.43 | 15.80 | 61.83 | 452.92 | 2252.57 | 15002.15 | 125002.66 | 450002.19 | 7500000.00 |
+| Cloud Cushion | 2.12x | 9.59 | 15.16 | 58.43 | 427.44 | 2125.22 | 14153.09 | 117927.19 | 424530.49 | 7075471.70 |
+| Clockwork Closet | 2.24x | 9.80 | 14.60 | 55.40 | 404.70 | 2011.50 | 13395.00 | 111609.80 | 401787.90 | 6696428.57 |
+| Dragon Kiln | 2.36x | 10.04 | 14.09 | 52.68 | 384.27 | 1909.35 | 12714.01 | 105934.86 | 381358.12 | 6355932.20 |
+| Aurora Throne | 2.48x | 10.33 | 13.64 | 50.22 | 365.82 | 1817.09 | 12098.92 | 100809.11 | 362905.42 | 6048387.10 |
+| Astral Altar | 2.6x | 10.67 | 13.24 | 47.99 | 349.07 | 1733.34 | 11540.61 | 96156.51 | 346156.04 | 5769230.77 |
+| Paradox Potty | 2.74x | 11.11 | 12.82 | 45.63 | 331.39 | 1644.91 | 10951.05 | 91243.54 | 328469.34 | 5474452.55 |
+| Infinity Flush | 2.9x | 11.71 | 12.39 | 43.22 | 313.27 | 1554.30 | 10346.97 | 86209.56 | 310347.02 | 5172413.79 |
+Basic at 1x, 300 flushes (10 minutes at 75% uptime): chance of at least one outcome in each rarity.
+Common	100.00000000%
+Uncommon	100.00000000%
+Rare	100.00000000%
+Epic	97.01679857%
+Legendary	54.91380672%
+Mythic	13.92916095%
+Godly	1.81007677%
+Celestial	0.24585083%
+Secret	0.07297339%
+Cosmic Courtesy in 300 Basic flushes:	0.001999980065747753	%
