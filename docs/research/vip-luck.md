@@ -1,0 +1,16 @@
+# VIP and 2x Luck paid random items research
+
+Checked 2026-10-07; owner decision supersedes the previous no-permanent-paid-luck design.
+
+- https://create.roblox.com/docs/production/monetization/paid-random-items â€” probability modifiers explicitly include luck boosts. A permanent pass that raises random drop odds therefore falls under this policy. Each obtainable outcome must have numerical percentage odds available before purchase; an accessible button must include descriptive text, such as Info. Updated odds must reflect active modifiers. Rounding must keep at least four decimal places beyond the first nonzero digit and disclose that displayed totals may differ from 100%.
+- https://create.roblox.com/docs/reference/engine/classes/PolicyService#GetPolicyInfoForPlayerAsync â€” the lookup yields; use pcall and inspect ArePaidRandomItemsRestricted. Implementation reads only the existing unexpired LuckyService cache during roll calculation. A failed/missing result is never treated as consent.
+- https://devforum.roblox.com/t/clarifying-requirements-for-paid-random-items/4654622 â€” official May 26, 2026 announcement clarifies that probability modifiers count and bundling paid random items makes the bundle a paid random item. We therefore gate purchases and provide odds reviews for VIP, DoubleLuck and UltimateBundle. Existing restricted owners keep deterministic/cosmetic perks, with no paid luck.
+- https://devforum.roblox.com/t/weekly-recap-may-25-29-2026/4659481 â€” official platform update points to that policy clarification. No exception for permanent luck passes or creator accounts was found.
+- https://create.roblox.com/docs/reference/engine/classes/MarketplaceService â€” retain server ownership queries/completion events and client GetProductInfoAsync metadata; ID 0 is never sent to purchase/ownership APIs. Refresh can yield, so eligibility and reviewed odds are checked again before prompting.
+- https://rojo.space/docs/v7/getting-started/installation/ and https://github.com/JohnnyMorganz/StyLua â€” use the installed CLI build/formatter; preserve Windows line endings. No new tool dependency.
+
+Implementation: current/with-pass and current/Lucky probabilities use RollService.Distribution, including sequential survival probabilities and the Poop fallback. Tokens bind the offer, tier and both multipliers. Client expiry removes paid claims; server expiry independently disables effects. No paid luck is stored in profiles. DoubleLuck remains disabled until the manager wires its ID, including implied bundle ownership. The final owner requirement is interpreted as multiplying the full free luck layer by 1.25, then by 2 (not adding 0.25 to the upgrade bonus).
+
+Release: update Hub descriptions, create the pass, upload/wire art, review questionnaire/external sales restrictions and test real published purchases, policy restrictions, receipts/rejoin and owner accounts. Headless mocks cannot establish live platform behavior.
+
+Tool result: https://kampfkarren.github.io/selene/roblox.html documents the required Roblox standard library. Installed Selene 0.31.0 lacks that library and exposes no Roblox generation command (same pre-existing limitation as audit2-tools.md). Attempted lint and generation; neither succeeded. Do not report a clean Selene run.

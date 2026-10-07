@@ -7,6 +7,7 @@ local AutoConfig = require(Shared.Config.AutoFlush)
 local Rewards = require(Shared.Config.Rewards)
 local Schedule = require(Shared.RewardSchedule)
 local rebirth = require(Shared.RebirthRules).new(require(Shared.Config.Rebirth))
+local Odds = require(script.Parent.LuckyOdds)
 local HUD = {}
 function HUD.Create(root, remotes, open, prompts, shopNavigation)
 	local gui = C.New("Frame", root, { Name = "HUD", Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1 })
@@ -61,9 +62,28 @@ function HUD.Create(root, remotes, open, prompts, shopNavigation)
 		coins.Text = C.Commas(number)
 	end)
 	local boost = C.New("Frame", gui, { Name = "Boosts", BackgroundTransparency = 1 })
-	local _, serverText = C.Chip(boost, "Luck +0%", C.Navy, UDim2.new(0.5, -4, 1, 0))
+	local luckChip, serverText = C.Chip(boost, "Luck x1", C.Navy, UDim2.new(0.5, -4, 1, 0))
 	local _, personalText = C.Chip(boost, "Daily luck", C.Navy, UDim2.new(0.5, -4, 1, 0), UDim2.fromScale(0.5, 0))
 	serverText.TextColor3, personalText.TextColor3 = Color3.fromRGB(151, 255, 128), Color3.fromRGB(221, 173, 255)
+	serverText.Name = "TotalLuck"
+	local luckDialog = Odds.Create(root, remotes)
+	luckDialog.Panel.Name = "Luck details"
+	local luckState, luckDeadline = nil, 0
+	local breakdown = C.BodyText(luckChip, "", UDim2.new(0, 290, 0, 140), UDim2.new(0, 0, 1, 4))
+	breakdown.Name, breakdown.Visible, breakdown.BackgroundTransparency = "LuckBreakdown", false, 0
+	breakdown.BackgroundColor3, breakdown.ZIndex = C.Navy, 30
+	local info = C.New(
+		"TextButton",
+		luckChip,
+		{ Name = "LuckInfo", Text = "", BackgroundTransparency = 1, Size = UDim2.fromScale(1, 1) }
+	)
+	info.Activated:Connect(function()
+		breakdown.Visible = not breakdown.Visible
+		luckDialog.Show(luckState)
+	end)
+	gui.Destroying:Connect(function()
+		luckDialog.Panel:Destroy()
+	end)
 	local hint = C.New("CanvasGroup", gui, { Name = "CenterHint", BackgroundTransparency = 1, Visible = false })
 	local hintTitle = C.Text(hint, "Make your next great flush!", UDim2.new(1, 0, 0.55, 0), nil, 38)
 	hintTitle.UIStroke.Thickness = 3
@@ -276,11 +296,32 @@ function HUD.Create(root, remotes, open, prompts, shopNavigation)
 			local now = workspace:GetServerTimeNow()
 			local serverLeft, personalLeft =
 				math.max(0, math.ceil(serverExpiry - now)), math.max(0, math.ceil(personalExpiry - now))
-			serverText.Text = if serverLeft > 0
-				then "Server x2\n" .. timer(serverLeft)
-				else "Luck +" .. math.round(
-					((if state and state.UpgradeStats then state.UpgradeStats.LuckMultiplier else 1) - 1) * 100
-				) .. "%"
+			local eligible = luckState and luckState.Allowed and os.clock() < luckDeadline
+			local odds = eligible and luckState.Odds
+			local total = if odds
+				then (if luckState.Count > 0 and luckState.Armed then odds.Luck else odds.BaseLuck)
+				else (luckState and luckState.FreeLuck)
+					or (state and state.UpgradeStats and state.UpgradeStats.LuckMultiplier)
+					or 1
+			serverText.Text = string.format("Luck x%.3g%s", total, if total >= 10 then " (cap)" else "")
+			breakdown.Text = string.format(
+				"Total luck x%.4g (cap 10x)\n%s\n%s\nRounded; see Info for all item odds.",
+				total,
+				if eligible
+					then (if odds and odds.VIPLuck then "VIP +25% luck" else "VIP luck: inactive")
+					else "VIP luck unavailable in your region",
+				if eligible
+					then (if odds and odds.DoubleLuck then "2x Luck pass" else "2x Luck pass: inactive")
+					else "2x Luck unavailable in your region"
+			)
+			if serverLeft > 0 then
+				breakdown.Text ..= "\nServer x2: " .. timer(serverLeft)
+			end
+			if luckState and not eligible then
+				luckState = table.clone(luckState)
+				luckState.Allowed = false
+				luckDialog.Close()
+			end
 			personalText.Text = if personalLeft > 0
 				then "Daily x2\n" .. timer(personalLeft)
 				else "Daily boost\nDay 7 reward"
@@ -362,6 +403,9 @@ function HUD.Create(root, remotes, open, prompts, shopNavigation)
 				else "AUTO\n" .. state.LifetimeFlushes .. "/" .. Monetization.AutoFlushUnlock
 			autoProgress.Set(state.LifetimeFlushes / Monetization.AutoFlushUnlock)
 			serverExpiry, personalExpiry = state.ServerLuckExpires or 0, state.RewardLuckExpires or 0
+			luckState = state.Commerce and state.Commerce.Lucky
+			luckDeadline = os.clock() + ((luckState or {}).PolicyRemaining or 0)
+			luckDialog.Invalidate(luckState)
 		end,
 		Flushed = function(payload)
 			if

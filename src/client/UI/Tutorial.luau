@@ -72,7 +72,7 @@ function Tutorial.Create(player, remotes, hud, prompts)
 			"2/5 • Tap FLUSH or press E",
 			"3/5 • Open Index. Sell a spare copy",
 			"4/5 • Open Shop. Buy your next toilet",
-			"Tutorial complete!",
+			"Tutorial complete! Tap Luck for odds and pass eligibility.",
 		}
 		hud.SetTutorial(
 			messages[step],

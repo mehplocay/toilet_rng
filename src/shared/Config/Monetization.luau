@@ -53,6 +53,7 @@ return {
 		"AutoCollect",
 		"OfflinePlus",
 		"VIPPack",
+		"DoubleLuck",
 		"RainbowName",
 		"ConfettiReveal",
 		"GoldenName",
@@ -110,11 +111,19 @@ return {
 		VIPPack = {
 			Id = 2013872290,
 			Name = "VIP",
+			PaidLuck = true,
 			Price = 399,
-			Description = "1.5x cash, +1 path speed step, +50% offline tank, daily chest, VIP hub pad, gold star, trail and sign trim. No luck.",
+			Description = "1.5x cash, +1 path speed step, +50% offline tank, daily chest, VIP hub pad, gold star, trail and sign trim. +25% luck, a permanent random-item odds boost. Total luck capped at 10x. Luck unavailable in restricted regions.",
 			CashMultiplier = 1.5,
 			PathSpeedStep = 1,
 			OfflineMultiplier = 1.5,
+		},
+		DoubleLuck = {
+			Id = 0,
+			Name = "2x Luck",
+			Price = 399,
+			Description = "Permanent 2x luck: a random-item odds boost for rare items. Total luck is capped at 10x. Unavailable in restricted regions. Review Info: all item odds before purchase.",
+			PaidLuck = true,
 		},
 		RainbowName = {
 			Id = 2014136291,
@@ -155,8 +164,9 @@ return {
 		UltimateBundle = {
 			Id = 2013272293,
 			Name = "Ultimate Bundle",
+			PaidLuck = true,
 			Price = 799,
-			Description = "Includes all 14 other passes: Sparkle Trail, Star Tag, Custom Plot Color, Fast Flush, Double Cash, Auto Collect, Offline Plus, VIP, Rainbow Name, Confetti Reveal, Golden Name, Dance Pack, Toilet Glow and Companion. No consumables.",
+			Description = "Includes all 15 other passes: Sparkle Trail, Star Tag, Custom Plot Color, Fast Flush, Double Cash, Auto Collect, Offline Plus, VIP, Rainbow Name, Confetti Reveal, Golden Name, Dance Pack, Toilet Glow, Companion and 2x Luck. Includes permanent random-item odds boosts: VIP +25% luck and 2x Luck (coming soon until released). Total luck capped at 10x; luck unavailable in restricted regions. No consumables.",
 		},
 	},
 	ProductOrder = {

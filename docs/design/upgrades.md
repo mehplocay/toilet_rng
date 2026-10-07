@@ -4,7 +4,7 @@
 
 2026-10-06, `feature/permanent`. This replaces the old run-reset and ten-level-track design. [Measured economy and all archetype tables](economy-v2.md), [rebirth contract](rebirth.md), [research](../research/permanent-economy.md).
 
-All six coin tracks and toilet tiers **survive every rebirth**. Config/Upgrades owns piecewise exponential cost anchors, level caps, effects, milestone titles, physical capacity, total luck cap and speed floor. Coins only; server-authoritative pricing and no paid luck.
+All six coin tracks and toilet tiers **survive every rebirth**. Config/Upgrades owns piecewise exponential cost anchors, level caps, effects, milestone titles, physical capacity, total luck cap and speed floor. Coins only; server-authoritative pricing; paid permanent luck is separately policy-gated.
 
 | Track | Levels | Effect |
 |---|---:|---|
@@ -28,3 +28,5 @@ Confirmed level changes pop the existing card; existing audio feedback plays Upg
 Verification: all configured levels/prices/caps, one-coin-short failures, invalid inputs, replay/race safety, old/new save migration, milestone titles, numeric ceilings, exact rare-first odds, cash rounding, offline ledger fractions, responsive UI and persistent rebirth behavior. The audit includes the committed-response-loss purchase at level 100. Studio/native-device and live backend QA remain outside headless evidence. Retire old server binaries before rollout.
 
 Cash stacking (2026-10-07): Cash Boost, rebirth, display toilet factors and owned paid cash factors multiply without a multiplier cap. Milestone titles add no numerical bonus. Late cost anchors are retuned in Config/Upgrades to retain pacing; level counts and effects are unchanged. Daily coins remain paid-only; collection and quoted receipts never multiply again. See [current balance and before/after tables](no-cash-cap.md).
+
+Permanent luck update (2026-10-07): VIP +25% luck and 2x Luck are random-item odds boosts, preserved through rebirth as pass entitlements, and usable only with current policy eligibility. Free upgrade/rebirth luck values are unchanged. Total luck stays capped at 10x; Lucky Flush adds no benefit at the cap. Pass cards expose Info: all item odds; the HUD and odds breakdown identify "VIP +25% luck" and "2x Luck pass", or "unavailable in your region". Percentage rounding is disclosed. [Details and balance](vip-luck-balance.md).

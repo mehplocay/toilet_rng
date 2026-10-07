@@ -20,6 +20,7 @@ local Assets = {
 		LuckyFlush5 = "",
 		LuckyFlush20 = "",
 		DoubleCash = "",
+		DoubleLuck = "",
 		AutoCollect = "",
 		OfflinePlus = "",
 		VIPPack = "",

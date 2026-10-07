@@ -96,11 +96,17 @@ function Art.Draw(C, parent, kind, tint)
 			shape(0.13 + i * 0.25, 0.12 + (if i == 1 then -0.05 else 0), 0.25, 0.46, C.Gold, 0.15, (i - 1) * 18)
 		end
 		shape(0.42, 0.55, 0.15, 0.15, C.Purple, 0.1, 45)
-	elseif kind == "Luck" then
+	elseif kind == "Luck" or kind == "DoubleLuck" then
+		local color = if kind == "DoubleLuck" then C.Gold else C.Green
 		for _, xy in ipairs({ { 0.18, 0.1 }, { 0.48, 0.1 }, { 0.18, 0.4 }, { 0.48, 0.4 } }) do
-			shape(xy[1], xy[2], 0.38, 0.38, C.Green, 1)
+			shape(xy[1], xy[2], 0.38, 0.38, color, 1)
 		end
-		shape(0.47, 0.6, 0.15, 0.3, C.Green, 0.2, 25)
+		shape(0.47, 0.6, 0.15, 0.3, color, 0.2, 25)
+		if kind == "DoubleLuck" then
+			shape(0.1, 0.63, 0.8, 0.29, C.Blue, 0.08)
+			local label = C.Text(parent, "2x", UDim2.fromScale(0.8, 0.29), UDim2.fromScale(0.1, 0.63), 22)
+			label.ZIndex = layer + 1
+		end
 	elseif kind == "Home" or kind == "Teleport" then
 		shape(0.24, 0.35, 0.52, 0.52, C.Blue, 0.1)
 		shape(0.22, 0.11, 0.56, 0.56, Color3.fromRGB(94, 214, 255), 0.05, 45)
@@ -167,7 +173,7 @@ function Art.Draw(C, parent, kind, tint)
 		shape(0.2, 0.2, 0.6, 0.6, C.Purple, 0.08, 45)
 		shape(0.33, 0.25, 0.28, 0.28, Color3.fromRGB(255, 155, 240), 0.05, 45)
 	elseif kind == "AutoFlush" then
-		glyph("↻", 0.03, 0, 0.94, 0.96, C.Blue)
+		glyph("â†»", 0.03, 0, 0.94, 0.96, C.Blue)
 		shape(0.4, 0.4, 0.2, 0.2, white, 1)
 	elseif kind == "OfferBurst" then
 		shape(0.17, 0.17, 0.66, 0.66, C.Gold, 0.06, 25)

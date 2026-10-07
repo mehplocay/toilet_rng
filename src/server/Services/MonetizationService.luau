@@ -50,7 +50,7 @@ end
 
 function Service:EffectiveOwned(player)
 	local owned = Rules.Entitlements(self.Owned[player], Config)
-	return if self.AdminTestOwnership then self.AdminTestOwnership(player, owned) else owned
+	return Rules.Entitlements(if self.AdminTestOwnership then self.AdminTestOwnership(player, owned) else owned, Config)
 end
 function Service:EffectiveCosmetics(player, original)
 	return if self.AdminTestCosmetics then self.AdminTestCosmetics(player, original) else original
@@ -99,8 +99,19 @@ function Service:Load(player)
 	self:Apply(player)
 	return complete
 end
+function Service:LuckPerks(player, offer)
+	if not self.Lucky or not self.Lucky:Allowed(player) then
+		return false, false
+	end
+	local owned = self:EffectiveOwned(player)
+	local vip = owned.VIPPack or offer == "VIPPack" or offer == "UltimateBundle"
+	local double = owned.DoubleLuck or offer == "DoubleLuck" or offer == "UltimateBundle"
+	return vip == true and Config.Gamepasses.VIPPack.Id > 0, double == true and Config.Gamepasses.DoubleLuck.Id > 0
+end
 function Service:Luck(player)
-	return 1 -- Passes never grant luck; LuckyService handles explicitly reviewed single-use charges.
+	local vip, double = self:LuckPerks(player)
+	local luckConfig = require(game.ReplicatedStorage.Shared.Config.Upgrades)
+	return (1 + (if vip then luckConfig.VipLuckBonus else 0)) * (if double then luckConfig.DoubleLuckMultiplier else 1)
 end
 function Service:Cooldown(player, base)
 	return Rules.Cooldown(base, self:EffectiveOwned(player), Config)
@@ -251,13 +262,28 @@ function Service:Start(limiter, remotes, sync, data, world)
 		)
 		sync(player)
 	end)
-	remotes.BuyPass.OnServerEvent:Connect(function(player, key, ...)
+	remotes.BuyPass.OnServerEvent:Connect(function(player, key, oddsToken, ...)
 		if select("#", ...) ~= 0 or not limiter:Allow(player, "BuyPass") or not data:Get(player) then
 			return
 		end
 		local pass = Rules.Pass(Config, key)
 		if not pass or pass.Id <= 0 then
 			result(player, "BuyPass", false, "This pass is coming soon.")
+			return
+		end
+		if
+			pass.PaidLuck
+			and (not self.Lucky:Allowed(player) or oddsToken ~= self.Lucky:Odds(data:Get(player), player, key).Token)
+		then
+			result(
+				player,
+				"BuyPass",
+				false,
+				"Review current item odds; luck is unavailable in your region without policy eligibility."
+			)
+			return
+		end
+		if not pass.PaidLuck and oddsToken ~= nil then
 			return
 		end
 		if self.Checking[player] or (self.Pending[player] and self.Pending[player].Expires > os.clock()) then
@@ -270,7 +296,12 @@ function Service:Start(limiter, remotes, sync, data, world)
 		if player.Parent ~= Players or not data:Get(player) then
 			return
 		end
-		if not complete then
+		if
+			pass.PaidLuck
+			and (not self.Lucky:Allowed(player) or oddsToken ~= self.Lucky:Odds(data:Get(player), player, key).Token)
+		then
+			result(player, "BuyPass", false, "Odds or eligibility changed. Review again before purchase.")
+		elseif not complete then
 			result(player, "BuyPass", false, "Pass ownership is unavailable. Please try again shortly.")
 		elseif self:EffectiveOwned(player)[key] then
 			result(player, "BuyPass", true, "You already own this pass.")

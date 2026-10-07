@@ -43,6 +43,7 @@ do
 		odds.Rarities[item.Rarity] = sum
 	end
 	state.Commerce.Lucky.Odds = odds
+	state.Commerce.Lucky.PassOdds = { VIPPack = odds, DoubleLuck = odds, UltimateBundle = odds }
 	for key, offer in pairs(config.DeveloperProducts) do
 		if offer.Id > 0 then
 			state.Commerce.Quotes[key] = if offer.IncomeSeconds then 4321 else 0
@@ -68,7 +69,7 @@ do
 				assert(card.Buy.Text == tostring(expected[offer.Id].Price), "Configured price replaced platform price")
 				assert(card.OfferStatus.Text ~= "Not on sale yet")
 				card.Buy.Activated:Fire()
-				if offer.LuckyCharges then
+				if offer.LuckyCharges or offer.PaidLuck then
 					local dialog = root:FindFirstChild("Lucky Flush odds")
 					assert(dialog.Visible and #H.Calls == before, "Wired Lucky purchase bypassed odds review")
 					dialog:FindFirstChild("ConfirmLucky", true).Activated:Fire()
@@ -124,7 +125,11 @@ do
 	ui.Update(state)
 	for _, key in ipairs(config.PassOrder) do
 		local card = ui.Panel:FindFirstChild("OfferGrid", true)[key].OfferCard
-		assert(card.Buy.Text == "Owned" and not card.Buy.Interactable and card.CheckIcon.Visible)
+		if config.Gamepasses[key].Id == 0 then
+			assert(card.Buy.Text == "Coming soon" and not card.Buy.Interactable and not card.CheckIcon.Visible)
+		else
+			assert(card.Buy.Text == "Owned" and not card.Buy.Interactable and card.CheckIcon.Visible)
+		end
 	end
 	assert(ui.Panel:FindFirstChild("BoostGrid", true).Coins10Minutes.OfferCard.Buy.Interactable)
 	root:Destroy()

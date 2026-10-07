@@ -210,47 +210,52 @@ test(
 		assert(restored.DisplaySlots == 10 and restored.Monetization.Passes.VIPPack)
 	end
 )
-test("catalog cash: sales, service, passive, daily and offline caps honor paid factors without luck", function()
-	local e, player, p, _, config = catalogPlayer(411)
-	local service = e:Load("src/server/Services/MonetizationService")
-	for i, key in ipairs({ "DoubleCash", "VIPPack", "OfflinePlus" }) do
-		config.Gamepasses[key].Id = 8000 + i
-		service.Owned[player][key] = true
-	end
-	-- No visual double needed to test entitlement arithmetic.
-	service.Commerce:Apply(player, service.Owned[player])
-	local rules = e:Load("src/shared/UpgradeRules").new(e:Load("src/shared/Config/Upgrades"))
-	local paid = e:Load("src/shared/PaidBenefits")
-	assert(rules:Cash(p) == 3 and service:Luck(player) == 1 and math.abs(paid.Cash(p, 1e300) / 3e300 - 1) < 1e-12)
-	p.RebirthLevel, p.Upgrades.CashBoost = 15, 10
-	assert(math.abs(rules:Cash(p) - 96) < 1e-9)
-	p.Inventory.Rat = 3
-	local item
-	for _, candidate in ipairs(e:Load("src/shared/Config/Items")) do
-		if candidate.Id == "Rat" then
-			item = candidate
+test(
+	"catalog cash: sales, service, passive, daily and offline caps honor paid factors with separate policy-gated luck",
+	function()
+		local e, player, p, _, config = catalogPlayer(411)
+		local service = e:Load("src/server/Services/MonetizationService")
+		for i, key in ipairs({ "DoubleCash", "VIPPack", "OfflinePlus" }) do
+			config.Gamepasses[key].Id = 8000 + i
+			service.Owned[player][key] = true
 		end
+		-- No visual double needed to test entitlement arithmetic.
+		service.Commerce:Apply(player, service.Owned[player])
+		local rules = e:Load("src/shared/UpgradeRules").new(e:Load("src/shared/Config/Upgrades"))
+		local paid = e:Load("src/shared/PaidBenefits")
+		assert(
+			rules:Cash(p) == 3 and service:Luck(player) == 1.25 and math.abs(paid.Cash(p, 1e300) / 3e300 - 1) < 1e-12
+		)
+		p.RebirthLevel, p.Upgrades.CashBoost = 15, 10
+		assert(math.abs(rules:Cash(p) - 96) < 1e-9)
+		p.Inventory.Rat = 3
+		local item
+		for _, candidate in ipairs(e:Load("src/shared/Config/Items")) do
+			if candidate.Id == "Rat" then
+				item = candidate
+			end
+		end
+		assert(e:Load("src/server/Services/EconomyService").Sell(p, "Rat", 1))
+		assert(p.Coins == math.floor(item.Value * 96 + 1e-9))
+		local serviceCoins = e:Load("src/server/Services/ServiceCoinService")
+			.Grant(p, e:Load("src/shared/Config/Toilets")[1], rules:Cash(p))
+		assert(serviceCoins > 0)
+		local daily = e:Load("src/server/Services/RewardService")
+			.new(e:Load("src/shared/Config/Rewards"), e:Load("src/shared/RewardSchedule"), function()
+				return e.Now
+			end)
+		local base = daily.Schedule.Coins(1, p.ToiletTier, daily.Config)
+		assert(daily:Claim(p).Coins == math.floor(base * 3))
+		local income = service.Commerce.Income
+		p.Displays["1"] = "Rat"
+		local rate = income:Rates(p)["1"]
+		p.Monetization.Passes.DoubleCash, p.Monetization.Passes.VIPPack = false, false
+		assert(math.abs(rate / income:Rates(p)["1"] - 3) < 0.01)
+		local baseMinutes = rules:OfflineMinutes(p, income.Config.OfflineMinutes)
+		p.Monetization.Passes.OfflinePlus = false
+		assert(baseMinutes == 2 * rules:OfflineMinutes(p, income.Config.OfflineMinutes))
 	end
-	assert(e:Load("src/server/Services/EconomyService").Sell(p, "Rat", 1))
-	assert(p.Coins == math.floor(item.Value * 96 + 1e-9))
-	local serviceCoins = e:Load("src/server/Services/ServiceCoinService")
-		.Grant(p, e:Load("src/shared/Config/Toilets")[1], rules:Cash(p))
-	assert(serviceCoins > 0)
-	local daily = e:Load("src/server/Services/RewardService")
-		.new(e:Load("src/shared/Config/Rewards"), e:Load("src/shared/RewardSchedule"), function()
-			return e.Now
-		end)
-	local base = daily.Schedule.Coins(1, p.ToiletTier, daily.Config)
-	assert(daily:Claim(p).Coins == math.floor(base * 3))
-	local income = service.Commerce.Income
-	p.Displays["1"] = "Rat"
-	local rate = income:Rates(p)["1"]
-	p.Monetization.Passes.DoubleCash, p.Monetization.Passes.VIPPack = false, false
-	assert(math.abs(rate / income:Rates(p)["1"] - 3) < 0.01)
-	local baseMinutes = rules:OfflineMinutes(p, income.Config.OfflineMinutes)
-	p.Monetization.Passes.OfflinePlus = false
-	assert(baseMinutes == 2 * rules:OfflineMinutes(p, income.Config.OfflineMinutes))
-end)
+)
 test("catalog VIP chest: yielding save, replay, rejoin and day boundary grant once", function()
 	local e, player, p, commerce, config = catalogPlayer(412)
 	config.Gamepasses.VIPPack.Id = 8001

@@ -13,7 +13,7 @@ local Profile = require(game.ReplicatedStorage.Shared.CommerceProfile)
 local FlushService = {}
 function FlushService.Start(data, limiter, remotes, sync, world, events, monetization, rewards)
 	monetization.Lucky = Lucky
-	Lucky:Start(data, limiter, remotes, sync, events, rewards)
+	Lucky:Start(data, limiter, remotes, sync, events, rewards, monetization)
 	local nextFlush, nextAuto, random = {}, {}, Random.new()
 	local presentationSequence, autoBusy = {}, {}
 	local function flush(player, automatic)
@@ -46,7 +46,7 @@ function FlushService.Start(data, limiter, remotes, sync, world, events, monetiz
 		local paidFlush = profile.Monetization.LuckyFlushes > 0 and Lucky:Allowed(player)
 		local original = profile
 		if paidFlush then
-			local odds = Lucky:Odds(profile)
+			local odds = Lucky:Odds(profile, player)
 			if data.Saving[player] or Lucky.Armed[player] ~= odds.Token then
 				if not automatic then
 					sync(player)

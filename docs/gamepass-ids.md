@@ -14,6 +14,7 @@ Production config: src/shared/Config/Monetization.luau. **23 wired offers: 15 pa
 | AutoCollect | Auto Collect | Pass | 2014760290 | 2014760290 | 149 | wired; for sale in Hub |
 | OfflinePlus | Offline Plus | Pass | 2013200307 | 2013200307 | 129 | wired; for sale in Hub |
 | VIPPack | VIP | Pass | 2013872290 | 2013872290 | 399 | wired; for sale in Hub |
+| DoubleLuck | 2x Luck | Pass | pending | 0 | 399 | Coming soon; manager creates pass and wires ID |
 | RainbowName | Rainbow Name | Pass | 2014136291 | 2014136291 | 39 | wired; for sale in Hub |
 | ConfettiReveal | Confetti Reveal | Pass | 2013332295 | 2013332295 | 39 | wired; for sale in Hub |
 | GoldenName | Golden Name | Pass | 2012846305 | 2012846305 | 49 | wired; for sale in Hub |
@@ -34,8 +35,11 @@ All **eight developer products** were created with **Managed Pricing off** and *
 
 LuckyFlush1/5/20 are **wired** at the owner's request after questionnaire completion. Remaining owner steps: published purchase/receipt/PolicyService tests, verify charges and spent-charge receipt replay after rejoin, and check the external sales setting in the Hub if available. See [the Lucky Flush release contract](monetization-catalog.md#lucky-flush-release-contract). Keep Lucky products' **external sales off**; where Monetization > Shop listing is available, leave them **Unlisted / Hide from Shop**. Their external-sales/listing state has not been verified in this task. A config ID of zero cannot disable an external Hub sale.
 
-Ultimate Bundle includes all 14 other passes, with no consumables or display-slot grants. Display slots remain free; do not create or enable the retired slot pass. Existing valid saved capacity is retained; see [the slot migration contract](design/monetization.md).
+Ultimate Bundle includes all 15 other passes, with no consumables or display-slot grants. Display slots remain free; do not create or enable the retired slot pass. Existing valid saved capacity is retained; see [the slot migration contract](design/monetization.md).
 
 Pass management: https://create.roblox.com/dashboard/creations/experiences/10769513431/monetization/passes
 
 Product management: https://create.roblox.com/dashboard/creations/experiences/10769513431/monetization/developer-products
+
+
+DoubleLuck is included by Ultimate Bundle only after its ID is wired; ID 0 cannot query, prompt or grant. Upload the new 512 px icon and wire `Assets.Icons.DoubleLuck`. VIP and Bundle Hub descriptions also need the exact updates in [the catalog](monetization-catalog.md#permanent-paid-luck-release-contract-2026-10-07).

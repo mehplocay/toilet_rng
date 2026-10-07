@@ -33,11 +33,11 @@ end
 function Rules.Entitlements(owned, config)
 	local result = {}
 	for _, key in ipairs(config.PassOrder) do
-		result[key] = owned ~= nil and owned[key] == true
+		result[key] = (key ~= "DoubleLuck" or config.Gamepasses[key].Id > 0) and owned ~= nil and owned[key] == true
 	end
 	if result.UltimateBundle then
 		for _, key in ipairs(config.PassOrder) do
-			result[key] = true
+			result[key] = key ~= "DoubleLuck" or config.Gamepasses[key].Id > 0
 		end
 	end
 	return result

@@ -1,8 +1,8 @@
 # Creator Hub monetization catalog
 
-Updated 2026-10-07. Authoritative catalog; supersedes earlier catalog prices and benefits in historical design/audit notes. **15 passes and 8 developer products.** Keep config keys and enabled ID mappings stable. VIPStar is **2008628314**, now renamed **Star Tag** in Creator Hub; its base price stays 59 Robux. Production has **23 wired offers (15 passes + eight products)**. LuckyFlush1/5/20 are **wired** as 3716998840 / 3716998876 / 3716998923. The owner reports the Maturity and Compliance Questionnaire is complete with paid random items disclosed; the game remains private for published tests. Hub creation/settings below are owner-reported; this task did not independently verify or change them.
+Updated 2026-10-07. Authoritative catalog; supersedes earlier catalog prices and benefits in historical design/audit notes. **16 passes (15 wired, 2x Luck pending) and 8 developer products.** Keep config keys and enabled ID mappings stable. VIPStar is **2008628314**, now renamed **Star Tag** in Creator Hub; its base price stays 59 Robux. Production has **23 wired offers (15 passes + eight products)**. LuckyFlush1/5/20 are **wired** as 3716998840 / 3716998876 / 3716998923. The owner reports the Maturity and Compliance Questionnaire is complete with paid random items disclosed; the game remains private for published tests. Hub creation/settings below are owner-reported; this task did not independently verify or change them.
 
-All passes and products below have been created. Use this order for future catalog review. Prices are base Robux targets; in-game enabled buttons show MarketplaceService's current price (including regional pricing). VIP must never be priced below 250 Robux; target 399. No gifting implementation is included.
+All offers except the new 2x Luck pass have been created. Use this order for future catalog review. Prices are base Robux targets; in-game enabled buttons show MarketplaceService's current price (including regional pricing). VIP must never be priced below 250 Robux; target 399. No gifting implementation is included.
 
 Icon paths below are creation targets for the separate art session, not claims of present/uploaded files. The in-game keys already have vector fallbacks. Upload the matching finished PNG when available; do not invent asset IDs. For existing Sparkle Trail, Custom Plot Color and Fast Flush, current Gem/Home/Flush art remains available in game.
 
@@ -15,22 +15,23 @@ Icon paths below are creation targets for the separate art session, not claims o
 | 5 | Pass | Double Cash | 2x coin income. | 249 | Gamepasses.DoubleCash | assets/icons/passes/DoubleCash.png / DoubleCash |
 | 6 | Pass | Auto Collect | Collect display coins every 5 seconds, anywhere on the map. | 149 | Gamepasses.AutoCollect | assets/icons/passes/AutoCollect.png / AutoCollect |
 | 7 | Pass | Offline Plus | Double your offline tank time and storage. | 129 | Gamepasses.OfflinePlus | assets/icons/passes/OfflinePlus.png / OfflinePlus |
-| 8 | Pass | VIP | 1.5x cash, +1 path speed step, +50% offline tank, daily chest, VIP hub pad, gold star, trail and sign trim. No luck. | 399 | Gamepasses.VIPPack | assets/icons/passes/VIP.png / VIP |
-| 9 | Pass | Rainbow Name | Animated rainbow overhead name and rainbow chat name color. Cosmetic only. | 39 | Gamepasses.RainbowName | assets/icons/passes/RainbowName.png / RainbowName |
-| 10 | Pass | Confetti Reveal | A colorful confetti burst celebrates your reveals. Cosmetic only. | 39 | Gamepasses.ConfettiReveal | assets/icons/passes/ConfettiReveal.png / ConfettiReveal |
-| 11 | Pass | Golden Name | A golden overhead and chat name. Rainbow Name takes priority when both are owned. | 49 | Gamepasses.GoldenName | assets/icons/passes/GoldenName.png / GoldenName |
-| 12 | Pass | Dance Pack | Four toggleable celebration effects in a small menu. Cosmetic effects; no animation assets required. | 49 | Gamepasses.DancePack | assets/icons/passes/DancePack.png / DancePack |
-| 13 | Pass | Toilet Glow | An extra glowing aura around your toilet. Cosmetic only. | 69 | Gamepasses.ToiletGlow | assets/icons/passes/ToiletGlow.png / ToiletGlow |
-| 14 | Pass | Companion | A cute little duck companion follows your character. Cosmetic only. | 99 | Gamepasses.Companion | assets/icons/passes/Companion.png / Companion |
-| 15 | Pass | Ultimate Bundle | Includes all 14 other passes: Sparkle Trail, Star Tag, Custom Plot Color, Fast Flush, Double Cash, Auto Collect, Offline Plus, VIP, Rainbow Name, Confetti Reveal, Golden Name, Dance Pack, Toilet Glow and Companion. No consumables. | 799 | Gamepasses.UltimateBundle | assets/icons/passes/UltimateBundle.png / UltimateBundle |
-| 16 | Developer product | Coin Pack Mini | 10 minutes of current display income, quoted before purchase. | 10 | DeveloperProducts.Coins10Minutes | assets/icons/passes/CoinPackMini.png / CoinPackMini |
-| 17 | Developer product | Coin Pack Small | 1 hour of current display income, quoted before purchase. | 49 | DeveloperProducts.Coins1Hour | assets/icons/passes/CoinPackSmall.png / CoinPackSmall |
-| 18 | Developer product | Coin Pack Large | 6 hours of current display income, quoted before purchase. | 249 | DeveloperProducts.Coins6Hours | assets/icons/passes/CoinPackLarge.png / CoinPackLarge |
-| 19 | Developer product | Path Boost: 10 Minutes | 4x speed on blue paths for 10 minutes. VIP: 5x. Timer runs offline. | 29 | DeveloperProducts.PathBoost10Minutes | assets/icons/passes/PathBoost.png / PathBoost |
-| 20 | Developer product | Coin Pack Huge | 24 hours of current display income, quoted before purchase. | 799 | DeveloperProducts.Coins24Hours | assets/icons/passes/CoinPackHuge.png / CoinPackHuge |
-| 21 | Developer product | Lucky Flush | 1 single-use 10x luck charge. Total luck capped at 10x. Review all odds before purchase and use. | 25 | DeveloperProducts.LuckyFlush1 | assets/icons/passes/LuckyFlush1.png / LuckyFlush1 |
-| 22 | Developer product | Lucky Flush 5-Pack | 5 single-use 10x luck charges. Total luck capped at 10x. Review all odds before purchase and use. | 99 | DeveloperProducts.LuckyFlush5 | assets/icons/passes/LuckyFlush5.png / LuckyFlush5 |
-| 23 | Developer product | Lucky Flush 20-Pack | 20 single-use 10x luck charges. Total luck capped at 10x. Review all odds before purchase and use. | 349 | DeveloperProducts.LuckyFlush20 | assets/icons/passes/LuckyFlush20.png / LuckyFlush20 |
+| 8 | Pass | VIP | 1.5x cash, +1 path speed step, +50% offline tank, daily chest, VIP hub pad, gold star, trail and sign trim. +25% luck, a permanent random-item odds boost. Total luck capped at 10x. Luck unavailable in restricted regions. | 399 | Gamepasses.VIPPack | assets/icons/passes/VIP.png / VIP |
+| 9 | Pass | 2x Luck | Permanent 2x luck: a random-item odds boost for rare items. Total luck is capped at 10x. Unavailable in restricted regions. Review Info: all item odds before purchase. | 399 | Gamepasses.DoubleLuck | assets/icons/passes/DoubleLuck_512.png / DoubleLuck (128 px also available) |
+| 10 | Pass | Rainbow Name | Animated rainbow overhead name and rainbow chat name color. Cosmetic only. | 39 | Gamepasses.RainbowName | assets/icons/passes/RainbowName.png / RainbowName |
+| 11 | Pass | Confetti Reveal | A colorful confetti burst celebrates your reveals. Cosmetic only. | 39 | Gamepasses.ConfettiReveal | assets/icons/passes/ConfettiReveal.png / ConfettiReveal |
+| 12 | Pass | Golden Name | A golden overhead and chat name. Rainbow Name takes priority when both are owned. | 49 | Gamepasses.GoldenName | assets/icons/passes/GoldenName.png / GoldenName |
+| 13 | Pass | Dance Pack | Four toggleable celebration effects in a small menu. Cosmetic effects; no animation assets required. | 49 | Gamepasses.DancePack | assets/icons/passes/DancePack.png / DancePack |
+| 14 | Pass | Toilet Glow | An extra glowing aura around your toilet. Cosmetic only. | 69 | Gamepasses.ToiletGlow | assets/icons/passes/ToiletGlow.png / ToiletGlow |
+| 15 | Pass | Companion | A cute little duck companion follows your character. Cosmetic only. | 99 | Gamepasses.Companion | assets/icons/passes/Companion.png / Companion |
+| 16 | Pass | Ultimate Bundle | Includes all 15 other passes: Sparkle Trail, Star Tag, Custom Plot Color, Fast Flush, Double Cash, Auto Collect, Offline Plus, VIP, Rainbow Name, Confetti Reveal, Golden Name, Dance Pack, Toilet Glow, Companion and 2x Luck. Includes permanent random-item odds boosts: VIP +25% luck and 2x Luck (coming soon until released). Total luck capped at 10x; luck unavailable in restricted regions. No consumables. | 799 | Gamepasses.UltimateBundle | assets/icons/passes/UltimateBundle.png / UltimateBundle |
+| 17 | Developer product | Coin Pack Mini | 10 minutes of current display income, quoted before purchase. | 10 | DeveloperProducts.Coins10Minutes | assets/icons/passes/CoinPackMini.png / CoinPackMini |
+| 18 | Developer product | Coin Pack Small | 1 hour of current display income, quoted before purchase. | 49 | DeveloperProducts.Coins1Hour | assets/icons/passes/CoinPackSmall.png / CoinPackSmall |
+| 19 | Developer product | Coin Pack Large | 6 hours of current display income, quoted before purchase. | 249 | DeveloperProducts.Coins6Hours | assets/icons/passes/CoinPackLarge.png / CoinPackLarge |
+| 20 | Developer product | Path Boost: 10 Minutes | 4x speed on blue paths for 10 minutes. VIP: 5x. Timer runs offline. | 29 | DeveloperProducts.PathBoost10Minutes | assets/icons/passes/PathBoost.png / PathBoost |
+| 21 | Developer product | Coin Pack Huge | 24 hours of current display income, quoted before purchase. | 799 | DeveloperProducts.Coins24Hours | assets/icons/passes/CoinPackHuge.png / CoinPackHuge |
+| 22 | Developer product | Lucky Flush | 1 single-use 10x luck charge. Total luck capped at 10x. Review all odds before purchase and use. | 25 | DeveloperProducts.LuckyFlush1 | assets/icons/passes/LuckyFlush1.png / LuckyFlush1 |
+| 23 | Developer product | Lucky Flush 5-Pack | 5 single-use 10x luck charges. Total luck capped at 10x. Review all odds before purchase and use. | 99 | DeveloperProducts.LuckyFlush5 | assets/icons/passes/LuckyFlush5.png / LuckyFlush5 |
+| 24 | Developer product | Lucky Flush 20-Pack | 20 single-use 10x luck charges. Total luck capped at 10x. Review all odds before purchase and use. | 349 | DeveloperProducts.LuckyFlush20 | assets/icons/passes/LuckyFlush20.png / LuckyFlush20 |
 
 ## Created IDs and sale state
 
@@ -43,7 +44,8 @@ Icon paths below are creation targets for the separate art session, not claims o
 | Gamepasses.DoubleCash | 2014052290 | wired; for sale in Hub |
 | Gamepasses.AutoCollect | 2014760290 | wired; for sale in Hub |
 | Gamepasses.OfflinePlus | 2013200307 | wired; for sale in Hub |
-| Gamepasses.VIPPack | 2013872290 | wired; for sale in Hub |
+| Gamepasses.VIPPack | 2013872290 | wired; for sale in Hub; description update required |
+| Gamepasses.DoubleLuck | 0 | pending creation; Coming soon; no grant until ID is wired |
 | Gamepasses.RainbowName | 2014136291 | wired; for sale in Hub |
 | Gamepasses.ConfettiReveal | 2013332295 | wired; for sale in Hub |
 | Gamepasses.GoldenName | 2012846305 | wired; for sale in Hub |
@@ -99,3 +101,19 @@ Rebirth/catalog composition: earned rebirth trail > VIP gold > Sparkle Trail, wi
 Dance Pack uses the owner-permitted fallback: four selectable/toggleable client celebration effects, not imported animation assets. The menu explicitly says Celebration effects; no animation IDs were invented. Confetti respects Reduced/Off reveal settings. Companion is a seven-part duck rendered locally, bounded to 12 nearby pets within 150 studs at 10 Hz, with death/distance/departure/UI teardown cleanup. Name color and pet ownership are replicated server attributes; no cosmetic changes RNG or grants coins.
 
 Retire old servers before enabling this schema. Older sanitizers discard the new counter/cooldown and can corrupt receipt recovery. Receipt archive and profile durability retain the existing backend/lease limitations; this is not a promise of exactly-once behavior across arbitrary external data rollback. No real purchase or native device certification is implied by the CLI regressions.
+
+## Permanent paid luck release contract (2026-10-07)
+
+16 passes (15 wired, DoubleLuck pending) and eight products. Ultimate Bundle costs 799 Robux and includes all 15 other passes; its 2x Luck benefit activates only after DoubleLuck has a nonzero ID. No profile migration is needed.
+
+VIP, 2x Luck and Bundle are paid random-item offers. In-game purchases require an eligible, unexpired policy result and a reviewed server odds token. Restricted players retain all existing non-luck perks; the luck perk is shown as unavailable in your region, and these offers cannot be purchased in-game without eligibility. Never promote them as unrestricted external purchases: disable external sales / hide from Shop where Hub exposes that setting, and verify platform policy handling before release. Keep the experience private until published commerce/policy tests pass.
+
+Owner actions: create **2x Luck**, 399 Robux, paste its ID into `Gamepasses.DoubleLuck.Id`; upload `DoubleLuck_512.png`, then wire the uploaded ID into `Assets.Icons.DoubleLuck`. Replace the Hub VIP description with this exact text:
+
+> 1.5x cash, +1 path speed step, +50% offline tank, daily chest, VIP hub pad, gold star, trail and sign trim. +25% luck, a permanent random-item odds boost. Total luck capped at 10x. Luck unavailable in restricted regions.
+
+Use the exact DoubleLuck description in its catalog row above. Update the Hub Ultimate Bundle description to:
+
+> Includes all 15 other passes: Sparkle Trail, Star Tag, Custom Plot Color, Fast Flush, Double Cash, Auto Collect, Offline Plus, VIP, Rainbow Name, Confetti Reveal, Golden Name, Dance Pack, Toilet Glow, Companion and 2x Luck. Includes permanent random-item odds boosts: VIP +25% luck and 2x Luck (coming soon until released). Total luck capped at 10x; luck unavailable in restricted regions. No consumables.
+
+Confirm the paid random items questionnaire includes permanent odds modifiers and their bundle. The luck cap stays 10x: a Lucky Flush charge adds nothing at that cap, including with permanent passes. See [balance tables](design/vip-luck-balance.md) and [official policy research](research/vip-luck.md).

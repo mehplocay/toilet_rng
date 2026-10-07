@@ -4,19 +4,19 @@ do
 	local ui = H.Load("src/client/UI/Passes").Create(root, remotes)
 	local body = ui.Panel.ContentScroll.Body
 	local vip = ui.Panel:FindFirstChild("OfferGrid", true).VIPPack
-	assert(#config.PassOrder == 15 and not ui.Panel:FindFirstChild("ExtraSlots", true))
+	assert(#config.PassOrder == 16 and not ui.Panel:FindFirstChild("ExtraSlots", true))
 	local bundleDescription = false
 	for _, label in ipairs(ui.Panel:GetDescendants()) do
 		if label:IsA("TextLabel") then
 			assert(not string.find(label.Text, "Extra Slots", 1, true))
 			assert(not string.find(label.Text, "+2 slots", 1, true))
 			assert(not string.find(label.Text, "+2 display slots", 1, true))
-			if string.find(label.Text, "All 14 other passes", 1, true) then
+			if string.find(label.Text, "All 15 other passes", 1, true) then
 				bundleDescription = true
 			end
 		end
 	end
-	assert(bundleDescription, "Bundle card must promise all 14 other passes")
+	assert(bundleDescription, "Bundle card must promise all 15 other passes")
 	local cashExplanation = false
 	for _, label in ipairs(vip:GetDescendants()) do
 		if label:IsA("TextLabel") and string.find(label.Text, "Cash bonuses multiply without a cap.", 1, true) then
@@ -100,7 +100,10 @@ do
 	state.OwnedPasses = { UltimateBundle = true }
 	ui.Update(state)
 	for _, key in ipairs(config.PassOrder) do
-		assert(ui.Panel:FindFirstChild("OfferGrid", true)[key].OfferCard.Buy.Text == "Owned")
+		assert(
+			ui.Panel:FindFirstChild("OfferGrid", true)[key].OfferCard.Buy.Text
+				== (if key == "DoubleLuck" and config.Gamepasses[key].Id == 0 then "Coming soon" else "Owned")
+		)
 	end
 	config.DeveloperProducts.LuckyFlush1.Id = 0
 	H.Services.MarketplaceService.GetProductInfoAsync = original

@@ -10,6 +10,7 @@ test("free slots: exact catalog and unchanged bundle benefits", function()
 		"AutoCollect",
 		"OfflinePlus",
 		"VIPPack",
+		"DoubleLuck",
 		"RainbowName",
 		"ConfettiReveal",
 		"GoldenName",
@@ -18,7 +19,7 @@ test("free slots: exact catalog and unchanged bundle benefits", function()
 		"Companion",
 		"UltimateBundle",
 	}
-	assert(#config.PassOrder == 15 and #config.ProductOrder == 8)
+	assert(#config.PassOrder == 16 and #config.ProductOrder == 8)
 	for i, key in ipairs(expected) do
 		assert(config.PassOrder[i] == key and config.Gamepasses[key])
 		assert(config.Gamepasses[key].Slots == nil and config.Gamepasses[key].DisplaySlots == nil)
@@ -28,9 +29,9 @@ test("free slots: exact catalog and unchanged bundle benefits", function()
 		count += 1
 		assert(table.find(expected, key))
 	end
-	assert(count == 15 and config.Gamepasses.ExtraSlots == nil)
+	assert(count == 16 and config.Gamepasses.ExtraSlots == nil)
 	assert(config.Gamepasses.UltimateBundle.Price == 799)
-	assert(string.find(config.Gamepasses.UltimateBundle.Description, "all 14 other passes", 1, true))
+	assert(string.find(config.Gamepasses.UltimateBundle.Description, "all 15 other passes", 1, true))
 	local rules, paid = e:Load("src/shared/MonetizationRules"), e:Load("src/shared/PaidBenefits")
 	local bundle = rules.Entitlements({ UltimateBundle = true, ExtraSlots = true }, config)
 	assert(bundle.ExtraSlots == nil and not rules.Pass(config, "ExtraSlots"))
@@ -48,7 +49,7 @@ test("free slots: exact catalog and unchanged bundle benefits", function()
 	end
 	assert(p.DisplaySlots == 3 and commerce.Income.Upgrades:Cash(p) == 3)
 	assert(commerce.Income.Upgrades:OfflineMinutes(p, 480) == 1440)
-	assert(math.abs(service:Cooldown(player, 3) - 2.4) < 1e-12 and service:Luck(player) == 1)
+	assert(math.abs(service:Cooldown(player, 3) - 2.4) < 1e-12 and service:Luck(player) == 2.5)
 	assert(config.Gamepasses.VIPPack.PathSpeedStep == 1)
 	assert(p.Monetization.LuckyFlushes == 0 and p.Monetization.PathExpires == 0 and p.Coins == 0)
 	for _, key in ipairs(expected) do

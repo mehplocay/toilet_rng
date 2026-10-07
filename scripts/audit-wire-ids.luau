@@ -14,14 +14,26 @@ test("wired passes: exact ownership IDs, prompts, callback mapping and bundle im
 		table.insert(prompts, id)
 	end
 	local player, p = e:Join(1300)
-	assert(#queries == #config.PassOrder, "Wrong join query count: " .. #queries)
-	for i, key in ipairs(config.PassOrder) do
-		assert(queries[i] == config.Gamepasses[key].Id)
+	assert(#queries == #config.PassOrder - 1, "Wrong join query count: " .. #queries)
+	local i = 0
+	for _, key in ipairs(config.PassOrder) do
+		if config.Gamepasses[key].Id > 0 then
+			i += 1
+			assert(queries[i] == config.Gamepasses[key].Id)
+		end
 	end
 	service.Cosmetics = nil -- Geometry/lifecycle is covered by the cosmetic UI harness.
 	for _, key in ipairs(config.PassOrder) do
 		e.Now += 5
-		e:Fire("BuyPass", player, key)
+		if config.Gamepasses[key].Id == 0 then
+			continue
+		end
+		e:Fire(
+			"BuyPass",
+			player,
+			key,
+			if config.Gamepasses[key].PaidLuck then service.Lucky:Odds(p, player, key).Token else nil
+		)
 		assert(prompts[#prompts] == config.Gamepasses[key].Id, "Missing/wrong prompt: " .. key)
 		e.Marketplace.PromptGamePassPurchaseFinished:Fire(player, config.Gamepasses[key].Id, false)
 		assert(not service:EffectiveOwned(player)[key], "Canceled prompt granted " .. key)
@@ -29,7 +41,9 @@ test("wired passes: exact ownership IDs, prompts, callback mapping and bundle im
 	e.Marketplace.PromptGamePassPurchaseFinished:Fire(player, config.Gamepasses.UltimateBundle.Id, true)
 	local paid = e:Load("src/shared/PaidBenefits")
 	for _, key in ipairs(config.PassOrder) do
-		assert(service:EffectiveOwned(player)[key] and paid.Owns(p, key))
+		assert(
+			service:EffectiveOwned(player)[key] == (key ~= "DoubleLuck") and paid.Owns(p, key) == (key ~= "DoubleLuck")
+		)
 	end
 	assert(p.Coins == 0 and p.DisplaySlots == 3 and p.Monetization.LuckyFlushes == 0)
 	assert(p.Monetization.PathExpires == 0 and service.Commerce.Income.Upgrades:Cash(p) == 3)

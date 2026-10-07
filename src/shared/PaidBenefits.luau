@@ -5,6 +5,7 @@ local Benefits = {}
 function Benefits.Owns(profile, key)
 	local passes = profile and (if profile.Monetization then profile.Monetization.Passes else profile.OwnedPasses)
 	return Config.Gamepasses[key] ~= nil
+		and (key ~= "DoubleLuck" or Config.Gamepasses[key].Id > 0)
 		and passes ~= nil
 		and (
 			passes[key] == true
