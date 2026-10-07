@@ -9,7 +9,7 @@ local passes = {
 	AutoCollect = 2014760290,
 	OfflinePlus = 2013200307,
 	VIPPack = 2013872290,
-	DoubleLuck = 0,
+	DoubleLuck = 2014088425,
 	RainbowName = 2014136291,
 	ConfettiReveal = 2013332295,
 	GoldenName = 2012846305,
@@ -47,12 +47,12 @@ for group, expected in pairs({ Gamepasses = passes, DeveloperProducts = products
 		assert(config[group][key], "Missing production offer: " .. key)
 	end
 end
-assert(wired == 23 and held == 1)
+assert(wired == 24 and held == 0)
 assert(config.LuckyFlushCap == 1000 and config.LuckyMultiplier == 10 and config.LuckyLuckCap == 10)
 for key, charges in pairs({ LuckyFlush1 = 1, LuckyFlush5 = 5, LuckyFlush20 = 20 }) do
 	assert(config.DeveloperProducts[key].LuckyCharges == charges)
 end
 assert(config.Gamepasses.VIPStar.Name == "Star Tag")
 print(
-	"Production monetization IDs passed: 15 passes + 8 products wired, 2x Luck pending; Lucky charges and caps preserved"
+	"Production monetization IDs passed: 16 passes + 8 products wired; Lucky charges and caps preserved"
 )

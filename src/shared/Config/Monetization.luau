@@ -120,7 +120,7 @@ return {
 			OfflineMultiplier = 1.5,
 		},
 		DoubleLuck = {
-			Id = 0,
+			Id = 2014088425,
 			Name = "2x Luck",
 			Price = 399,
 			Description = "Permanent 2x luck: a random-item odds boost for rare items. Total luck is capped at 10x. Unavailable in restricted regions. Review Info: all item odds before purchase.",
