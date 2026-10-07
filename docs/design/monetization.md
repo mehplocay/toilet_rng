@@ -8,7 +8,7 @@ Current Lucky Flush odds use full linear luck on every item check, capped at 10x
 
 Current integration: [income-first/catalog merge](merge-economy-catalog.md). Income-first rates and ledger caps apply; owner Reset/Import preserve live commerce history. The rebirth-balance validation recorded 245 passing audit scenarios; see [validation](rebirth-values-validation.md) for historical validation; [uncapped cash](no-cash-cap.md) supersedes its multiplier limits. Current wiring validation follows below.
 
-Historical implementation, 2026-10-06, `feature/path-boost-catalog`: that earlier catalog had no paid luck or random items. The current catalog adds policy-gated Lucky Flush; its IDs are wired at the owner's request, with published tests pending below.
+Historical implementation, 2026-10-06, `feature/path-boost-catalog`: that earlier catalog had no paid luck or random items. The current catalog adds policy-gated Lucky Flush, VIP +25% luck and 2x Luck (ID pending); Lucky Flush IDs are wired at the owner's request, with published tests pending below.
 
 ## Creator Hub wiring (2026-10-07)
 
@@ -22,7 +22,7 @@ The current `feature/wire-lucky` task changes only the three production config I
 
 ## Offers and honest presentation
 
-The current fifteen passes and eight products, creation prices and icons are in [the Creator Hub catalog](../monetization-catalog.md). Existing SparkleTrail, VIPStar, CustomPlotColor and FastFlush config keys remain. All 15 passes and eight products use real Creator Hub IDs, including the three policy-gated Lucky offers. The Shop has Passes/Boosts/Lucky tabs, colored cards, overflowing icons, platform-priced purchase buttons and owned states. Coming soon / Not on sale yet applies to zero-ID offers; enabled offers use client MarketplaceService.GetProductInfoAsync with the correct GamePass/Product type and fail closed on unavailable or invalid prices. Lucky visibility also requires a current eligible policy result. New art uses vector fallbacks. Gifting remains explicitly unavailable. HUD offers remain static with no unsolicited pulses or automatic prompts.
+The current sixteen passes and eight products, creation prices and icons are in [the Creator Hub catalog](../monetization-catalog.md). Existing SparkleTrail, VIPStar, CustomPlotColor and FastFlush config keys remain. 15 passes and eight products use real Creator Hub IDs; the new DoubleLuck pass has ID 0 pending creation. The three Lucky products are wired and policy-gated. The Shop has Passes/Boosts/Lucky tabs, colored cards, overflowing icons, platform-priced purchase buttons and owned states. Coming soon / Not on sale yet applies to zero-ID offers; enabled offers use client MarketplaceService.GetProductInfoAsync with the correct GamePass/Product type and fail closed on unavailable or invalid prices. Lucky visibility also requires a current eligible policy result. New art uses vector fallbacks. Gifting remains explicitly unavailable. HUD offers remain static with no unsolicited pulses or automatic prompts.
 
 VIP Pack is a one-time pass, not a subscription. Its permanent sign is the requested monthly-style VIP sign; its daily chest is manually claimable from Passes. It includes the Star Tag benefit, so the separate star is redundant for a VIP owner; the UI description discloses this overlap. Auto-Flush and animation skip remain free.
 
@@ -50,7 +50,7 @@ The profile retains 128 receipt entries. Before eviction, the oldest acknowledge
 
 ## Slot removal validation (2026-10-06)
 
-On feature/remove-extraslots, uncommitted: removed the paid slot pass, VIP slot perk, paid slot arithmetic and commerce AppliedSlots metadata. The catalog has 15 passes; Ultimate Bundle contains all 14 other passes at the unchanged price, with the other benefits and all eight products retained. Retired art remains unused in the manifest. Free upgrade/index/rebirth slot paths retain their existing values.
+On feature/remove-extraslots, uncommitted: removed the paid slot pass, VIP slot perk, paid slot arithmetic and commerce AppliedSlots metadata. The catalog now has 16 passes; Ultimate Bundle contains all 15 other passes at the unchanged price, with the other benefits and all eight products retained. Retired art remains unused in the manifest. Free upgrade/index/rebirth slot paths retain their existing values.
 
 Passed: StyLua check, rojo build -o build.rbxl, all 22 standalone check-*.luau files, check-audit.ps1 (280 passed, 0 failed), check-visuals.ps1 and all six check-world.ps1 modes. The audit runs production handlers for every pass and tests repeated ownership refresh/purchase callbacks, bundle overlap, unchanged cash/offline/cooldown benefits, free upgrades/index rewards and saved legacy capacities 4/5/8/10/12/100 with empty and occupied layouts through migration, rebirth and rejoin.
 
@@ -70,3 +70,11 @@ All old server builds must be retired before enabling the new profile schema/pro
 Auto Collect shares Auto Flush's server PlayerActivity clock and Still-there flow: no accepted activity for 30 minutes pauses both, even when Auto Flush is off. Toggling Auto Flush, rebirth and respawn do not reset Auto Collect's idle deadline. Normal input or the existing Still-there button resumes it; no missed collection ticks are replayed. One global scheduler and an internal 1/5s token budget bound automatic collection; the existing manual CollectIncome input budget is shared. Empty/fractional-only pending balances cause no credit, sync or save. Dead/missing characters, released/foreign plots, replacing/closing/expired sessions and active saves cannot collect. AutoStatus includes CollectEnabled/CollectRunning for the extended existing HUD chip. Offline earning rates, storage and settlement rules are unchanged.
 
 Owner action in Creator Hub: update Auto Collect (149 R$) to "Collect display coins every 5 seconds, anywhere on the map." The repository cannot edit the published pass description.
+
+## Permanent luck passes
+
+Owner decision supersedes the earlier no-paid-luck rule. VIP adds a permanent 25% multiplier (`Upgrades.VipLuckBonus = 0.25`); 2x Luck multiplies by 2. The final additional requirement resolves stacking as `min(10, toilet * (1 + free upgrade bonus + rebirth luck bonus) * event * daily * 1.25_if_VIP * 2_if_DoubleLuck * 10_if_charge)`. There are no diminishing returns beyond the cap and rare-to-common sequential checks. Every flush still returns an item.
+
+`MonetizationService:LuckPerks` reads the shared LuckyService eligibility cache without yielding and uses the existing effective ownership / bundle / admin test-unlock path. Only literal `ArePaidRandomItemsRestricted == false` qualifies. Missing, failed and expired policy results disable both permanent luck perks, including for owners/creators; other VIP perks survive. DoubleLuck ID 0 cannot prompt or grant even via Bundle or test unlocks. No new persistent fields or migrations.
+
+All three paid-luck pass cards provide Info: all item odds before purchase. The server supplies current/with-pass probabilities from the production roll distribution and rechecks the review token after ownership/policy refresh. Restricted offers are blocked from purchase and display the region message. The normal/Lucky odds window and HUD display active permanent luck; percentages retain the precision and rounding disclaimer. See [research](../research/vip-luck.md), [balance](vip-luck-balance.md), and [Hub owner actions](../monetization-catalog.md#permanent-paid-luck-release-contract-2026-10-07).

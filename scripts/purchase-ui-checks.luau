@@ -120,6 +120,10 @@ function H.CheckPurchaseUI()
 	for _ = 1, 2 do
 		ui.Update(state)
 		for _, key in ipairs(config.PassOrder) do
+			if config.Gamepasses[key].Id == 0 then
+				assert(ui.Panel:FindFirstChild("OfferGrid", true)[key].OfferCard.Buy.Text == "Coming soon")
+				continue
+			end
 			local card = ui.Panel:FindFirstChild("OfferGrid", true)[key].OfferCard
 			assert(
 				card.Buy.Text == "Owned"

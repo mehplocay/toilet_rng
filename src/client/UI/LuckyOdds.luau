@@ -11,7 +11,7 @@ function Odds.Percent(value)
 	return string.format("%." .. math.min(14, places) .. "f%%", value * 100)
 end
 function Odds.RarityText(odds)
-	local lines = { "Rarity: normal / Lucky" }
+	local lines = { if odds and odds.Offer then "Rarity: current / with pass" else "Rarity: normal / Lucky" }
 	local names = {}
 	for name in pairs(Rarities) do
 		table.insert(names, name)
@@ -48,14 +48,16 @@ function Odds.Create(gui, remotes, onPurchase)
 	C.New("UIListLayout", content, { Padding = UDim.new(0, 8), SortOrder = Enum.SortOrder.LayoutOrder })
 	local explanation = C.BodyText(
 		content,
-		"10x luck for one flush, capped at 10x total. Full luck applies to every item check. Every flush awards one item. At 10x free luck, a charge cannot improve odds.\nPercentages are rounded; displayed totals may differ from 100%. Odds can change with your tier and free boosts; review again if they change.",
+		"10x luck for one flush, capped at 10x total. Full luck applies to every item check. Every flush awards one item. At 10x total luck, a charge cannot improve odds.\nPercentages are rounded; displayed totals may differ from 100%. Odds can change with your tier, passes and free boosts; review again if they change.",
 		UDim2.new(1, 0, 0, 134)
 	)
 	explanation.LayoutOrder = 1
+	local breakdown = C.BodyText(content, "", UDim2.new(1, 0, 0, 90))
+	breakdown.Name, breakdown.LayoutOrder = "LuckBreakdown", 2
 	local rarityText = C.BodyText(content, "", UDim2.new(1, 0, 0, 240))
 	rarityText.LayoutOrder, rarityText.TextXAlignment = 2, Enum.TextXAlignment.Left
 	local rows = {}
-	local current, key, quote
+	local current, key, quote, readOnly
 	local commerce = {}
 	local button = C.Button(body, "Use on next flush", UDim2.new(1, 0, 0, 50), UDim2.new(0, 0, 1, -54), function()
 		if not current then
@@ -63,25 +65,35 @@ function Odds.Create(gui, remotes, onPurchase)
 		end
 		if key then
 			if onPurchase then
-				onPurchase()
+				onPurchase(if Config.Gamepasses[key] then "BuyPass" else "BuyProduct")
 			end
-			remotes.BuyProduct:FireServer(key, quote or 0, current.Token)
+			if Config.Gamepasses[key] then
+				remotes.BuyPass:FireServer(key, current.Token)
+			else
+				remotes.BuyProduct:FireServer(key, quote or 0, current.Token)
+			end
 		else
 			remotes.LuckyFlush:FireServer(current.Token)
 		end
 		panel.Visible = false
 	end, C.Green, { Name = "ConfirmLucky" })
 	local function updateButton(lucky)
+		if readOnly then
+			button.Text, button.Interactable = "Current item odds", false
+			return
+		end
 		local product = key and Config.DeveloperProducts[key]
 		button.Text = if key
 			then "Continue to Roblox purchase"
 			elseif lucky.Armed then "Ready for next flush"
 			else "Use on next flush"
 		button.Interactable = if key
-			then product ~= nil
-				and commerce.CanResume ~= false
-				and lucky.Count <= Config.LuckyFlushCap - product.LuckyCharges
-				and (not commerce.PendingProduct or (commerce.PendingProduct == key and commerce.CanResume == true))
+			then (if Config.Gamepasses[key]
+				then Config.Gamepasses[key].Id > 0
+				else product ~= nil
+					and commerce.CanResume ~= false
+					and lucky.Count <= Config.LuckyFlushCap - product.LuckyCharges
+					and (not commerce.PendingProduct or (commerce.PendingProduct == key and commerce.CanResume == true)))
 			else lucky.Count > 0 and not lucky.Armed
 	end
 	return {
@@ -94,7 +106,14 @@ function Odds.Create(gui, remotes, onPurchase)
 					not lucky
 					or not lucky.Allowed
 					or not lucky.Odds
-					or (current and current.Token ~= lucky.Odds.Token)
+					or (
+						current
+						and current.Token
+							~= (
+								(if key and Config.Gamepasses[key] then (lucky.PassOdds or {})[key] else lucky.Odds)
+								or {}
+							).Token
+					)
 				)
 			then
 				panel.Visible = false
@@ -107,11 +126,37 @@ function Odds.Create(gui, remotes, onPurchase)
 			panel.Visible = false
 			current = nil
 		end,
-		Show = function(lucky, productKey, amount)
+		Show = function(lucky, productKey, amount, infoOnly)
+			readOnly = infoOnly == true
 			if not lucky or not lucky.Allowed or not lucky.Odds then
 				return
 			end
-			current, key, quote = lucky.Odds, productKey, amount
+			current, key, quote =
+				if productKey and Config.Gamepasses[productKey] then (lucky.PassOdds or {})[productKey] else lucky.Odds,
+				productKey,
+				amount
+			if not current then
+				return
+			end
+			breakdown.Text = string.format(
+				"Current luck x%.4g / %s x%.4g\n%s\n%s",
+				current.BaseLuck or 1,
+				if current.Offer then "With pass" else "Lucky Flush",
+				current.Luck or 10,
+				if current.VIPLuck then "VIP +25% luck" else "VIP luck: inactive",
+				if current.DoubleLuck then "2x Luck pass" else "2x Luck pass: inactive"
+			)
+			explanation.Size = UDim2.new(1, 0, 0, if current.Offer then 270 else 134)
+			explanation.Text = (
+				if current.Offer
+					then Config.Gamepasses[current.Offer].Description
+						.. " Current / with-pass odds below reflect your active boosts and unlocked pool. At the 10x cap, further boosts add no odds."
+					else "10x luck for one flush, capped at 10x total. Full luck applies to every item check. Every flush awards one item. At 10x total luck, a charge cannot improve odds."
+			)
+				.. "\nPercentages are rounded; displayed totals may differ from 100%. Review again when your tier or boosts change."
+			panel.TitleBar:FindFirstChildWhichIsA("TextLabel").Text = if current.Offer
+				then Config.Gamepasses[current.Offer].Name .. " item odds"
+				else "Lucky Flush odds"
 			rarityText.Text = Odds.RarityText(current)
 			for _, row in ipairs(rows) do
 				row:Destroy()
@@ -127,7 +172,7 @@ function Odds.Create(gui, remotes, onPurchase)
 						.. (if item.Fallback then "Fallback" else "Base check 1 in " .. C.Commas(item.BaseChance or 0))
 						.. "\nCurrent outcome: Normal "
 						.. Odds.Percent(item.Normal)
-						.. " / Lucky "
+						.. (if current.Offer then " / With pass " else " / Lucky ")
 						.. Odds.Percent(item.Boosted),
 					UDim2.new(1, 0, 0, 82)
 				)

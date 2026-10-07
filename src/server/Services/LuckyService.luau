@@ -33,15 +33,28 @@ function Lucky:Refresh(player)
 		self.Sync(player)
 	end
 end
-function Lucky:Odds(profile)
-	local base = Upgrades:Luck(
+function Lucky:BaseLuck(profile, player, offer)
+	local vip, double = false, false
+	if player and self.Monetization then
+		vip, double = self.Monetization:LuckPerks(player, offer)
+	end
+	local factor = (1 + (if vip then Upgrades.Config.VipLuckBonus else 0))
+		* (if double then Upgrades.Config.DoubleLuckMultiplier else 1)
+	return Upgrades:Luck(
 		profile,
 		Toilets[profile.ToiletTier].Luck,
 		self.Events:Multiplier(),
-		1,
-		self.Rewards:Luck(profile)
-	)
-	local boosted = math.min(Config.LuckyLuckCap, Upgrades.Config.LuckCap, base * Config.LuckyMultiplier)
+		self.Rewards:Luck(profile),
+		factor
+	),
+		vip,
+		double
+end
+function Lucky:Odds(profile, player, offer)
+	local base, vip, double = self:BaseLuck(profile, player)
+	local boosted = if offer
+		then self:BaseLuck(profile, player, offer)
+		else math.min(Config.LuckyLuckCap, Upgrades.Config.LuckCap, base * Config.LuckyMultiplier)
 	local normal = Roll.Distribution(Items, Toilets, profile.ToiletTier, base)
 	local enhanced = Roll.Distribution(Items, Toilets, profile.ToiletTier, boosted)
 	local rows, rarities = {}, {}
@@ -62,7 +75,10 @@ function Lucky:Odds(profile)
 		rarities[item.Rarity] = rarity
 	end
 	return {
-		Token = string.format("%d:%.17g:%.17g", profile.ToiletTier, base, boosted),
+		Token = string.format("%s:%d:%.17g:%.17g", offer or "Lucky", profile.ToiletTier, base, boosted),
+		VIPLuck = vip,
+		DoubleLuck = double,
+		Offer = offer,
 		BaseLuck = base,
 		Luck = boosted,
 		Items = rows,
@@ -71,15 +87,30 @@ function Lucky:Odds(profile)
 end
 function Lucky:Snapshot(player, profile)
 	local allowed = self:Allowed(player)
+	local odds = if allowed then self:Odds(profile, player) else nil
+	local offers = {}
+	if allowed then
+		for _, key in ipairs({ "VIPPack", "DoubleLuck", "UltimateBundle" }) do
+			offers[key] = self:Odds(profile, player, key)
+		end
+	end
 	return {
+		PassOdds = offers,
+		FreeLuck = Upgrades:Luck(
+			profile,
+			Toilets[profile.ToiletTier].Luck,
+			self.Events:Multiplier(),
+			self.Rewards:Luck(profile)
+		),
 		Allowed = allowed == true,
 		PolicyRemaining = if allowed then math.max(0, self.Policies[player].Expires - os.clock()) else 0,
 		Count = profile.Monetization.LuckyFlushes,
-		Odds = if allowed then self:Odds(profile) else nil,
-		Armed = self.Armed[player] ~= nil,
+		Odds = odds,
+		Armed = odds ~= nil and self.Armed[player] == odds.Token,
 	}
 end
-function Lucky:Start(data, limiter, remotes, sync, events, rewards)
+function Lucky:Start(data, limiter, remotes, sync, events, rewards, monetization)
+	self.Monetization = monetization
 	self.Events, self.Rewards = events, rewards
 	self.Sync = sync
 	remotes.LuckyFlush.OnServerEvent:Connect(function(player, token, ...)
@@ -95,7 +126,7 @@ function Lucky:Start(data, limiter, remotes, sync, events, rewards)
 		if not profile or not self:Allowed(player) or profile.Monetization.LuckyFlushes <= 0 then
 			return
 		end
-		local odds = self:Odds(profile)
+		local odds = self:Odds(profile, player)
 		if token == odds.Token then
 			self.Armed[player] = token
 		end

@@ -4,6 +4,8 @@ return {
 	Rebirth = rebirth,
 	MaxBalance = Limit,
 	LuckCap = 10,
+	VipLuckBonus = 0.25,
+	DoubleLuckMultiplier = 2,
 	Version = 2,
 	MilestoneEvery = 10,
 	MilestoneTitles = {

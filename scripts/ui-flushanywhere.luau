@@ -180,7 +180,7 @@ do
 		hud.Update(state)
 		H.Advance(1.01)
 		H.StartTasks()
-		assert(contains(root.HUD.Boosts, "Luck +900%"), "Merged HUD lost capped luck")
+		assert(contains(root.HUD.Boosts, "Luck x10 (cap)"), "Merged HUD lost capped luck")
 		local action = root.HUD.FlushActions
 		local resume, switch = action.IdleGuard, action.AutoFlushSwitch
 		local manual

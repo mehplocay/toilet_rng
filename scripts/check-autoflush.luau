@@ -67,6 +67,7 @@ local expectedPrices = {
 	AutoCollect = 149,
 	OfflinePlus = 129,
 	VIPPack = 399,
+	DoubleLuck = 399,
 	RainbowName = 39,
 	ConfettiReveal = 39,
 	GoldenName = 49,
@@ -78,7 +79,7 @@ local expectedPrices = {
 for _, key in ipairs(Config.PassOrder) do
 	assert(Rules.Pass(Config, key).Price == expectedPrices[key])
 end
-assert(#Config.PassOrder == 15 and #Config.ProductOrder == 8)
+assert(#Config.PassOrder == 16 and #Config.ProductOrder == 8)
 local productPrices = {
 	Coins10Minutes = 10,
 	Coins1Hour = 49,
@@ -92,7 +93,7 @@ local productPrices = {
 for _, key in ipairs(Config.ProductOrder) do
 	assert(Config.DeveloperProducts[key].Price == productPrices[key])
 end
-assert(Config.Gamepasses.DoubleLuck == nil and Config.Gamepasses.AutoFlush == nil)
+assert(Config.Gamepasses.DoubleLuck.Id == 0 and Config.Gamepasses.AutoFlush == nil)
 assert(Rules.Pass(Config, {}) == nil and Rules.Pass(Config, "Unknown") == nil)
 assert(Rules.PassKey(Config, 0) == nil)
 local catalog = { PassOrder = { "Test" }, Gamepasses = { Test = { Id = 42 } } }

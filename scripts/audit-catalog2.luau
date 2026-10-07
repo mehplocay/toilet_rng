@@ -266,7 +266,7 @@ test("extended counters: sanitize, capacity, id-zero and admin preservation", fu
 	end
 	assert(not e.Marketplace.LastProduct)
 end)
-test("extended bundle: implies all 14 other passes, no consumables or slots, and persists", function()
+test("extended bundle: implies all 15 other passes, no consumables or slots, and persists", function()
 	local e, player, p, commerce, config = catalogPlayer(656)
 	local service = e:Load("src/server/Services/MonetizationService")
 	service.Cosmetics = nil
@@ -274,7 +274,7 @@ test("extended bundle: implies all 14 other passes, no consumables or slots, and
 	e.Marketplace.PromptGamePassPurchaseFinished:Fire(player, 8656, true)
 	local effective = service:EffectiveOwned(player)
 	for _, key in ipairs(config.PassOrder) do
-		assert(effective[key] == true)
+		assert(effective[key] == (key ~= "DoubleLuck"))
 	end
 	assert(p.DisplaySlots == 3 and p.Monetization.LuckyFlushes == 0)
 	assert(commerce.Income.Upgrades:Cash(p) == 3)

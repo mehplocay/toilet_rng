@@ -29,8 +29,8 @@ function Passes.Create(gui, remotes)
 	local selectedColor = "Default"
 	local commerce = { Quotes = {} }
 	local beginPurchase
-	local oddsUI = Odds.Create(gui, remotes, function()
-		beginPurchase("BuyProduct")
+	local oddsUI = Odds.Create(gui, remotes, function(action)
+		beginPurchase(action)
 	end)
 	local alive = true
 	panel.Destroying:Connect(function()
@@ -39,7 +39,7 @@ function Passes.Create(gui, remotes)
 	panel.Destroying:Connect(function()
 		oddsUI.Panel:Destroy()
 	end)
-	local luckyLabels = {}
+	local luckyLabels, perkLabels, descriptions, infoButtons = {}, {}, {}, {}
 	local policyDeadline = 0
 	local keys = table.clone(Config.PassOrder)
 	for _, key in ipairs(Config.ProductOrder) do
@@ -69,7 +69,7 @@ function Passes.Create(gui, remotes)
 		LayoutOrder = 1,
 	})
 	row.Name = "OfferGrid"
-	C.Grid(row, Card.MinimumWidth, Card.CellHeight + 172, 4)
+	C.Grid(row, Card.MinimumWidth, Card.CellHeight + 222, 4)
 	local boostRow = C.New("Frame", content, {
 		Name = "BoostGrid",
 		Size = UDim2.new(1, 0, 0, 0),
@@ -100,15 +100,33 @@ function Passes.Create(gui, remotes)
 	end, C.Gold, { Name = "LuckyTab" })
 	luckyTab.Visible = false
 	local function updateButtons()
+		local eligible = commerce.Lucky ~= nil and commerce.Lucky.Allowed == true and os.clock() < policyDeadline
+		for key, label in pairs(perkLabels) do
+			label.Text = if eligible
+				then Config.Gamepasses[key].Description
+				else (if key == "VIPPack"
+					then "1.5x cash, +1 path speed step, +50% offline tank, daily chest, VIP hub pad, gold star, trail and sign trim. Luck unavailable in your region."
+					elseif key == "DoubleLuck" then "Unavailable in your region."
+					else "All 15 other passes. Random-item odds perks unavailable in your region. No consumables.")
+			if key == "VIPPack" then
+				label.Text ..= " Cash bonuses multiply without a cap. Speed cap 5x."
+			end
+			descriptions[key].Text = if eligible
+				then Shop.Offers[key].Description
+				else "Luck unavailable in your region"
+			infoButtons[key].Interactable = eligible and Config.Gamepasses[key].Id > 0
+		end
 		for _, key in ipairs(keys) do
 			local pass, info, button = definition(key), metadata[key], buttons[key]
 			button.Text = if owned[key]
 				then "Owned"
 				elseif pass.Id == 0 then "Coming soon"
+				elseif pass.PaidLuck and not eligible then "Unavailable in your region"
 				elseif info and info.IsForSale then C.Commas(info.PriceInRobux)
 				else "Unavailable"
 			button.Interactable = not owned[key]
 				and pass.Id > 0
+				and (not pass.PaidLuck or eligible)
 				and info ~= nil
 				and info.IsForSale == true
 				and (not Config.DeveloperProducts[key] or commerce.CanResume ~= false)
@@ -191,8 +209,12 @@ function Passes.Create(gui, remotes)
 							remotes.BuyProduct:FireServer(key, (commerce.Quotes or {})[key] or 0)
 						end
 					else
-						beginPurchase("BuyPass")
-						remotes.BuyPass:FireServer(key)
+						if pass.PaidLuck then
+							oddsUI.Show(commerce.Lucky, key)
+						else
+							beginPurchase("BuyPass")
+							remotes.BuyPass:FireServer(key)
+						end
 					end
 				end
 			end,
@@ -227,13 +249,23 @@ function Passes.Create(gui, remotes)
 				C.Blue,
 				{ Name = "OddsInfo" }
 			)
-		elseif key == "VIPPack" then
-			C.New("UIStroke", card, { Color = C.Gold, Thickness = 4 })
-			C.BodyText(
+		elseif pass.PaidLuck then
+			if key == "VIPPack" then
+				C.New("UIStroke", card, { Color = C.Gold, Thickness = 4 })
+			end
+			perkLabels[key] = C.BodyText(slot, "", UDim2.new(1, -16, 0, 162), UDim2.fromOffset(8, Card.CellHeight + 4))
+			perkLabels[key].Name = "Perks"
+			descriptions[key] = description
+			infoButtons[key] = C.Button(
 				slot,
-				"1.5x cash / +1 path speed step\n+50% offline tank\nDaily income-scaled chest\nVIP hub pad coin bonus\nGold star, trail and sign trim\nNo luck. Cash bonuses multiply without a cap. Speed cap 5x.",
-				UDim2.new(1, -16, 0, 162),
-				UDim2.fromOffset(8, Card.CellHeight + 4)
+				"Info: all item odds",
+				UDim2.new(1, -16, 0, 44),
+				UDim2.fromOffset(8, Card.CellHeight + 172),
+				function()
+					oddsUI.Show(commerce.Lucky, key, nil, not buttons[key].Interactable)
+				end,
+				C.Blue,
+				{ Name = "OddsInfo" }
 			)
 		elseif Config.Gamepasses[key] then
 			C.BodyText(slot, pass.Description, UDim2.new(1, -16, 0, 162), UDim2.fromOffset(8, Card.CellHeight + 4))
@@ -319,7 +351,7 @@ function Passes.Create(gui, remotes)
 	C.Grid(swatches, 142, 48)
 	local details = C.BodyText(
 		content,
-		"VIP: 1.5x cash, +1 path speed step, +50% offline tank, gold star/trail/sign trim, daily chest and VIP hub pad. No luck.\nCoin packs match the shown income duration, with a 100 Coin minimum. Cash bonuses multiply without a cap; path speed caps at 5x.",
+		"VIP: 1.5x cash, +1 path speed step, +50% offline tank, +25% luck, gold star/trail/sign trim, daily chest and VIP hub pad. Luck perks depend on regional eligibility; use Info: all item odds.\nCoin packs match the shown income duration, with a 100 Coin minimum and no design cap. Cash bonuses multiply without a cap; path speed caps at 5x.",
 		UDim2.new(1, -12, 0, 112)
 	)
 	details.LayoutOrder = 5

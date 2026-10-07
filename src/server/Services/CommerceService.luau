@@ -138,7 +138,7 @@ function Commerce:Start(limiter, remotes)
 				type(oddsToken) ~= "string"
 				or #oddsToken > 100
 				or not Lucky:Allowed(player)
-				or oddsToken ~= Lucky:Odds(profile).Token
+				or oddsToken ~= Lucky:Odds(profile, player).Token
 				or profile.Monetization.LuckyFlushes > Config.LuckyFlushCap - product.LuckyCharges
 			then
 				self.Sync(player)
@@ -185,7 +185,7 @@ function Commerce:Start(limiter, remotes)
 		end
 		if product.LuckyCharges then
 			local current = self.Data:Get(player)
-			if not current or not Lucky:Allowed(player) or oddsToken ~= Lucky:Odds(current).Token then
+			if not current or not Lucky:Allowed(player) or oddsToken ~= Lucky:Odds(current, player).Token then
 				self:CancelQuote(player, key)
 				self.Sync(player)
 				result(player, false, "Lucky eligibility or odds changed. Review the offer and try again.")
