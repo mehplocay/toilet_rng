@@ -338,6 +338,9 @@ function Window.Create(gui, remote, C, reloadLabels)
 		)
 		switches(body, "TestPasses", "Test all passes / cosmetics")
 		text(body, "Admin test unlocks are local previews, never Marketplace purchases or permanent entitlements.")
+		button(body, "Reset my tutorial", function()
+			send("ResetTutorial")
+		end)
 		button(body, "1. Prepare profile reset", function()
 			resetToken = nil
 			send("PrepareReset")
@@ -438,6 +441,9 @@ function Window.Create(gui, remote, C, reloadLabels)
 			end
 			local action = pending.Action
 			pending = nil
+			if action == "ResetTutorial" and response.Success then
+				panel.Visible = false
+			end
 			if action ~= "RenewMovement" or not response.Success then
 				status.Text, status.TextColor3 =
 					response.Message or "", if response.Success then C.Green else Color3.fromRGB(255, 140, 140)

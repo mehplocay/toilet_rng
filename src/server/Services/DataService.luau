@@ -19,6 +19,7 @@ local Monetization = require(game.ReplicatedStorage.Shared.Config.Monetization)
 local MonetizationRules = require(game.ReplicatedStorage.Shared.MonetizationRules)
 local CommerceProfile = require(game.ReplicatedStorage.Shared.CommerceProfile)
 local AudioSettings = require(game.ReplicatedStorage.Shared.AudioSettings)
+local TutorialProgress = require(game.ReplicatedStorage.Shared.TutorialProgress)
 local PresentationSettings = require(game.ReplicatedStorage.Shared.PresentationSettings)
 local Audio = require(game.ReplicatedStorage.Shared.Config.Audio)
 local income = require(game.ReplicatedStorage.Shared.IncomeAccrual).new(
@@ -69,6 +70,8 @@ function DataService.DefaultProfile()
 		ProtectedInventory = {},
 		Upgrades = upgrades:Sanitize(nil),
 		TutorialDone = false,
+		TutorialStep = 1,
+		TutorialRun = 0,
 		Settings = settings,
 		Coins = 0,
 		LastClaimDay = 0,
@@ -92,7 +95,7 @@ local function sanitize(raw, withoutAdmin)
 	if type(raw) ~= "table" then
 		return profile
 	end
-	profile.TutorialDone = raw.TutorialDone == true
+	TutorialProgress.Restore(profile, raw)
 	profile.Monetization = CommerceProfile.Sanitize(raw.Monetization)
 	MonetizationRules.RestoreSettings(profile.Settings, raw.Settings, Monetization)
 	AudioSettings.Apply(profile.Settings, AudioSettings.Sanitize(raw.Settings, Audio.Defaults))

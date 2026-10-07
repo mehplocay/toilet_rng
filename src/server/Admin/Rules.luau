@@ -57,6 +57,7 @@ function Rules.new(config, items, toilets, upgrades, rebirth)
 		Snapshot = {},
 		Export = {},
 		PrepareReset = {},
+		ResetTutorial = {},
 		Reset = {
 			Token = function(v)
 				return type(v) == "string" and #v <= 80
@@ -120,6 +121,7 @@ function Rules.new(config, items, toilets, upgrades, rebirth)
 		ForceDrop = true,
 		Import = true,
 		Reset = true,
+		ResetTutorial = true,
 	}
 	local world =
 		{ ForceDrop = true, Luck = true, Announcement = true, ReloadLabels = true, Dummy = true, Stats = true }

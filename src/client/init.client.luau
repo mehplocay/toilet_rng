@@ -34,6 +34,7 @@ for _, name in ipairs({
 	"RefreshPasses",
 	"DevGrant",
 	"TutorialDone",
+	"TutorialReplay",
 	"ClaimReward",
 	"ClaimIndexReward",
 }) do
@@ -230,7 +231,14 @@ ContextActionService:BindAction("CloseToiletPanel", function(_, state)
 	end
 	return Enum.ContextActionResult.Pass
 end, false, Enum.KeyCode.ButtonB)
-require(script.UI.Tutorial).Create(player, remotes, hud, prompts)
+local tutorial = require(script.UI.Tutorial).Create(player, remotes, hud, prompts, {
+	Collection = collection,
+	Upgrades = upgrades,
+	CloseAll = closeAll,
+})
+local replayTutorial =
+	settingsRow("Tutorial", "Replay the guide without changing your items, coins or upgrades.", 6, tutorial.Replay)
+replayTutorial.Name, replayTutorial.Text = "ReplayTutorial", "Replay tutorial"
 local effects = require(script.Effects).Create(hud.Frame, audio.SFX, hud)
 local presentation = require(script.Presentation.Controller).Start(root, hud, remotes, audio, settingsList, dropChat)
 local showServiceCoins = require(script.UI.CoinPopup).Create(hud.Frame)

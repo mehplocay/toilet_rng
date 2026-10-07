@@ -9,7 +9,7 @@ test("audit3: every public remote rejects surplus arguments without relaying pay
 		count += 1
 		e:Fire(name, player, cycle, cycle, cycle, cycle)
 	end
-	assert(count == 29, "Update the audit inventory when public remotes change")
+	assert(count == 30, "Update the audit inventory when public remotes change")
 	assert(#e.Results == before and e.Store.Writes == writes)
 	assert(p.Coins == 0 and p.Stats.Flushes == 0 and not p.TutorialDone)
 end)

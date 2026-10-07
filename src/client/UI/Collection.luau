@@ -272,6 +272,20 @@ function Collection.Create(gui, remotes)
 		Panel = panel,
 		SlotsPanel = slotsPanel,
 		OpenSlot = openSlot,
+		TutorialTarget = function()
+			for _, item in ipairs(orderedItems) do
+				local card = cards[item.Id]
+				if card and card.Frame.Visible and not rewards.Frame.Visible then
+					if card.Display.Interactable then
+						return card.Display
+					end
+					if card.Sell.Interactable then
+						return card.Sell
+					end
+				end
+			end
+			return slotsButton
+		end,
 		Update = function(snapshot)
 			state = snapshot
 			if selectedSlot and (selectedSlot > state.DisplaySlots or state.Displays[tostring(selectedSlot)]) then

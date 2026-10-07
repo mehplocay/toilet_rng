@@ -53,6 +53,17 @@ function Upgrades.Create(gui, remotes)
 	end
 	return {
 		Panel = panel,
+		TutorialTarget = function()
+			if tracks.Frame.Visible then
+				return tracks.TutorialTarget() or panel.TitleBar.X
+			end
+			for _, button in ipairs(buttons) do
+				if button.Interactable then
+					return button
+				end
+			end
+			return tabs.Buttons["Coin Upgrades"]
+		end,
 		Update = function(state)
 			tracks.Update(state)
 			wallet.Text = C.Commas(state.Coins) .. " Coins  |  Tier " .. state.ToiletTier .. "/" .. #Toilets
