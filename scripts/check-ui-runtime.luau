@@ -43,6 +43,21 @@ H.Viewports = {
 	{ 640, 303 },
 }
 assert(#expectedIcons == 37, "Incomplete icon manifest")
+-- Wave 1: every uploaded item/toilet icon beyond the original 37 must resolve like the rest.
+local known = {}
+for _, icon in ipairs(expectedIcons) do
+	known[icon.Group .. "." .. icon.Key] = true
+end
+local wave1Icons = 0
+for _, group in ipairs({ "ItemIcons", "ToiletIcons" }) do
+	for key, value in pairs(Assets[group]) do
+		if value ~= "" and not known[group .. "." .. key] then
+			table.insert(expectedIcons, { Group = group, Key = key, Id = value })
+			wave1Icons += 1
+		end
+	end
+end
+assert(wave1Icons == 44, "Wave 1 icon ids incomplete: " .. wave1Icons)
 for _, icon in ipairs(expectedPlaceholderIcons) do
 	local value = Assets[icon.Group][icon.Key]
 	local verified = value == nil or value == ""
@@ -91,7 +106,7 @@ C.PreloadIcons()
 assert(#H.Preloads == 0, "Preload blocked the calling thread")
 H.HoldPreload = true
 H.StartTasks()
-assert(#H.Preloads == 1 and #H.Preloads[1] == 37, "Preload omitted icons or duplicated aliases")
+assert(#H.Preloads == 1 and #H.Preloads[1] == #expectedIcons, "Preload omitted icons or duplicated aliases")
 local preloadSeen = {}
 for _, label in ipairs(H.Preloads[1]) do
 	assert(not preloadSeen[label.Image], "Duplicate icon preload")
@@ -109,7 +124,7 @@ H.HoldPreload = false
 H.FailPreload = true
 H.ResumeTasks()
 H.FailPreload = false
-assert(#H.Warnings == 37, "Failed preload did not report per-image status")
+assert(#H.Warnings == #expectedIcons, "Failed preload did not report per-image status")
 assert(duringFetch.Fallback.Visible and duringFetch.Asset.ImageTransparency == 0.999, "Failed preload hid fallback")
 for _, label in ipairs(H.Preloads[1]) do
 	assert(label._dead, "Preload ImageLabel leaked")
@@ -335,7 +350,7 @@ local passBlur = H.Services.Lighting.PassesBlur
 passes.Panel:Destroy()
 assert(passBlur._dead, "Destroyed shop leaked its blur effect")
 print(
-	"Icon/shop checks passed: 37 upload mappings, async preload, fallbacks, 7 card layouts, prices, ownership and disabled gifting"
+	"Icon/shop checks passed: 81 upload mappings, async preload, fallbacks, 7 card layouts, prices, ownership and disabled gifting"
 )
 local nearToilet, openedHome = true, false
 local hud = H.Load("src/client/UI/HUD").Create(root, remotes, function(name)

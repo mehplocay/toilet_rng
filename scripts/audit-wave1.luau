@@ -18,7 +18,10 @@ test("wave1: JSON parity, rarity colors/order, pool membership and icon/template
 		end
 		if tier > 7 then
 			assert(toilet.Price == wave1Spec.Toilets[tier].Price)
-			assert(assets.ToiletIcons[toilet.Id] == "" and meshes[toilet.Id].Folder == "Wave1Templates")
+			assert(
+				assets.ToiletIcons[toilet.Id]:match("^rbxassetid://%d+$") ~= nil
+					and meshes[toilet.Id].Folder == "Wave1Templates"
+			)
 		end
 	end
 	for _, expected in ipairs(wave1Spec.Items) do
@@ -30,7 +33,10 @@ test("wave1: JSON parity, rarity colors/order, pool membership and icon/template
 			first[item.Id] == expected.FirstToiletTier and income.RarityRates[item.Rarity] == expected.IncomePerSecond
 		)
 		if expected.New then
-			assert(assets.ItemIcons[item.Id] == "" and meshes[item.Id].Folder == "Wave1Templates")
+			assert(
+				assets.ItemIcons[item.Id]:match("^rbxassetid://%d+$") ~= nil
+					and meshes[item.Id].Folder == "Wave1Templates"
+			)
 		end
 	end
 	local count = 0
