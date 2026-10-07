@@ -4,6 +4,7 @@ local Assets = require(game.ReplicatedStorage.Shared.Config.Assets)
 local NumberFormat = require(game.ReplicatedStorage.Shared.NumberFormat)
 local Layout = require(script.Parent.Layout)
 local C = {
+	Layout = Layout,
 	Navy = Visuals.Palette.Navy,
 	Font = Enum.Font.FredokaOne,
 	Ink = Color3.fromRGB(9, 16, 32),
@@ -490,6 +491,8 @@ function C.TabBar(parent, names, callback, colors)
 	}
 end
 function C.Panel(parent, title, color, minimumHeight)
+	local phoneSizes = setmetatable({}, { __mode = "k" })
+	local phoneText = setmetatable({}, { __mode = "k" })
 	local panel = C.New(
 		"Frame",
 		parent,
@@ -529,6 +532,42 @@ function C.Panel(parent, title, color, minimumHeight)
 		end
 		C.Place(panel, bounds)
 		body.Size = UDim2.new(1, -8, 0, math.max(minimumHeight or 540, bounds.H - 88))
+		if
+			Layout.IsPhone(
+				parent.AbsoluteSize.X,
+				parent.AbsoluteSize.Y,
+				game:GetService("UserInputService").TouchEnabled
+			)
+		then
+			for _, object in ipairs(panel:GetDescendants()) do
+				if object:IsA("GuiButton") and object.Size.Y.Scale == 0 then
+					phoneSizes[object] = phoneSizes[object] or object.Size
+					object.Size = UDim2.new(
+						object.Size.X.Scale,
+						if object.Size.X.Scale == 0 then math.max(44, object.Size.X.Offset) else object.Size.X.Offset,
+						0,
+						math.max(44, object.Size.Y.Offset)
+					)
+				elseif object:IsA("TextLabel") then
+					local constraint = object:FindFirstChildWhichIsA("UITextSizeConstraint")
+					if constraint then
+						phoneText[constraint] = phoneText[constraint] or constraint.MinTextSize
+						constraint.MinTextSize = math.max(12, constraint.MinTextSize)
+					end
+				elseif object:IsA("TextBox") and object.Size.Y.Scale == 0 then
+					phoneSizes[object] = phoneSizes[object] or object.Size
+					object.Size =
+						UDim2.new(object.Size.X.Scale, object.Size.X.Offset, 0, math.max(44, object.Size.Y.Offset))
+				end
+			end
+		else
+			for object, size in pairs(phoneSizes) do
+				object.Size = size
+			end
+			for constraint, minimum in pairs(phoneText) do
+				constraint.MinTextSize = minimum
+			end
+		end
 	end
 	parent:GetPropertyChangedSignal("AbsoluteSize"):Connect(resize)
 	parent:GetAttributeChangedSignal("TutorialActive"):Connect(resize)
@@ -576,10 +615,40 @@ function C.Toast(parent)
 	local border, outline = frame.UIStroke, label.UIStroke
 	local input = game:GetService("UserInputService")
 	local function resize()
-		C.Place(
-			frame,
-			Layout.Toast(math.max(240, parent.AbsoluteSize.X), math.max(220, parent.AbsoluteSize.Y), input.TouchEnabled)
-		)
+		local tutorialModal = false
+		if parent:GetAttribute("TutorialActive") then
+			for _, child in ipairs(parent:GetChildren()) do
+				if child:IsA("GuiObject") and child.Visible and child:FindFirstChild("TitleBar") then
+					tutorialModal = true
+					break
+				end
+			end
+		end
+		local w, h = math.max(240, parent.AbsoluteSize.X), math.max(220, parent.AbsoluteSize.Y)
+		local bounds = Layout.Toast(w, h, input.TouchEnabled, tutorialModal)
+		if Layout.IsPhone(w, h, input.TouchEnabled) then
+			if parent:GetAttribute("TutorialActive") and not tutorialModal then
+				bounds.W = math.max(100, bounds.W - 70)
+			end
+			-- Use current UDim properties so a resize and result in the same frame
+			-- also handle windows that override the shared panel height.
+			for _, child in ipairs(parent:GetChildren()) do
+				local bar = child:FindFirstChild("TitleBar")
+				if child:IsA("GuiObject") and child.Visible and bar then
+					local top = child.Position.Y.Scale * h
+						+ child.Position.Y.Offset
+						- child.AnchorPoint.Y * (child.Size.Y.Scale * h + child.Size.Y.Offset)
+						+ bar.Position.Y.Offset
+					local bottom = top + bar.Size.Y.Offset
+					if bounds.Y < bottom and bounds.Y + bounds.H > top then
+						bounds.Y = if top >= bounds.H + 16
+							then math.floor(top - bounds.H - 8)
+							else math.ceil(bottom + 8)
+					end
+				end
+			end
+		end
+		C.Place(frame, bounds)
 	end
 	local resized = parent:GetPropertyChangedSignal("AbsoluteSize"):Connect(resize)
 	resize()

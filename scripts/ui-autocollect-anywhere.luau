@@ -36,6 +36,8 @@ do
 				LastClaimDay = 0,
 				Streak = 0,
 			}
+			local phone = H.Load("src/client/UI/Layout")
+				.Compute(size[1], size[2], H.Services.UserInputService.TouchEnabled).Phone
 			local action = root.HUD.FlushActions
 			local chip, idle = action.AutoFlushSwitch, action.IdleGuard
 			local children = #action:GetChildren()
@@ -44,7 +46,10 @@ do
 				hud.Update(state)
 				H.Services.RunService.Heartbeat:Fire(0.1)
 				H.Layout(root)
-				assert(chip.Label.Text:find("COLLECT\nON / 5s", 1, true) and not idle.Visible)
+				assert(
+					chip.Label.Text:find(if phone then "COLLECT\nON" else "COLLECT\nON / 5s", 1, true)
+						and not idle.Visible
+				)
 				assert(not chip.Interactable and chip.Label.TextTransparency == 0)
 				assert(chip.AbsolutePosition.X >= 0 and chip.AbsolutePosition.Y >= 0)
 				assert(chip.AbsolutePosition.X + chip.AbsoluteSize.X <= size[1])
@@ -56,11 +61,18 @@ do
 			state.AutoStatus.CollectRunning = false
 			hud.Update(state)
 			H.Services.RunService.Heartbeat:Fire(0.1)
-			assert(chip.Label.Text:find("COLLECT\nWAITING", 1, true))
+			assert(chip.Label.Text:find(if phone then "COLLECT\nWAIT" else "COLLECT\nWAITING", 1, true))
 			state.AutoStatus.IdleRemaining = 300
 			hud.Update(state)
 			H.Services.RunService.Heartbeat:Fire(0.1)
-			assert(chip.Label.Text:find("Idle 05:00", 1, true), "Collect-only mode lost the shared idle warning")
+			assert(
+				(
+					if phone
+						then root["Boost details"]:FindFirstChild("AutomationDetails", true).Text
+						else chip.Label.Text
+				):find("Idle 05:00", 1, true),
+				"Collect-only mode lost the shared idle warning"
+			)
 			state.AutoStatus.Paused = true
 			hud.Update(state)
 			H.Services.RunService.Heartbeat:Fire(0.1)
@@ -75,7 +87,10 @@ do
 			state.AutoStatus.Uptime, state.AutoStatus.IdleRemaining = 1500, 300
 			hud.Update(state)
 			H.Services.RunService.Heartbeat:Fire(0.1)
-			assert(chip.Label.Text:find("ON 25:00", 1, true) and chip.Label.Text:find("COLLECT\nON / 5s", 1, true))
+			assert(
+				chip.Label.Text:find(if phone then "ON" else "ON 25:00", 1, true)
+					and chip.Label.Text:find(if phone then "COLLECT\nON" else "COLLECT\nON / 5s", 1, true)
+			)
 			assert(#action:GetChildren() == children, "Automation status duplicated controls")
 			H.Services.Players.LocalPlayer.CharacterRemoving:Fire()
 			H.Services.RunService.Heartbeat:Fire(0.1)
@@ -84,7 +99,7 @@ do
 			state.AutoStatus = { CollectEnabled = true, CollectRunning = true, IdleRemaining = 300 }
 			hud.Update(state)
 			H.Services.RunService.Heartbeat:Fire(0.1)
-			assert(chip.Label.Text:find("COLLECT\nON / 5s", 1, true))
+			assert(chip.Label.Text:find(if phone then "COLLECT\nON" else "COLLECT\nON / 5s", 1, true))
 			state.AutoStatus = {}
 			hud.Update(state)
 			H.Services.RunService.Heartbeat:Fire(0.1)

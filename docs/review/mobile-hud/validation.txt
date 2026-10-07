@@ -1,0 +1,16 @@
+Mobile HUD validation (2026-10-07)
+Branch: feature/mobile-hud; no commit/push.
+
+rojo build -o build.rbxl: passed.
+stylua --check --line-endings Windows (all changed Luau): passed.
+git diff --check: passed.
+27 standalone scripts/check-*.luau: passed.
+check-audit.ps1: 404 passed, 0 failed.
+check-visuals.ps1: passed.
+check-world.ps1: passed.
+check-ui.ps1 -MobileOnly -SnapshotDirectory docs/review/mobile-hud: passed.
+Seven phone geometry cases + unchanged tablet + eight production UI cases + 972-case layout sweep: passed.
+40 individual PNGs and eight contact sheets rendered and inspected.
+Selene: blocked by missing roblox standard library; no lint pass claimed.
+
+check-ui.ps1 (full production runtime/regression bundle): passed; 972-case layout sweep passed.

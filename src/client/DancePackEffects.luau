@@ -4,6 +4,8 @@ local Rules = require(game.ReplicatedStorage.Shared.MonetizationRules)
 local RunService = game:GetService("RunService")
 local Players = game:GetService("Players")
 local C = require(script.Parent.UI.Components)
+local Layout = require(script.Parent.UI.Layout)
+local Input = game:GetService("UserInputService")
 local Effects = {}
 
 function Effects.Start(root, player, remotes)
@@ -44,7 +46,14 @@ function Effects.Start(root, player, remotes)
 			buttons[i].Text = Config.Celebrations[i] .. (if channel.Enabled then ": ON" else ": OFF")
 			buttons[i].Interactable = interactable
 		end
+		local phone = Layout.IsPhone(root.AbsoluteSize.X, root.AbsoluteSize.Y, Input.TouchEnabled)
 		toggle.Text = if active then "Stop" else "Celebrate"
+		toggle.Label.Text = if phone and not active then "Dance" else toggle.Text
+		if phone then
+			C.Place(toggle, Layout.Compute(root.AbsoluteSize.X, root.AbsoluteSize.Y, Input.TouchEnabled).Celebrate)
+		else
+			toggle.Size, toggle.Position = UDim2.fromOffset(112, 44), UDim2.new(1, -124, 0, 152)
+		end
 		toggle.Visible = owned.DancePack == true
 		toggle.Interactable = interactable
 	end
@@ -104,6 +113,17 @@ function Effects.Start(root, player, remotes)
 			refresh()
 		end
 	end, C.Purple, { Name = "CelebrationMenu", TextSize = 16 })
+	local danceIcon = C.Icon(toggle, "Crown", UDim2.fromOffset(22, 22), UDim2.fromOffset(11, 2))
+	local function resizeToggle()
+		local phone = Layout.IsPhone(root.AbsoluteSize.X, root.AbsoluteSize.Y, Input.TouchEnabled)
+		danceIcon.Visible = phone
+		toggle.Label.Position = if phone then UDim2.fromScale(0.02, 0.58) else UDim2.fromScale(0.06, 0.12)
+		toggle.Label.Size = if phone then UDim2.fromScale(0.96, 0.4) else UDim2.fromScale(0.88, 0.76)
+		toggle.Label.UITextSizeConstraint.MinTextSize = if phone then 12 else 10
+		toggle.Label.UITextSizeConstraint.MaxTextSize = if phone then 12 else 16
+		refresh()
+	end
+	connect(root:GetPropertyChangedSignal("AbsoluteSize"), resizeToggle)
 	for i, name in ipairs(Config.Celebrations) do
 		local channel = { Enabled = false, Pieces = {}, Age = limits.Lifetime }
 		channels[i] = channel
@@ -121,6 +141,7 @@ function Effects.Start(root, player, remotes)
 		end, C.Purple, { Name = "Celebration" .. i })
 		buttons[i].LayoutOrder = i
 	end
+	resizeToggle()
 	C.Button(content, "Stop celebration", UDim2.new(1, -12, 0, 46), nil, reset, C.Blue).LayoutOrder = 5
 	-- A separate finite channel. Stop clears the visible burst; a later flush can trigger a new reveal.
 	local function bindCharacter(current)

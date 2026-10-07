@@ -221,6 +221,7 @@ end
 hud = require(script.UI.HUD).Create(root, remotes, open, prompts, upgrades.Navigation)
 require(script.WorldLabels).Start(hud.Frame)
 require(script.WorldNavigation).Start(open, toast)
+table.insert(panels, hud.StatusPanel)
 local function syncModal()
 	local any = false
 	for _, panel in ipairs(panels) do

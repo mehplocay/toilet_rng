@@ -150,7 +150,16 @@ do
 		hud.Update(state)
 		H.Services.RunService.Heartbeat:Fire(0.1)
 		local resume = root.HUD.FlushActions.IdleGuard
-		assert(resume.Visible and contains(root, "Still there? Tap to continue"))
+		assert(
+			resume.Visible
+				and contains(
+					root,
+					if H.Load("src/client/UI/Layout")
+							.IsPhone(root.AbsoluteSize.X, root.AbsoluteSize.Y, H.Services.UserInputService.TouchEnabled)
+						then "Still there?\nTap"
+						else "Still there? Tap to continue"
+				)
+		)
 		resume.Activated:Fire()
 		assert(H.Calls[#H.Calls].Name == "PlayerActivity" and H.Calls[#H.Calls].Count == 0)
 		if not test then

@@ -1,9 +1,9 @@
-param([string]$SnapshotDirectory)
+param([string]$SnapshotDirectory, [switch]$MobileOnly)
 $ErrorActionPreference = 'Stop'
 $workspaceRoot = Split-Path $PSScriptRoot -Parent
 & luau (Join-Path $PSScriptRoot 'check-monetization-ids.luau')
 if ($LASTEXITCODE -ne 0) { throw 'Production monetization ID checks failed' }
-$generatedPath = Join-Path $workspaceRoot '.ui-check.generated.luau'
+$generatedPath = Join-Path $workspaceRoot ('.ui-check-' + $PID + '.generated.luau')
 $parts = [System.Collections.Generic.List[string]]::new()
 $parts.Add('local sources = {}')
 $parts.Add('local expectedIcons = {}')
@@ -48,34 +48,40 @@ foreach ($file in (Get-ChildItem -LiteralPath (Join-Path $workspaceRoot 'src') -
     $parts.Add("sources['$moduleName'] = [====[`n$source`n]====]")
 }
 $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-harness.luau')))
-$parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'rebirth-click-ui-checks.luau')))
-$parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'check-ui-runtime.luau')))
-$parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-shop-routing.luau')))
-$parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'presentation-ui-checks.luau')))
-$parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'reveals2-ui-checks.luau')))
-$parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-upgrades.luau')))
-$parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-rebirth.luau')))
-$parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-economy-v2.luau')))
-$parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-path-catalog.luau')))
-$parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-catalog2.luau')))
-$parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'celebration-ui-checks.luau')))
-$parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'audit-cosmetic-merge.luau')))
-$parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'audio-coverage-checks.luau')))
-$parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-admin.luau')))
-$parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-flushanywhere.luau')))
-$parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-autocollect-anywhere.luau')))
-$parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-wave1.luau')))
-$parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-all-pools.luau')))
-$parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-toast.luau')))
-$parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-wire-ids.luau')))
-$parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-vip-luck.luau')))
-$parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'purchase-ui-checks.luau')))
-$parts.Add('H.CheckPurchaseUI(); print("Purchase UI regressions passed")')
-$parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-social.luau')))
-$parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-plot-color.luau')))
-$parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'plot-color-cosmetic-checks.luau')))
-$parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-tutorial.luau')))
-$parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'ui-coin-bounds.luau')))
+if ($MobileOnly) {
+    $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-flushanywhere.luau')))
+    $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-autocollect-anywhere.luau')))
+} else {
+    $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'rebirth-click-ui-checks.luau')))
+    $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'check-ui-runtime.luau')))
+    $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-shop-routing.luau')))
+    $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'presentation-ui-checks.luau')))
+    $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'reveals2-ui-checks.luau')))
+    $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-upgrades.luau')))
+    $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-rebirth.luau')))
+    $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-economy-v2.luau')))
+    $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-path-catalog.luau')))
+    $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-catalog2.luau')))
+    $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'celebration-ui-checks.luau')))
+    $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'audit-cosmetic-merge.luau')))
+    $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'audio-coverage-checks.luau')))
+    $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-admin.luau')))
+    $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-flushanywhere.luau')))
+    $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-autocollect-anywhere.luau')))
+    $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-wave1.luau')))
+    $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-all-pools.luau')))
+    $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-toast.luau')))
+    $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-wire-ids.luau')))
+    $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-vip-luck.luau')))
+    $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'purchase-ui-checks.luau')))
+    $parts.Add('H.CheckPurchaseUI(); print("Purchase UI regressions passed")')
+    $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-social.luau')))
+    $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-plot-color.luau')))
+    $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'plot-color-cosmetic-checks.luau')))
+    $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-tutorial.luau')))
+    $parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'ui-coin-bounds.luau')))
+}
+$parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-mobile-hud.luau')))
 try {
     [IO.File]::WriteAllText($generatedPath, ($parts -join "`n"), [Text.UTF8Encoding]::new($false))
     $output = & luau --codegen -O2 $generatedPath
@@ -90,6 +96,8 @@ try {
         } else { Write-Output $line }
     }
     if ($code -ne 0) { throw 'UI runtime checks failed' }
+    & luau (Join-Path $PSScriptRoot 'check-mobile-hud.luau')
+    if ($LASTEXITCODE -ne 0) { throw 'Mobile layout checks failed' }
     & luau (Join-Path $PSScriptRoot 'check-ui-layout.luau')
     if ($LASTEXITCODE -ne 0) { throw 'UI layout checks failed' }
 } finally {

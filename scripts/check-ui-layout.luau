@@ -30,6 +30,9 @@ for caseIndex, case in ipairs(cases) do
 	local w, h = width - left - right, height - top - bottom
 	local layout = Layout.Compute(w, h, touch)
 	assert(#layout.Nav == 6, "Rebirth navigation entry missing")
+	if layout.Phone then
+		continue
+	end -- Covered by the dedicated phone contract and production UI tests.
 	local revealLayout = PresentationLayout.Compute(w, h)
 	for name, bounds in pairs(revealLayout) do
 		assert(
