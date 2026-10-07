@@ -19,6 +19,15 @@ return {
 	PolicySeconds = 120,
 	VIPPad = { X = 46, Y = 1, Z = -62, Radius = 8, Cooldown = 300, IncomeSeconds = 5, Min = 10, Max = 10000 },
 	Celebrations = { "Sparkles", "Gold burst", "Rainbow halo", "Victory pulse" },
+	CelebrationEffects = {
+		UpdateSeconds = 0.1,
+		Lifetime = 1.4,
+		Interval = 2,
+		FullPerEffect = 6,
+		ReducedPerEffect = 2,
+		FullReveal = 24,
+		ReducedReveal = 8,
+	},
 	PlotColors = {
 		{ Id = "Default", Name = "Default" },
 		{ Id = "Sky", Name = "Sky", RGB = { 85, 175, 240 } },

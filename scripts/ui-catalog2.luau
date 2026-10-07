@@ -181,11 +181,11 @@ do
 	})
 	root.CelebrationMenu.Activated:Fire()
 	assert(effects.Menu.Visible)
-	effects.Menu:FindFirstChild("Celebration1", true).Activated:Fire()
+	effects.Menu:FindFirstChild("Celebration2", true).Activated:Fire()
 	beat:Fire(2.1)
 	local count = 0
 	for _, child in ipairs(root:GetChildren()) do
-		if child.Name == "RevealConfetti" then
+		if string.match(child.Name, "^Celebration%dPiece$") then
 			count += 1
 		end
 	end
@@ -194,7 +194,7 @@ do
 	player.Character = nil
 	assert(not effects.Pets[player] and pet._dead and not effects.Menu.Visible)
 	for _, child in ipairs(root:GetChildren()) do
-		assert(child.Name ~= "RevealConfetti", "Respawn retained celebration particles")
+		assert(not string.match(child.Name, "^Celebration%dPiece$"), "Respawn retained celebration particles")
 	end
 	beat:Fire(0.11)
 	player.Character = character
