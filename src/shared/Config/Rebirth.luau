@@ -165,7 +165,7 @@ for level, row in ipairs(levels) do
 	row.AutoCollect = level >= 5
 	row.DisplaySlots = if level >= 10 then 2 else 0
 	if row.AutoCollect then
-		table.insert(row.Perks, "FREE Auto Collect (every 5s inside your plot)")
+		table.insert(row.Perks, "FREE Auto Collect (every 5s anywhere on the map)")
 	end
 	if row.DisplaySlots > 0 then
 		table.insert(row.Perks, "+2 display slots (up to plot capacity)")

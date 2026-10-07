@@ -30,6 +30,7 @@ return {
 	ClaimReward = "ClaimReward",
 	ClaimIndexReward = "ClaimIndexReward",
 	Limits = {
+		AutoCollect = { Capacity = 1, Refill = 0.2 }, -- Internal five-second cadence, no client remote.
 		PlayerActivity = { Capacity = 1, Refill = 0.1 },
 		BuyProduct = { Capacity = 1, Refill = 0.1 },
 		VIPPad = { Capacity = 1, Refill = 0.2 },

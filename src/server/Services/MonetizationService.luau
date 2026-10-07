@@ -20,7 +20,14 @@ end
 function Service:AutoStatus(player)
 	local activity = self.Activity[player]
 	local now = os.clock()
+	local collectEnabled = self.Commerce ~= nil and self.Commerce:CanCollect(player)
 	return {
+		CollectEnabled = collectEnabled,
+		CollectRunning = collectEnabled
+			and activity ~= nil
+			and not activity.Paused
+			and now - activity.Last < AutoConfig.IdleSeconds
+			and not self.Data.Saving[player],
 		Paused = activity ~= nil and activity.Paused == true,
 		IdleRemaining = if activity then math.max(0, AutoConfig.IdleSeconds - (now - activity.Last)) else 0,
 		Uptime = if activity then activity.Uptime + (if activity.Since then now - activity.Since else 0) else 0,
@@ -135,16 +142,22 @@ function Service:StopAuto(player)
 	if self.Auto[player] then
 		self.World:StopAnimation(player)
 		self.Auto[player] = false
-		self.Activity[player] = nil
+		local activity = self.Activity[player]
+		if activity and activity.Since then
+			activity.Uptime += math.max(0, os.clock() - activity.Since)
+			activity.Since = nil
+		end
 		self.Sync(player)
 	end
 end
 
 function Service:Start(limiter, remotes, sync, data, world)
 	self.Data, self.World, self.Sync = data, world, sync
-	self.Commerce = require(script.Parent.CommerceService).new(data, world, sync)
+	self.Commerce = require(script.Parent.CommerceService).new(data, world, sync, self)
 	self.Commerce:Start(limiter, remotes)
 	local function trackCharacter(player)
+		-- One idle clock for both automations; toggles, rebirth and respawn never renew it.
+		self.Activity[player] = { Last = os.clock(), Uptime = 0, Paused = false }
 		player.CharacterRemoving:Connect(function()
 			self:StopAuto(player)
 		end)
@@ -169,10 +182,17 @@ function Service:Start(limiter, remotes, sync, data, world)
 		local wasEnabled = self.Auto[player]
 		self.Auto[player] = Rules.AutoEnabled(enabled, data:Get(player), self:Living(player), Config)
 		if self.Auto[player] and not wasEnabled then
-			self.Activity[player] = { Last = os.clock(), Since = os.clock(), Uptime = 0, Paused = false }
+			local activity = self.Activity[player]
+			if activity then
+				if not self.Commerce:HasAutoCollect(data:Get(player)) then
+					activity.Last, activity.Paused = os.clock(), false
+				end
+				activity.Since = if activity.Paused then nil else os.clock()
+			end
 		elseif not self.Auto[player] then
-			self.Activity[player] = nil
-			self.World:StopAnimation(player)
+			-- StopAuto accounts uptime while preserving the shared idle clock.
+			self.Auto[player] = wasEnabled
+			self:StopAuto(player)
 		end
 		sync(player)
 	end)
@@ -180,7 +200,8 @@ function Service:Start(limiter, remotes, sync, data, world)
 		if select("#", ...) ~= 0 or not limiter:Allow(player, "PlayerActivity") then
 			return
 		end
-		if not self:CanAuto(player) then
+		local plot = world.Assigned[player]
+		if not plot or plot.Owner ~= player or not self:Living(player) or not data:Get(player) then
 			return
 		end
 		local activity = self.Activity[player]
@@ -190,9 +211,12 @@ function Service:Start(limiter, remotes, sync, data, world)
 		self:IdlePaused(player)
 		activity.Last = os.clock() -- Never accept a client clock, duration or reward.
 		if activity.Paused then
-			activity.Paused, activity.Since = false, os.clock()
+			activity.Paused = false
+			activity.Since = if self.Auto[player] then os.clock() else nil
 		end
-		sync(player)
+		if self.Auto[player] or self.Commerce:CanCollect(player) then
+			sync(player)
+		end
 	end)
 	remotes.AnimationSkip.OnServerEvent:Connect(function(player, enabled, ...)
 		if select("#", ...) ~= 0 or type(enabled) ~= "boolean" or not limiter:Allow(player, "AnimationSkip") then
