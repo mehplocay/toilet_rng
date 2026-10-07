@@ -119,8 +119,8 @@ test("wave1: legacy save/rejoin settles retiered displays once and persists new 
 	e.Store.Records.Player_970 = { Data = raw }
 	local player, p = e:Join(970)
 	assert(p.ToiletTier == 7 and p.RebirthLevel == 7 and p.Collection.SewerShark == 9)
-	assert(p.Income.Pending["1"] == 6000 * 40 * 0.5 * 60 * 6000 + 1234)
-	assert(p.Income.Pending["10"] == 6000 * 40 * 0.5 * 60 * 6000)
+	assert(p.Income.Pending["1"] == 80028000000 + 1234)
+	assert(p.Income.Pending["10"] == 80028000000)
 	assert(p.Inventory.HaloHamster == 0 and p.Collection.CosmicCourtesy == 0)
 	e.Data:Close(player)
 	local joined, restored = e:Join(970)
@@ -132,7 +132,7 @@ test("wave1: legacy save/rejoin settles retiered displays once and persists new 
 	local _, late = e:Join(970)
 	assert(late.ToiletTier == 15 and late.RebirthLevel == 7 and late.Inventory.HaloHamster == 2)
 	assert(late.Displays["2"] == "HaloHamster" and late.Collection.HaloHamster == 4)
-	assert(late.Income.Pending["2"] == 25000 * 40 * 0.5 * 60 * 6000)
+	assert(late.Income.Pending["2"] == 8336250000000)
 end)
 
 test("wave1: complete index grants Celestial and new plaque once without re-awarding legacy claims", function()

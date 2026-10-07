@@ -11,7 +11,7 @@ assert(#Config.Levels >= 10 and #Config.Levels <= 20 and Config.RequiredFlushes 
 local previous = { Cash = 0, Luck = 0, Speed = 0 }
 
 for level, bonus in ipairs(Config.Levels) do
-	assert(bonus.Cash >= previous.Cash and bonus.Cash <= Config.CashCap + 1e-9)
+	assert(bonus.Cash >= previous.Cash and bonus.Cash < math.huge)
 	assert(bonus.Luck >= previous.Luck and bonus.Luck <= Config.LuckBonusCap)
 	assert(bonus.Speed >= previous.Speed and bonus.Speed <= Config.SpeedBonusCap)
 	previous = bonus
@@ -21,7 +21,10 @@ for level, bonus in ipairs(Config.Levels) do
 			for speed = 0, 10 do
 				local p = { RebirthLevel = level, Upgrades = { CashBoost = cash, FlushSpeed = speed, LuckBoost = 50 } }
 				local cooldown, multiplier = U:Cooldown(p, toilet.Cooldown), U:Cash(p)
-				assert(cooldown >= UpgradeConfig.CooldownFloor and multiplier <= 4.25 + Config.CashCap + 1e-9)
+				assert(
+					cooldown >= UpgradeConfig.CooldownFloor
+						and multiplier == (1 + U:Effect(p, "CashBoost")) * (1 + bonus.Cash)
+				)
 				p.ToiletTier, p.DisplaySlots, p.Displays = tier, 100, {}
 				for slot = 1, 100 do
 					p.Displays[tostring(slot)] = "Mystery"
@@ -31,7 +34,7 @@ for level, bonus in ipairs(Config.Levels) do
 					assert(units % 1 == 0 and units >= 0)
 					total += units
 				end
-				assert(total <= math.floor(IncomeConfig.PlayerRateCaps[tier] * multiplier * 100))
+				assert(total <= 9e15 and total <= math.floor(IncomeConfig.PlayerRateCaps[tier] * multiplier * 100) + 1)
 				assert(Income:StorageUnits(p, false) <= 9e15)
 				assert(U:Luck(p, toilet.Luck, 2, 2, 1e300) == UpgradeConfig.LuckCap)
 			end

@@ -19,11 +19,11 @@ do
 	assert(bundleDescription, "Bundle card must promise all 14 other passes")
 	local cashExplanation = false
 	for _, label in ipairs(vip:GetDescendants()) do
-		if label:IsA("TextLabel") and string.find(label.Text, "paid cap 3x on top", 1, true) then
-			cashExplanation = string.find(label.Text, "Free cash cap 40x", 1, true) ~= nil
+		if label:IsA("TextLabel") and string.find(label.Text, "Cash bonuses multiply without a cap.", 1, true) then
+			cashExplanation = string.find(label.Text, "Cash bonuses multiply without a cap.", 1, true) ~= nil
 		end
 	end
-	assert(cashExplanation, "Premium VIP card must explain the separate cash caps")
+	assert(cashExplanation, "Premium VIP card must explain the uncapped cash stacking")
 	local luckyGrid = ui.Panel:FindFirstChild("LuckyGrid", true)
 	local state =
 		{ Settings = {}, OwnedPasses = {}, Commerce = { Quotes = {}, Lucky = { Allowed = false, Count = 3 } } }

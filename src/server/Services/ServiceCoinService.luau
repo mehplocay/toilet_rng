@@ -1,8 +1,7 @@
 -- Pure profile mutation; only the validated server flush path grants this award.
 local ServiceCoinService = {}
 local MAX_COINS = 9e15
-local Monetization =
-	require(if script then game.ReplicatedStorage.Shared.Config.Monetization else "../../shared/Config/Monetization")
+local CashMath = require(if script then game.ReplicatedStorage.Shared.CashMath else "../../shared/CashMath")
 
 function ServiceCoinService.Grant(profile, toilet, cashMultiplier)
 	local amount = toilet.ServiceCoins
@@ -11,11 +10,8 @@ function ServiceCoinService.Grant(profile, toilet, cashMultiplier)
 		"Invalid service Coins configuration"
 	)
 	local multiplier = cashMultiplier or 1
-	assert(
-		type(multiplier) == "number" and multiplier >= 1 and multiplier <= Monetization.CashMultiplierCap,
-		"Invalid cash multiplier"
-	)
-	amount = math.floor(amount * multiplier + 1e-9)
+	assert(CashMath.Finite(multiplier) and multiplier >= 1, "Invalid cash multiplier")
+	amount = math.floor(CashMath.Product(amount, multiplier, MAX_COINS) + 1e-9)
 	if profile.Coins > MAX_COINS - amount or profile.Stats.Earned > MAX_COINS - amount then
 		return nil
 	end

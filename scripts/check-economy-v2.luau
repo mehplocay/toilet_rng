@@ -33,12 +33,12 @@ for _, pair in ipairs({
 end
 local p = profile(4, "Poop", 1)
 p.RebirthLevel, p.Upgrades.CashBoost = 1, 1
-assert(Income:Rates(p)["1"] == 31680, "3.3 tier * (1 + .1 cash + .50 rebirth) must retain fractions")
+assert(Income:Rates(p)["1"] == 32670, "3.3 tier * 1.1 cash * 1.5 rebirth must retain fractions")
 for second = 1001, 11000 do
 	Income:Settle(p, second, false)
 end
-assert(Income:TotalUnits(p) == 316800000)
-assert(Income:Collect(p) == 52800 and Income:TotalUnits(p) == 0)
+assert(Income:TotalUnits(p) == 326700000)
+assert(Income:Collect(p) == 54450 and Income:TotalUnits(p) == 0)
 
 -- Large whole balances plus one subcoin survive every save/collect; division cannot round up.
 p = profile(7, "Mystery", 100)
@@ -48,7 +48,7 @@ for _, rate in pairs(rates) do
 	assert(rate >= 0 and rate % 1 == 0)
 	sum += rate
 end
-assert(sum == 240000000000, "100 legacy Secrets must share the free 40x ten-slot rate cap exactly")
+assert(sum == 2496000000000, "100 legacy Secrets must share the ten-slot base rate limit with all cash factors exactly")
 Income:Settle(p, 1000 + 86400, true)
 assert(Income:TotalUnits(p) == 9e15, "Half-rate 24-hour allowance must saturate the safe ledger cap")
 Income:Settle(p, Config.MaxTimestamp, false)

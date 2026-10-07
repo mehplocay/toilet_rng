@@ -1,5 +1,7 @@
 # Rebirth reward retune validation
 
+> Historical cash/balance snapshot. The 2026-10-07 owner decision removes all cash multiplier caps; see [current uncapped contract](../design/no-cash-cap.md). Earlier measurements below are retained as dated evidence, not runtime limits.
+
 2026-10-06, resolution of feature/rebirth-balance into the existing main merge. No commit, push or merge abort. Both the extended catalog and two-layer cash implementation are retained.
 
 ## Implemented result

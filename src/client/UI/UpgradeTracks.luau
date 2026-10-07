@@ -5,6 +5,7 @@ local Income = require(Shared.Config.Income)
 local Assets = require(Shared.Config.Assets)
 local rules = require(Shared.UpgradeRules).new(Config)
 local Tracks = {}
+local Format = require(Shared.NumberFormat)
 function Tracks.Create(body, remotes)
 	local row = C.Scroll(body, UDim2.new(1, 0, 1, -146), UDim2.fromOffset(0, 110))
 	row.Name, row.Visible = "PermanentUpgradeTracks", false
@@ -77,7 +78,7 @@ function Tracks.Create(body, remotes)
 					C.Pop(card.Frame)
 				end
 				local effects = {
-					CashBoost = string.format("+%d%% coins", math.round((rules:Cash(state) - 1) * 100)),
+					CashBoost = Format.Compact(rules:Cash(state), 2) .. "x coins",
 					LuckBoost = string.format(
 						"Luck +%d%%%s",
 						math.round(((stats.LuckMultiplier or 1) - 1) * 100),

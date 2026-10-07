@@ -221,9 +221,9 @@ test("catalog cash: sales, service, passive, daily and offline caps honor paid f
 	service.Commerce:Apply(player, service.Owned[player])
 	local rules = e:Load("src/shared/UpgradeRules").new(e:Load("src/shared/Config/Upgrades"))
 	local paid = e:Load("src/shared/PaidBenefits")
-	assert(rules:Cash(p) == 3 and service:Luck(player) == 1 and paid.Cash(p, 1e300) == config.CashMultiplierCap)
+	assert(rules:Cash(p) == 3 and service:Luck(player) == 1 and math.abs(paid.Cash(p, 1e300) / 3e300 - 1) < 1e-12)
 	p.RebirthLevel, p.Upgrades.CashBoost = 15, 10
-	assert(math.abs(rules:Cash(p) - 51) < 1e-9)
+	assert(math.abs(rules:Cash(p) - 96) < 1e-9)
 	p.Inventory.Rat = 3
 	local item
 	for _, candidate in ipairs(e:Load("src/shared/Config/Items")) do
@@ -232,7 +232,7 @@ test("catalog cash: sales, service, passive, daily and offline caps honor paid f
 		end
 	end
 	assert(e:Load("src/server/Services/EconomyService").Sell(p, "Rat", 1))
-	assert(p.Coins == math.floor(item.Value * 51 + 1e-9))
+	assert(p.Coins == math.floor(item.Value * 96 + 1e-9))
 	local serviceCoins = e:Load("src/server/Services/ServiceCoinService")
 		.Grant(p, e:Load("src/shared/Config/Toilets")[1], rules:Cash(p))
 	assert(serviceCoins > 0)

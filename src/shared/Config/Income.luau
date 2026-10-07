@@ -31,8 +31,8 @@ return {
 	OfflineMinutes = 480,
 	OfflineRate = 0.5,
 	MaxOfflineMinutes = 24 * 60,
-	-- Coins/minute including the nominal toilet factor. Rates removes that factor
-	-- before applying the combined free/paid cash factor, so it cannot escape the free cap.
+	-- Coins/minute including the toilet factor. Rates applies that factor once,
+	-- then multiplies all cash bonuses without a gameplay multiplier ceiling.
 	-- Ten maximum-rate Secrets fit; legacy larger displays share the same player cap.
 	SlotRateCaps = {
 		6000000,

@@ -8,12 +8,14 @@ local function percentile(values, fraction)
 	return C.Percentile(table.clone(values), fraction)
 end
 local failures = {}
--- Fresh-account baselines under the merged cap; unlike the conditional Wave 1
+-- Measured uncapped fresh-account baselines (docs/design/no-cash-cap.md).
+-- These are regression snapshots, not changes to the requested early/rebirth targets.
+-- Unlike the conditional Wave 1
 -- targets these players also pay for permanent upgrades throughout the run.
 local extendedTargets = {
-	Normal = { 86.5, 125, 217, 345.5, 518, 1088.5, 1481.5, 1889.5 },
-	Casual = { 144.5, 195.5, 332, 526, 794, 1576, 2166, 2896 },
-	Grinder = { 74.5, 108, 187.5, 297.5, 457, 947.5, 1255.5, 1627 },
+	Normal = { 84, 109.5, 146.5, 214, 315.5, 455, 711, 1027.5 },
+	Casual = { 138, 178, 220, 324, 488, 702, 1036, 1486 },
+	Grinder = { 72, 95.5, 128, 184.5, 270, 402.5, 626.5, 909 },
 }
 local function within(value, low, high, message)
 	if not (value >= low and value <= high) then
@@ -127,8 +129,7 @@ for _, arch in ipairs({ { "Normal", 0.75 }, { "Casual", 0.3 }, { "Grinder", 1 } 
 					elseif level == 60 then
 						within(median, 5, 12, "L60 " .. track.Id)
 					elseif level == 85 then
-						-- The 40x free cap includes toilet factors (the old cap allowed 130x displays).
-						-- Preserve prices/effects; rebase only the affected legacy timing ceiling.
+						-- Preserve the existing upgrade timing acceptance after the cash retune.
 						within(median, 12, 28, "L85 " .. track.Id)
 					elseif level == 100 then
 						within(median, 25, 45, "L100 " .. track.Id)

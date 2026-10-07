@@ -1,4 +1,4 @@
--- Cumulative bonuses add to Cash Boost; toilet display factors share the free cash cap.
+-- Cumulative rebirth cash bonus multiplies Cash Boost and display/paid factors.
 local levels = {
 	{
 		RequiredCoins = 4000000,
@@ -11,7 +11,7 @@ local levels = {
 		Perks = { "Fresh Start title" },
 	},
 	{
-		RequiredCoins = 12000000,
+		RequiredCoins = 15000000,
 		Cash = 1.1,
 		Luck = 0.1,
 		Speed = 0.05,
@@ -21,7 +21,7 @@ local levels = {
 		Perks = { "Bowl Apprentice title" },
 	},
 	{
-		RequiredCoins = 35000000,
+		RequiredCoins = 70000000,
 		Cash = 1.8,
 		Luck = 0.15,
 		Speed = 0.07,
@@ -31,7 +31,7 @@ local levels = {
 		Perks = { "Porcelain Keeper title" },
 	},
 	{
-		RequiredCoins = 100000000,
+		RequiredCoins = 400000000,
 		Cash = 2.4,
 		Luck = 0.2,
 		Speed = 0.09,
@@ -41,7 +41,7 @@ local levels = {
 		Perks = { "Royal Cleaner title" },
 	},
 	{
-		RequiredCoins = 450000000,
+		RequiredCoins = 3800000000,
 		Cash = 3,
 		Luck = 0.25,
 		Speed = 0.1,
@@ -51,7 +51,7 @@ local levels = {
 		Perks = { "Diamond Janitor title" },
 	},
 	{
-		RequiredCoins = 1000000000,
+		RequiredCoins = 18000000000,
 		Cash = 3.8,
 		Luck = 0.32,
 		Speed = 0.13,
@@ -61,7 +61,7 @@ local levels = {
 		Perks = { "Pipe Guardian title" },
 	},
 	{
-		RequiredCoins = 2000000000,
+		RequiredCoins = 100000000000,
 		Cash = 4.7,
 		Luck = 0.39,
 		Speed = 0.16,
@@ -71,7 +71,7 @@ local levels = {
 		Perks = { "Flush Captain title" },
 	},
 	{
-		RequiredCoins = 4000000000,
+		RequiredCoins = 700000000000,
 		Cash = 5.7,
 		Luck = 0.46,
 		Speed = 0.19,
@@ -81,7 +81,7 @@ local levels = {
 		Perks = { "Bowl Champion title" },
 	},
 	{
-		RequiredCoins = 15000000000,
+		RequiredCoins = 4500000000000,
 		Cash = 6.8,
 		Luck = 0.53,
 		Speed = 0.22,
@@ -91,7 +91,7 @@ local levels = {
 		Perks = { "Porcelain Hero title" },
 	},
 	{
-		RequiredCoins = 60000000000,
+		RequiredCoins = 60000000000000,
 		Cash = 8,
 		Luck = 0.6,
 		Speed = 0.25,
@@ -101,7 +101,7 @@ local levels = {
 		Perks = { "Cosmic Janitor title" },
 	},
 	{
-		RequiredCoins = 120000000000,
+		RequiredCoins = 100000000000000,
 		Cash = 9.3,
 		Luck = 0.68,
 		Speed = 0.3,
@@ -111,7 +111,7 @@ local levels = {
 		Perks = { "Starlight Keeper title" },
 	},
 	{
-		RequiredCoins = 200000000000,
+		RequiredCoins = 200000000000000,
 		Cash = 10.7,
 		Luck = 0.76,
 		Speed = 0.35,
@@ -121,7 +121,7 @@ local levels = {
 		Perks = { "Royal Plumber title" },
 	},
 	{
-		RequiredCoins = 320000000000,
+		RequiredCoins = 400000000000000,
 		Cash = 12.1,
 		Luck = 0.84,
 		Speed = 0.4,
@@ -131,7 +131,7 @@ local levels = {
 		Perks = { "Galaxy Guardian title" },
 	},
 	{
-		RequiredCoins = 520000000000,
+		RequiredCoins = 700000000000000,
 		Cash = 13.5,
 		Luck = 0.92,
 		Speed = 0.45,
@@ -141,7 +141,7 @@ local levels = {
 		Perks = { "Eternal Cleaner title" },
 	},
 	{
-		RequiredCoins = 6500000000000,
+		RequiredCoins = 2400000000000000,
 		Cash = 15,
 		Luck = 1,
 		Speed = 0.5,
@@ -183,7 +183,6 @@ return {
 	Cosmetics = cosmetics,
 	ResponseTimeout = 15,
 	MaxBalance = 9e15,
-	CashCap = 15,
 	LuckBonusCap = 1,
 	SpeedBonusCap = 0.50,
 	-- Shares the existing announcement queue and its per-player cooldown.

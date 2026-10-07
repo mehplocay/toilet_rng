@@ -8,11 +8,20 @@ local Roll = require("../src/server/Services/RollService")
 local Service = require("../src/server/Services/ServiceCoinService")
 local Display = require("./display-cohort")
 local C = {}
+local Paid = require("../src/shared/PaidBenefits")
+local Monetization = require("../src/shared/Config/Monetization")
+local function cooldown(p, toilet)
+	return U:Cooldown(
+		p,
+		toilet.Cooldown
+			* (if Paid.Owns(p, "FastFlush") then Monetization.Gamepasses.FastFlush.CooldownMultiplier else 1)
+	)
+end
 function C.Percentile(values, fraction)
 	table.sort(values)
 	return values[math.ceil(#values * fraction)]
 end
-function C.Run(population, uptime, rebirthRuns, slotLimit, stopAt, maxTier)
+function C.Run(population, uptime, rebirthRuns, slotLimit, stopAt, maxTier, passes)
 	local result = { Tiers = {}, Runs = { {}, {} }, EarlyShare = {}, MidShare = {} }
 	for tier = 2, #Toilets do
 		result.Tiers[tier] = {}
@@ -25,6 +34,7 @@ function C.Run(population, uptime, rebirthRuns, slotLimit, stopAt, maxTier)
 		end
 		local p = {
 			Coins = 0,
+			Monetization = { Passes = passes or {} },
 			Stats = { Earned = 0, Flushes = 0 },
 			Inventory = {},
 			Collection = {},
@@ -38,7 +48,11 @@ function C.Run(population, uptime, rebirthRuns, slotLimit, stopAt, maxTier)
 			RebirthLevel = 0,
 			RunFlushes = 0,
 		}
-		local interval = if uptime <= 0.3 then 120 elseif uptime >= 1 then 15 else 30
+		local interval = if Paid.Owns(p, "AutoCollect")
+			then 5
+			elseif uptime <= 0.3 then 120
+			elseif uptime >= 1 then 15
+			else 30
 		local seconds, runStart, nextCollect, passive, earlyTaken = 0, 0, interval, 0, false
 		local midPassive, midEarned, midStart
 		local entries, oldTier, oldLuck
@@ -109,7 +123,7 @@ function C.Run(population, uptime, rebirthRuns, slotLimit, stopAt, maxTier)
 			p.Stats.Flushes += 1
 			p.RunFlushes += 1
 			Display.ReserveAndSell(p)
-			seconds += U:Cooldown(p, toilet.Cooldown) / uptime
+			seconds += cooldown(p, toilet) / uptime
 			assert(seconds < 86400, "Cohort stalled")
 		end
 	end

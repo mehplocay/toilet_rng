@@ -75,11 +75,11 @@ test("economy v2: cash, toilet and rebirth multipliers settle only future second
 	e.Now += 60
 	e:Fire("State", player)
 	assert(p.Income.Pending["1"] == 1494000)
-	-- A loaded rebirth bonus is additive with Cash Boost and does not reprice pending units.
+	-- A loaded rebirth bonus multiplies Cash Boost and does not reprice pending units.
 	p.RebirthLevel = 1
 	e.Now += 10
 	e:Fire("State", player)
-	assert(p.Income.Pending["1"] == 1638000)
+	assert(p.Income.Pending["1"] == 1642500)
 end)
 
 test("economy v2: wallet and lifetime ceilings retain unpaid large pending balances", function()

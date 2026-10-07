@@ -1,5 +1,7 @@
 # Full linear luck validation
 
+> Historical cash/balance snapshot. The 2026-10-07 owner decision removes all cash multiplier caps; see [current uncapped contract](../design/no-cash-cap.md). Earlier measurements below are retained as dated evidence, not runtime limits.
+
 2026-10-06, `feature/luck-linear`. No commit or push. This report supersedes earlier luck formulas and balance measurements; historical task briefs are unchanged.
 
 Every non-fallback check now uses `min(1, min(totalLuck, 10) / item.Chance)`, regardless of rarity. The three obsolete luck settings are removed from `Config/Upgrades`. Independent checks still run rarest first, with stable ID tie-breaking and unconditional Poop fallback. Each successful flush awards exactly one item. The final probability of an item is its check times the probability of reaching that check. Common outcomes can therefore become impossible when an earlier check reaches 100%.

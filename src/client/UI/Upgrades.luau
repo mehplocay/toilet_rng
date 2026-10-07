@@ -11,7 +11,7 @@ function Upgrades.Create(gui, remotes)
 	wallet.TextColor3 = Color3.fromRGB(153, 255, 143)
 	local footer = C.BodyText(
 		body,
-		"Display bonuses share the 40x free cap; paid cash adds up to 3x.",
+		"Display and paid cash bonuses multiply with no multiplier cap.",
 		UDim2.new(1, 0, 0, 26),
 		UDim2.new(0, 0, 1, -26)
 	)
@@ -20,7 +20,7 @@ function Upgrades.Create(gui, remotes)
 	local tabs = C.TabBar(body, { "Toilets", "Coin Upgrades" }, function(name)
 		row.Visible, tracks.Frame.Visible = name == "Toilets", name == "Coin Upgrades"
 		footer.Text = if name == "Toilets"
-			then "Display bonuses share the 40x free cap; paid cash adds up to 3x."
+			then "Display and paid cash bonuses multiply with no multiplier cap."
 			else "Toilets and coin upgrades are permanent."
 	end)
 	tabs.Frame.Position = UDim2.fromOffset(0, 38)

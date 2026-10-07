@@ -1,5 +1,7 @@
 # Rebirth cash layers: numeric and platform review
 
+> Historical cash/balance snapshot. The 2026-10-07 owner decision removes all cash multiplier caps; see [current uncapped contract](../design/no-cash-cap.md). Earlier measurements below are retained as dated evidence, not runtime limits.
+
 Reviewed 2026-10-06 for feature/rebirth-balance.
 
 - Luau has one IEEE-754 double number type; integers through 2^53 are exact. Keep both wallet/lifetime coins and persisted subcoins at 9e15, separately. Clamp before potentially oversized multiplication; preserve the 6000-unit scale and corrected whole-coin division. Source: https://luau.org/syntax/ and https://luau.org/compatibility/ . The Roblox precision discussion agrees: https://devforum.roblox.com/t/difference-between-a-number-value-and-int-value/1525821/2 .

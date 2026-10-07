@@ -1,12 +1,12 @@
 # Coin-gated rebirth with permanent progression
 
-> Current validation: [full linear luck and regenerated pacing tables](luck-linear.md). Total luck applies in full to every item check, capped at 10x; this supersedes earlier luck formulas and measured balance snapshots below.
+> Current cash validation: [uncapped cash](no-cash-cap.md). Luck validation: [full linear luck and regenerated pacing tables](luck-linear.md). Total luck applies in full to every item check, capped at 10x; this supersedes earlier luck formulas and measured balance snapshots below.
 
 2026-10-06, `feature/rebirth-balance`; supersedes the earlier flush/tier gate and reset-to-Basic contract. [Economy tables and assumptions](economy-v2.md), [cash/source review](../research/rebirth-cash-layers.md). No commit/push.
 
 ## Rebirth balance retune (2026-10-06)
 
-The manager approved a 40x free cash layer and a separate 3x paid layer, plus rebirth coin-gate tuning. The 15 reward rows, starter grants, 300 fresh-flush minimum, luck rules, speed floor and permanent-progression contract remain intact. See [current validation](rebirth-values-validation.md), [all measured tables](rebirth-values-balance.txt) and [three-archetype rebirth report](rebirth-values-simulations.txt). No commit or push.
+The owner removed every cash multiplier cap on 2026-10-07. Cash Boost and rebirth now multiply. Coin requirements are retuned in Config/Rebirth; reward rows, starter grants, 300 fresh flushes, luck and speed rules remain unchanged. See [uncapped cash before/after tables](no-cash-cap.md).
 
 ## Click interaction (2026-10-06)
 
@@ -24,23 +24,7 @@ Implemented on `feature/rebirth-click`, without commit/push. The server already 
 
 `Rebirth(expectedLevel)` accepts exactly one finite integer generation. Server rules require the current saved level, sufficient wallet coins, and at least **300 successful flushes since the last rebirth**. No toilet-tier requirement remains. Maximum is 15. The entire wallet resets, rather than deducting the gate and retaining excess coins; the window discloses the current wallet and pending loss above its single-click REBIRTH! button.
 
-| Next rebirth | Wallet coin gate | Normal cumulative p50 / p90 hours |
-|---|---:|---:|
-| 1 | 3M | 0.40 / 0.52 |
-| 2 | 12M | 0.56 / 0.73 |
-| 3 | 35M | 0.93 / 1.20 |
-| 4 | 100M | 1.26 / 1.62 |
-| 5 | 500M | 2.02 / 2.75 |
-| 6 | 1B | 3.36 / 4.46 |
-| 7 | 2B | 5.21 / 6.38 |
-| 8 | 4B | 7.64 / 9.36 |
-| 9 | 15B | 23.17 / 26.99 |
-| 10 | 40B | 32.00 / 48.61 |
-| 11 | 120B | 46.83 / 64.94 |
-| 12 | 200B | 52.48 / 73.75 |
-| 13 | 320B | 61.59 / 87.21 |
-| 14 | 520B | 72.02 / 104.42 |
-| 15 | 1.25T | 96.83 / 138.50 |
+Current coin requirements and measured normal/casual/grinder times are maintained in the [uncapped cash report](no-cash-cap.md).
 
 All gates and rewards live in an explicit 15-row Config/Rebirth table. Cumulative bonuses are:
 
@@ -62,9 +46,9 @@ All gates and rewards live in an explicit 15-row Config/Rebirth table. Cumulativ
 | 14 | +1350% | +92% | 45% |
 | 15 | +1500% | +100% | 50% |
 
-Cash stacking is `min(40, (1 + CashBoostEffect + RebirthCash) * displayToiletFactor) * min(3, paidCashFactors)`. The toilet factor is 1 for sales/service and the configured tier factor for displays. Cash Boost and rebirth bonuses add; milestone titles have no hidden numeric reward. Double Cash is 2x and VIP is 1.5x. Both paid passes therefore retain their full 3x effect even when the free layer is capped. Config/Cash owns both caps and the shared UI explanation. Future paid cash pass entries share the paid cap.
+Cash stacking is `(1 + CashBoostEffect) * (1 + RebirthCash) * displayToiletFactor * paidCashFactors`. The toilet factor is 1 for sales/service. Milestone titles have no hidden numeric reward. Double Cash is 2x and VIP 1.5x; future paid cash factors multiply further. No cash multiplier cap applies. Config/Cash owns the shared UI explanation.
 
-R15 with no Cash Boost is really 16x for sales/service; Cash L100 makes it 19.25x free, or 57.75x with both passes. Galaxy display income reaches the free 40x cap; paid factors then lift it to 120x. The cap still applies to combined free display progression. Ordinary daily coins retain their paid-only rule. Starter grants, pending collection, receipt quotes and the VIP chest are never multiplied a second time. Luck retains its 10x cap and applies in full to every item check; speed retains the 0.4s floor, including Fast Flush. Toilet and upgrade prices/effects are unchanged.
+R15 alone is 16x; Cash L100 multiplies that to 68x free or 204x with both cash passes. Galaxy displays multiply by 13; Infinity Flush by 325. Daily coins keep the paid-only rule. Starter grants are unboosted; collection and quoted receipts never multiply twice. Luck cap 10x and cooldown floor 0.4s remain. Late prices and coin gates are retuned; reward effects stay unchanged.
 
 R5 grants free Auto Collect through the same server method, five-second scheduler, living-owner plot bounds, save guard and fractional ledger used by the pass. It never marks the pass owned or grants coins independently. R10 adds two slots once, up to the ten-slot physical capacity; already-full and legacy larger plots retain capacity without refunds. The saved RebirthAppliedSlots marker prevents repeated grants on rejoin or rebirth. Existing R10+ saves receive the slot allowance on migration while retaining their level.
 
@@ -91,7 +75,7 @@ Existing saved rebirth levels automatically read the new bonus table; no coin co
 
 ## UI/world and verification
 
-The window shows wallet/coin-gate progress, run flush progress, current/next permanent bonuses, starter coins, and separate reset/keep lists. A single click/tap on REBIRTH! sends the expected level immediately. The button disables before the request and stays locked until the Rebirth server result, including across closing/reopening, state updates and response timeouts. A timeout requests state once without retrying or unlocking the transaction. Success prevents a stale generation from enabling the button until an updated snapshot arrives. After a rejection, local retry pacing uses the existing Rebirth remote refill rate and briefly shows PLEASE WAIT, without a countdown or automatic retry; this prevents a rapid retry from consuming a silently rejected request. Disabled labels name missing coins, flushes, or both; progress labels show exact requirements. Reset/keep lists, reward/perk preview and the wallet/pending loss disclosure remain above the button. No countdown or confirmation dialog is used. Stairs reuse their geometry and display each milestone's cumulative cash/luck/speed bonuses alongside the next coin gate and 300 fresh flushes. The scrolling window lists cumulative free and cosmetic perks; nominal cash bonuses are labelled before caps. Both the Cash Boost card and the rebirth window explain the 40x free / 3x paid / 120x maximum cash rule. Upgrade footer explicitly says toilets and upgrades are permanent. All coins use compact notation.
+The window shows wallet/coin-gate progress, run flush progress, current/next permanent bonuses, starter coins, and separate reset/keep lists. A single click/tap on REBIRTH! sends the expected level immediately. The button disables before the request and stays locked until the Rebirth server result, including across closing/reopening, state updates and response timeouts. A timeout requests state once without retrying or unlocking the transaction. Success prevents a stale generation from enabling the button until an updated snapshot arrives. After a rejection, local retry pacing uses the existing Rebirth remote refill rate and briefly shows PLEASE WAIT, without a countdown or automatic retry; this prevents a rapid retry from consuming a silently rejected request. Disabled labels name missing coins, flushes, or both; progress labels show exact requirements. Reset/keep lists, reward/perk preview and the wallet/pending loss disclosure remain above the button. No countdown or confirmation dialog is used. Stairs reuse their geometry and display each milestone's cumulative cash/luck/speed bonuses alongside the next coin gate and 300 fresh flushes. The scrolling window lists cumulative free and cosmetic perks; cash bonuses multiply the other cash factors without a cap. Both the Cash Boost card and the rebirth window explain this stacking. Upgrade footer explicitly says toilets and upgrades are permanent. All coins use compact notation.
 
 Drop/rebirth announcement cooldowns, bounded queues, friend lookup worker, deduplication and preferences are unchanged. Levels 3-4 notify friends and 5+ the server within that same budget. Higher luck is measured against the existing event drain in simulate.luau, not justified by increasing queue capacity.
 

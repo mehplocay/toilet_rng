@@ -1,5 +1,5 @@
 local SafeInventory = {}
-local Monetization = require(if script then script.Parent.Config.Monetization else "./Config/Monetization")
+local CashMath = require(if script then script.Parent.CashMath else "./CashMath")
 
 function SafeInventory.Displayed(profile, id)
 	local displayed = 0
@@ -47,16 +47,11 @@ function SafeInventory.Sell(profile, items, id, count, cashMultiplier)
 		return false
 	end
 	local multiplier = cashMultiplier or 1
-	if
-		type(multiplier) ~= "number"
-		or multiplier ~= multiplier
-		or multiplier < 1
-		or multiplier > Monetization.CashMultiplierCap
-	then
+	if type(multiplier) ~= "number" or multiplier ~= multiplier or multiplier < 1 or multiplier == math.huge then
 		return false
 	end
 	-- Round per copy, so batching or splitting sales cannot change their value.
-	local perCopy = math.floor(item.Value * multiplier + 1e-9)
+	local perCopy = math.floor(CashMath.Product(item.Value, multiplier, 9e15) + 1e-9)
 	local room = math.min(9e15 - profile.Coins, 9e15 - profile.Stats.Earned)
 	-- Reject oversized batches before multiplication can leave the exact integer range.
 	if perCopy > math.floor(room / count) then

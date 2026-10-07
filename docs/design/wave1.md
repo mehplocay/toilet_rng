@@ -1,5 +1,7 @@
 # Wave 1 content specification
 
+> Historical cash/balance snapshot. The 2026-10-07 owner decision removes all cash multiplier caps; see [current uncapped contract](../design/no-cash-cap.md). Earlier measurements below are retained as dated evidence, not runtime limits.
+
 > Current validation: [full linear luck and regenerated pacing tables](luck-linear.md). Total luck applies in full to every item check, capped at 10x; this supersedes earlier luck formulas and measured balance snapshots below.
 
 Integration update (2026-10-06): [Wave 1 integration](wave1-integration.md) records the actual 47-item/15-toilet implementation, saved-profile behavior and capped balance results. The long proof embedded below is historical: its uncapped cash assumptions do not describe the merged economy. Use [the regenerated production-config proof](wave1-balance.txt). Four conditional targets in the JSON now preserve their historical values separately and reflect the 40x free cash cap.

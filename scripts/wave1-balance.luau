@@ -20,11 +20,12 @@ local rank = {}
 for i, item in ipairs(order) do
 	rank[item.Id] = i
 end
+local failures = {}
 local function percentile(values, fraction)
 	return Cohort.Percentile(table.clone(values), fraction)
 end
 print("WAVE 1: INTEGRATED CONFIG; luck cap 10x; full luck on every item check.")
-print("Cash: toilet factor inside 40x free cap; separate paid cap 3x.")
+print("Cash: upgrade, rebirth, toilet and paid factors multiply without a multiplier cap.")
 print("POOL | item | outcome at total luck 1x / 5x / 10x; Poop is the remainder")
 for tier, toilet in ipairs(Toilets) do
 	local maps = {}
@@ -150,7 +151,9 @@ for _, arch in ipairs({ { "Normal", 0.75 }, { "Casual", 0.3 }, { "Grinder", 1 } 
 		assert(median > 35 and median < math.huge and tail >= median)
 		local target = Spec.Toilets[tier].TargetCumulativeMinutes
 		if arch[1] == "Normal" then
-			assert(median >= target * 0.8 and median <= target * 1.2, Toilets[tier].Id .. " pacing drift")
+			if median < target * 0.8 or median > target * 1.2 then
+				table.insert(failures, Toilets[tier].Id .. " pacing drift: " .. median)
+			end
 		end
 		if tier > 8 then
 			assert(median > percentile(cohorts[tier - 1], 0.5), "Toilet arrival order drift")
@@ -168,6 +171,7 @@ for _, arch in ipairs({ { "Normal", 0.75 }, { "Casual", 0.3 }, { "Grinder", 1 } 
 		)
 	end
 end
+assert(#failures == 0, table.concat(failures, "\n"))
 local a, b = simulate(1, 0.75), simulate(1, 0.75)
 for tier = 8, #Toilets do
 	assert(a[tier] == b[tier], "Seed replay drift")
@@ -186,8 +190,10 @@ local rate = 0
 for _, units in pairs(Income:Rates(p)) do
 	rate += units / Config.UnitsPerCoin
 end
-assert(rate == 120000000, "Maximum display cap drift")
-print("MAX RATE: ten Secrets at T15 = 40M/s free, 120M/s paid; 1.5T ledger fills in 625/208.33 online minutes.")
+assert(rate == 975000000, "Unupgraded paid T15 display rate drift")
 print(
-	"PASS: actual catalog, caps, independent odds, first sight, capped showcase, three conditional cohorts and seeded replay."
+	"T15 without upgrades/rebirth: ten Secrets = 325M/s free, 975M/s paid. Max R15/Cash L100: 22.1B/s free, 66.3B/s paid."
+)
+print(
+	"PASS: actual catalog, caps, independent odds, first sight, uncapped showcase, three conditional cohorts and seeded replay."
 )

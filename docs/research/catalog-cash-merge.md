@@ -1,5 +1,7 @@
 # Catalog / cash-layer merge review (2026-10-06)
 
+> Historical cash/balance snapshot. The 2026-10-07 owner decision removes all cash multiplier caps; see [current uncapped contract](../design/no-cash-cap.md). Earlier measurements below are retained as dated evidence, not runtime limits.
+
 - [MarketplaceService API](https://create.roblox.com/docs/reference/engine/classes/MarketplaceService): ProcessReceipt remains documented; receipt delivery may repeat. Preserve the existing server-owned atomic grant/PurchaseId and replay handling. No purchase API migration is needed for cash math.
 - [Roblox DevForum receipt clarification](https://devforum.roblox.com/t/logic-error-in-the-processreceipt-example-code-will-cause-player-to-get-the-same-paid-items-with-every-server-join-after-purchase/3563250): UpdateAsync callbacks cannot yield; separate reward grants and receipt persistence risk duplicate rewards. The retained audit suite exercises interrupted saves, receipt replay and rejoin.
 - [Luau standard library](https://luau.org/library/): math.min/math.clamp support the separate bounded cash factors; table iteration order must not change the capped product. Factors are bounded before multiplication.
