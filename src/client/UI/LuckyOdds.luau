@@ -1,3 +1,4 @@
+local TextService = game:GetService("TextService")
 local C = require(script.Parent.Components)
 local Rarities = require(game.ReplicatedStorage.Shared.Config.Rarities)
 local Config = require(game.ReplicatedStorage.Shared.Config.Monetization)
@@ -38,28 +39,53 @@ function Odds.Create(gui, remotes, onPurchase)
 			child.ZIndex += 40
 		end
 	end
-	local body = panel.ContentScroll.Body
-	local scroll = C.Scroll(body, UDim2.new(1, 0, 1, -64))
-	local content = C.New(
-		"Frame",
-		scroll,
-		{ Size = UDim2.new(1, -14, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, BackgroundTransparency = 1 }
+	-- One scroll viewport; measure wrapped text at its actual width, without text scaling.
+	local scroll, content = panel.ContentScroll, panel.ContentScroll.Body
+	scroll.Size = UDim2.new(1, -28, 1, -148)
+	content.AutomaticSize = Enum.AutomaticSize.Y
+	C.New("UIListLayout", content, { Padding = UDim.new(0, 12), SortOrder = Enum.SortOrder.LayoutOrder })
+	local function fit(label)
+		local width = math.max(8, scroll.AbsoluteSize.X - 20)
+		local size = label.TextSize or 17
+		label.TextSize = size
+		local bounds = TextService:GetTextSize(label.Text, size, label.Font, Vector2.new(width - 4, 100000))
+		label.Size = UDim2.fromOffset(width, math.ceil(bounds.Y) + 6)
+	end
+	local function text(name, value, order)
+		local label = C.BodyText(content, value, UDim2.new(1, -12, 0, 0))
+		label.Name, label.LayoutOrder = name, order
+		label.TextScaled, label.TextWrapped, label.TextSize = false, true, 17
+		label.TextXAlignment, label.TextYAlignment = Enum.TextXAlignment.Left, Enum.TextYAlignment.Top
+		label.TextTruncate = Enum.TextTruncate.None
+		label:GetPropertyChangedSignal("Text"):Connect(function()
+			fit(label)
+		end)
+		fit(label)
+		return label
+	end
+	local function resize()
+		content.Size = UDim2.new(1, -8, 0, 0)
+		for _, label in ipairs(content:GetChildren()) do
+			if label:IsA("TextLabel") then
+				fit(label)
+			end
+		end
+	end
+	scroll:GetPropertyChangedSignal("AbsoluteSize"):Connect(resize)
+	local explanation = text(
+		"Explanation",
+		"Every toilet can drop all 47 items. Better toilets increase luck.\n10x luck for one flush, capped at 10x total. Full luck applies to every item check. Every flush awards one item.\nThese are actual outcomes after earlier rare checks. Odds change with your toilet, passes and free boosts; review again if they change.",
+		1
 	)
-	C.New("UIListLayout", content, { Padding = UDim.new(0, 8), SortOrder = Enum.SortOrder.LayoutOrder })
-	local explanation = C.BodyText(
-		content,
-		"10x luck for one flush, capped at 10x total. Full luck applies to every item check. Every flush awards one item. At 10x total luck, a charge cannot improve odds.\nPercentages are rounded; displayed totals may differ from 100%. Odds can change with your tier, passes and free boosts; review again if they change.",
-		UDim2.new(1, 0, 0, 134)
-	)
-	explanation.LayoutOrder = 1
 	local breakdown = C.BodyText(content, "", UDim2.new(1, 0, 0, 90))
 	breakdown.Name, breakdown.LayoutOrder = "LuckBreakdown", 2
-	local rarityText = C.BodyText(content, "", UDim2.new(1, 0, 0, 240))
-	rarityText.LayoutOrder, rarityText.TextXAlignment = 2, Enum.TextXAlignment.Left
+	breakdown.TextScaled, breakdown.TextWrapped, breakdown.TextYAlignment, breakdown.TextSize, breakdown.TextTruncate =
+		false, true, Enum.TextYAlignment.Top, 17, Enum.TextTruncate.None
+	local rarityText = text("RarityOdds", "", 3)
 	local rows = {}
 	local current, key, quote, readOnly
 	local commerce = {}
-	local button = C.Button(body, "Use on next flush", UDim2.new(1, 0, 0, 50), UDim2.new(0, 0, 1, -54), function()
+	local button = C.Button(panel, "Use on next flush", UDim2.new(1, -28, 0, 50), UDim2.new(0, 14, 1, -64), function()
 		if not current then
 			return
 		end
@@ -146,14 +172,13 @@ function Odds.Create(gui, remotes, onPurchase)
 				if current.VIPLuck then "VIP +25% luck" else "VIP luck: inactive",
 				if current.DoubleLuck then "2x Luck pass" else "2x Luck pass: inactive"
 			)
-			explanation.Size = UDim2.new(1, 0, 0, if current.Offer then 270 else 134)
 			explanation.Text = (
 				if current.Offer
 					then Config.Gamepasses[current.Offer].Description
-						.. " Current / with-pass odds below reflect your active boosts and unlocked pool. At the 10x cap, further boosts add no odds."
-					else "10x luck for one flush, capped at 10x total. Full luck applies to every item check. Every flush awards one item. At 10x total luck, a charge cannot improve odds."
+						.. " Every toilet can drop all 47 items. Current / with-pass odds below reflect your active boosts and full item pool. At the 10x cap, further boosts add no odds."
+					else "Every toilet can drop all 47 items. Better toilets increase luck. 10x luck for one flush, capped at 10x total. Full luck applies to every item check. Every flush awards one item. At 10x total luck, a charge cannot improve odds. These are actual outcomes after earlier rare checks."
 			)
-				.. "\nPercentages are rounded; displayed totals may differ from 100%. Review again when your tier or boosts change."
+				.. "\nVIP +25% luck and 2x Luck pass effects are listed separately below. Percentages are rounded; displayed totals may differ from 100%. Review again when your tier or boosts change."
 			panel.TitleBar:FindFirstChildWhichIsA("TextLabel").Text = if current.Offer
 				then Config.Gamepasses[current.Offer].Name .. " item odds"
 				else "Lucky Flush odds"
@@ -163,8 +188,8 @@ function Odds.Create(gui, remotes, onPurchase)
 			end
 			table.clear(rows)
 			for i, item in ipairs(current.Items) do
-				local row = C.BodyText(
-					content,
+				local row = text(
+					item.Id,
 					item.Name
 						.. " ("
 						.. item.Rarity
@@ -174,13 +199,15 @@ function Odds.Create(gui, remotes, onPurchase)
 						.. Odds.Percent(item.Normal)
 						.. (if current.Offer then " / With pass " else " / Lucky ")
 						.. Odds.Percent(item.Boosted),
-					UDim2.new(1, 0, 0, 82)
+					i + 3
 				)
-				row.LayoutOrder, row.TextXAlignment = i + 2, Enum.TextXAlignment.Left
+				row.LayoutOrder, row.TextXAlignment = i + 3, Enum.TextXAlignment.Left
 				table.insert(rows, row)
 			end
 			updateButton(lucky)
+			scroll.CanvasPosition = Vector2.new()
 			panel.Visible = true
+			resize()
 		end,
 	}
 end

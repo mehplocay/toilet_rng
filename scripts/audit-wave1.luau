@@ -5,17 +5,14 @@ test("wave1: JSON parity, rarity colors/order, pool membership and icon/template
 	local rarities, assets = e:Load("src/shared/Config/Rarities"), e:Load("src/shared/Config/Assets")
 	local meshes = e:Load("src/shared/Config/MeshCatalog")
 	local income = e:Load("src/shared/Config/Income")
-	local byId, first = {}, {}
+	local byId = {}
 	assert(#items == 47 and #toilets == 15)
 	for _, item in ipairs(items) do
 		byId[item.Id] = item
 	end
 	for tier, toilet in ipairs(toilets) do
 		assert(toilet.Id == wave1Spec.Toilets[tier].Id)
-		for _, id in ipairs(toilet.Pool) do
-			assert(not first[id])
-			first[id] = tier
-		end
+		assert(toilet.Pool == nil)
 		if tier > 7 then
 			assert(toilet.Price == wave1Spec.Toilets[tier].Price)
 			assert(
@@ -29,9 +26,7 @@ test("wave1: JSON parity, rarity colors/order, pool membership and icon/template
 		for _, key in ipairs({ "Name", "Rarity", "Chance", "Value", "Event" }) do
 			assert(item[key] == expected[key], item.Id .. "." .. key)
 		end
-		assert(
-			first[item.Id] == expected.FirstToiletTier and income.RarityRates[item.Rarity] == expected.IncomePerSecond
-		)
+		assert(income.RarityRates[item.Rarity] == expected.IncomePerSecond)
 		if expected.New then
 			assert(
 				assets.ItemIcons[item.Id]:match("^rbxassetid://%d+$") ~= nil
@@ -119,8 +114,8 @@ test("wave1: legacy save/rejoin settles retiered displays once and persists new 
 	e.Store.Records.Player_970 = { Data = raw }
 	local player, p = e:Join(970)
 	assert(p.ToiletTier == 7 and p.RebirthLevel == 7 and p.Collection.SewerShark == 9)
-	assert(p.Income.Pending["1"] == 80028000000 + 1234)
-	assert(p.Income.Pending["10"] == 80028000000)
+	assert(p.Income.Pending["1"] == 53352000000 + 1234)
+	assert(p.Income.Pending["10"] == 53352000000)
 	assert(p.Inventory.HaloHamster == 0 and p.Collection.CosmicCourtesy == 0)
 	e.Data:Close(player)
 	local joined, restored = e:Join(970)

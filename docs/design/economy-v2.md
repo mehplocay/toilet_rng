@@ -2,6 +2,8 @@
 
 > Current monetary contract (2026-10-07, fix/raise-bounds): all monetary validation and products use `Config/Economy.MaxAmount = 1e300`. No design cap remains on wallet, earned, income, pending storage or rewards. Packs grant current display coins/s × 600 / 3,600 / 21,600 / 86,400, floored to whole coins with a 100-coin minimum and only the technical bound. Scientific formatting supports huge amounts. Paid receipts defer intact when room is insufficient. Existing progression prices, level counts and offline time windows are unchanged. See [coin bound audit](coin-bounds.md) for precision, persistence limits and the complete changed-bound list. Earlier numeric ceilings below are historical.
 
+> Current all-pools rule (2026-10-07): every toilet rolls every one of the 47 items. No item or rarity is tier-locked. [Current pacing, configuration changes and odds](all-pools.md) supersede the historical integration/balance snapshots below. Mythic/Godly display income is now 500/4,000 per second; toilet display factors, cooldowns and service awards remain unchanged.
+
 Current contract (2026-10-07): [uncapped cash balance report](no-cash-cap.md), [numeric research](../research/uncapped-cash-numerics.md). Earlier dated balance reports are historical evidence, not active multiplier limits.
 
 Cash = (1 + CashBoostEffect) * (1 + RebirthCash) * displayToiletFactor * every owned paid cash factor.
@@ -32,13 +34,13 @@ The incoming branch report below is retained for traceability. Its cash caps, pr
 
 > Current validation: [full linear luck and regenerated pacing tables](luck-linear.md). Total luck applies in full to every item check, capped at 10x; this supersedes earlier luck formulas and measured balance snapshots below.
 
-#### Wave 1 integration update (2026-10-06)
+#### All-pools integration update (2026-10-07)
 
-The current catalog has nine rarities, 47 items and 15 toilets. Celestial adds 25,000 base coins/s between Godly 6,000 and Secret 100,000. The cash formula below and 10x luck cap with full luck on every item check are retained. New display factors rebase from Galaxy 13x and remain inside the 40x free cap.
+All 47 items and nine rarities are eligible at every toilet. Toilets change luck, speed and existing income factors, never item access. Full linear total luck remains capped at 10x. Actual item outcomes account for all preceding rare-first failures, and Poop is the guaranteed fallback.
 
-Expanded early pools required toilet prices of 7.5K/16K/90K/420K/3M/16.5M to preserve original pacing. Measured normal fresh-account p50 arrivals are 1.47/3.01/6.12/11.85/20.09/35.47 minutes. All eight new prices and service awards follow the Wave 1 JSON. Capped fresh-account arrivals, conditional arrivals for all three archetypes, the four corrected late-tier targets and the unresolved rebirth-gate conflict are documented in [Wave 1 integration](wave1-integration.md). The unchanged rebirth gates currently reach R15 in 57.725 hours; the older 96.83-hour result below describes the previous seven-toilet catalog and is not a current Wave 1 proof.
+The all-pools retune changes only toilet prices/luck, Mythic/Godly base display income (500/4,000 per second) and selected rebirth coin gates. Service awards, cooldowns, toilet display factors, upgrade effects/prices, rebirth bonuses and saved IDs are preserved. Cash still multiplies all factors without a multiplier cap.
 
-Use [the integrated Wave 1 output](wave1-balance.txt) and `scripts/balance.luau` for current evidence. Historical numbers below are retained as the pre-Wave-1 baseline; the new catalog does not multiply nominal late toilet factors outside the cash cap.
+Use [the before/after pacing and odds report](all-pools.md), [fresh-account/rebirth output](all-pools-after-balance.txt) and [conditional Wave 1 output](all-pools-after-wave1.txt). The dated sections below are historical evidence, including superseded cash caps and gates.
 
 2026-10-06, feature/rebirth-balance. This retune replaces the previous single 10x cash cap and historical pacing numbers. See [rebirth contract](rebirth.md), [validation](rebirth-values-validation.md), [full balance output](rebirth-values-balance.txt), [rebirth cohorts](rebirth-values-simulations.txt), [upgrade definitions](upgrades.md) and [source/numeric review](../research/rebirth-cash-layers.md). No commit or push.
 

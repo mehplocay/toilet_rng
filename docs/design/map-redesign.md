@@ -114,7 +114,7 @@ Architectural frame is navy/white, rug is pink, ground is green. Reward items re
 | --- | --- | --- |
 | Crowned golden toilet | (0,0,8); total height **28**, maximum toilet/crown footprint 12×14, on the 24-diameter basin. Static silhouette; crown detail can be separate. | Immediately identifies Toilet RNG from spawn and most plots. First prototype: uniformly enlarge the existing Golden toilet and add a simple crown; bespoke geometry follows approval. |
 | Theme banner | Pedestal front, 24×3.5, bottom Y=2.5; “TOILETS MAKE DREAMS COME TRUE!” | One integrated hero message, replacing competing floating billboards. |
-| Upgrade/shop kiosk | Center (-22,0,-22), footprint 12×8, canopy height 8. Compact row of seven miniature tier previews on the counter. | Existing upgrades/shop entry. Sign: “TOILET UPGRADES”; supporting text: “Better toilets = new drops + higher odds!” |
+| Upgrade/shop kiosk | Center (-22,0,-22), footprint 12×8, canopy height 8. Compact row of seven miniature tier previews on the counter. | Existing upgrades/shop entry. Sign: “TOILET UPGRADES”; supporting text: “Every item, every toilet. Upgrade for higher odds!” |
 | Leaderboard kiosk | Center (22,0,-22), footprint 12×8, canopy height 8. | Existing leaderboard; balances the shop without matching the hero's height. |
 | Best record board | Center (25,0,24), frame 8 wide × 9 high × 2 deep. Bounds X=21..29 avoid the basin ring. | “BEST FLUSH EVER”, existing server record, item/player/odds. Not a second skyline landmark. |
 | North gates | Centers (-26,0,144), (0,0,144), (26,0,144); each 10 wide × 14 high × 6 deep. | Sewer: pipe silhouette/green; Space: ring/cyan-purple; Hell: horn/ember. Shape plus text distinguishes them. All show “Coming soon”. |

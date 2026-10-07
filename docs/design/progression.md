@@ -1,5 +1,8 @@
 # Progression expansion
 
+> All-pools supersession (2026-10-07): this is an archived world/pool proposal. Every toilet now rolls all 47 current items; there are no selected-world, item-unlock or tier-pool gates. Use [the current contract](all-pools.md). The historical proposal below must not drive gameplay or player-facing copy.
+
+
 Proposal, 2026-10-05. Companion: [research](../research/genre-analysis.md), [social/events](social-and-events.md), [monetization](monetization.md), [delivery order](roadmap.md). Numbers are initial tuning inputs, not measured outcomes. Preserve the mockup's bright plaza, ten plots, large FLUSH button, three starting pedestals and readable collection cards.
 
 ## Decisions relative to the current game

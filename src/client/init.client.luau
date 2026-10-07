@@ -343,7 +343,7 @@ remotes.Result.OnClientEvent:Connect(function(action, payload)
 		if payload.Success == false then
 			toast(payload.Message or "Not available yet. Check your coins, items or distance.", C.Gold)
 		elseif action == "BuyToilet" then
-			toast("Upgrade unlocked! Your next great flush awaits.", C.Green)
+			toast("Toilet upgraded! Higher base luck.", C.Green)
 		end
 	end
 end)

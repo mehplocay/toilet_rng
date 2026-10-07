@@ -1,0 +1,15 @@
+Normal fresh-account fast/slow tails; same 200 deterministic seeds and purchase policy as balance.luau.
+| Toilet | p01 | p10 | p50 | p90 | p99 minutes |
+|---|---:|---:|---:|---:|---:|
+| Dirty Toilet | 1.00 | 1.13 | 1.47 | 1.63 | 1.83 |
+| Golden Toilet | 2.00 | 2.03 | 3.01 | 3.39 | 3.71 |
+| Diamond Toilet | 3.07 | 4.58 | 6.13 | 7.30 | 8.70 |
+| Radioactive Toilet | 4.57 | 8.73 | 11.36 | 13.92 | 16.54 |
+| Demon Toilet | 7.67 | 14.55 | 19.60 | 24.23 | 28.35 |
+| Galaxy Toilet | 11.87 | 24.23 | 37.52 | 45.75 | 53.40 |
+Stress case: one item already displayed on Basic, no boosts, 30 online seconds before collection; not a probability estimate.
+ToiletBaby	15000	Coins in 30 seconds
+PlungerPaladin	120000	Coins in 30 seconds
+StarlightSeraph	750000	Coins in 30 seconds
+CosmicCourtesy	3000000	Coins in 30 seconds
+Early jackpots intentionally can accelerate progression. Median pacing is not a minimum time gate.

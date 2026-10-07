@@ -57,7 +57,20 @@ do
 		Upgrades = { CashBoost = 9, LuckBoost = 9, OfflineTank = 9 },
 	})
 	shop.Panel.Visible = true
-	assert(contains(shop.Panel, "16.5M Coins") and contains(shop.Panel, "1.00e300 Coins"))
+	assert(
+		contains(
+			shop.Panel,
+			H.Load("src/client/UI/Components").Commas(H.Load("src/shared/Config/Toilets")[7].Price) .. " Coins"
+		),
+		"Retuned next toilet price missing from shop"
+	)
+	local upgrades = H.Load("src/shared/UpgradeRules").new(H.Load("src/shared/Config/Upgrades"))
+	local nextCashCost = upgrades:Price("CashBoost", 9)
+	assert(
+		contains(shop.Panel, H.Load("src/client/UI/Components").Commas(nextCashCost) .. " Coins"),
+		"Retuned next cash-upgrade price missing from shop"
+	)
+	assert(contains(shop.Panel, "1.00e300 Coins"), "Uncapped wallet amount missing from shop")
 	shop.Panel.ContentScroll.Body:FindFirstChild("Coin Upgrades", true).Activated:Fire()
 	H.Snapshot(root, "income-first-upgrades-phone")
 	root:Destroy()

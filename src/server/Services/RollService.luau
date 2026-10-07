@@ -5,17 +5,8 @@ function RollService.Distribution(items, toilets, tier, luckOverride)
 	local luck = luckOverride or toilets[tier].Luck
 	assert(luck >= 1 and luck < math.huge, "Invalid luck")
 	luck = math.min(luck, Luck.LuckCap)
-	local pool, sorted = {}, {}
-	for index = 1, tier do
-		for _, id in ipairs(toilets[index].Pool) do
-			pool[id] = true
-		end
-	end
-	for _, item in ipairs(items) do
-		if pool[item.Id] then
-			table.insert(sorted, item)
-		end
-	end
+	-- Every toilet uses the complete catalog; tier changes luck, never eligibility.
+	local sorted = table.clone(items)
 	table.sort(sorted, function(a, b)
 		return if a.Id == "Poop"
 			then false
@@ -23,13 +14,15 @@ function RollService.Distribution(items, toilets, tier, luckOverride)
 			elseif a.Chance == b.Chance then a.Id < b.Id
 			else a.Chance > b.Chance
 	end)
-	local entries, remaining = {}, 1
+	local entries, remaining, cumulative = {}, 1, 0
 	for _, item in ipairs(sorted) do
 		local chance = if item.Id == "Poop" then 1 else math.min(1, luck / item.Chance)
-		table.insert(entries, { Item = item, Check = chance, Probability = remaining * chance })
+		local probability = remaining * chance
+		cumulative += probability
+		table.insert(entries, { Item = item, Check = chance, Probability = probability, Cumulative = cumulative })
 		remaining *= 1 - chance
 	end
-	assert(#entries > 0 and entries[#entries].Item.Id == "Poop", "Pool requires Poop")
+	assert(#entries > 0 and entries[#entries].Item.Id == "Poop", "Catalog requires Poop")
 	return entries, 0
 end
 function RollService.Sample(entries, sample)
@@ -44,13 +37,17 @@ function RollService.Sample(entries, sample)
 		end
 	else
 		assert(sample >= 0 and sample < 1, "Invalid random sample")
-		local cumulative = 0
-		for _, entry in ipairs(entries) do
-			cumulative += entry.Probability
-			if sample < cumulative then
-				return entry.Item
+		-- Equivalent numeric sampling for long balance cohorts, using the same ordered sums.
+		local low, high = 1, #entries
+		while low < high do
+			local middle = math.floor((low + high) / 2)
+			if sample < entries[middle].Cumulative then
+				high = middle
+			else
+				low = middle + 1
 			end
 		end
+		return entries[low].Item
 	end
 	return entries[#entries].Item
 end

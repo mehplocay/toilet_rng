@@ -17,7 +17,7 @@ function Upgrades.Create(gui, remotes)
 	wallet.TextColor3 = Color3.fromRGB(153, 255, 143)
 	local footer = C.BodyText(
 		body,
-		"Display and paid cash bonuses multiply with no multiplier cap.",
+		"All 47 items from every toilet. Upgrade for better odds.",
 		UDim2.new(1, 0, 0, 26),
 		UDim2.new(0, 0, 1, -26)
 	)
@@ -30,7 +30,7 @@ function Upgrades.Create(gui, remotes)
 		row.Visible, tracks.Frame.Visible = name == "Toilets", name == "Coin Upgrades"
 		title.Text = if name == "Toilets" then "Toilet Shop" else "Upgrades"
 		footer.Text = if name == "Toilets"
-			then "Display and paid cash bonuses multiply with no multiplier cap."
+			then "All 47 items from every toilet. Upgrade for better odds."
 			else "Toilets and coin upgrades are permanent."
 	end
 	local tabs = C.TabBar(body, { "Toilets", "Coin Upgrades" }, applyTab)

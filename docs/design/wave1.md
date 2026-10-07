@@ -1,5 +1,7 @@
 # Wave 1 content specification
 
+> Current drop contract (2026-10-07): **every toilet can drop all 47 items of all nine rarities**. [All-pools report](all-pools.md) supersedes every historical eligibility table and pacing number below. `FirstToiletTier` is informational and uniformly 1; runtime has no pool fields.
+
 > Historical cash/balance snapshot. The 2026-10-07 owner decision removes all cash multiplier caps; see [current uncapped contract](../design/no-cash-cap.md). Earlier measurements below are retained as dated evidence, not runtime limits.
 
 > Current validation: [full linear luck and regenerated pacing tables](luck-linear.md). Total luck applies in full to every item check, capped at 10x; this supersedes earlier luck formulas and measured balance snapshots below.
@@ -10,7 +12,7 @@ Integration update (2026-10-06): [Wave 1 integration](wave1-integration.md) reco
 
 **36 new items, four in each of nine rarities; 11 retained items; 47 total. Eight new toilet tiers after Galaxy; 15 total. No mutations, Divine rarity, new worlds, asset uploads or runtime changes.** The requested standalone proof is the only executable addition. No commit or push.
 
-The authoritative proposal is [wave1-data.json](wave1-data.json); this document renders its tables and explains the rules. All coin amounts are base Coins, odds are independent **base checks**, income is Coins/second before toilet/cash factors, and toilet tiers are **1-based**. JSON `Items` contains all 47 items; `New` distinguishes the 36 commissions. `Toilets.Pool` contains additions, not complete pools. Descriptive/model/icon fields are authoring metadata, not fields to blindly insert into runtime item records.
+The authoritative proposal is [wave1-data.json](wave1-data.json); this document renders its tables and explains the rules. All coin amounts are base Coins, odds are independent **base checks**, income is Coins/second before toilet/cash factors, and toilet tiers are **1-based**. JSON `Items` contains all 47 items; `New` distinguishes the 36 commissions. `Toilets.Pool` has been removed. Every toilet uses the complete `Items` catalog. Descriptive/model/icon fields are authoring metadata, not fields to blindly insert into runtime item records.
 
 ## Decisions and merge boundary
 
@@ -18,18 +20,18 @@ Read against AGENTS.md, GDD and mockup, progression, economy-v2, upgrades, rebir
 
 Precedence: this task's owner decisions override historical progression/world proposals; merged permanent-upgrade rules own upgrade/rebirth behavior; economy-v2 remains the source for the existing rarity-income ladder, sales, numeric bounds and income-first philosophy. The old progression document's zero-based numbering, world pools, 50x luck and cheap prices are not Wave 1 inputs.
 
-There is a real timing conflict: economy-v2 measured normal Galaxy at **89.37 minutes** with a 90-minute target; the owner now wants **about 35 minutes**. The parallel branch owns that retune. This proposal neither claims 95M currently buys Galaxy in 35 minutes nor rewrites its price. Tiers 1–7 in JSON are explicitly labeled economy-v2 snapshots for reproducible calculations. Apply their **pool additions only**, retaining the merged price, cooldown, luck and service settings. The proof's post-Galaxy experiment starts at a synthetic minute-35 Galaxy state and therefore cannot validate the first 35 minutes.
+There is a real timing conflict: economy-v2 measured normal Galaxy at **89.37 minutes** with a 90-minute target; the owner now wants **about 35 minutes**. The parallel branch owns that retune. This proposal neither claims 95M currently buys Galaxy in 35 minutes nor rewrites its price. Tiers 1–7 in JSON are explicitly labeled economy-v2 snapshots for reproducible calculations. The all-pools decision now owns prices and luck; preserve cooldown and service settings. The proof's post-Galaxy experiment starts at a synthetic minute-35 Galaxy state and therefore cannot validate the first 35 minutes.
 
 The proposal originally used a **5x** luck ceiling and **0.4-second** cooldown floor. Current production caps total luck at **10x**, applying it in full to every item check; the cooldown floor is still **0.4 seconds**. Luck in the regenerated tables is total luck, not an additional factor multiplied by toilet luck.
 
 ### Data application recipe
 
 1. Merge permanent upgrades/rebirth first. Append the eight new toilet records in order; keep all existing item and toilet IDs.
-2. Import item `Id, Name, Rarity, Chance, Value, Event`; use `Rarities.IncomePerSecond` to populate `Income.RarityRates`. Append pool additions at the exact `FirstToiletTier`. No new selected-world state.
+2. Import item `Id, Name, Rarity, Chance, Value, Event`; use `Rarities.IncomePerSecond` to populate `Income.RarityRates`. Make all items eligible from Basic; never gate on `FirstToiletTier`. No new selected-world state.
 3. New toilet price is `160000000 * 2.5^(tier-8)`, charged as a sequential incremental purchase. Use the table's concrete values when Galaxy's baseline remains 0.8s / 1.3 luck / 12x display.
 4. If the merged Galaxy baseline changes, derive new cooldown as `max(mergedFloor, mergedGalaxyCooldown * candidateCooldown / 0.8)`; luck as `min(mergedCap, mergedGalaxyLuck * candidateLuck / 1.3)`; display multiplier as `mergedGalaxyIncome * candidateIncome / 12`. Then replace the proof inputs and rerun; these ratios are a rebase recipe, not permission to skip balance verification. Preserve the merged upgrade formulas and all total caps.
 5. Extend parallel per-tier arrays, append art mappings, and apply the rarity presentation/index migration below. Nothing may index a seven-entry array with a tier of 8–15.
-6. After integrating the content, rerun the merged fresh-account and rebirth cohorts with actual permanent upgrades, purchased slots, retained displays and all new pools. Recalibrate first-seven prices to the owner's Galaxy target in that branch if needed. Do not copy economy-v2's historical first-session metrics as new results.
+6. After integrating the content, rerun the merged fresh-account and rebirth cohorts with actual permanent upgrades, purchased slots, retained displays and the complete catalog. Recalibrate first-seven prices to the owner's Galaxy target in that branch if needed. Do not copy economy-v2's historical first-session metrics as new results.
 
 ## The ladder
 
@@ -42,30 +44,30 @@ Strictly disjoint bands remove the old Mythic/Godly inversion. Gaps between band
 | Rare | 3 | 25–120 | 10 | 6 | Burst | None |
 | Epic | 4 | 250–900 | 40 | 5 | Sparkle | Friends |
 | Legendary | 5 | 1,000–4,500 | 200 | 5 | Banner | Friends |
-| Mythic | 6 | 5,000–30,000 | 1,000 | 5 | Banner | Server |
-| Godly | 7 | 50,000–250,000 | 6,000 | 6 | Cinematic | Server |
+| Mythic | 6 | 5,000–30,000 | 500 | 5 | Banner | Server |
+| Godly | 7 | 50,000–250,000 | 4,000 | 6 | Cinematic | Server |
 | Celestial | 8 | 300,000–900,000 | 25,000 | 4 | Cinematic | Server |
 | Secret | 9 | 1,000,000–unbounded | 100,000 | 6 | Cinematic | Server |
 
-Celestial fills the income gap with **25,000/s** between Godly 6,000/s and Secret 100,000/s. All other rarity rates exactly match economy-v2. Equal-rarity items have equal income; different sale values reward collection without silently making one member a superior income variant. New Common values remain near the existing 80-Coin fallback; most later sale values are approximately 30–40 Coins per base denominator, consistent with the v2 scale. Existing sale values are retained even where retiering makes them exceptions.
+Celestial fills the income gap with **25,000/s** between Godly 4,000/s and Secret 100,000/s. Current Mythic/Godly rates are 500/4,000 per second after the all-pools retune. Equal-rarity items have equal income; different sale values reward collection without silently making one member a superior income variant. New Common values remain near the existing 80-Coin fallback; most later sale values are approximately 30–40 Coins per base denominator, consistent with the v2 scale. Existing sale values are retained even where retiering makes them exceptions.
 
 ### Retained catalog and migration
 
-| Existing ID / name | Proposed rarity | Old → new base denominator | Sale | Income/s | First tier |
+| Existing ID / name | Proposed rarity | Old → new base denominator | Sale | Income/s | Available from |
 |---|---|---:|---:|---:|---:|
-| `Poop` / Poop | Common | 2 → 2 | 80 | 1 | 1 |
-| `ToiletPaper` / Toilet Paper | Uncommon | 8 → 8 | 280 | 3 | 1 |
-| `Rat` / Rat | Rare | 25 → 25 | 1,000 | 10 | 1 |
-| `Fish` / Fish | Rare | 80 → 80 | 2,480 | 10 | 1 |
-| `Duck` / Duck | Epic | 250 → 250 | 8,000 | 40 | 2 |
-| `GoldenPoop` / Golden Poop | Legendary | 1,000 → 1,000 | 30,000 | 200 | 3 |
-| `ToiletBaby` / Toilet Baby | Mythic | 5,000 → 5,000 | 150,000 | 1,000 | 4 |
-| `SewerShark` / Sewer Shark | Godly | 25,000 → 50,000 | 800,000 | 6,000 | 5 |
-| `KingPoop` / King Poop | Godly (was Mythic) | 100,000 → 100,000 | 5,000,000 | 6,000 | 5 |
-| `AlienToilet` / Alien Toilet | Secret | 1,000,000 → 1,000,000 | 40,000,000 | 100,000 | 6 |
-| `Mystery` / ??? | Secret | 10,000,000 → 10,000,000 | 500,000,000 | 100,000 | 7 |
+| `Poop` / Poop | Common | 2 → 2 | 80 | 1 | Basic (1) |
+| `ToiletPaper` / Toilet Paper | Uncommon | 8 → 8 | 280 | 3 | Basic (1) |
+| `Rat` / Rat | Rare | 25 → 25 | 1,000 | 10 | Basic (1) |
+| `Fish` / Fish | Rare | 80 → 80 | 2,480 | 10 | Basic (1) |
+| `Duck` / Duck | Epic | 250 → 250 | 8,000 | 40 | Basic (1) |
+| `GoldenPoop` / Golden Poop | Legendary | 1,000 → 1,000 | 30,000 | 200 | Basic (1) |
+| `ToiletBaby` / Toilet Baby | Mythic | 5,000 → 5,000 | 150,000 | 500 | Basic (1) |
+| `SewerShark` / Sewer Shark | Godly | 25,000 → 50,000 | 800,000 | 4,000 | Basic (1) |
+| `KingPoop` / King Poop | Godly (was Mythic) | 100,000 → 100,000 | 5,000,000 | 6,000 | Basic (1) |
+| `AlienToilet` / Alien Toilet | Secret | 1,000,000 → 1,000,000 | 40,000,000 | 100,000 | Basic (1) |
+| `Mystery` / ??? | Secret | 10,000,000 → 10,000,000 | 500,000,000 | 100,000 | Basic (1) |
 
-King Poop keeps its 1:100,000 check and event prestige; its tier becomes Godly and income rises from 1,000 to 6,000/s. Sewer Shark remains Godly but changes 1:25,000 → 1:50,000. Alien Toilet and Mystery remain Secret. Existing unlock tiers remain intact even though early pools can still contain a very rare Secret; toilet ownership is a pool gate, not a rarity guarantee.
+King Poop keeps its 1:100,000 check and event prestige; its tier becomes Godly and current income is 4,000/s. Sewer Shark remains Godly but changes 1:25,000 → 1:50,000. Alien Toilet and Mystery remain Secret. All items are available from Basic. Toilet ownership improves chances and never gates an item or rarity.
 
 Inventory, lifetime collection, protected counts and display assignments are keyed by **item ID**. No rename, deletion, wipe, compensation item or inventory remap is needed. Re-resolve displayed rarity/color/income from current definitions and invalidate cached sort/odds data. Do not reinterpret a cached Secret order of 8 as Celestial: resolve by rarity name/item ID; any persisted derived order must be recomputed. Settle outstanding income at the old rate before an in-session config switch; preferably deploy immutable config with old servers retired. On reconnect, document that the deployed config determines subsequent accrual, including the existing offline settlement policy.
 
@@ -73,7 +75,7 @@ Keep all index claims, permanent cosmetics, FoundingItems and previously granted
 
 ### Exact probability rule
 
-Build the cumulative eligible pool. Remove Poop from the tested list, sort by `Chance` descending and then `Id` ascending on a tie. For each candidate, independently test `q_i = min(1, L / X_i)`, stopping on the first success. If all fail, return Poop:
+Use the complete item catalog for every toilet. Remove Poop from the tested list, sort by `Chance` descending and then `Id` ascending on a tie. For each candidate, independently test `q_i = min(1, L / X_i)`, stopping on the first success. If all fail, return Poop:
 
 ```text
 p_i = q_i * product(1 - q_j, for every earlier candidate j)
@@ -91,44 +93,44 @@ Exactly the existing three `Event=true` items retain the server-luck event effec
 
 Common: familiar one-joke silhouettes. Uncommon: accessories and creature/object mashups. Rare: distinct roles and stronger poses. Epic: dynamic shapes and visual gags. Legendary: chunky gold accents and ceremonial bathroom nonsense. Mythic: larger visual complexity, multiple limbs or a transformation. Godly: powerful red-accented guardians. Celestial: serene white/silver/cyan starlight, halos and constellation motifs. Secret: impossible compositions and conspicuous story hooks, recognizable with particles off.
 
-| ID / display name | Rarity | Base 1:X | Sale Coins | Income/s | First toilet |
+| ID / display name | Rarity | Base 1:X | Sale Coins | Income/s | Available from |
 |---|---|---:|---:|---:|---|
-| `SudsSlug` / Suds Slug | Common | 3 | 90 | 1 | 1: Basic Toilet |
-| `PocketPuddle` / Pocket Puddle | Common | 4 | 120 | 1 | 1: Basic Toilet |
-| `LoopyLoofah` / Loopy Loofah | Common | 5 | 150 | 1 | 2: Dirty Toilet |
-| `SoggySock` / Soggy Sock | Common | 6 | 180 | 1 | 2: Dirty Toilet |
-| `TubTadpole` / Tub Tadpole | Uncommon | 10 | 360 | 3 | 1: Basic Toilet |
-| `BrushBristle` / Brush Bristle | Uncommon | 14 | 480 | 3 | 2: Dirty Toilet |
-| `RollMole` / Roll Mole | Uncommon | 18 | 640 | 3 | 2: Dirty Toilet |
-| `CapybaraCap` / Capybara Cap | Uncommon | 24 | 840 | 3 | 3: Golden Toilet |
-| `DrainCrab` / Drain Crab | Rare | 35 | 1,200 | 10 | 3: Golden Toilet |
-| `ToothpasteGoose` / Toothpaste Goose | Rare | 50 | 1,760 | 10 | 3: Golden Toilet |
-| `SpongeKnight` / Sponge Knight | Rare | 100 | 3,200 | 10 | 4: Diamond Toilet |
-| `BubbleBeard` / Bubble Beard | Rare | 120 | 4,000 | 10 | 4: Diamond Toilet |
-| `PlungerPogo` / Plunger Pogo | Epic | 350 | 11,200 | 40 | 4: Diamond Toilet |
-| `BathMatBat` / Bath Mat Bat | Epic | 450 | 14,400 | 40 | 5: Radioactive Toilet |
-| `DiscoBidet` / Disco Bidet | Epic | 650 | 20,800 | 40 | 5: Radioactive Toilet |
-| `TowelTornado` / Towel Tornado | Epic | 900 | 28,800 | 40 | 6: Demon Toilet |
-| `PorcelainPoodle` / Porcelain Poodle | Legendary | 1,500 | 45,000 | 200 | 6: Demon Toilet |
-| `FaucetPharaoh` / Faucet Pharaoh | Legendary | 2,200 | 66,000 | 200 | 7: Galaxy Toilet |
-| `RoyalFlushFrog` / Royal Flush Frog | Legendary | 3,200 | 96,000 | 200 | 8: Coral Commode |
-| `GoldenGargler` / Golden Gargler | Legendary | 4,500 | 135,000 | 200 | 8: Coral Commode |
-| `Clogtopus` / Clogtopus | Mythic | 7,500 | 225,000 | 1,000 | 7: Galaxy Toilet |
-| `LaundryYeti` / Laundry Yeti | Mythic | 12,000 | 360,000 | 1,000 | 8: Coral Commode |
-| `SteamGenie` / Steam Genie | Mythic | 20,000 | 600,000 | 1,000 | 9: Cloud Cushion |
-| `BathBombBehemoth` / Bath Bomb Behemoth | Mythic | 30,000 | 900,000 | 1,000 | 9: Cloud Cushion |
-| `DrainKraken` / Drain Kraken | Godly | 75,000 | 2,400,000 | 6,000 | 9: Cloud Cushion |
-| `GeyserGorilla` / Geyser Gorilla | Godly | 125,000 | 4,000,000 | 6,000 | 10: Clockwork Closet |
-| `ThroneColossus` / Throne Colossus | Godly | 180,000 | 5,760,000 | 6,000 | 10: Clockwork Closet |
-| `PlungerPaladin` / Plunger Paladin | Godly | 250,000 | 8,000,000 | 6,000 | 11: Dragon Kiln |
-| `HaloHamster` / Halo Hamster | Celestial | 300,000 | 12,000,000 | 25,000 | 11: Dragon Kiln |
-| `CometCommode` / Comet Commode | Celestial | 450,000 | 18,000,000 | 25,000 | 12: Aurora Throne |
-| `ConstellationClam` / Constellation Clam | Celestial | 650,000 | 26,000,000 | 25,000 | 12: Aurora Throne |
-| `StarlightSeraph` / Starlight Seraph | Celestial | 900,000 | 36,000,000 | 25,000 | 13: Astral Altar |
-| `TheLastToilet` / The Last Toilet | Secret | 1,500,000 | 60,000,000 | 100,000 | 13: Astral Altar |
-| `EmergencyUniverse` / Emergency Universe | Secret | 2,500,000 | 100,000,000 | 100,000 | 14: Paradox Potty |
-| `InfiniteOccupied` / Infinite Occupied | Secret | 5,000,000 | 200,000,000 | 100,000 | 14: Paradox Potty |
-| `CosmicCourtesy` / Cosmic Courtesy | Secret | 15,000,000 | 600,000,000 | 100,000 | 15: Infinity Flush |
+| `SudsSlug` / Suds Slug | Common | 3 | 90 | 1 | Basic (1) |
+| `PocketPuddle` / Pocket Puddle | Common | 4 | 120 | 1 | Basic (1) |
+| `LoopyLoofah` / Loopy Loofah | Common | 5 | 150 | 1 | Basic (1) |
+| `SoggySock` / Soggy Sock | Common | 6 | 180 | 1 | Basic (1) |
+| `TubTadpole` / Tub Tadpole | Uncommon | 10 | 360 | 3 | Basic (1) |
+| `BrushBristle` / Brush Bristle | Uncommon | 14 | 480 | 3 | Basic (1) |
+| `RollMole` / Roll Mole | Uncommon | 18 | 640 | 3 | Basic (1) |
+| `CapybaraCap` / Capybara Cap | Uncommon | 24 | 840 | 3 | Basic (1) |
+| `DrainCrab` / Drain Crab | Rare | 35 | 1,200 | 10 | Basic (1) |
+| `ToothpasteGoose` / Toothpaste Goose | Rare | 50 | 1,760 | 10 | Basic (1) |
+| `SpongeKnight` / Sponge Knight | Rare | 100 | 3,200 | 10 | Basic (1) |
+| `BubbleBeard` / Bubble Beard | Rare | 120 | 4,000 | 10 | Basic (1) |
+| `PlungerPogo` / Plunger Pogo | Epic | 350 | 11,200 | 40 | Basic (1) |
+| `BathMatBat` / Bath Mat Bat | Epic | 450 | 14,400 | 40 | Basic (1) |
+| `DiscoBidet` / Disco Bidet | Epic | 650 | 20,800 | 40 | Basic (1) |
+| `TowelTornado` / Towel Tornado | Epic | 900 | 28,800 | 40 | Basic (1) |
+| `PorcelainPoodle` / Porcelain Poodle | Legendary | 1,500 | 45,000 | 200 | Basic (1) |
+| `FaucetPharaoh` / Faucet Pharaoh | Legendary | 2,200 | 66,000 | 200 | Basic (1) |
+| `RoyalFlushFrog` / Royal Flush Frog | Legendary | 3,200 | 96,000 | 200 | Basic (1) |
+| `GoldenGargler` / Golden Gargler | Legendary | 4,500 | 135,000 | 200 | Basic (1) |
+| `Clogtopus` / Clogtopus | Mythic | 7,500 | 225,000 | 500 | Basic (1) |
+| `LaundryYeti` / Laundry Yeti | Mythic | 12,000 | 360,000 | 500 | Basic (1) |
+| `SteamGenie` / Steam Genie | Mythic | 20,000 | 600,000 | 500 | Basic (1) |
+| `BathBombBehemoth` / Bath Bomb Behemoth | Mythic | 30,000 | 900,000 | 500 | Basic (1) |
+| `DrainKraken` / Drain Kraken | Godly | 75,000 | 2,400,000 | 4,000 | Basic (1) |
+| `GeyserGorilla` / Geyser Gorilla | Godly | 125,000 | 4,000,000 | 4,000 | Basic (1) |
+| `ThroneColossus` / Throne Colossus | Godly | 180,000 | 5,760,000 | 4,000 | Basic (1) |
+| `PlungerPaladin` / Plunger Paladin | Godly | 250,000 | 8,000,000 | 4,000 | Basic (1) |
+| `HaloHamster` / Halo Hamster | Celestial | 300,000 | 12,000,000 | 25,000 | Basic (1) |
+| `CometCommode` / Comet Commode | Celestial | 450,000 | 18,000,000 | 25,000 | Basic (1) |
+| `ConstellationClam` / Constellation Clam | Celestial | 650,000 | 26,000,000 | 25,000 | Basic (1) |
+| `StarlightSeraph` / Starlight Seraph | Celestial | 900,000 | 36,000,000 | 25,000 | Basic (1) |
+| `TheLastToilet` / The Last Toilet | Secret | 1,500,000 | 60,000,000 | 100,000 | Basic (1) |
+| `EmergencyUniverse` / Emergency Universe | Secret | 2,500,000 | 100,000,000 | 100,000 | Basic (1) |
+| `InfiniteOccupied` / Infinite Occupied | Secret | 5,000,000 | 200,000,000 | 100,000 | Basic (1) |
+| `CosmicCourtesy` / Cosmic Courtesy | Secret | 15,000,000 | 600,000,000 | 100,000 | Basic (1) |
 
 ### Shared art acceptance
 
@@ -457,9 +459,9 @@ Icon: Glove, lever and golden orbit are the hero shapes; show the grin between t
 
 ## Eight new permanent toilets
 
-Every toilet is a sequential purchase and remains owned and equipped through rebirth. All previous pools stay unlocked. Ownership does not require a particular item, a new world, a paid product or a rebirth reset.
+Every toilet is a sequential purchase and remains owned and equipped through rebirth. Every item remains eligible at every tier. Ownership does not require a particular item, a new world, a paid product or a rebirth reset.
 
-Cooldown multipliers below are relative to the unupgraded Basic baseline of 1.5s. Apply the merged Flush Speed and rebirth reductions afterward, with the authoritative 0.4s floor. Luck is the toilet's base factor before merged upgrades/events; clamp **total** luck to 5x. Display multipliers affect all placed items and use the existing cash factor, not a new multiplicative upgrade track.
+Cooldown multipliers below are relative to the unupgraded Basic baseline of 1.5s. Apply the merged Flush Speed and rebirth reductions afterward, with the authoritative 0.4s floor. Luck is the toilet's base factor before merged upgrades/events; clamp **total** luck to 10x. Display multipliers affect all placed items and use the existing cash factor, not a new multiplicative upgrade track.
 
 | Tier / ID | Name / theme | Incremental price | Target cumulative active minutes | Cooldown factor / seconds | Toilet luck | Display income | Service/flush |
 |---|---|---:|---:|---|---:|---:|---:|
@@ -474,25 +476,9 @@ Cooldown multipliers below are relative to the unupgraded Basic baseline of 1.5s
 
 Targets are rounded design targets with a ±20% **conditional cohort** tolerance. The first new toilet is targeted well after Galaxy's owner target of 35 minutes; the last is about 9.5 hours of cumulative active play. See the measured conditional p50/p90 output below. They exclude offline time/grants, paid boosts, events, further upgrades and rebirths; strong rare discoveries, permanent rebirth bonuses or offline balances can shorten the path. They are not hard time gates or guaranteed acquisition times.
 
-### Pool additions, including early tiers
+### Shared item catalog
 
-| Tier / toilet | Existing additions retained | New additions |
-|---|---|---|
-| 1: Basic Toilet | `Poop`, `ToiletPaper`, `Rat`, `Fish` | `SudsSlug`, `PocketPuddle`, `TubTadpole` |
-| 2: Dirty Toilet | `Duck` | `LoopyLoofah`, `SoggySock`, `BrushBristle`, `RollMole` |
-| 3: Golden Toilet | `GoldenPoop` | `CapybaraCap`, `DrainCrab`, `ToothpasteGoose` |
-| 4: Diamond Toilet | `ToiletBaby` | `SpongeKnight`, `BubbleBeard`, `PlungerPogo` |
-| 5: Radioactive Toilet | `SewerShark`, `KingPoop` | `BathMatBat`, `DiscoBidet` |
-| 6: Demon Toilet | `AlienToilet` | `TowelTornado`, `PorcelainPoodle` |
-| 7: Galaxy Toilet | `Mystery` | `FaucetPharaoh`, `Clogtopus` |
-| 8: Coral Commode | — | `RoyalFlushFrog`, `GoldenGargler`, `LaundryYeti` |
-| 9: Cloud Cushion | — | `SteamGenie`, `BathBombBehemoth`, `DrainKraken` |
-| 10: Clockwork Closet | — | `GeyserGorilla`, `ThroneColossus` |
-| 11: Dragon Kiln | — | `PlungerPaladin`, `HaloHamster` |
-| 12: Aurora Throne | — | `CometCommode`, `ConstellationClam` |
-| 13: Astral Altar | — | `StarlightSeraph`, `TheLastToilet` |
-| 14: Paradox Potty | — | `EmergencyUniverse`, `InfiniteOccupied` |
-| 15: Infinity Flush | — | `CosmicCourtesy` |
+Every toilet, tiers 1?15, rolls all 47 item IDs from Config.Items. No additions, locked rarities or first-toilet gameplay gates remain. See [per-toilet expected flushes](all-pools-odds.txt) for the rarest item in each rarity.
 
 ### Toilet model briefs and effects
 
@@ -566,7 +552,7 @@ Icon: Both infinity loops and white glove must fit inside the frame; bowl remain
 
 ### Rebirth interplay
 
-Use this table to gate the **next** rebirth level. Existing saved levels never decrease; raised requirements apply only to the next action. Retain the merged permanent branch's toilet/upgrade reset contract, protection rules, exact display slots and cash/luck/speed caps. The toilet tier and its cumulative pool never reset. Keep the merged fresh-flush requirement; the snapshot baseline is 3,300 new successful flushes, so its minimum at the 0.4s floor is still 22 minutes. No rare-item sacrifice, extra fee or forced toilet repurchase.
+Use this table to gate the **next** rebirth level. Existing saved levels never decrease; raised requirements apply only to the next action. Retain the merged permanent branch's toilet/upgrade reset contract, protection rules, exact display slots and cash/luck/speed caps. The toilet tier never resets; all items remain eligible. Keep the merged fresh-flush requirement; the snapshot baseline is 3,300 new successful flushes, so its minimum at the 0.4s floor is still 22 minutes. No rare-item sacrifice, extra fee or forced toilet repurchase.
 
 | Next rebirth level | Minimum permanent toilet |
 |---:|---|
@@ -619,7 +605,7 @@ The following inventory is based on the current worktree's rarity-name/order and
 |---|---|
 | `src/shared/Config/Rarities.luau` | Add Celestial Order 8 and move Secret to 9; RGB above. |
 | `src/shared/Config/Items.luau` | Append 36 entries; change King Poop rarity and Sewer Shark odds; preserve IDs, legacy values/events. |
-| `src/shared/Config/Toilets.luau` | Add pools at all 15 tiers and append eight new tier records; preserve merged first-seven pacing. |
+| `src/shared/Config/Toilets.luau` | Use the complete catalog at all 15 tiers; tune configuration against fresh-account pacing. |
 | `src/shared/Config/Income.luau` | Add Celestial=25000; extend multiplier and both rate-cap arrays. |
 | `src/shared/Config/IndexRewards.luau` | Extend explicit RarityOrder and RarityStamps, keep FoundingItems/claims; 35-label/47-milestone change above. |
 | `src/shared/PresentationRules.luau` | Explicit reveal tier map and Audience whitelist both need Celestial. |

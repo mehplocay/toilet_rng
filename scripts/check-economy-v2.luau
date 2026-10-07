@@ -25,8 +25,8 @@ for _, pair in ipairs({
 	{ "Rat", 10 },
 	{ "Duck", 40 },
 	{ "GoldenPoop", 200 },
-	{ "ToiletBaby", 1000 },
-	{ "SewerShark", 6000 },
+	{ "ToiletBaby", 500 },
+	{ "SewerShark", 4000 },
 	{ "Mystery", 100000 },
 }) do
 	assert(Income:Rates(profile(1, pair[1], 1))["1"] == pair[2] * 6000)

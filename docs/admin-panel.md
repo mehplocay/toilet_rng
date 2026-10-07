@@ -62,3 +62,5 @@ Recovery validation (2026-10-06): all **19 standalone** `scripts/check-*.luau` c
 Desktop (1280x720), portrait (390x722) and short-landscape (640x303) admin layouts were inspected with the existing approximate raster renderer. Numeric input tests cover both fields of pending-income edits, missing/invalid values and cap violations without leaving the UI awaiting a silently rejected request. These are headless engine-double tests, not proof of native rendering, replication isolation or physics. No Studio instances were connected during recovery. Before deployment, run an isolated owner + non-owner session and verify F2/touch/keyboard focus, actual PlayerGui visibility, flight/noclip restoration, all cosmetics, group failures, persistent reset/import/rejoin and a real rare-drop announcement. No live production profile was modified during implementation.
 
 Research: [authorization](research/admin-authorization.md), [runtime and tools](research/admin-runtime.md).
+
+All-pools update (2026-10-07): the item picker uses Config.Items directly. All 47 IDs are available independently of the selected toilet; no per-tier item lists or pool gates exist.
