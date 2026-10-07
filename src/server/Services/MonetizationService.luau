@@ -313,5 +313,8 @@ function Service:Start(limiter, remotes, sync, data, world)
 			end
 		end
 	end)
+	if self.Lucky then
+		self.Lucky:StartRefresh(data)
+	end
 end
 return Service

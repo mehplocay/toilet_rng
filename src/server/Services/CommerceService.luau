@@ -99,21 +99,26 @@ function Commerce:Start(limiter, remotes)
 		return self.Receipts:Process(info)
 	end
 	remotes.BuyProduct.OnServerEvent:Connect(function(player, key, expectedCoins, oddsToken, ...)
-		if select("#", ...) ~= 0 or not limiter:Allow(player, "BuyProduct") then
+		if select("#", ...) ~= 0 then
+			result(player, false, "Invalid purchase request. Please reopen the offer and try again.")
+			return
+		end
+		if not limiter:Allow(player, "BuyProduct") then
+			result(player, false, "Please wait a moment before trying another purchase.")
 			return
 		end
 		local product = type(key) == "string" and Config.DeveloperProducts[key]
 		local profile = self.Data:Get(player)
-		if not profile or not product or product.Id <= 0 then
+		if not product or product.Id <= 0 then
 			result(player, false, "This boost is coming soon.")
 			return
 		end
-		if
-			self.Data.NoPersistence[player]
-			or not self.Receipts.Archive
-			or self.Data.Saving[player]
-			or self.Prompting[player]
-		then
+		if not profile or self.Data.NoPersistence[player] or not self.Receipts.Archive or self.Data.Saving[player] then
+			result(player, false, "Purchases are temporarily unavailable. Please try again in a moment.")
+			return
+		end
+		if self.Prompting[player] then
+			result(player, false, "Another purchase is in progress.")
 			return
 		end
 		if product.LuckyCharges then
@@ -124,9 +129,16 @@ function Commerce:Start(limiter, remotes)
 				or oddsToken ~= Lucky:Odds(profile).Token
 				or profile.Monetization.LuckyFlushes > Config.LuckyFlushCap - product.LuckyCharges
 			then
+				self.Sync(player)
+				result(
+					player,
+					false,
+					"Lucky purchase unavailable. Review current odds, eligibility and charge capacity."
+				)
 				return
 			end
 		elseif oddsToken ~= nil then
+			result(player, false, "Invalid purchase request. Please reopen the offer and try again.")
 			return
 		end
 		local quote = profile.Monetization.Quote
@@ -147,6 +159,7 @@ function Commerce:Start(limiter, remotes)
 			replacement.Monetization.Quote = { Key = key, Coins = coins }
 			if not self.Data:ReplaceAndSave(player, profile, replacement) or player.Parent ~= Players then
 				self.Prompting[player] = nil
+				result(player, false, "Purchases are temporarily unavailable. Please try again in a moment.")
 				return
 			end
 		end
@@ -155,6 +168,7 @@ function Commerce:Start(limiter, remotes)
 			if not current or not Lucky:Allowed(player) or oddsToken ~= Lucky:Odds(current).Token then
 				self:CancelQuote(player, key)
 				self.Sync(player)
+				result(player, false, "Lucky eligibility or odds changed. Review the offer and try again.")
 				return
 			end
 		end
@@ -162,6 +176,8 @@ function Commerce:Start(limiter, remotes)
 		if not ok then
 			self:CancelQuote(player, key)
 			result(player, false, "Purchase prompt unavailable. Please try again.")
+		else
+			result(player, true, "Complete or close the Roblox purchase prompt.")
 		end
 		self.Sync(player)
 	end)
@@ -176,6 +192,13 @@ function Commerce:Start(limiter, remotes)
 		if quote and Config.DeveloperProducts[quote.Key].Id == id and purchased == false then
 			self:CancelQuote(player, quote.Key)
 		end
+		-- Closing a prompt is UI state only; durable benefits come exclusively from ProcessReceipt.
+		self.Sync(player)
+		result(
+			player,
+			purchased == true,
+			if purchased then "Purchase submitted. Waiting for delivery." else "Purchase canceled."
+		)
 	end)
 	remotes.ClaimVIP.OnServerEvent:Connect(function(player, ...)
 		if select("#", ...) ~= 0 or not limiter:Allow(player, "ClaimVIP") or self.Data.Saving[player] then

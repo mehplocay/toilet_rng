@@ -16,7 +16,7 @@ function Lucky:Refresh(player)
 		return
 	end
 	self.Loading[player] = true
-	self.Policies[player] = nil
+	-- Keep an unexpired verified result while refreshing; Allowed still checks its deadline.
 	local ok, result = pcall(Policy.GetPolicyInfoForPlayerAsync, Policy, player)
 	self.Loading[player] = nil
 	if player.Parent ~= Players then
@@ -28,6 +28,9 @@ function Lucky:Refresh(player)
 	}
 	if not self:Allowed(player) then
 		self.Armed[player] = nil
+	end
+	if self.Sync then
+		self.Sync(player)
 	end
 end
 function Lucky:Odds(profile)
@@ -78,6 +81,7 @@ function Lucky:Snapshot(player, profile)
 end
 function Lucky:Start(data, limiter, remotes, sync, events, rewards)
 	self.Events, self.Rewards = events, rewards
+	self.Sync = sync
 	remotes.LuckyFlush.OnServerEvent:Connect(function(player, token, ...)
 		if
 			select("#", ...) ~= 0
@@ -99,6 +103,18 @@ function Lucky:Start(data, limiter, remotes, sync, events, rewards)
 	end)
 	Players.PlayerRemoving:Connect(function(player)
 		self.Policies[player], self.Armed[player], self.Loading[player] = nil, nil, nil
+	end)
+end
+function Lucky:StartRefresh(data)
+	task.spawn(function()
+		while not data.Stopping do
+			task.wait(Config.PolicySeconds / 2)
+			for _, player in ipairs(Players:GetPlayers()) do
+				task.spawn(function()
+					self:Refresh(player)
+				end)
+			end
+		end
 	end)
 end
 return Lucky

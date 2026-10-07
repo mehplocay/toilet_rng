@@ -27,7 +27,10 @@ function Passes.Create(gui, remotes)
 	local body = panel.ContentScroll.Body
 	local owned, metadata, buttons, prices, colors, marks = {}, {}, {}, {}, {}, {}
 	local commerce = { Quotes = {} }
-	local oddsUI = Odds.Create(gui, remotes)
+	local beginPurchase
+	local oddsUI = Odds.Create(gui, remotes, function()
+		beginPurchase("BuyProduct")
+	end)
 	local alive = true
 	panel.Destroying:Connect(function()
 		alive = false
@@ -45,6 +48,12 @@ function Passes.Create(gui, remotes)
 		return Config.Gamepasses[key] or Config.DeveloperProducts[key]
 	end
 	local status = C.BodyText(body, "Permanent passes and consumable boosts.", UDim2.new(1, 0, 0, 40))
+	status.Name = "PurchaseStatus"
+	local pendingAction, pendingDeadline
+	beginPurchase = function(action)
+		pendingAction, pendingDeadline = action, os.clock() + 10
+		status.Text = if action == "BuyPass" then "Checking pass ownership..." else "Preparing your purchase..."
+	end
 	local scroll = C.Scroll(body, UDim2.new(1, 0, 1, -150), UDim2.fromOffset(0, 92))
 	local content = C.New(
 		"Frame",
@@ -101,7 +110,8 @@ function Passes.Create(gui, remotes)
 				and pass.Id > 0
 				and info ~= nil
 				and info.IsForSale == true
-				and (not pass.LuckyCharges or (commerce.Lucky and commerce.Lucky.Allowed == true and commerce.Lucky.Count <= Config.LuckyFlushCap - pass.LuckyCharges))
+				and (not Config.DeveloperProducts[key] or commerce.CanResume ~= false)
+				and (not pass.LuckyCharges or (commerce.Lucky ~= nil and commerce.Lucky.Allowed == true and commerce.Lucky.Count <= Config.LuckyFlushCap - pass.LuckyCharges))
 				and not (
 					Config.DeveloperProducts[key]
 					and commerce.PendingProduct
@@ -173,14 +183,14 @@ function Passes.Create(gui, remotes)
 			function()
 				if buttons[key].Interactable then
 					if Config.DeveloperProducts[key] then
-						status.Text = "Preparing your purchase..."
 						if pass.LuckyCharges then
 							oddsUI.Show(commerce.Lucky, key, (commerce.Quotes or {})[key] or 0)
 						else
+							beginPurchase("BuyProduct")
 							remotes.BuyProduct:FireServer(key, (commerce.Quotes or {})[key] or 0)
 						end
 					else
-						status.Text = "Checking pass ownership..."
+						beginPurchase("BuyPass")
 						remotes.BuyPass:FireServer(key)
 					end
 				end
@@ -319,6 +329,7 @@ function Passes.Create(gui, remotes)
 		colors[color.Id].LayoutOrder, colors[color.Id].Interactable = order, false
 	end
 	local message = C.BodyText(body, "", UDim2.new(0.55, -8, 0, 48), UDim2.new(0, 0, 1, -50))
+	message.Name = "PurchaseMessage"
 	C.Button(body, "Refresh passes", UDim2.new(0.45, -8, 0, 44), UDim2.new(0.55, 4, 1, -48), function()
 		message.Text = "Checking..."
 		remotes.RefreshPasses:FireServer()
@@ -336,10 +347,21 @@ function Passes.Create(gui, remotes)
 			or action == "PlotColor"
 		then
 			message.Text = payload.Message or "Request unavailable."
-			status.Text = "Permanent passes and consumable boosts."
+			if action == pendingAction then
+				pendingAction, pendingDeadline = nil, nil
+			end
+			if not pendingAction then
+				status.Text = "Permanent passes and consumable boosts."
+			end
 		end
 	end)
 	local policyExpiry = game:GetService("RunService").Heartbeat:Connect(function()
+		if pendingDeadline and os.clock() >= pendingDeadline then
+			pendingAction, pendingDeadline = nil, nil
+			status.Text = "Permanent passes and consumable boosts."
+			message.Text =
+				"Purchase request timed out. Please try again in a moment. Already paid? Rejoin for delivery."
+		end
 		if luckyTab.Visible and os.clock() >= policyDeadline then
 			luckyTab.Visible = false
 			if commerce.Lucky then
@@ -362,11 +384,16 @@ function Passes.Create(gui, remotes)
 		Panel = panel,
 		Update = function(state)
 			owned = Rules.Entitlements(state.OwnedPasses, Config)
-			commerce = state.Commerce or { Quotes = {} }
+			commerce = table.clone(state.Commerce or { Quotes = {} })
 			local lucky = commerce.Lucky
 			policyDeadline = os.clock() + math.max(0, (lucky or {}).PolicyRemaining or 0)
-			oddsUI.Invalidate(lucky)
-			luckyTab.Visible = lucky ~= nil and lucky.Allowed == true
+			if lucky and policyDeadline <= os.clock() then
+				lucky = table.clone(lucky)
+				lucky.Allowed = false
+				commerce.Lucky = lucky
+			end
+			oddsUI.Invalidate(lucky, commerce)
+			luckyTab.Visible = lucky ~= nil and lucky.Allowed == true and policyDeadline > os.clock()
 			if not luckyTab.Visible then
 				if luckyRow.Visible then
 					selectTab(false)
@@ -380,9 +407,11 @@ function Passes.Create(gui, remotes)
 			for _, label in pairs(luckyLabels) do
 				label.Text = Odds.RarityText(lucky and lucky.Odds)
 			end
-			status.Text = if commerce.PendingProduct
-				then "Saved offer: reopen to finish or cancel. Already paid? Rejoin for delivery."
-				else "Permanent passes and consumable boosts."
+			if not pendingAction then
+				status.Text = if commerce.PendingProduct
+					then "Saved offer: reopen to finish or cancel. Already paid? Rejoin for delivery."
+					else "Permanent passes and consumable boosts."
+			end
 			chest.Interactable = owned.VIPPack == true and (commerce.VIPDay or 0) < math.floor(os.time() / 86400)
 			chest.Text = if chest.Interactable
 				then "Claim VIP daily chest"

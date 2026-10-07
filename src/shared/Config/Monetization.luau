@@ -79,7 +79,7 @@ return {
 			Id = 2014052290,
 			Name = "Double Cash",
 			Price = 249,
-			Description = "2x coin income. Paid factors stack up to 3x on top of free bonuses.",
+			Description = "2x coin income. Stacks with free bonuses and other cash passes.",
 			CashMultiplier = 2,
 		},
 		AutoCollect = {

@@ -63,6 +63,8 @@ $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-flushanywhere.lua
 $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-wave1.luau')))
 $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-toast.luau')))
 $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-wire-ids.luau')))
+$parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'purchase-ui-checks.luau')))
+$parts.Add('H.CheckPurchaseUI(); print("Purchase UI regressions passed")')
 try {
     [IO.File]::WriteAllText($generatedPath, ($parts -join "`n"), [Text.UTF8Encoding]::new($false))
     $output = & luau $generatedPath

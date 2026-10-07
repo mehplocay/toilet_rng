@@ -1,5 +1,6 @@
 local C = require(script.Parent.Components)
 local Rarities = require(game.ReplicatedStorage.Shared.Config.Rarities)
+local Config = require(game.ReplicatedStorage.Shared.Config.Monetization)
 local Odds = {}
 function Odds.Percent(value)
 	if value == 0 then
@@ -29,7 +30,7 @@ function Odds.RarityText(odds)
 	end
 	return table.concat(lines, "\n") .. "\nRounded; totals may differ from 100%."
 end
-function Odds.Create(gui, remotes)
+function Odds.Create(gui, remotes, onPurchase)
 	local panel = C.Panel(gui, "Lucky Flush odds", C.Gold, 120)
 	panel.ZIndex = 80
 	for _, child in ipairs(panel:GetDescendants()) do
@@ -55,20 +56,38 @@ function Odds.Create(gui, remotes)
 	rarityText.LayoutOrder, rarityText.TextXAlignment = 2, Enum.TextXAlignment.Left
 	local rows = {}
 	local current, key, quote
+	local commerce = {}
 	local button = C.Button(body, "Use on next flush", UDim2.new(1, 0, 0, 50), UDim2.new(0, 0, 1, -54), function()
 		if not current then
 			return
 		end
 		if key then
+			if onPurchase then
+				onPurchase()
+			end
 			remotes.BuyProduct:FireServer(key, quote or 0, current.Token)
 		else
 			remotes.LuckyFlush:FireServer(current.Token)
 		end
 		panel.Visible = false
 	end, C.Green, { Name = "ConfirmLucky" })
+	local function updateButton(lucky)
+		local product = key and Config.DeveloperProducts[key]
+		button.Text = if key
+			then "Continue to Roblox purchase"
+			elseif lucky.Armed then "Ready for next flush"
+			else "Use on next flush"
+		button.Interactable = if key
+			then product ~= nil
+				and commerce.CanResume ~= false
+				and lucky.Count <= Config.LuckyFlushCap - product.LuckyCharges
+				and (not commerce.PendingProduct or (commerce.PendingProduct == key and commerce.CanResume == true))
+			else lucky.Count > 0 and not lucky.Armed
+	end
 	return {
 		Panel = panel,
-		Invalidate = function(lucky)
+		Invalidate = function(lucky, state)
+			commerce = state or {}
 			if
 				panel.Visible
 				and (
@@ -80,6 +99,8 @@ function Odds.Create(gui, remotes)
 			then
 				panel.Visible = false
 				current = nil
+			elseif panel.Visible then
+				updateButton(lucky)
 			end
 		end,
 		Close = function()
@@ -113,8 +134,7 @@ function Odds.Create(gui, remotes)
 				row.LayoutOrder, row.TextXAlignment = i + 2, Enum.TextXAlignment.Left
 				table.insert(rows, row)
 			end
-			button.Text = if key then "Continue to Roblox purchase" else "Use on next flush"
-			button.Interactable = key ~= nil or lucky.Count > 0
+			updateButton(lucky)
 			panel.Visible = true
 		end,
 	}

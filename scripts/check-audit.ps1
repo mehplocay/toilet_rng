@@ -65,11 +65,14 @@ if (!$Baseline -and !$Audit2Baseline -and !$DisplayCollectBaseline) {
     $parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'audit-luck-linear.luau')))
     $parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'audit-wire-ids.luau')))
     $parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'audit3-server.luau')))
+    $parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'audit-purchase-ui.luau')))
 }
 $parts.Add('do')
 $parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'ui-harness.luau')))
 if (!$Baseline -and !$Audit2Baseline -and !$DisplayCollectBaseline) {
     $parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'rebirth-click-ui-checks.luau')))
+    $parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'purchase-ui-checks.luau')))
+    $parts.Add('test("purchase UI: tabs, refusals, timeout and owned checks", H.CheckPurchaseUI)')
     $parts.Add('test("rebirth click: UI gates and pending lock", H.CheckRebirthClick)')
     $parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'audit-rebirth-click.luau')))
 }
