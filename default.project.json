@@ -11,6 +11,10 @@
       "$properties": { "ChatVersion": "TextChatService", "CreateDefaultTextChannels": true },
       "ChatWindowConfiguration": { "$className": "ChatWindowConfiguration", "$properties": { "Enabled": true } }
     },
+    "Players": {
+      "$className": "Players",
+      "$properties": { "MaxPlayersInternal": 12, "PreferredPlayersInternal": 12 }
+    },
     "Lighting": {
       "$className": "Lighting",
       "$properties": { "LightingStyle": "Soft", "PrioritizeLightingQuality": true }
