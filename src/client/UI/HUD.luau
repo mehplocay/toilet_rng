@@ -111,6 +111,8 @@ function HUD.Create(root, remotes, open, prompts, shopNavigation)
 		-- Details are opened by the handler below.
 	end, C.Navy, { Name = "PhoneStatus", TextSize = 14 })
 	mobileStatus.Label.UITextSizeConstraint.MinTextSize = 14
+	mobileStatus.Label.Size = UDim2.new(1, -12, 1, -8)
+	mobileStatus.Label.Position = UDim2.fromOffset(6, 4)
 	mobileStatus.Visible = false
 	local statusDetails = C.Panel(root, "Boost details", C.Blue)
 	statusDetails:GetPropertyChangedSignal("Visible"):Connect(function()
@@ -273,6 +275,11 @@ function HUD.Create(root, remotes, open, prompts, shopNavigation)
 		travel.Visible = not eventActive
 		auto.Size = UDim2.new(0, 84, 1, 0)
 		boost.Visible, socialChip.Visible = not layout.Phone, not layout.Phone
+		-- Keep the collapsed luck labels measurable when the phone chip replaces them.
+		if layout.Phone then
+			C.Place(boost, layout.Status)
+		end
+		luckChip.Size = if layout.Phone then UDim2.new(1, -4, 1, 0) else UDim2.new(0.5, -4, 1, 0)
 		passHint.Visible, dailyHint.Visible = layout.Phone == true, layout.Phone == true
 		passHint.Text = if layout.Phone then "STYLE" else ""
 		for badge, defaults in pairs(badgeDefaults) do
@@ -458,8 +465,11 @@ function HUD.Create(root, remotes, open, prompts, shopNavigation)
 					or (state and state.UpgradeStats and state.UpgradeStats.LuckMultiplier)
 					or 1
 			local friends = socialState.FriendCount or 0
-			mobileStatus.Text =
-				string.format("Luck x%.3g - Friends +%d%%", total, math.round(friends * SocialConfig.FriendBonus * 100))
+			mobileStatus.Text = string.format(
+				"Luck x%s\nFriends +%d%%",
+				Format.Luck(total),
+				math.round(friends * SocialConfig.FriendBonus * 100)
+			)
 			mobileStatus.Visible = layout.Phone == true
 				and (
 					total ~= 1

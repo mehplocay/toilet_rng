@@ -74,6 +74,9 @@ for _, luck in ipairs({ 1e3, 1e6, 1e12, 1e300, 1.79e307 }) do
 	for _, size in ipairs(H.Viewports) do
 		root._fixed, root._abs = { X = size[1], Y = size[2] }, nil
 		root:GetPropertyChangedSignal("AbsoluteSize"):Fire()
+		-- Let the existing one-second status updater refresh after changing viewport mode.
+		H.Advance(1.01)
+		H.ResumeTasks()
 		ui.Show({ Allowed = true, Count = 1, Odds = odds })
 		H.Layout(root)
 		local scroll, body = ui.Panel.ContentScroll, ui.Panel.ContentScroll.Body
@@ -105,6 +108,21 @@ for _, luck in ipairs({ 1e3, 1e6, 1e12, 1e300, 1.79e307 }) do
 		end
 		for line in chip.Text:gmatch("[^\n]+") do
 			assert(chip.AbsoluteSize.X >= #line * 5, "Extreme HUD multiplier cannot fit")
+		end
+		-- Check the visible replacement too: the desktop chip is collapsed on phones.
+		local phone = root.HUD.PhoneStatus
+		local label = if root.HUD.Boosts.Visible then chip else phone.Label
+		local minimum = label.UITextSizeConstraint.MinTextSize
+		local lines = 0
+		for line in label.Text:gmatch("[^\n]+") do
+			lines += 1
+			assert(label.AbsoluteSize.X >= #line * minimum * 0.58, "Luck label cannot fit at its text minimum")
+		end
+		assert(label.AbsoluteSize.Y >= lines * minimum * 1.2, "Luck label lines clip vertically")
+		if not root.HUD.Boosts.Visible then
+			assert(phone.Visible and minimum >= 14, "Phone luck must stay visible and readable")
+			assert(phone.Text:find("Luck x" .. numberFormat.Luck(luck * 10), 1, true), "Phone luck value lost")
+			assert(phone.AbsoluteSize.Y >= 44, "Collapsed luck target must remain reachable")
 		end
 		if size[1] == 390 and size[2] == 722 then
 			H.Snapshot(root, "uncapped-luck-" .. tostring(luck))
