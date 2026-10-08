@@ -24,6 +24,9 @@ function Art.Draw(C, parent, kind, tint)
 		VIPPack = "Crown",
 		CoinPack = "Coins",
 		PathBoost = "Upgrades",
+		SparkleTrail = "Gem",
+		CustomPlotColor = "Home",
+		FastFlush = "Flush",
 	}
 	kind = aliases[kind] or kind
 	local white, ink = Color3.fromRGB(245, 251, 255), C.Ink

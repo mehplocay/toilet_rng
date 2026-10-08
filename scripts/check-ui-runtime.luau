@@ -42,7 +42,7 @@ H.Viewports = {
 	{ 390, 722 },
 	{ 640, 303 },
 }
-assert(#expectedIcons == 60, "Incomplete icon manifest")
+assert(#expectedIcons == 63, "Incomplete icon manifest")
 local expectedPassIcons = {
 	StarTag = 84675198307270,
 	VIP = 86404206578791,
@@ -67,13 +67,16 @@ local expectedPassIcons = {
 	AutoCollect = 128908797005960,
 	OfflinePlus = 94976678182678,
 	PathBoost = 118168953743987,
+	SparkleTrail = 95283818025965,
+	CustomPlotColor = 116625505400743,
+	FastFlush = 127465896496319,
 }
 local passIconCount = 0
 for key, id in pairs(expectedPassIcons) do
 	passIconCount += 1
 	assert(Assets.Icons[key] == "rbxassetid://" .. id, "Wrong pass icon mapping: " .. key)
 end
-assert(passIconCount == 23, "Pass/product icon inventory is incomplete")
+assert(passIconCount == 26, "Pass/product icon inventory is incomplete")
 -- Wave 1: every uploaded item/toilet icon beyond the original 60 must resolve like the rest.
 local known = {}
 for _, icon in ipairs(expectedIcons) do
@@ -97,7 +100,7 @@ local uniqueIconCount = 0
 for _ in pairs(uniqueIconIds) do
 	uniqueIconCount += 1
 end
-assert(uniqueIconCount == 102, "Unexpected unique icon preload count: " .. uniqueIconCount)
+assert(uniqueIconCount == 105, "Unexpected unique icon preload count: " .. uniqueIconCount)
 for _, icon in ipairs(expectedPlaceholderIcons) do
 	local value = Assets[icon.Group][icon.Key]
 	local verified = value == nil or value == ""
@@ -393,7 +396,7 @@ local passBlur = H.Services.Lighting.PassesBlur
 passes.Panel:Destroy()
 assert(passBlur._dead, "Destroyed shop leaked its blur effect")
 print(
-	"Icon/shop checks passed: 104 upload mappings, async preload, fallbacks, 7 card layouts, prices, ownership and disabled gifting"
+	"Icon/shop checks passed: 107 upload mappings, async preload, fallbacks, 7 card layouts, prices, ownership and disabled gifting"
 )
 local nearToilet, openedHome = true, false
 local hud = H.Load("src/client/UI/HUD").Create(root, remotes, function(name)

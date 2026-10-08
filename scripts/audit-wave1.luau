@@ -27,11 +27,14 @@ test("wave1: JSON parity, rarity colors/order, pool membership and icon/template
 		"AutoCollect",
 		"OfflinePlus",
 		"PathBoost",
+		"SparkleTrail",
+		"CustomPlotColor",
+		"FastFlush",
 	}
 	for _, key in ipairs(passIconKeys) do
 		assert(assets.Icons[key]:match("^rbxassetid://%d+$") ~= nil, "Missing uploaded pass/product icon: " .. key)
 	end
-	assert(#passIconKeys == 23)
+	assert(#passIconKeys == 26)
 	local meshes = e:Load("src/shared/Config/MeshCatalog")
 	local income = e:Load("src/shared/Config/Income")
 	local byId = {}
