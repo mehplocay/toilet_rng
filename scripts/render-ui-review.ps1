@@ -1,5 +1,5 @@
 # Approximate, offline raster review of actual UI trees. Not a Roblox renderer.
-param([string]$SnapshotDirectory = '.ui-review', [string]$FontDirectory)
+param([string]$SnapshotDirectory = '.ui-review', [string]$FontDirectory, [string]$Pattern = '*.json')
 $ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName System.Drawing
 $workspaceRoot = Split-Path $PSScriptRoot -Parent
@@ -10,6 +10,17 @@ foreach ($asset in $manifest.assets) {
     if ($asset.config_key -and $asset.size[0] -eq 512) {
         $id = $uploads.($asset.category).($asset.name)
         $iconImages["rbxassetid://$id"] = [Drawing.Image]::FromFile((Join-Path $workspaceRoot $asset.file))
+    }
+}
+# Wave 1 art uses the centralized runtime IDs and its own local manifest.
+$waveManifest = Get-Content -Raw -LiteralPath (Join-Path $workspaceRoot 'assets/icons/manifest-wave1.json') | ConvertFrom-Json
+$assetSource = Get-Content -Raw -LiteralPath (Join-Path $workspaceRoot 'src/shared/Config/Assets.luau')
+foreach ($asset in $waveManifest.assets) {
+    if ($asset.size[0] -eq 512) {
+        $key = $asset.config_key.Split('.')[1]
+        $match = [regex]::Match($assetSource, '\b' + [regex]::Escape($key) + '\s*=\s*"(rbxassetid://[0-9]+)"')
+        if (!$match.Success) { throw "Missing Wave 1 icon mapping: $key" }
+        $iconImages[$match.Groups[1].Value] = [Drawing.Image]::FromFile((Join-Path $workspaceRoot $asset.file))
     }
 }
 $fontCollection = [Drawing.Text.PrivateFontCollection]::new()
@@ -70,18 +81,30 @@ function Draw-Node($g, $n) {
         }
         $format = [Drawing.StringFormat]::new()
         $format.Alignment = if ($n.left) { [Drawing.StringAlignment]::Near } else { [Drawing.StringAlignment]::Center }
-        $format.LineAlignment = [Drawing.StringAlignment]::Center
+		$format.LineAlignment = if ($n.top) { [Drawing.StringAlignment]::Near } else { [Drawing.StringAlignment]::Center }
+		if ($n.textWrapped -eq $false) { $format.FormatFlags = [Drawing.StringFormatFlags]::NoWrap -bor [Drawing.StringFormatFlags]::NoClip }
         $fontStyle = if ($family.IsStyleAvailable([Drawing.FontStyle]::Regular)) { [Drawing.FontStyle]::Regular } else { [Drawing.FontStyle]::Bold }
-        $size = [Math]::Min($(if ($n.maxFont) { $n.maxFont } else { 28 }), $n.h * 0.86)
+		$size = if ($n.textScaled -eq $false) { $n.textSize } else { [Math]::Min($(if ($n.maxFont) { $n.maxFont } else { 28 }), $n.h * 0.86) }
         do {
             $font = [Drawing.Font]::new($family, [single]$size, $fontStyle, [Drawing.GraphicsUnit]::Pixel)
-            $measure = $g.MeasureString($n.text, $font, [int]$n.w, $format)
+            $measure = if ($n.textWrapped -eq $false) {
+                $g.MeasureString($n.text, $font, [Drawing.SizeF]::new(100000, 100000), $format)
+            } else { $g.MeasureString($n.text, $font, [int]$n.w, $format) }
             $font.Dispose()
-            if ($measure.Height -le $n.h + 2 -and $measure.Width -le $n.w + 2) { break }
+			if ($n.textScaled -eq $false -or ($measure.Height -le $n.h + 2 -and $measure.Width -le $n.w + 2)) { break }
             $size -= 1
-        } while ($size -gt 10)
+		} while ($size -gt $(if ($n.minFont) { $n.minFont } else { 10 }))
         $textPath = [Drawing.Drawing2D.GraphicsPath]::new()
-        $textPath.AddString($n.text, $family, [int]$fontStyle, [single]$size, $r, $format)
+        if ($n.textWrapped -eq $false) {
+            # GDI's rectangle overload can omit the last glyph even after measurement.
+            $textPath.AddString($n.text, $family, [int]$fontStyle, [single]$size, [Drawing.PointF]::Empty, $format)
+            $bounds = $textPath.GetBounds()
+            $transform = [Drawing.Drawing2D.Matrix]::new()
+            $tx = $r.X - $bounds.X + $(if ($n.left) { 0 } else { ($r.Width - $bounds.Width) / 2 })
+            $ty = $r.Y - $bounds.Y + $(if ($n.top) { 0 } else { ($r.Height - $bounds.Height) / 2 })
+            $transform.Translate([single]$tx, [single]$ty)
+            $textPath.Transform($transform); $transform.Dispose()
+        } else { $textPath.AddString($n.text, $family, [int]$fontStyle, [single]$size, $r, $format) }
         if ($n.stroke -and $n.stroke.mode -eq 'ApplyStrokeMode.Contextual') {
             $pen = [Drawing.Pen]::new((Get-Color $n.stroke.color $n.stroke.alpha), [single]($n.stroke.width * 2))
             $pen.LineJoin = [Drawing.Drawing2D.LineJoin]::Round
@@ -95,7 +118,7 @@ function Draw-Node($g, $n) {
     foreach ($child in $n.children) { Draw-Node $g $child }
     $path.Dispose(); $g.Restore($saved)
 }
-foreach ($file in (Get-ChildItem -LiteralPath $SnapshotDirectory -Filter '*.json')) {
+foreach ($file in (Get-ChildItem -LiteralPath $SnapshotDirectory -Filter $Pattern)) {
     $tree = [IO.File]::ReadAllText($file.FullName) | ConvertFrom-Json
     $bitmap = [Drawing.Bitmap]::new([int]$tree.w, [int]$tree.h)
     $graphics = [Drawing.Graphics]::FromImage($bitmap)

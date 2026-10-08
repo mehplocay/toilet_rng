@@ -4,6 +4,7 @@ local Rules = require(game.ReplicatedStorage.Shared.MonetizationRules)
 local RunService = game:GetService("RunService")
 local Players = game:GetService("Players")
 local C = require(script.Parent.UI.Components)
+local Layout = require(script.Parent.UI.Layout)
 local Effects = {}
 
 function Effects.Start(root, player, remotes)
@@ -36,6 +37,27 @@ function Effects.Start(root, player, remotes)
 	local function allowed()
 		return alive and owned.DancePack == true and player:GetAttribute("DancePack") ~= false and mode ~= "Off"
 	end
+	local function updateVisibility()
+		local hud = root:FindFirstChild("HUD")
+		local blocked = root:GetAttribute("TutorialActive") or (hud and not hud.Visible)
+		local hint = hud and hud:FindFirstChild("CenterHint")
+		blocked = blocked or (hint and hint.Visible)
+		local breakdown = hud and hud:FindFirstChild("LuckBreakdown")
+		blocked = blocked or (breakdown and breakdown.Visible)
+		for _, child in ipairs(root:GetChildren()) do
+			if child ~= menu and child:IsA("GuiObject") and child.Visible and child:FindFirstChild("ContentScroll") then
+				blocked = true
+			end
+		end
+		local revealLayer = root:FindFirstChild("RareReveal")
+		local toast = root:FindFirstChild("ResultToast")
+		local flushReveal = hud and hud:FindFirstChild("FlushReveal")
+		blocked = blocked
+			or (toast and toast.Visible)
+			or (flushReveal and flushReveal.Visible)
+			or (revealLayer and revealLayer:FindFirstChild("RevealContent") ~= nil)
+		toggle.Visible = owned.DancePack == true and not blocked
+	end
 	local function refresh()
 		active = false
 		local interactable = allowed() and living() == true
@@ -45,7 +67,7 @@ function Effects.Start(root, player, remotes)
 			buttons[i].Interactable = interactable
 		end
 		toggle.Text = if active then "Stop" else "Celebrate"
-		toggle.Visible = owned.DancePack == true
+		updateVisibility()
 		toggle.Interactable = interactable
 	end
 	local function stop()
@@ -104,6 +126,14 @@ function Effects.Start(root, player, remotes)
 			refresh()
 		end
 	end, C.Purple, { Name = "CelebrationMenu", TextSize = 16 })
+	local function resize()
+		C.Place(
+			toggle,
+			Layout.Compute(root.AbsoluteSize.X, root.AbsoluteSize.Y, game:GetService("UserInputService").TouchEnabled).Celebration
+		)
+	end
+	connect(root:GetPropertyChangedSignal("AbsoluteSize"), resize)
+	resize()
 	for i, name in ipairs(Config.Celebrations) do
 		local channel = { Enabled = false, Pieces = {}, Age = limits.Lifetime }
 		channels[i] = channel
@@ -229,6 +259,7 @@ function Effects.Start(root, player, remotes)
 		end
 	end
 	connect(RunService.Heartbeat, function(dt)
+		updateVisibility()
 		if player.Character ~= character then
 			bindCharacter(player.Character)
 		elseif (active or #reveal.Pieces > 0) and not living() then

@@ -1,0 +1,174 @@
+2026-10-07: completed runners returned exit code 0. Selected output tails follow.
+=== .audit-release.log ===
+PASS tutorial UI: skip each step, acknowledgement retry, rejoin, completed suppression and replay timeout
+PASS tutorial UI: Settings replay control is wired in the real bootstrap
+PASS tutorial UI: empty inventory after rebirth and insufficient upgrade coins have an exit
+Audit regressions: 404 passed, 0 failed
+=== .hud-release.log ===
+Independent visual review: all controls >=44px, collection icons and scrolled windows at 12 viewports
+=== .tutorial-final.log ===
+PASS tutorial UI: all steps stay visible, correct highlights and reachable modal actions at 12 viewports
+PASS tutorial UI: skip each step, acknowledgement retry, rejoin, completed suppression and replay timeout
+PASS tutorial UI: Settings replay control is wired in the real bootstrap
+PASS tutorial UI: empty inventory after rebirth and insufficient upgrade coins have an exit
+=== .reveals-final.log ===
+Presentation runtime passed: reveal lifecycle, delayed rich-text chat, three chat modes and native PlayerList retry without custom Tab binding
+Independent reveal captures: all nine rarities at 12 viewports
+=== .visual-review-log.txt ===
+Plot tint world: 12 rotated plots, 10 targeted pieces, all colors, geometry unchanged and exact reset
+Auto animation world checks passed: owner persistence, far cycles, budgets, replacement and cleanup
+Peak envelope: 2533 parts, 1689 meshes, 1382312 mesh triangles, 6594 instances; 25 persistent skyline meshes / 21186 triangles; 70 hub beams.
+Map checks passed: 12 plots, 49,152 friend cases, 15542 reachable samples, 44 environment templates, separate walk/boundary collision and peak budgets.
+=== .world-review-log.txt ===
+Plot tint world: 12 rotated plots, 10 targeted pieces, all colors, geometry unchanged and exact reset
+Auto animation world checks passed: owner persistence, far cycles, budgets, replacement and cleanup
+Peak envelope: 3421 parts, 0 meshes, 0 mesh triangles, 7110 instances; 25 persistent skyline meshes / 21186 triangles; 70 hub beams.
+Map checks passed: 12 plots, 49,152 friend cases, 15542 reachable samples, 44 environment templates, separate walk/boundary collision and peak budgets.
+=== .review-all-pools-odds.log ===
+Godly	1.81007677%
+Celestial	0.24585083%
+Secret	0.07297339%
+Cosmic Courtesy in 300 Basic flushes:	0.001999980065747753	%
+=== .review-all-pools-risk.log ===
+PlungerPaladin	120000	Coins in 30 seconds
+StarlightSeraph	750000	Coins in 30 seconds
+CosmicCourtesy	3000000	Coins in 30 seconds
+Early jackpots intentionally can accelerate progression. Median pacing is not a minimum time gate.
+=== .review-balance.log ===
+AstralAltar   900900.00  175217.99   83.72% 1x SteamGenie, 1x LaundryYeti, 2x Clogtopus, 4x ToiletBaby, 2x GoldenGargler
+ParadoxPotty 1516666.67  277626.01   84.53% 1x SteamGenie, 2x LaundryYeti, 3x Clogtopus, 4x ToiletBaby
+InfinityFlush 2275000.00  420676.83   84.39% 1x SteamGenie, 2x LaundryYeti, 3x Clogtopus, 4x ToiletBaby
+Balance targets and replay passed. Timings are policy-dependent estimates, not guaranteed player outcomes; inf = censored after 300h.
+=== .review-check-admin.log ===
+Admin pure checks passed: identity, optional cached owner, fail-closed errors, bounds, whitelist, JSON budget
+=== .review-check-all-pools.log ===
+All-pools numeric sampler: exact linear-scan equivalence at every boundary, all tiers and five luck settings
+=== .review-check-audio.log ===
+Audio ID coverage passed: 53 unique numeric IDs; no missing slots or orphan IDs; loop/fade/mix contract
+Audio admission checks passed: cooldowns, slot/class/global caps, priority, rapid stress and amount pitch
+Audio logic checks passed: profile migration, validation, gains, crossfade scheduling, overlapping ducks, shuffle and pitch
+=== .review-check-autoflush.log ===
+Auto-Flush/pass checks passed: unlock, living guard, manual range, shared cooldown/awards, speed, ownership recovery, palette/settings, limits
+=== .review-check-coin-bounds.log ===
+Coin bounds properties passed: 101 magnitudes, debit/sale/reset/collect, overflow, quote ratios, offline and extreme curves
+=== .review-check-display.log ===
+Display checks passed: ownership, reservation, removal, slot validation
+=== .review-check-economy-v2.log ===
+Economy v2 checks passed: pinned rarity rates, fractional accrual, large storage, exact ceilings, partitions, caps and K/M/B/T/Qa/Qi
+=== .review-check-fairstart.log ===
+Fair start checks passed: fixed tier awards, luck independence, currency accounting, bounds and four upgrades without sales
+=== .review-check-foundation.log ===
+Foundation checks passed: guaranteed drops, rare-first catalog, luck, rate limits
+Event checks passed: dedupe, cooldown, refresh, expiry, multiplicative luck and fallback
+=== .review-check-icons.log ===
+Icon resolver checks passed: 81 uploads, override precedence, alias deduplication, four-worker limit, stalled worker, permissions, invalid Decals, cleanup
+=== .review-check-income.log ===
+Income checks passed: exact fractions, caps, offline cap, clock rollback, changes, idempotency, bounds and migration
+=== .review-check-index.log ===
+Index checks passed: migration, lifetime counts, one-time rewards, safe sales, reservations, remote limits and persistence failure
+=== .review-check-leaderboards.log ===
+Leaderboard checks passed: finite bounds, migration, known-item rarity, forged definitions, ties, three ranking fields and empty server
+=== .review-check-monetization-ids.log ===
+Production monetization IDs passed: 16 passes + 8 products wired; Lucky charges and caps preserved
+=== .review-check-path-boost.log ===
+Path boost math passed: boundaries, rotated plots, height/NaN rejection, idempotence, VIP/product stacking, cap, admin, death and base restoration
+=== .review-check-presentation.log ===
+Presentation rules passed: tiers, bounded queues, replay/rate limits, abbreviation boundaries, sanitization and event observer
+=== .review-check-rebirth.log ===
+Rebirth math passed: 15 explicit cumulative reward levels, global luck/cooldown caps, probability sum 1, exact bounded income across all Cash/Speed/tier/rebirth combinations
+=== .review-check-rewards.log ===
+Reward checks passed: UTC boundaries, duplicate claims, missed days, cycle, tiers, boost expiry, validation and rate limits
+Reward merge checks passed: all tiers/days/paid factors, exact wallet/Earned ceilings and atomic overflow rejection
+=== .review-check-social.log ===
+Social rules: stacking, unaffected luck/speed, migration, corruption, bounded history, daily limits, duplicate referrals and interval expiry passed
+=== .review-check-sound-feedback.log ===
+Audio ID coverage passed: 53 unique numeric IDs; no missing slots or orphan IDs; loop/fade/mix contract
+Sound feedback checks passed: confirmed outcomes, replay suppression, reset silence, pass protocol, claims and boost edges
+=== .review-check-spawn-lifecycle.log ===
+Spawn lifecycle checks passed: early/existing player, assignment before load, idempotent readiness, retry, late placement, respawn, departure, bounded recovery
+=== .review-check-spawn.log ===
+Spawn checks passed: ring adjacency, fallback, full server, 10,240 occupancy/friend cases, guide boundaries
+=== .review-check-tutorial.log ===
+Tutorial checks passed: server outcomes, failure handling, step order, completion rate limit
+=== .review-check-ui-layout.log ===
+PASS UI 768x1024 -> safe 768x968; wide; 4 collection columns
+PASS UI 1170x540 -> safe 1116x483; short landscape; 5 collection columns
+Viewport cases checked: 972
+UI layout checks passed: safe areas, pairwise overlap, touch corners, modal scroll space, grid widths
+=== .review-check-upgrades.log ===
+Upgrade checks passed: bounded exponential purchases, compare-and-swap replay, migration, slots, luck/cooldown/auto caps, cash rounding, full tank and exact odds
+=== .review-check-wave1.log ===
+Wave 1 contract passed: 47 exact items, 15 complete catalogs, 9 disjoint bands, 60 capped probability distributions, guaranteed drops and stable index claims
+=== .review-income-balance.log ===
+=== .review-no-cash-cap-payer.log ===
+Grinder	FlushSpeed	10	0.88	1.25
+Grinder	LuckBoost	50	5.033333333333333	7.15
+Grinder	OfflineTank	100	12.141666666666667	15.883333333333333
+Grinder	CashBoost	100	11.975	15.591666666666667
+=== .review-rebirth-balance.log ===
+=== .review-rebirth-values-simulations.log ===
+Grinder | R12 | 200000000000000 Coins | p50 33.475h / p90 42.717h
+Grinder | R13 | 400000000000000 Coins | p50 41.750h / p90 51.017h
+Grinder | R14 | 700000000000000 Coins | p50 52.917h / p90 62.675h
+Grinder | R15 | 2400000000000000 Coins | p50 86.167h / p90 96.517h
+=== .review-social-balance.log ===
+Diamond Toilet | 198.000 | 300.560
+Galaxy Toilet | 780.000 | 1184.040
+Infinity Flush | 19500.000 | 29601.000
+Invite example assumes the boost is active; actual expiry, qualification, daily limits, flush gates, RNG and collection caps affect elapsed progression.
+=== .review-vip-luck-balance.log ===
+| Galaxy Toilet | 15 | 2 | 1 |
+| Infinity Flush | 4 | 0 | 0 |
+
+At the 10x cap, a Lucky Flush charge adds zero probability benefit and is still consumed if reviewed and used. Below the cap, it raises total luck to 10x; e.g. both passes at Basic L0 start at 2.5x, so a charge improves rarest-item odds only 4x. VIP alone reduces expected rarest flushes by 20% before the cap; both passes by 60%. No diminishing returns beyond the existing cap and sequential survival probabilities.
+=== .review-wave1-balance.log ===
+Grinder | ParadoxPotty | p50 721.76 / p90 1018.40 min | normal target 770 | historical uncapped 460
+Grinder | InfinityFlush | p50 1069.60 / p90 1495.99 min | normal target 1150 | historical uncapped 570
+T15 without upgrades/rebirth: ten Secrets = 325M/s free, 975M/s paid. Max R15/Cash L100: 22.1B/s free, 66.3B/s paid.
+PASS: actual catalog, caps, independent odds, first sight, uncapped showcase, three conditional cohorts and seeded replay.
+Audit regressions: 404 passed, 0 failed
+=== .ui-release.log (exit 0) ===
+Huge coin UI passed: distinct pack amounts and duration labels, wallet/pending, five magnitudes at all 12 viewports
+Independent visual review: all controls >=44px, collection icons and scrolled windows at 12 viewports
+PASS UI 711x787 -> safe 711x751; portrait; 4 collection columns
+PASS UI 711x787 -> safe 711x731; portrait; 4 collection columns
+PASS UI 360x640 -> safe 360x518; portrait; 1 collection columns
+PASS UI 390x844 -> safe 390x722; portrait; 2 collection columns
+PASS UI 640x360 -> safe 640x303; short landscape; 3 collection columns
+PASS UI 1920x1080 -> safe 1920x1044; wide; 5 collection columns
+PASS UI 1280x720 -> safe 1280x684; wide; 5 collection columns
+PASS UI 375x812 -> safe 375x690; portrait; 2 collection columns
+PASS UI 812x375 -> safe 724x318; short landscape; 4 collection columns
+PASS UI 1024x768 -> safe 1024x712; wide; 5 collection columns
+PASS UI 768x1024 -> safe 768x968; wide; 4 collection columns
+PASS UI 1170x540 -> safe 1116x483; short landscape; 5 collection columns
+Viewport cases checked: 972
+UI layout checks passed: safe areas, pairwise overlap, touch corners, modal scroll space, grid widths
+=== Final tutorial/odds regression (exit 0) ===
+PASS tutorial UI: all steps stay visible, correct highlights and reachable modal actions at 12 viewports
+PASS tutorial UI: skip each step, acknowledgement retry, rejoin, completed suppression and replay timeout
+PASS tutorial UI: luck odds reserve the guide strip even while HUD remains visible
+PASS tutorial UI: Settings replay control is wired in the real bootstrap
+PASS tutorial UI: empty inventory after rebirth and insufficient upgrade coins have an exit
+=== Final audit (exit 0) ===
+Audit regressions: 405 passed, 0 failed
+=== Final full UI (exit 0), including tutorial/odds and clean window captures ===
+PASS tutorial UI: luck odds reserve the guide strip even while HUD remains visible
+PASS tutorial UI: Settings replay control is wired in the real bootstrap
+PASS tutorial UI: empty inventory after rebirth and insufficient upgrade coins have an exit
+Huge coin UI passed: distinct pack amounts and duration labels, wallet/pending, five magnitudes at all 12 viewports
+Independent visual review: all controls >=44px, collection icons and scrolled windows at 12 viewports
+PASS UI 711x787 -> safe 711x751; portrait; 4 collection columns
+PASS UI 711x787 -> safe 711x731; portrait; 4 collection columns
+PASS UI 360x640 -> safe 360x518; portrait; 1 collection columns
+PASS UI 390x844 -> safe 390x722; portrait; 2 collection columns
+PASS UI 640x360 -> safe 640x303; short landscape; 3 collection columns
+PASS UI 1920x1080 -> safe 1920x1044; wide; 5 collection columns
+PASS UI 1280x720 -> safe 1280x684; wide; 5 collection columns
+PASS UI 375x812 -> safe 375x690; portrait; 2 collection columns
+PASS UI 812x375 -> safe 724x318; short landscape; 4 collection columns
+PASS UI 1024x768 -> safe 1024x712; wide; 5 collection columns
+PASS UI 768x1024 -> safe 768x968; wide; 4 collection columns
+PASS UI 1170x540 -> safe 1116x483; short landscape; 5 collection columns
+Viewport cases checked: 972
+UI layout checks passed: safe areas, pairwise overlap, touch corners, modal scroll space, grid widths

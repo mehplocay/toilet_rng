@@ -126,7 +126,11 @@ do
 	H.ResumeTasks()
 	local chip = root.HUD:FindFirstChild("TotalLuck", true)
 	local breakdown = root.HUD:FindFirstChild("LuckBreakdown", true)
-	assert(chip.Text == "Luck x2.5")
+	assert(
+		breakdown.Parent == root.HUD and breakdown.ZIndex > root.HUD.Wallet.ZIndex,
+		"Luck disclosure must draw above HUD siblings"
+	)
+	assert(chip.Text == "Luck x2.5\nCap 10x")
 	assert(breakdown.Text:find("VIP +25% luck", 1, true) and breakdown.Text:find("2x Luck pass", 1, true))
 	lucky.Count, lucky.Armed = 1, true
 	hud.Update(state)
@@ -135,7 +139,7 @@ do
 	assert(chip.Text == "Luck x10 (cap)")
 	H.Advance(121)
 	H.ResumeTasks()
-	assert(chip.Text == "Luck x1" and breakdown.Text:find("unavailable in your region", 1, true))
+	assert(chip.Text == "Luck x1\nCap 10x" and breakdown.Text:find("unavailable in your region", 1, true))
 	root:Destroy()
 	print("Paid luck HUD: true active multipliers, charge cap and expired policy passed")
 end

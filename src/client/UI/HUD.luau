@@ -74,7 +74,7 @@ function HUD.Create(root, remotes, open, prompts, shopNavigation)
 	local luckDialog = Odds.Create(root, remotes)
 	luckDialog.Panel.Name = "Luck details"
 	local luckState, luckDeadline = nil, 0
-	local breakdown = C.BodyText(luckChip, "", UDim2.new(0, 290, 0, 140), UDim2.new(0, 0, 1, 4))
+	local breakdown = C.BodyText(gui, "", UDim2.fromOffset(290, 140))
 	breakdown.Name, breakdown.Visible, breakdown.BackgroundTransparency = "LuckBreakdown", false, 0
 	breakdown.BackgroundColor3, breakdown.ZIndex = C.Navy, 30
 	local info = C.New(
@@ -83,8 +83,12 @@ function HUD.Create(root, remotes, open, prompts, shopNavigation)
 		{ Name = "LuckInfo", Text = "", BackgroundTransparency = 1, Size = UDim2.fromScale(1, 1) }
 	)
 	info.Activated:Connect(function()
-		breakdown.Visible = not breakdown.Visible
-		luckDialog.Show(luckState)
+		if luckState and luckState.Allowed and os.clock() < luckDeadline then
+			breakdown.Visible = false
+			luckDialog.Show(luckState, nil, nil, true)
+		else
+			breakdown.Visible = not breakdown.Visible
+		end
 	end)
 	gui.Destroying:Connect(function()
 		luckDialog.Panel:Destroy()
@@ -206,6 +210,15 @@ function HUD.Create(root, remotes, open, prompts, shopNavigation)
 		offers.Visible = layout.OffersVisible
 		travel.Visible = not eventActive
 		auto.Size = UDim2.new(0, 84, 1, 0)
+		-- Keep the fallback disclosure inside the safe area, including bottom-right HUDs.
+		local disclosureW = if layout.Portrait then math.min(290, root.AbsoluteSize.X - 90) else 290
+		local disclosureH = if layout.Portrait then 88 elseif layout.Short then 100 else 140
+		local preferredX = if layout.Short then (root.AbsoluteSize.X - disclosureW) / 2 else layout.Boosts.X
+		local disclosureX = math.clamp(preferredX, 8, math.max(8, root.AbsoluteSize.X - disclosureW - 8))
+		local preferredY = if layout.Portrait then 192 elseif layout.Short then 120 else layout.SocialBoosts.Y - 148
+		local disclosureY = math.clamp(preferredY, 8, math.max(8, root.AbsoluteSize.Y - disclosureH - 8))
+		breakdown.Size = UDim2.fromOffset(disclosureW, disclosureH)
+		breakdown.Position = UDim2.fromOffset(disclosureX, disclosureY)
 	end
 	root:GetPropertyChangedSignal("AbsoluteSize"):Connect(resize)
 	resize()
@@ -311,9 +324,9 @@ function HUD.Create(root, remotes, open, prompts, shopNavigation)
 				else (luckState and luckState.FreeLuck)
 					or (state and state.UpgradeStats and state.UpgradeStats.LuckMultiplier)
 					or 1
-			serverText.Text = string.format("Luck x%.3g%s", total, if total >= 10 then " (cap)" else "")
+			serverText.Text = string.format("Luck x%.3g%s", total, if total >= 10 then " (cap)" else "\nCap 10x")
 			breakdown.Text = string.format(
-				"Total luck x%.4g (cap 10x)\n%s\n%s\nRounded; see Info for all item odds.",
+				"Total luck x%.4g (cap 10x)\n%s\n%s\nRounded values.",
 				total,
 				if eligible
 					then (if odds and odds.VIPLuck then "VIP +25% luck" else "VIP luck: inactive")

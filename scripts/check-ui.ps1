@@ -76,11 +76,11 @@ $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-plot-color.luau')
 $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'plot-color-cosmetic-checks.luau')))
 $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-tutorial.luau')))
 $parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'ui-coin-bounds.luau')))
+$parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'ui-visual-review.luau')))
 try {
     [IO.File]::WriteAllText($generatedPath, ($parts -join "`n"), [Text.UTF8Encoding]::new($false))
-    $output = & luau --codegen -O2 $generatedPath
-    $code = $LASTEXITCODE
-    foreach ($line in $output) {
+    & luau --codegen -O2 $generatedPath | ForEach-Object {
+        $line = $_
         if ($line.StartsWith('UI_SNAPSHOT ')) {
             if ($SnapshotDirectory) {
                 $null = New-Item -ItemType Directory -Force -Path $SnapshotDirectory
@@ -89,7 +89,7 @@ try {
             }
         } else { Write-Output $line }
     }
-    if ($code -ne 0) { throw 'UI runtime checks failed' }
+    if ($LASTEXITCODE -ne 0) { throw 'UI runtime checks failed' }
     & luau (Join-Path $PSScriptRoot 'check-ui-layout.luau')
     if ($LASTEXITCODE -ne 0) { throw 'UI layout checks failed' }
 } finally {
