@@ -42,8 +42,39 @@ H.Viewports = {
 	{ 390, 722 },
 	{ 640, 303 },
 }
-assert(#expectedIcons == 37, "Incomplete icon manifest")
--- Wave 1: every uploaded item/toilet icon beyond the original 37 must resolve like the rest.
+assert(#expectedIcons == 60, "Incomplete icon manifest")
+local expectedPassIcons = {
+	StarTag = 84675198307270,
+	VIP = 86404206578791,
+	VIPPack = 86404206578791,
+	RainbowName = 135224188428968,
+	ConfettiReveal = 133817219890138,
+	GoldenName = 124054569152222,
+	DancePack = 108120031329004,
+	ToiletGlow = 74136308440458,
+	Companion = 124734715642238,
+	UltimateBundle = 76837251867943,
+	CoinPackMini = 103768109816896,
+	CoinPackSmall = 111488030837923,
+	CoinPackLarge = 98825024632194,
+	CoinPackHuge = 110195548375491,
+	CoinPack = 110195548375491,
+	LuckyFlush1 = 80243972400835,
+	LuckyFlush5 = 124898347095857,
+	LuckyFlush20 = 137512516404253,
+	DoubleCash = 114000017458664,
+	DoubleLuck = 131512605321076,
+	AutoCollect = 128908797005960,
+	OfflinePlus = 94976678182678,
+	PathBoost = 118168953743987,
+}
+local passIconCount = 0
+for key, id in pairs(expectedPassIcons) do
+	passIconCount += 1
+	assert(Assets.Icons[key] == "rbxassetid://" .. id, "Wrong pass icon mapping: " .. key)
+end
+assert(passIconCount == 23, "Pass/product icon inventory is incomplete")
+-- Wave 1: every uploaded item/toilet icon beyond the original 60 must resolve like the rest.
 local known = {}
 for _, icon in ipairs(expectedIcons) do
 	known[icon.Group .. "." .. icon.Key] = true
@@ -58,6 +89,15 @@ for _, group in ipairs({ "ItemIcons", "ToiletIcons" }) do
 	end
 end
 assert(wave1Icons == 44, "Wave 1 icon ids incomplete: " .. wave1Icons)
+local uniqueIconIds = {}
+for _, icon in ipairs(expectedIcons) do
+	uniqueIconIds[icon.Id] = true
+end
+local uniqueIconCount = 0
+for _ in pairs(uniqueIconIds) do
+	uniqueIconCount += 1
+end
+assert(uniqueIconCount == 102, "Unexpected unique icon preload count: " .. uniqueIconCount)
 for _, icon in ipairs(expectedPlaceholderIcons) do
 	local value = Assets[icon.Group][icon.Key]
 	local verified = value == nil or value == ""
@@ -106,7 +146,7 @@ C.PreloadIcons()
 assert(#H.Preloads == 0, "Preload blocked the calling thread")
 H.HoldPreload = true
 H.StartTasks()
-assert(#H.Preloads == 1 and #H.Preloads[1] == #expectedIcons, "Preload omitted icons or duplicated aliases")
+assert(#H.Preloads == 1 and #H.Preloads[1] == uniqueIconCount, "Preload omitted icons or duplicated aliases")
 local preloadSeen = {}
 for _, label in ipairs(H.Preloads[1]) do
 	assert(not preloadSeen[label.Image], "Duplicate icon preload")
@@ -124,7 +164,7 @@ H.HoldPreload = false
 H.FailPreload = true
 H.ResumeTasks()
 H.FailPreload = false
-assert(#H.Warnings == #expectedIcons, "Failed preload did not report per-image status")
+assert(#H.Warnings == uniqueIconCount, "Failed preload did not report per-image status")
 assert(duringFetch.Fallback.Visible and duringFetch.Asset.ImageTransparency == 0.999, "Failed preload hid fallback")
 for _, label in ipairs(H.Preloads[1]) do
 	assert(label._dead, "Preload ImageLabel leaked")
@@ -271,7 +311,10 @@ for _, viewport in ipairs(H.Viewports) do
 				"Unuploaded catalog art must use vectors"
 			)
 		else
-			assert(icon.Asset.Image == Images.Get(Assets.Icons[shopConfig.Offers[key].Icon]))
+			assert(
+				icon.Asset.Image == Images.Get(Assets.Icons[shopConfig.Offers[key].Icon]),
+				"Offer icon mismatch: " .. key .. " / " .. shopConfig.Offers[key].Icon
+			)
 		end
 		assert(icon.AbsolutePosition.Y >= slot.AbsolutePosition.Y, "Offer sculpture clips above grid cell")
 		assert(icon.AbsolutePosition.Y < offer.AbsolutePosition.Y, "Offer sculpture does not overflow card")
@@ -350,7 +393,7 @@ local passBlur = H.Services.Lighting.PassesBlur
 passes.Panel:Destroy()
 assert(passBlur._dead, "Destroyed shop leaked its blur effect")
 print(
-	"Icon/shop checks passed: 81 upload mappings, async preload, fallbacks, 7 card layouts, prices, ownership and disabled gifting"
+	"Icon/shop checks passed: 104 upload mappings, async preload, fallbacks, 7 card layouts, prices, ownership and disabled gifting"
 )
 local nearToilet, openedHome = true, false
 local hud = H.Load("src/client/UI/HUD").Create(root, remotes, function(name)
