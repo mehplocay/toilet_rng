@@ -19,9 +19,15 @@ function UI.ChipText(social, elapsed)
 		percent(count * Config.FriendBonus),
 		count,
 		if remaining > 0
-			then "Invite +" .. percent(Config.InviteBonus) .. " " .. UI.Timer(remaining)
+			then "Invite luck +" .. percent(Config.InviteBonus) .. " " .. UI.Timer(remaining)
 			else "Social boosts"
 	)
+end
+
+function UI.InviteText(remaining)
+	return if remaining > 0
+		then "Invite luck x" .. tostring(1 + Config.InviteBonus) .. ": " .. UI.Timer(remaining)
+		else "Invite luck: inactive"
 end
 
 return UI

@@ -198,7 +198,7 @@ function Service.Start(data, limiter, remotes, sync)
 			remotes.Result:FireClient(
 				inviter,
 				"InviteReward",
-				{ Success = true, Message = "Invite reward unlocked! Your coin boost has been extended." }
+				{ Success = true, Message = "Invite reward unlocked! Your luck boost has been extended." }
 			)
 		else
 			-- Retry against the durable record after the inviter reloads. An ambiguous

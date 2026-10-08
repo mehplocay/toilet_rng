@@ -25,10 +25,10 @@ assert(Rules.Multiplier(p, 1000) == 1 and U:Cash(p) == 1)
 assert(not Rules.GroupResult(false, true) and not Rules.GroupResult(true, "true") and Rules.GroupResult(true, true))
 p.SocialRuntime = { GroupMember = true, FriendCount = 3 }
 p.Social.InviteExpires = os.time() + Config.InviteSeconds
-assert(math.abs(U:Cash(p) - 1.518) < 1e-12)
+assert(math.abs(U:Cash(p) - 1.265) < 1e-12)
 p.Monetization.Passes.DoubleCash, p.Monetization.Passes.VIPPack = true, true
-assert(math.abs(U:Cash(p) - 4.554) < 1e-12)
-assert(U:Luck(p, 1) == 1 and U:Cooldown(p, 3) == 3)
+assert(math.abs(U:Cash(p) - 3.795) < 1e-12)
+assert(U:Luck(p, 1) == 1.2 and U:Cooldown(p, 3) == 3)
 local originalCapacity = Income:StorageUnits(p, false)
 p.SocialRuntime, p.Social.InviteExpires = nil, 0
 assert(Income:StorageUnits(p, false) == originalCapacity)
@@ -63,17 +63,30 @@ assert(not Rules.Award(p, 1, 7, 1300))
 assert(not Rules.Award(p, 1, 2, 86400))
 assert(Rules.Award(p, 1, 7, 86400))
 assert(not Rules.Award(p, 1, 1, 86400))
-assert(Rules.Multiplier(p, p.Social.InviteExpires) == 1)
+assert(Rules.Luck(p, p.Social.InviteExpires) == 1)
 p = profile()
 p.Social.InviteExpires = 1050
-assert(math.abs(Rules.Average(p, 1000, 1100) - 1.1) < 1e-12)
+assert(Rules.Luck(p, 1049) == 1.2 and Rules.Luck(p, 1050) == 1)
 local baseline = profile()
 Income:Settle(baseline, 1100, false)
 Income:Settle(p, 1100, false)
-assert(math.abs(p.Income.Pending["1"] / baseline.Income.Pending["1"] - 1.1) < 0.001)
+assert(p.Income.Pending["1"] == baseline.Income.Pending["1"])
+for _, expires in ipairs({ 0, 1050, 2000 }) do
+	p = profile()
+	p.Social.InviteExpires = expires
+	Income:Settle(p, 1100, true)
+	local offline = profile()
+	Income:Settle(offline, 1100, true)
+	assert(p.Income.Pending["1"] == offline.Income.Pending["1"])
+end
 p = profile()
 p.SocialRuntime = { GroupMember = true, FriendCount = 11 }
-assert(Rules.Average(p, 1000, 1100, true) == 1, "Offline time cannot retain in-server friends or cached group status")
+assert(Rules.Base(p, true) == 1, "Offline time cannot retain in-server friends or cached group status")
 print(
-	"Social rules: stacking, unaffected luck/speed, migration, corruption, bounded history, daily limits, duplicate referrals and interval expiry passed"
+	"Social rules: separate coin/luck stacking, unaffected speed/offline coins, migration, corruption, bounded history, daily limits, duplicate referrals and interval expiry passed"
 )
+
+p = profile()
+p.Social.InviteExpires = os.time() + Config.InviteSeconds
+assert(U:Luck(p, 1, 1e300) == 1.2e300, "Invite luck must preserve finite uncapped products")
+assert(not pcall(U.Luck, U, p, 1, 1e308, 10), "Reject true overflow instead of clipping luck")

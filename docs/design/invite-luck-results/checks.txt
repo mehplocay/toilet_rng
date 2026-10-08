@@ -1,0 +1,29 @@
+Passed all 27 standalone check-*.luau scripts:
+check-admin.luau
+check-all-pools.luau
+check-audio.luau
+check-autoflush.luau
+check-coin-bounds.luau
+check-display.luau
+check-economy-v2.luau
+check-fairstart.luau
+check-foundation.luau
+check-icons.luau
+check-income.luau
+check-index.luau
+check-leaderboards.luau
+check-mobile-hud.luau
+check-monetization-ids.luau
+check-path-boost.luau
+check-presentation.luau
+check-rebirth.luau
+check-rewards.luau
+check-social.luau
+check-sound-feedback.luau
+check-spawn-lifecycle.luau
+check-spawn.luau
+check-tutorial.luau
+check-ui-layout.luau
+check-upgrades.luau
+check-wave1.luau
+Bundled check-audit.luau and check-ui-runtime.luau use the PowerShell wrappers.

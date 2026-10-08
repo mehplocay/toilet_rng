@@ -11,7 +11,7 @@ Das Spiel ist technisch fertig und gepusht (`main`, Commit `6c6bf36`). Alle Prü
 - Nicht möglich: Selene (fehlt die Roblox-Standardbibliothek), echter Live-Test in Roblox/Studio, echte Käufe (Billing/DataStore live)
 
 ## Was seit gestern dazukam (alles in `main`)
-- Social-Text: großer Text-Block entfernt, nur noch kleiner Link „Invite friends for extra coins“ im Passes-Fenster
+- Social-Text: großer Text-Block entfernt, nur noch kleiner Link „Invite friends for extra luck“ im Passes-Fenster
 - Luck-Cap komplett entfernt (nur technische Grenze: endliche Zahlen, Überlauf wird abgelehnt)
 - Audit 4: 4 Befunde behoben (Rundungsgewinne, Pending-Inflation, Kauf-Antwortfluten, wachsende API-Wartevorgänge), 17 neue Negativtests
 - Handy-HUD: kompakte Leiste, freie Daumenzonen, lesbares FLUSH/AUTO, aufklappbarer Statuschip; extreme Luck-Werte passen jetzt ins Layout
@@ -44,7 +44,7 @@ Includes all 15 other passes: Sparkle Trail, Star Tag, Custom Plot Color, Fast F
 (Quelle der Texte: `docs/design/no-luck-cap.md`, Abschnitt „Exact replacement Creator Hub descriptions“.)
 
 **Erlebnis-Beschreibung (Configure > Settings), Absatz für Social-Boosts ergänzen:**
-Join the Dreadlight Studio group for +10% coins, play with friends for +5% coins per friend in your server (up to +55%), and invite friends for a temporary +20% coin boost (30 minutes per qualified invite, up to 5 per day).
+Join the Dreadlight Studio group for +10% coins, play with friends for +5% coins per friend in your server (up to +55%), and invite friends for a temporary +20% luck boost (30 minutes per qualified invite, up to 5 per day).
 (Mein Entwurf nach `docs/design/social-boosts.md`: Gruppe 1,10x, Freunde +5 % je Freund bis +55 %, qualifizierte Einladung 1,20x. Bitte gegenlesen.)
 
 ## Was nur du tun kannst

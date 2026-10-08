@@ -1,4 +1,4 @@
--- Free coin factors only. Timers use wall time, matching the paid Path Boost.
+-- Free group/friend coin factors and qualified-invite luck. Timers use wall time.
 return {
 	Version = 1,
 	GroupId = 711692751,

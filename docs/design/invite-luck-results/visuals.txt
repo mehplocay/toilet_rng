@@ -1,0 +1,11 @@
+Building project 'Toilet RNG'
+Built project to .template-check.rbxlx
+Verified binary import: 119 models (31 original + 44 environment + 44 Wave 1), 119 MeshParts, 238 content references, manifest sizes, Y-up pivots, Automatic rendering.
+Audit2 full-scene effects envelope: 157 emitters, 349 idle particles/sec, <=418.8 particles at maximum lifetime; 228 billboards (excludes avatars, transient bursts and UI)
+Economy world text passed: ten $124.8M/s nametags at 1248x and $34.5B collection jar
+Headless Ready checks passed: hub 925 parts; worst plot + drop 132; largest toilet 2, item 2; all 119 asset paths covered; 119 normalized templates. Startup calls: 0.
+Hub: 657 meshes, 0 fallback models, 399032 uploaded triangles. Largest populated plot: 84 meshes, 77020 uploaded triangles (primitives/particles/terrain excluded from triangle count).
+Rebirth stairs: levels 0-15, next requirement, cap, release/reassignment, idempotence and bounded cosmetic instances passed
+Rebirth cosmetics: level thresholds, Legend title/aura, idempotence and reset cleanup passed
+Plot tint world: 12 rotated plots, 10 targeted pieces, all colors, geometry unchanged and exact reset
+Auto animation world checks passed: owner persistence, far cycles, budgets, replacement and cleanup

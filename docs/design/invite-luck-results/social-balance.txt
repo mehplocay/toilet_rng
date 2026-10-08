@@ -1,0 +1,34 @@
+SOCIAL BOOSTS: fixed loadout, unchanged base economy; continuous rates before whole-coin rounding
+Scenario | Social coin factor | Invite luck factor | Relative coin-gated time (fixed rates)
+Typical | 1.000x | 1.00x | 100.00%
+Group | 1.100x | 1.00x | 90.91%
+3 friends | 1.150x | 1.00x | 86.96%
+Group + 3 friends + active invite | 1.265x | 1.20x | 79.05%
+Group + 11 friends + active invite | 1.705x | 1.20x | 58.65%
+Tier | Typical single Poop display coins/min | Group + 3 friends + active invite coins/min
+Basic Toilet | 60.000 | 75.900
+Diamond Toilet | 198.000 | 250.470
+Galaxy Toilet | 780.000 | 986.700
+Infinity Flush | 19500.000 | 24667.500
+Invite example assumes the boost is active; actual expiry, qualification, daily limits, flush gates, RNG and collection caps affect elapsed progression.
+
+Invite-only pacing: fixed loadout coin factors are exactly equal
+Coin-gated time: 100% with or without invite. Changed RNG can indirectly change later collection value.
+
+Loadout | Item | Baseline luck | Invite luck | Expected flushes baseline | Expected flushes invite | Change
+Basic | Cosmic Courtesy | 1 | 1.2 | 15000000.000 | 12500000.000 | -16.6667%
+Basic | ??? | 1 | 1.2 | 10000000.667 | 8333334.000 | -16.6667%
+Basic | Infinite Occupied | 1 | 1.2 | 5000000.833 | 4166667.500 | -16.6667%
+Infinity Flush | Cosmic Courtesy | 2.9 | 3.48 | 5172413.793 | 4310344.828 | -16.6667%
+Infinity Flush | ??? | 2.9 | 3.48 | 3448276.529 | 2873563.885 | -16.6667%
+Infinity Flush | Infinite Occupied | 2.9 | 3.48 | 1724138.764 | 1436782.443 | -16.6667%
+Max free + server + daily | Cosmic Courtesy | 53.36 | 64.03 | 281109.445 | 234257.871 | -16.6667%
+Max free + server + daily | ??? | 53.36 | 64.03 | 187406.964 | 156172.581 | -16.6666%
+Max free + server + daily | Infinite Occupied | 53.36 | 64.03 | 93703.982 | 78086.790 | -16.6665%
+Max free + server + daily + VIP + 2x | Cosmic Courtesy | 133.4 | 160.1 | 112443.778 | 93703.148 | -16.6667%
+Max free + server + daily + VIP + 2x | ??? | 133.4 | 160.1 | 74963.185 | 62469.432 | -16.6665%
+Max free + server + daily + VIP + 2x | Infinite Occupied | 133.4 | 160.1 | 37482.093 | 31235.216 | -16.6663%
+Max free + server + daily + VIP + 2x + charge | Cosmic Courtesy | 1334 | 1601 | 11244.378 | 9370.315 | -16.6667%
+Max free + server + daily + VIP + 2x + charge | ??? | 1334 | 1601 | 7496.919 | 6247.543 | -16.6652%
+Max free + server + daily + VIP + 2x + charge | Infinite Occupied | 1334 | 1601 | 3748.959 | 3124.272 | -16.6630%
+Expected flushes use actual sequential outcome probabilities with invite active on every modeled roll; finite awards can expire earlier.

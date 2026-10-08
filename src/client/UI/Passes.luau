@@ -423,7 +423,7 @@ function Passes.Create(gui, remotes)
 	end, C.Blue, { TextSize = 18 })
 	local inviteButton = C.New("TextButton", body, {
 		Name = "InviteFriends",
-		Text = "Invite friends for extra coins",
+		Text = "Invite friends for extra luck",
 		TextColor3 = C.Muted,
 		TextSize = 14,
 		TextWrapped = true,

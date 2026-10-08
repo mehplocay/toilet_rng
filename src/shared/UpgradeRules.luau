@@ -104,7 +104,9 @@ function Rules:RebirthBonus(profile, key)
 end
 function Rules:Luck(profile, tier, ...)
 	assert(type(tier) == "number" and tier >= 1 and tier < math.huge, "Invalid toilet luck")
-	local luck = tier * (1 + self:Effect(profile, "LuckBoost") + self:RebirthBonus(profile, "Luck"))
+	local luck = tier
+		* (1 + self:Effect(profile, "LuckBoost") + self:RebirthBonus(profile, "Luck"))
+		* Social.Luck(profile)
 	assert(luck >= 1 and luck < math.huge, "Non-finite luck")
 	for i = 1, select("#", ...) do
 		local factor = select(i, ...)

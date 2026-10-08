@@ -1,0 +1,17 @@
+Steady display rates: ten best floored expected drops from 60 minutes at current tier; acquisition/slot costs excluded.
+Tier          Passive/s   Active/s   Share   Items
+Basic            968.00     947.00   50.55% 1x PorcelainPoodle, 2x GoldenPoop, 2x TowelTornado, 3x DiscoBidet, 2x BathMatBat
+Dirty           1872.00    1411.16   57.02% 1x FaucetPharaoh, 1x PorcelainPoodle, 2x GoldenPoop, 3x TowelTornado, 3x DiscoBidet
+Golden          4347.20    2081.07   67.63% 1x RoyalFlushFrog, 1x FaucetPharaoh, 2x PorcelainPoodle, 3x GoldenPoop, 3x TowelTornado
+Diamond        10626.00    3200.77   76.85% 1x ToiletBaby, 1x GoldenGargler, 1x RoyalFlushFrog, 2x FaucetPharaoh, 3x PorcelainPoodle, 2x GoldenPoop
+Radioactive    16905.00    5470.76   75.55% 1x ToiletBaby, 1x GoldenGargler, 2x RoyalFlushFrog, 3x FaucetPharaoh, 3x PorcelainPoodle
+Demon          30940.00    8209.90   79.03% 1x Clogtopus, 1x ToiletBaby, 1x GoldenGargler, 2x RoyalFlushFrog, 4x FaucetPharaoh, 1x PorcelainPoodle
+Galaxy         52780.00   13106.97   80.11% 1x Clogtopus, 2x ToiletBaby, 2x GoldenGargler, 3x RoyalFlushFrog, 2x FaucetPharaoh
+CoralCommode   87360.00   17695.35   83.16% 1x LaundryYeti, 1x Clogtopus, 2x ToiletBaby, 2x GoldenGargler, 3x RoyalFlushFrog, 1x FaucetPharaoh
+CloudCushion  131040.00   23608.81   84.73% 1x LaundryYeti, 1x Clogtopus, 2x ToiletBaby, 3x GoldenGargler, 3x RoyalFlushFrog
+ClockworkCloset  230533.33   32146.05   87.76% 1x LaundryYeti, 2x Clogtopus, 3x ToiletBaby, 3x GoldenGargler, 1x RoyalFlushFrog
+DragonKiln    345800.00   56103.85   86.04% 1x LaundryYeti, 2x Clogtopus, 3x ToiletBaby, 3x GoldenGargler, 1x RoyalFlushFrog
+AuroraThrone  518700.00   86535.19   85.70% 1x LaundryYeti, 2x Clogtopus, 3x ToiletBaby, 4x GoldenGargler
+AstralAltar   900900.00  175217.99   83.72% 1x SteamGenie, 1x LaundryYeti, 2x Clogtopus, 4x ToiletBaby, 2x GoldenGargler
+ParadoxPotty 1516666.67  277626.01   84.53% 1x SteamGenie, 2x LaundryYeti, 3x Clogtopus, 4x ToiletBaby
+InfinityFlush 2275000.00  420676.83   84.39% 1x SteamGenie, 2x LaundryYeti, 3x Clogtopus, 4x ToiletBaby
