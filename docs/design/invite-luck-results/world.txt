@@ -1,0 +1,78 @@
+Building project 'Toilet RNG'
+Built project to .template-check.rbxlx
+Verified binary import: 119 models (31 original + 44 environment + 44 Wave 1), 119 MeshParts, 238 content references, manifest sizes, Y-up pivots, Automatic rendering.
+Audit2 full-scene effects envelope: 61 emitters, 145 idle particles/sec, <=174.0 particles at maximum lifetime; 228 billboards (excludes avatars, transient bursts and UI)
+Economy world text passed: ten $124.8M/s nametags at 1248x and $34.5B collection jar
+Headless Empty checks passed: hub 925 parts; worst plot + drop 178; largest toilet 30, item 30; all 119 asset paths covered; 0 normalized templates. Startup calls: 0.
+Hub: 0 meshes, 657 fallback models, 0 uploaded triangles. Largest populated plot: 0 meshes, 0 uploaded triangles (primitives/particles/terrain excluded from triangle count).
+Rebirth stairs: levels 0-15, next requirement, cap, release/reassignment, idempotence and bounded cosmetic instances passed
+Rebirth cosmetics: level thresholds, Legend title/aura, idempotence and reset cleanup passed
+Plot tint world: 12 rotated plots, 10 targeted pieces, all colors, geometry unchanged and exact reset
+Auto animation world checks passed: owner persistence, far cycles, budgets, replacement and cleanup
+Peak envelope: 3421 parts, 0 meshes, 0 mesh triangles, 7110 instances; 25 persistent skyline meshes / 21186 triangles; 70 hub beams.
+Map checks passed: 12 plots, 49,152 friend cases, 15542 reachable samples, 44 environment templates, separate walk/boundary collision and peak budgets.
+Building project 'Toilet RNG'
+Built project to .template-check.rbxlx
+Verified binary import: 119 models (31 original + 44 environment + 44 Wave 1), 119 MeshParts, 238 content references, manifest sizes, Y-up pivots, Automatic rendering.
+Audit2 full-scene effects envelope: 157 emitters, 349 idle particles/sec, <=418.8 particles at maximum lifetime; 228 billboards (excludes avatars, transient bursts and UI)
+Economy world text passed: ten $124.8M/s nametags at 1248x and $34.5B collection jar
+Headless Ready checks passed: hub 925 parts; worst plot + drop 132; largest toilet 2, item 2; all 119 asset paths covered; 119 normalized templates. Startup calls: 0.
+Hub: 657 meshes, 0 fallback models, 399032 uploaded triangles. Largest populated plot: 84 meshes, 77020 uploaded triangles (primitives/particles/terrain excluded from triangle count).
+Rebirth stairs: levels 0-15, next requirement, cap, release/reassignment, idempotence and bounded cosmetic instances passed
+Rebirth cosmetics: level thresholds, Legend title/aura, idempotence and reset cleanup passed
+Plot tint world: 12 rotated plots, 10 targeted pieces, all colors, geometry unchanged and exact reset
+Auto animation world checks passed: owner persistence, far cycles, budgets, replacement and cleanup
+Peak envelope: 2533 parts, 1689 meshes, 1382312 mesh triangles, 6594 instances; 25 persistent skyline meshes / 21186 triangles; 70 hub beams.
+Map checks passed: 12 plots, 49,152 friend cases, 15542 reachable samples, 44 environment templates, separate walk/boundary collision and peak budgets.
+Building project 'Toilet RNG'
+Built project to .template-check.rbxlx
+Verified binary import: 119 models (31 original + 44 environment + 44 Wave 1), 119 MeshParts, 238 content references, manifest sizes, Y-up pivots, Automatic rendering.
+Audit2 full-scene effects envelope: 157 emitters, 349 idle particles/sec, <=418.8 particles at maximum lifetime; 228 billboards (excludes avatars, transient bursts and UI)
+Economy world text passed: ten $124.8M/s nametags at 1248x and $34.5B collection jar
+Headless Mixed checks passed: hub 925 parts; worst plot + drop 132; largest toilet 2, item 2; all 119 asset paths covered; 118 normalized templates. Startup calls: 0.
+Hub: 639 meshes, 18 fallback models, 370592 uploaded triangles. Largest populated plot: 83 meshes, 75440 uploaded triangles (primitives/particles/terrain excluded from triangle count).
+Rebirth stairs: levels 0-15, next requirement, cap, release/reassignment, idempotence and bounded cosmetic instances passed
+Rebirth cosmetics: level thresholds, Legend title/aura, idempotence and reset cleanup passed
+Plot tint world: 12 rotated plots, 10 targeted pieces, all colors, geometry unchanged and exact reset
+Auto animation world checks passed: owner persistence, far cycles, budgets, replacement and cleanup
+Peak envelope: 2533 parts, 1659 meshes, 1334912 mesh triangles, 6594 instances; 25 persistent skyline meshes / 21186 triangles; 70 hub beams.
+Map checks passed: 12 plots, 49,152 friend cases, 15542 reachable samples, 44 environment templates, separate walk/boundary collision and peak budgets.
+Building project 'Toilet RNG'
+Built project to .template-check.rbxlx
+Verified binary import: 119 models (31 original + 44 environment + 44 Wave 1), 119 MeshParts, 238 content references, manifest sizes, Y-up pivots, Automatic rendering.
+Audit2 full-scene effects envelope: 61 emitters, 145 idle particles/sec, <=174.0 particles at maximum lifetime; 228 billboards (excludes avatars, transient bursts and UI)
+Economy world text passed: ten $124.8M/s nametags at 1248x and $34.5B collection jar
+Headless Invalid checks passed: hub 925 parts; worst plot + drop 178; largest toilet 30, item 30; all 119 asset paths covered; 0 normalized templates. Startup calls: 0.
+Hub: 0 meshes, 657 fallback models, 0 uploaded triangles. Largest populated plot: 0 meshes, 0 uploaded triangles (primitives/particles/terrain excluded from triangle count).
+Rebirth stairs: levels 0-15, next requirement, cap, release/reassignment, idempotence and bounded cosmetic instances passed
+Rebirth cosmetics: level thresholds, Legend title/aura, idempotence and reset cleanup passed
+Plot tint world: 12 rotated plots, 10 targeted pieces, all colors, geometry unchanged and exact reset
+Auto animation world checks passed: owner persistence, far cycles, budgets, replacement and cleanup
+Peak envelope: 3421 parts, 0 meshes, 0 mesh triangles, 7110 instances; 25 persistent skyline meshes / 21186 triangles; 70 hub beams.
+Map checks passed: 12 plots, 49,152 friend cases, 15542 reachable samples, 44 environment templates, separate walk/boundary collision and peak budgets.
+Building project 'Toilet RNG'
+Built project to .template-check.rbxlx
+Verified binary import: 119 models (31 original + 44 environment + 44 Wave 1), 119 MeshParts, 238 content references, manifest sizes, Y-up pivots, Automatic rendering.
+Audit2 full-scene effects envelope: 157 emitters, 349 idle particles/sec, <=418.8 particles at maximum lifetime; 228 billboards (excludes avatars, transient bursts and UI)
+Economy world text passed: ten $124.8M/s nametags at 1248x and $34.5B collection jar
+Headless Scaled checks passed: hub 925 parts; worst plot + drop 132; largest toilet 2, item 2; all 119 asset paths covered; 119 normalized templates. Startup calls: 0.
+Hub: 657 meshes, 0 fallback models, 399032 uploaded triangles. Largest populated plot: 84 meshes, 77020 uploaded triangles (primitives/particles/terrain excluded from triangle count).
+Rebirth stairs: levels 0-15, next requirement, cap, release/reassignment, idempotence and bounded cosmetic instances passed
+Rebirth cosmetics: level thresholds, Legend title/aura, idempotence and reset cleanup passed
+Plot tint world: 12 rotated plots, 10 targeted pieces, all colors, geometry unchanged and exact reset
+Auto animation world checks passed: owner persistence, far cycles, budgets, replacement and cleanup
+Peak envelope: 2533 parts, 1689 meshes, 1382312 mesh triangles, 6594 instances; 25 persistent skyline meshes / 21186 triangles; 70 hub beams.
+Map checks passed: 12 plots, 49,152 friend cases, 15542 reachable samples, 44 environment templates, separate walk/boundary collision and peak budgets.
+Building project 'Toilet RNG'
+Built project to .template-check.rbxlx
+Verified binary import: 119 models (31 original + 44 environment + 44 Wave 1), 119 MeshParts, 238 content references, manifest sizes, Y-up pivots, Automatic rendering.
+Audit2 full-scene effects envelope: 61 emitters, 145 idle particles/sec, <=174.0 particles at maximum lifetime; 228 billboards (excludes avatars, transient bursts and UI)
+Economy world text passed: ten $124.8M/s nametags at 1248x and $34.5B collection jar
+Headless Late checks passed: hub 925 parts; worst plot + drop 178; largest toilet 30, item 30; all 119 asset paths covered; 0 normalized templates. Startup calls: 0.
+Hub: 0 meshes, 657 fallback models, 0 uploaded triangles. Largest populated plot: 0 meshes, 0 uploaded triangles (primitives/particles/terrain excluded from triangle count).
+Rebirth stairs: levels 0-15, next requirement, cap, release/reassignment, idempotence and bounded cosmetic instances passed
+Rebirth cosmetics: level thresholds, Legend title/aura, idempotence and reset cleanup passed
+Plot tint world: 12 rotated plots, 10 targeted pieces, all colors, geometry unchanged and exact reset
+Auto animation world checks passed: owner persistence, far cycles, budgets, replacement and cleanup
+Peak envelope: 3421 parts, 0 meshes, 0 mesh triangles, 7110 instances; 25 persistent skyline meshes / 21186 triangles; 70 hub beams.
+Map checks passed: 12 plots, 49,152 friend cases, 15542 reachable samples, 44 environment templates, separate walk/boundary collision and peak budgets.

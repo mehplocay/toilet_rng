@@ -161,7 +161,7 @@ function Income:Settle(profile, now, offline)
 			else c.OfflineMinutes
 		elapsed = math.min(elapsed, math.min(minutes, c.MaxOfflineMinutes) * 60)
 	end
-	local socialFactor = Social.Average(profile, ledger.UpdatedAt, ledger.UpdatedAt + elapsed, offline)
+	local socialFactor = Social.Base(profile, offline)
 	ledger.UpdatedAt = now -- Consume capped time too; reconnecting cannot reclaim it.
 	local rates = self:Rates(profile, socialFactor)
 	local before = self:TotalUnits(profile)

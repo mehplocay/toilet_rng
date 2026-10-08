@@ -79,6 +79,7 @@ $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-no-luck-cap.luau'
 $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'purchase-ui-checks.luau')))
 $parts.Add('H.CheckPurchaseUI(); print("Purchase UI regressions passed")')
 $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-social.luau')))
+$parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-invite-luck.luau')))
 $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-plot-color.luau')))
 $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'plot-color-cosmetic-checks.luau')))
 $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-tutorial.luau')))

@@ -80,6 +80,7 @@ if (!$Baseline -and !$Audit2Baseline -and !$DisplayCollectBaseline) {
 $parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'audit-social.luau')))
 if (!$Baseline -and !$Audit2Baseline -and !$DisplayCollectBaseline) {
     $parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'audit4-server.luau')))
+    $parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'audit-invite-luck.luau')))
 }
 $parts.Add('runPresentationAudit(test, environment, server)')
 $parts.Add('do')
@@ -100,6 +101,7 @@ if (!$Baseline -and !$Audit2Baseline -and !$DisplayCollectBaseline) {
     $parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'audit-cosmetic-merge.luau')))
     $parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'ui-plot-color.luau')))
     $parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'ui-vip-luck.luau')))
+    $parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'ui-invite-luck.luau')))
     $parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'plot-color-cosmetic-checks.luau')))
     $parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'celebration-ui-checks.luau')))
     $parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'ui-tutorial.luau')))

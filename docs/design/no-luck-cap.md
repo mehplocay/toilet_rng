@@ -10,7 +10,7 @@ Branch: fix/no-luck-cap. No commit or push. No Creator Hub edits or publication.
 4. Removed Config/Rebirth.LuckBonusCap = 1 (an unused configuration ceiling); future configured bonuses above 1 are explicitly tested. Current reward numbers are unchanged.
 5. Removed LuckCap/LuckCapped payload fields, the HUD's >=10 cap marker, upgrade cap/+900% copy, and obsolete cap expectations. Updated pass/product cards, odds/tooltip, tutorial, rebirth text, catalog and design/research documentation. Historical task briefs remain unchanged.
 
-The formula is toiletLuck * (1 + luckUpgradeEffect + rebirthLuckBonus) * server * daily * eligibleVIP1.25 * eligibleDoubleLuck2 * reviewedCharge10. Existing additive/multiplicative rules, all source values, upgrade/rebirth content levels and all prices are unchanged. Speed, cooldown, money rules and charge-storage capacity are unchanged.
+The formula is toiletLuck * (1 + luckUpgradeEffect + rebirthLuckBonus) * invite1.20 * server * daily * eligibleVIP1.25 * eligibleDoubleLuck2 * reviewedCharge10. Existing additive/multiplicative rules, all source values, upgrade/rebirth content levels and all prices are unchanged. Speed, cooldown, money rules and charge-storage capacity are unchanged.
 
 Only positive finite luck is accepted; NaN, infinity and actual multiplication overflow are rejected, never silently clipped to a finite ceiling. Per-item check = min(1, totalLuck / baseDenominator), with rare-first independent checks, stable ID ordering and unconditional Poop fallback. Every accepted flush awards one item. At total luck >=15,000,000, Cosmic Courtesy is certain and all later outcomes, including Celestial and Poop, have probability zero.
 

@@ -27,7 +27,7 @@ do
 			)
 		)
 		local invite = passes.Panel:FindFirstChild("InviteFriends", true)
-		assert(invite.Visible and invite.Text == "Invite friends for extra coins")
+		assert(invite.Visible and invite.Text == "Invite friends for extra luck")
 		assert(invite.AbsoluteSize.Y == 44 and invite.AbsoluteSize.X > 0 and invite.AbsoluteSize.X <= size[1])
 		assert(invite.AbsolutePosition.Y >= passes.Panel.AbsolutePosition.Y)
 		local refresh = passes.Panel:FindFirstChild("Refresh passes", true)

@@ -1,0 +1,440 @@
+Production monetization IDs passed: 16 passes + 8 products wired; Lucky charge storage preserved; luck has no ceiling
+PASS H1: overlapping same-server rejoin cannot acquire the departing session
+PASS H1: duplicate Load cannot replace active unsaved progress
+PASS H2: expired lease denies gameplay while a save is yielded
+PASS H2: an expired save cannot revive its own lease
+PASS H2: delayed load response cannot expose an expired profile
+PASS ownership rechecked on UpdateAsync callback replay, release=false
+PASS ownership rechecked on UpdateAsync callback replay, release=true
+PASS save snapshot and simultaneous close preserve later mutations exactly once
+PASS M1: shutdown waits for a load and its release
+PASS duplicate in-flight load and leave during load cannot revive a profile
+PASS new session token survives an old save resuming after takeover
+PASS load retry after ambiguous commit retains one ownership token
+PASS save retries use an immutable snapshot and fail closed after exhaustion
+PASS successful retry and renewal retain mutations for final close
+PASS store unavailable, Studio=true
+PASS store unavailable, Studio=false
+PASS shutdown deadline stays bounded when the backend never returns
+PASS merged profile fields survive sanitize, save and rejoin
+PASS all actual inbound handlers reject extra arguments and outbound remotes do nothing
+PASS economic argument fuzzing cannot change balances or reserved copies
+PASS server handlers enforce token limits and preference types
+PASS audio preferences validate, rate limit, persist and migrate legacy profiles
+PASS music default migrates once and custom 25 percent survives save and reload
+PASS manual, prompt and auto flush share cooldown and server-owned RNG
+PASS manual and automatic flush reject foreign plots and non-finite distances
+PASS auto flush shares manual rate limits and stops on character removal
+PASS duplicate daily claim during a yielding save credits only once
+PASS developer grant guard, Studio=false
+PASS developer grant guard, Studio=true
+PASS PlayerRemoving cleans service tables and late entitlement lookup
+PASS income migration, offline cap and ambiguous acquisition consume time once
+PASS income settles before display removal, replacement and tier change; reservations remain
+PASS income collect validates geometry, ownership, life, arguments and shared rate limit
+PASS income accepts a live owned collect pad but rejects a removed pad and supplied positions
+PASS income delayed collect save, duplicate requests and overlapping rejoin cannot duplicate
+PASS income load/save callback replay and takeover preserve atomic wallet/pending
+PASS income collect retry after committed response loss cannot credit twice
+PASS income departure timestamp freezes before a queued final save yields
+PASS merge: capped RNG odds, cash, lifetime collection and animation survive manual/auto reveals
+PASS upgrades: remote fuzz, server price and token bucket
+PASS upgrades: delayed save and duplicate purchase cannot double debit or level
+PASS upgrades: committed response loss retries one immutable transaction
+PASS upgrades: expired lease and foreign takeover reject purchases and save success
+PASS upgrades: migration sanitizes new fields and preserves legacy displays through save
+PASS upgrades: cash settles past income before changing rates; index and slots stay bounded
+PASS upgrades: 0.4s shared cooldown admits legitimate requests and rejects bursts
+PASS upgrades: all auto levels use slower intervals than the shared cooldown and never catch up
+PASS upgrades: numeric ceilings reject the entire flush before currency or inventory changes
+PASS upgrades: display purchases and index claims commute and survive migration
+PASS upgrades: maximum offline tank survives ambiguous load and cannot be reclaimed
+PASS rebirth: atomic replacement keeps discoveries, first copies, displays, rewards and settings
+PASS rebirth: no gameplay can mutate either side of a yielded reset; departure serializes full replacement
+PASS rebirth: refuses while another save is pending, then rejects stale generation even when eligible again
+PASS rebirth: exhausted errors keep one complete side; committed=false
+PASS rebirth: exhausted errors keep one complete side; committed=true
+PASS rebirth: lost committed response retries same snapshot, never grants a second starter bonus
+PASS rebirth: lease takeover or expiry during callback replay never overwrites the new owner
+PASS rebirth: malformed requests, requirements, cap and numeric ceilings reject before any reset
+PASS rebirth: offline accrual cannot restore cleared pending; retained copies and permanent income survive
+PASS rebirth: flushes count once and persist; legacy profiles migrate only lifetime first-run progress
+PASS rebirth: high-level announcements share drop cooldown, friend/server audiences and lifecycle cleanup
+PASS rebirth: saturated coin/index slots, high-water clocks and high-level income round-trip consistently
+PASS rebirth: remote spam bounds rejection responses and store writes
+PASS audit2: all tier/track/rebirth/boost combinations preserve full luck products and the cooldown floor
+Audit2 payload proxy: State 37042 + Flush result 228 JSON-equivalent bytes (not Roblox wire encoding)
+Audit2 headless CPU: 1200 real handler flushes in 1.5363s; 1.280ms/flush (mock world/network; not engine frame time)
+PASS audit2: twelve-player capped flush traffic remains two direct messages per award
+PASS audit2: Studio persistence is isolated from production
+PASS audit2: Studio grants reject Earned saturation atomically
+PASS audit2: yielding saves cannot accumulate upgrade/index/daily save waiters
+PASS audit2: daily save completion after departure sends no stale success
+PASS audit2: unexpected/replayed product receipts defer without granting
+PASS audit2: zero/unknown passes never query, prompt or grant
+PASS audit2: verified pass grant survives a yielded stale lookup and callback replay
+PASS audit2: event banners use bounded account identity instead of display-name impersonation
+PASS display: protected copies and duplicates reserve one physical copy per slot
+PASS collect: ten-pad sweep stays responsive while sustained durable writes remain bounded
+PASS collect: exact pad authorization rejects forged slots, geometry, dead owners and obsolete pages
+PASS collect: touch/prompt race, departure and rejoin preserve the uncollected slot
+PASS display: unknown items and oversubscribed copies cannot reach the live remote
+PASS collect: pad collects only its own ledger and central jar collects the remainder
+PASS economy v2: billion-coin collect retries, saves and rejoins without fractional loss
+PASS economy v2: 9e15-subcoin sanitizer and collect preserve the last fraction
+PASS economy v2: eight-hour Secret offline award consumes elapsed time once
+PASS economy v2: cash, toilet and rebirth multipliers settle only future seconds
+PASS economy v2: wallet and lifetime ceilings retain unpaid large pending balances
+PASS admin: live allowlist only, names cannot authorize or receive modules/results
+PASS admin: every private request rechecks authorization and the engine sender
+PASS admin: argument bounds, missing/extra values, replay and mutation bucket
+PASS admin: normal State has no admin metadata, backup, token or UI flags
+PASS admin: mutations sanitize through the same profile schema and persist before success
+PASS admin permanent: extended tracks, capped slots, items and coin-gated rebirth survive saves
+PASS admin: full display slots, pending caps and numeric ceilings reject atomically
+PASS admin economy: full upgraded ledger rejects pending overflow without clipping or saving
+PASS admin: reset requires an expiring one-use token and saves a bounded reloadable backup
+PASS admin: import strips arbitrary keys, nested backups, spoofed rarest stats and offline timestamps
+PASS admin: held saves exclude all gameplay mutations, no second admin save queues
+PASS admin: lease loss cannot acknowledge success, NoPersistence never writes
+PASS admin: forced presentation bypasses natural counters, rarest board and event dedupe
+PASS admin: group cache expires, errors deny, removal cancels an in-flight authorization
+PASS admin: real private delivery parents modules only to the allowed PlayerGui and removes them
+PASS admin: profile reset cannot rewind natural result/event dedupe IDs
+PASS admin: movement and test unlock leases expire, restore collisions, and never change purchased passes
+PASS admin: guarded saves never extend movement past the data lease
+PASS admin: forced chat dedupe never suppresses the next natural flush
+PASS chat: every Rare+ tier reaches finder once; Epic/Legendary friends and Mythic+ server only
+PASS chat: rapid low finds coalesce with exact count/best; All includes common; Off excludes all
+PASS chat: blocked friendship cannot delay self summaries; session/TTL/settings/removal invalidate pending
+PASS chat: independent admin/natural dedupe, tagged summaries and bounded pending storage
+PASS chat: mode fuzz/migration, rate limit, independent settings persistence and rebirth retention
+PASS native list: exactly three public stats in priority order, exact large Coins, changed-only values and cleanup
+PASS catalog receipts: malformed identity and saturated balances defer without partial grants
+PASS catalog receipts: grant and PurchaseId save atomically; replay and rejoin never double grant
+PASS catalog receipts: concurrent receipt, leaving during save and rejoin
+PASS catalog receipts: exhausted save failure and rejoin, committed=false
+PASS catalog receipts: exhausted save failure and rejoin, committed=true
+PASS catalog receipts: response loss retries same grant and callback takeover fails closed
+PASS catalog receipts: bounded history archives before eviction; very old replay and archive failure
+PASS catalog receipts: disconnect during archive lookup, unknown/id-zero and nonpersistent profiles defer
+PASS catalog products: server quote survives rebirth and rejoin; client cannot supply coins
+PASS catalog products: path timer extends once per receipt, persists, and zero-id prompts are inert
+PASS catalog entitlements: API refresh, callback replay and cached failure preserve VIP without adding slots
+PASS catalog cash: sales, service, passive, daily and offline caps honor paid factors with separate policy-gated luck
+PASS catalog VIP chest: yielding save, replay, rejoin and day boundary grant once
+PASS rebirth displays: highest slot, gaps, reservations, settlement, rejoin and replay remain intact
+PASS path zones: actual authored route centers, all rotated plots and off-map positions
+PASS catalog auto collect: anywhere for owned living plot; fractional/manual ledgers cannot double credit
+PASS catalog prompts: cancellation, failed prompt, saved-offer rejoin and spoofed completion never grant
+PASS catalog receipts: early join delivery waits for the lease; no default/in-memory grant
+PASS path service: base restore, VIP/product cap, expiry, overrides, death, respawn and cleanup
+PASS rebirth capacity: free slot upgrades and index minima survive empty and sparse displays
+PASS merge commerce: admin reset/import preserve receipts, quotes, passes and VIP claim identity
+PASS merge movement: actual admin speed and expiry coexist with paths, starts first=false
+PASS merge movement: actual admin speed and expiry coexist with paths, starts first=true
+PASS merge economy: paid offline ledger round-trips exact fractions and collects only once
+PASS merge permanent/catalog: uncapped cash applies to maximum progression, sales, service, income and quoted receipts
+PASS anywhere: compact jackpot still records the item, server luck and existing chat announcement
+PASS anywhere: unlock and living owner authorize hub/path/plot auto, manual proximity stays enforced
+PASS anywhere: forged automatic path cannot bypass toggle, death, ownership or lease
+PASS anywhere: manual/auto share reservations and tokens across travel at the 0.4s floor
+PASS idle: no heartbeat pauses at 30 minutes, stays enabled, resumes without catch-up
+PASS idle: malformed timestamps and spam cannot renew activity or buy faster rolls
+PASS offline: all tank levels and optional Plus use half rates with a 24-hour hard cap
+PASS offline: full storage timing, bounded reports, fractions, empty display and backward clock
+PASS offline: join Collect transfers only offline coins at distance; active income remains
+PASS offline: ordinary pads consume the same credit; saturated wallet leaves remaining window credit
+PASS offline: dead, missing, foreign and expired sessions cannot collect the window
+PASS offline: held window save blocks pad races and overlapping rejoin, then persists one transfer
+PASS offline: exhausted window save recovers one complete ledger on rejoin, committed=false
+PASS offline: exhausted window save recovers one complete ledger on rejoin, committed=true
+PASS offline: acquisition response loss and callback replay retain the report and no duplicate elapsed time
+PASS offline: cross-server takeover during window-save callback cannot overwrite the new owner
+PASS auto animation: far cycles stop cleanly on disable
+PASS auto animation: far cycles stop cleanly on idle
+PASS auto animation: far cycles stop cleanly on respawn
+PASS auto animation: far cycles stop cleanly on leave
+PASS auto animation: far cycles stop cleanly on dead
+PASS auto animation: disable during a paid save cannot restart presentation on completion
+PASS permanent: old caps migrate once without coins, levels or slots being minted
+PASS permanent: extended caps and malformed numbers round-trip without inflation
+PASS permanent: rebirth retains all permanent state and only displayed inventory copies
+PASS permanent: every coin gate rejects one coin short, pending income and stale generations
+PASS permanent: spending gate coins before rebirth prevents reset; collection races serialize
+PASS permanent: new cost boundaries, milestone titles and caps cannot be replayed
+PASS permanent: full luck applies to every rarity without a total cap
+PASS permanent: level 100 purchase survives committed response loss and rejects both replay generations
+PASS merged rebirth/catalog: bundle and overlapping VIP grant only the free R10 capacity exactly once
+PASS rebirth rewards: exact targets, all rows, lookup and existing-level migration
+PASS rebirth rewards: R10 slots apply once at migration and preserve occupied and legacy capacity
+PASS rebirth rewards: free Auto Collect has the same living-owner, save and ledger guards
+PASS rebirth rewards: R10 response loss, reset replay and rejoin grant only two slots
+PASS rebirth rewards: multiplicative upgrades, toilet and paid factors, uncapped luck and speed floor
+PASS rebirth rewards: R15 with both cash passes stays inside exact ledger and wallet ceilings
+PASS rebirth rewards: configured chat tag composes with VIP and preserves filtered prefix
+PASS extended product replay, double grant and rejoin: Coins10Minutes
+PASS extended product interrupted save/rejoin: Coins10Minutes committed=false
+PASS extended product interrupted save/rejoin: Coins10Minutes committed=true
+PASS extended product replay, double grant and rejoin: Coins1Hour
+PASS extended product interrupted save/rejoin: Coins1Hour committed=false
+PASS extended product interrupted save/rejoin: Coins1Hour committed=true
+PASS extended product replay, double grant and rejoin: Coins6Hours
+PASS extended product interrupted save/rejoin: Coins6Hours committed=false
+PASS extended product interrupted save/rejoin: Coins6Hours committed=true
+PASS extended product replay, double grant and rejoin: PathBoost10Minutes
+PASS extended product interrupted save/rejoin: PathBoost10Minutes committed=false
+PASS extended product interrupted save/rejoin: PathBoost10Minutes committed=true
+PASS extended product replay, double grant and rejoin: Coins24Hours
+PASS extended product interrupted save/rejoin: Coins24Hours committed=false
+PASS extended product interrupted save/rejoin: Coins24Hours committed=true
+PASS extended product replay, double grant and rejoin: LuckyFlush1
+PASS extended product interrupted save/rejoin: LuckyFlush1 committed=false
+PASS extended product interrupted save/rejoin: LuckyFlush1 committed=true
+PASS extended product replay, double grant and rejoin: LuckyFlush5
+PASS extended product interrupted save/rejoin: LuckyFlush5 committed=false
+PASS extended product interrupted save/rejoin: LuckyFlush5 committed=true
+PASS extended product replay, double grant and rejoin: LuckyFlush20
+PASS extended product interrupted save/rejoin: LuckyFlush20 committed=false
+PASS extended product interrupted save/rejoin: LuckyFlush20 committed=true
+PASS extended policy: restricted, error, missing flag, stale cache and leave fail closed
+PASS extended policy: delayed lookup after departure cannot reinsert eligibility
+PASS extended odds: every tier and multiplier matches roll entries and exact rarity sums
+PASS extended Lucky use: review, stale odds, malformed request, atomic award and rejoin
+PASS extended Lucky use save failure is all-or-nothing: false
+PASS extended Lucky use save failure is all-or-nothing: true
+PASS extended counters: sanitize, capacity, id-zero and admin preservation
+PASS extended bundle: implies all 15 other passes, no consumables or slots, and persists
+PASS extended VIP pad: ownership, health, finite distance, cooldown/rejoin and ledger caps
+PASS extended receipt departure during durable grant: Coins10Minutes
+PASS extended receipt departure during durable grant: Coins1Hour
+PASS extended receipt departure during durable grant: Coins6Hours
+PASS extended receipt departure during durable grant: PathBoost10Minutes
+PASS extended receipt departure during durable grant: Coins24Hours
+PASS extended receipt departure during durable grant: LuckyFlush1
+PASS extended receipt departure during durable grant: LuckyFlush5
+PASS extended receipt departure during durable grant: LuckyFlush20
+PASS extended policy changes across prompt-save and receipt-archive yields reject without grant
+PASS extended paid auto save cannot block other players or spawn another save for its owner
+PASS extended early Lucky receipt waits for join-time policy eligibility
+PASS free slots: exact catalog and unchanged bundle benefits
+PASS free slots: purchase, refresh, replay and rejoin never grant slots: SparkleTrail
+PASS free slots: purchase, refresh, replay and rejoin never grant slots: VIPStar
+PASS free slots: purchase, refresh, replay and rejoin never grant slots: CustomPlotColor
+PASS free slots: purchase, refresh, replay and rejoin never grant slots: FastFlush
+PASS free slots: purchase, refresh, replay and rejoin never grant slots: DoubleCash
+PASS free slots: purchase, refresh, replay and rejoin never grant slots: AutoCollect
+PASS free slots: purchase, refresh, replay and rejoin never grant slots: OfflinePlus
+PASS free slots: purchase, refresh, replay and rejoin never grant slots: VIPPack
+PASS free slots: purchase, refresh, replay and rejoin never grant slots: DoubleLuck
+PASS free slots: purchase, refresh, replay and rejoin never grant slots: RainbowName
+PASS free slots: purchase, refresh, replay and rejoin never grant slots: ConfettiReveal
+PASS free slots: purchase, refresh, replay and rejoin never grant slots: GoldenName
+PASS free slots: purchase, refresh, replay and rejoin never grant slots: DancePack
+PASS free slots: purchase, refresh, replay and rejoin never grant slots: ToiletGlow
+PASS free slots: purchase, refresh, replay and rejoin never grant slots: Companion
+PASS free slots: purchase, refresh, replay and rejoin never grant slots: UltimateBundle
+PASS free slots: saved legacy capacity survives migration/rebirth/rejoin 4/false
+PASS free slots: saved legacy capacity survives migration/rebirth/rejoin 4/true
+PASS free slots: saved legacy capacity survives migration/rebirth/rejoin 5/false
+PASS free slots: saved legacy capacity survives migration/rebirth/rejoin 5/true
+PASS free slots: saved legacy capacity survives migration/rebirth/rejoin 8/false
+PASS free slots: saved legacy capacity survives migration/rebirth/rejoin 8/true
+PASS free slots: saved legacy capacity survives migration/rebirth/rejoin 10/false
+PASS free slots: saved legacy capacity survives migration/rebirth/rejoin 10/true
+PASS free slots: saved legacy capacity survives migration/rebirth/rejoin 12/false
+PASS free slots: saved legacy capacity survives migration/rebirth/rejoin 12/true
+PASS free slots: saved legacy capacity survives migration/rebirth/rejoin 100/false
+PASS free slots: saved legacy capacity survives migration/rebirth/rejoin 100/true
+PASS free slots: coin upgrades and index claims still reach ten without passes
+PASS cash layers: fractional paid accrual is partition-invariant and never multiplied on collection
+PASS cash layers: every reward, Cash level, toilet and paid combination multiplies without caps
+PASS cash layers: bundle receipts credit all coin packs once without adding a multiplier
+PASS cash layers: uncapped fractional accrual, legacy rate sharing, offline saturation and exact collection
+PASS cash layers: sale/service awards respect both wallet and lifetime ceilings
+PASS rebirth retune: R5 and R15 perks survive actual reset, migration, save and rejoin
+PASS wave1: JSON parity, rarity colors/order, pool membership and icon/template coverage
+PASS wave1: legacy profile migration preserves counts, retiered displays, tiers, rebirth and claims
+PASS wave1: legacy save/rejoin settles retiered displays once and persists new late-tier items
+PASS wave1: complete index grants Celestial and new plaque once without re-awarding legacy claims
+PASS wave1: every item supports authorized admin forced drops and all fifteen toilet tiers
+PASS wave1: Celestial announcement, audio reuse and nine-tier rarity ranking
+PASS linear luck: 1x, 5x and 10x checks, sequential outcomes, probability clamp and fallback
+PASS linear luck: every production pool has unit mass, probability-clamped checks and uncapped multipliers
+PASS paid luck: verified cache, restricted, failed, missing and expired fail closed without losing VIP perks
+PASS paid luck: bundle, zero ID, owner test unlocks and no persistent luck fields
+PASS paid luck: every tier, free level, pass stack and charge disclose exactly the roll distribution
+PASS paid luck: purchase review token, policy after yielding refresh, expiry and ID zero
+PASS paid luck: creator ownership API grants released passes but never bypasses policy
+PASS paid luck: gaining VIP invalidates an armed charge and allows reviewing the new odds
+PASS uncapped luck: full free/paid/temporary products, extreme disclosure and policy expiry
+PASS uncapped luck: reject NaN/infinity and true overflow, preserve finite huge multipliers
+PASS uncapped luck: saved progression recomputes luck and discards stale capped snapshots on rejoin
+PASS all pools: every tier reaches all 47 items, normalized odds and monotone rare outcomes
+PASS all pools: Lucky disclosure matches current tier rolls and every rarity
+PASS all pools: Basic profiles retain late items, balances, displays and claims across save/rejoin
+PASS wired passes: exact ownership IDs, prompts, callback mapping and bundle implication
+PASS wired Lucky: prompt, receipt, credit, reviewed use and rejoin: LuckyFlush1
+PASS wired Lucky fails closed: LuckyFlush1/zero
+PASS wired Lucky fails closed: LuckyFlush1/restricted
+PASS wired Lucky fails closed: LuckyFlush1/failed
+PASS wired Lucky fails closed: LuckyFlush1/missing
+PASS wired Lucky fails closed: LuckyFlush1/expired
+PASS wired Lucky fails closed: LuckyFlush1/capacity
+PASS wired Lucky: prompt, receipt, credit, reviewed use and rejoin: LuckyFlush5
+PASS wired Lucky fails closed: LuckyFlush5/zero
+PASS wired Lucky fails closed: LuckyFlush5/restricted
+PASS wired Lucky fails closed: LuckyFlush5/failed
+PASS wired Lucky fails closed: LuckyFlush5/missing
+PASS wired Lucky fails closed: LuckyFlush5/expired
+PASS wired Lucky fails closed: LuckyFlush5/capacity
+PASS wired Lucky: prompt, receipt, credit, reviewed use and rejoin: LuckyFlush20
+PASS wired Lucky fails closed: LuckyFlush20/zero
+PASS wired Lucky fails closed: LuckyFlush20/restricted
+PASS wired Lucky fails closed: LuckyFlush20/failed
+PASS wired Lucky fails closed: LuckyFlush20/missing
+PASS wired Lucky fails closed: LuckyFlush20/expired
+PASS wired Lucky fails closed: LuckyFlush20/capacity
+PASS wired products: prompts and durable receipts map every enabled product
+PASS audit3: every public remote rejects surplus arguments without relaying payloads
+PASS audit3: malformed scalar and cyclic payload matrix never mutates player progression
+PASS audit3: twelve-player collection flood is rejected before profile settlement
+PASS audit3: unknown index IDs never echo arbitrary client text or build State
+PASS audit3: unrelated product completion cannot unlock an active quoted prompt
+PASS audit3: exclusive saves pause auto awards without deleting its activity session
+PASS audit3: auto exclusive-save pause still fails closed on death
+PASS audit3: auto exclusive-save pause still fails closed on expiry
+PASS audit3: auto exclusive-save pause still fails closed on closing
+PASS audit3: auto exclusive-save pause still fails closed on leave
+PASS audit3: auto exclusive-save pause still fails closed on stopping
+PASS audit3: table validators reject metatables and cyclic nested payloads
+PASS purchase policy: valid cache survives yielded lookup; expiry and lookup failures hide Lucky
+PASS purchase policy: periodic refresh renews and syncs before expiry without refreshing passes
+PASS purchase refusal responds without prompting or granting: profile
+PASS purchase refusal responds without prompting or granting: persistence
+PASS purchase refusal responds without prompting or granting: archive
+PASS purchase refusal responds without prompting or granting: saving
+PASS purchase refusal responds without prompting or granting: prompting
+PASS purchase refusal responds without prompting or granting: save
+PASS purchase refusal responds without prompting or granting: policy-after-save
+PASS purchase refusal responds without prompting or granting: policy
+PASS purchase refusal responds without prompting or granting: capacity
+PASS purchase refusal responds without prompting or granting: token
+PASS purchase refusal responds without prompting or granting: extra-token
+PASS purchase refusal responds without prompting or granting: stale
+PASS purchase refusal responds without prompting or granting: saved-offer
+PASS purchase refusal responds without prompting or granting: prompt-error
+PASS purchase refusal responds without prompting or granting: rate
+PASS purchase refusal responds without prompting or granting: product
+PASS purchase sync: every pack publishes charges, balances, quotes and prompt state without Refresh
+PASS creator passes: verified ownership stays true throughout yielded refresh
+PASS plot color: handler validates ownership, IDs, payload and rate limit; persists through save/rejoin/rebirth
+PASS uncapped cash: all passes, R15, max upgrades and every display tier
+PASS uncapped cash: future factors saturate only numeric bounds and reject nonfinite inputs
+PASS auto collect anywhere: pass, bundle and R5 collect the manual jar amount at every distance
+PASS auto collect anywhere: server entitlement and lifecycle guards fail closed
+PASS auto collect anywhere: shared 30-minute idle pause works with Auto Flush off and on
+PASS auto collect anywhere: malformed activity and spam cannot renew the shared clock
+PASS auto collect anywhere: empty ticks are quiet, five-second rate limits never multiply income
+PASS auto collect anywhere: manual pad/jar and auto interleavings transfer each pending coin once
+PASS auto collect anywhere: R5 rebirth clears old pending, pauses guarded save and grants free automation
+PASS auto collect anywhere: death, respawn, plot release and leave retain or clean the correct state
+PASS auto collect anywhere: activity before R5 unlock is retained without a second clock
+PASS auto collect anywhere: existing scheduler publishes empty-ledger lifecycle transitions once
+PASS tutorial: real outcomes, failed requests, first-copy display and upgrade checkpoints
+PASS tutorial: sale/toilet branch, automatic flush, admin preview exclusion and existing upgrades
+PASS tutorial: rejoin every checkpoint, skip, replay and malformed/rate-limited requests
+PASS tutorial: rebirth preserves checkpoints and owner reset is self-only and saved
+PASS huge coins: persisted paid quotes, full-wallet deferral, retry and replay across all packs
+PASS huge coins: VIP chest, VIP pad and daily chest retain their income/reward scaling
+PASS huge coins: owner-only commands and server prices survive large profile roundtrips
+PASS social group: join verification, cooldown, false/error fail closed and periodic refresh
+PASS social friends: each live pair is cached once; leave/rejoin updates both sides
+PASS social callbacks: late group/friend results cannot resurrect departed sessions
+PASS social rewards: UTC limit, full duration, immutable dedupe and expiry survive saves
+PASS social referral: inviter may return, invitee departure resets incomplete progress
+PASS social invite save: in-flight save cannot replay an award
+PASS social invite save: ambiguous committed failure reloads its durable dedupe
+PASS social invite: modal and launch data grant nothing; qualified referral commits once across rejoin
+PASS social data: migration drops persisted membership; admin reset/import preserve immutable rewards
+PASS audit4: slow policy lookups cannot accumulate departed-player workers
+PASS audit4: slow ownership lookups cannot accumulate departed-player workers
+PASS audit4: slow friends lookups cannot accumulate departed-player workers
+PASS audit4: frequent settlement cannot inflate a huge pending balance through upward rounding
+PASS audit4: representable wallet steps never undercharge a price or overcredit an award
+PASS audit4: crafted monetary fields and numeric JSON tags cannot poison loaded profiles
+PASS audit4: every toilet retains 47 independent checks and exactly one fallback outcome
+PASS audit4: policy revocation during receipt archive lookup preserves Lucky quote and defers
+PASS audit4: tiny paid credits defer intact instead of vanishing into a huge wallet
+PASS audit4: forged tutorial results, replay flood and reward dismissal cannot grant progression
+PASS audit4: owner-only tutorial reset and huge-money commands deny copied endpoint requests
+PASS audit4: many live friends and join-leave churn never stack beyond eleven verified peers
+PASS audit4: referral spoof payloads and oversized lifetime history fail closed
+PASS audit4: repeated small collections cannot round a huge wallet upward beyond the debited income
+PASS audit4: splitting sales cannot repeatedly round three coins up to four
+PASS audit4: product floods have bounded rejection traffic including surplus arguments
+PASS audit4: departed social lookups have a server-wide in-flight bound under join churn
+PASS invite luck: free factor stacks with every tier, VIP, double luck and reviewed charge; odds equal rolls
+PASS invite luck: restricted, failed, absent and expired paid policy leave free invite luck active
+PASS invite luck: exact mid-session expiry invalidates review without consuming charges
+PASS invite luck: coin grants, sales, quotes and online/offline display accrual ignore invite expiry
+PASS invite luck: existing v1 timer migrates and reloads without minting rewards or coins
+PASS invite luck: ordinary flush checks exact expiry without waiting for social tick
+PASS real flush grants once, snapshots actual odds and routes one chat independently of the existing event banner
+PASS presentation patches reject extra/unknown/oversized input; rate limit and persist independently
+PASS flush ceiling rejection cannot partially grant Coins, items or reveal results
+PASS announcements have one event source, exact friend/server audiences, catalog allowlist and five-second dedupe
+PASS yielding friendship rechecks departure, profile identity, opt-out and expiry; no stale delivery
+PASS leaderstats expose only bounded numeric Coins and catalog Rarest, throttle and remove stale profiles
+PASS purchase UI: tabs, refusals, timeout and owned checks
+Rebirth click UI passed: immediate mouse/touch/gamepad activation, unmet gates, repeated taps, pending lock through refresh/timeout/reopen, result ordering and cleanup
+PASS rebirth click: UI gates and pending lock
+PASS rebirth click: double click commits exactly one rebirth before its delayed result
+PASS rebirth click: one click accepts no client timing or reward claims
+PASS rebirth click: missing coins or flushes cannot rebirth and spam is rate limited
+PASS audit2: completed UI tweens release their targets and cancellation cannot clear a replacement
+PASS audit2: repeated stream-out releases idle effects without Destroying and stream-in registers once
+PASS audit2: far map billboards skip projection while nearby labels retain HUD overlap checks
+PASS audit2: chat escapes catalog markup, strips identity control characters and respects opt-out
+PASS display UI: Display places another owned copy instead of removing the first
+PASS collect UI: owner filtering survives stream-in and ownership changes for jar and pads
+PASS collect UI: popup plays its accent, shows +N and releases all coin flights
+PASS collect UI: income glow follows readiness, camera distance and stream cleanup
+PASS display UI: protected first copy, exact slot selection, Put Back and latest sell reservations
+PASS auto HUD: far confirmed cycles pulse once, expire, pause, disable and respawn
+PASS away UI: join, repeated snapshots, double-click, error, timeout, pad collect and session restore
+PASS away UI: phone/desktop/landscape Collect stays reachable through scrolling
+PASS idle UI: switch shows uptime/countdown, pause has an input-only resume and cleanup
+PASS merged HUD: uncapped luck and idle resume share safe action bounds on every supported viewport
+PASS activity UI: genuine input coalesces, idle/focus loss sends nothing, any input resumes
+PASS far audio: actual class mixer scales the stinger without ducking music
+PASS far reveals: bounded coalesced toast, quiet classes, rarest find retained and no cinematic
+PASS auto collect HUD: running/waiting/paused states share one chip and Still-there action
+PASS chat integration: real solo Rare flush survives missing channels and renders one colored RBXGeneral system line
+PASS chat client: RBXSystem fallback, API startup retries, bounded queue TTL and teardown
+PASS chat client: All/Rare+/Off, admin summaries, authored rich text escaping and preference backlog invalidation
+PASS merge chat/auto: real remote awards retain quiet batches, exact finder counts and public leaderstats
+PASS native list: no custom UI/Tab handler; CoreGui initialization retries then stays enabled after teardown
+PASS merged cosmetics: all rebirth levels and paid trail combinations use one trail and bounded effects
+PASS merged cosmetics: respawn, leave, repeated cleanup and plot reassignment release effects and connections
+PASS merged chat: rebirth tag, exactly one VIP/Star tag and rainbow/gold precedence preserve filtered content
+Plot color UI: swatches, confirmation, ownership gate, purchase timeout isolation and Lucky tab transitions
+Paid luck UI: pass disclosure, reviewed purchase, pending ID, bundle and regional expiry passed
+Paid luck HUD: true active multipliers, charge cap and expired policy passed
+Invite luck UI: exact roll odds, disclosure across 12 viewports, free/restricted HUD and local expiry passed
+PASS plot color: textured/PBR finishes restore exactly; VIP/rebirth coexist; next owner cannot inherit tint
+PASS celebration: HUD starts immediately, visible Stop label and both stop actions clear immediately
+PASS celebration: four independent toggles, menu access and capped repeated presses
+PASS celebration: death, removing and added reset without auto-restart or stale death listeners
+PASS celebration: plot change, rebirth state/success, ownership changes and grants reset the session
+PASS celebration: Reduced applies immediately, Off clears both channels and never restarts
+PASS celebration: all-pass names/trails remain independent and reveal confetti always expires
+PASS celebration: root teardown disconnects every callback and releases UI, companions and death listeners
+PASS celebration: Confetti Reveal without Dance Pack survives ordinary sync and expires once
+PASS celebration: local player leave stops and disconnects the controller immediately
+PASS tutorial UI: all steps stay visible, correct highlights and reachable modal actions at 12 viewports
+PASS tutorial UI: skip each step, acknowledgement retry, rejoin, completed suppression and replay timeout
+PASS tutorial UI: luck odds reserve the guide strip even while HUD remains visible
+PASS tutorial UI: Settings replay control is wired in the real bootstrap
+PASS tutorial UI: empty inventory after rebirth and insufficient upgrade coins have an exit
+Audit regressions: 431 passed, 0 failed

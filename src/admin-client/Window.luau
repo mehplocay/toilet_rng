@@ -480,7 +480,7 @@ function Window.Create(gui, remote, C, reloadLabels)
 				if extra.Social then
 					local social = extra.Social
 					socialState = string.format(
-						"Social boosts (read only)\nGroup: %s | Friends: %d\nInvite: %ds remaining | Today: %d | Lifetime: %d\nCombined social coin factor: %.3fx",
+						"Social boosts (read only)\nGroup: %s | Friends: %d\nInvite luck: %ds remaining | Today: %d | Lifetime: %d\nGroup/friend coin factor: %.3fx",
 						social.GroupStatus,
 						social.FriendCount,
 						social.InviteRemaining,

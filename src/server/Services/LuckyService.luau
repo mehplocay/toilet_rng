@@ -4,6 +4,7 @@ local Config = require(Shared.Config.Monetization)
 local Items, Toilets = require(Shared.Config.Items), require(Shared.Config.Toilets)
 local Roll = require(script.Parent.RollService)
 local Upgrades = require(Shared.UpgradeRules).new(require(Shared.Config.Upgrades))
+local Social = require(Shared.SocialBoostRules)
 local Players = game:GetService("Players")
 local Policy = game:GetService("PolicyService")
 local Lucky = { Policies = {}, Armed = {}, Loading = {}, Lookups = 0 }
@@ -79,6 +80,9 @@ function Lucky:Odds(profile, player, offer)
 		Token = string.format("%s:%d:%.17g:%.17g", offer or "Lucky", profile.ToiletTier, base, boosted),
 		VIPLuck = vip,
 		DoubleLuck = double,
+		InviteLuck = Social.Luck(profile),
+		InviteExpires = (profile.Social or {}).InviteExpires or 0,
+		InviteRemaining = math.max(0, ((profile.Social or {}).InviteExpires or 0) - os.time()),
 		Offer = offer,
 		BaseLuck = base,
 		Luck = boosted,
@@ -97,6 +101,9 @@ function Lucky:Snapshot(player, profile)
 	end
 	return {
 		PassOdds = offers,
+		InviteLuck = Social.Luck(profile),
+		InviteExpires = (profile.Social or {}).InviteExpires or 0,
+		InviteRemaining = math.max(0, ((profile.Social or {}).InviteExpires or 0) - os.time()),
 		FreeLuck = Upgrades:Luck(
 			profile,
 			Toilets[profile.ToiletTier].Luck,

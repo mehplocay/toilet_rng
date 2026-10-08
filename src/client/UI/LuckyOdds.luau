@@ -3,6 +3,7 @@ local C = require(script.Parent.Components)
 local Rarities = require(game.ReplicatedStorage.Shared.Config.Rarities)
 local Config = require(game.ReplicatedStorage.Shared.Config.Monetization)
 local Format = require(game.ReplicatedStorage.Shared.NumberFormat)
+local SocialUI = require(script.Parent.SocialBoosts)
 local Odds = {}
 function Odds.Percent(value)
 	assert(type(value) == "number" and value >= 0 and value <= 1, "Invalid probability")
@@ -148,6 +149,33 @@ function Odds.Create(gui, remotes, onPurchase)
 	local rows = {}
 	local current, key, quote, readOnly
 	local commerce = {}
+	local breakdownBase = ""
+	local inviteDeadlines = setmetatable({}, { __mode = "k" })
+	local function inviteLeft(odds)
+		if not inviteDeadlines[odds] then
+			inviteDeadlines[odds] = os.clock() + (odds.InviteRemaining or 0)
+		end
+		return math.max(0, inviteDeadlines[odds] - os.clock())
+	end
+	local counting = false
+	local function startInviteTimer()
+		if counting or not current or (current.InviteLuck or 1) == 1 then
+			return
+		end
+		counting = true
+		task.spawn(function()
+			while panel.Parent and panel.Visible and current do
+				local left = inviteLeft(current)
+				breakdown.Text = breakdownBase .. "\n" .. SocialUI.InviteText(left)
+				if (current.InviteLuck or 1) > 1 and left == 0 then
+					panel.Visible, current = false, nil
+					break
+				end
+				task.wait(1)
+			end
+			counting = false
+		end)
+	end
 	local button = C.Button(panel, "Use on next flush", UDim2.new(1, -28, 0, 50), UDim2.new(0, 14, 1, -64), function()
 		if not current then
 			return
@@ -189,6 +217,14 @@ function Odds.Create(gui, remotes, onPurchase)
 		Panel = panel,
 		Invalidate = function(lucky, state)
 			commerce = state or {}
+			if lucky then
+				if lucky.Odds then
+					inviteLeft(lucky.Odds)
+				end
+				for _, odds in pairs(lucky.PassOdds or {}) do
+					inviteLeft(odds)
+				end
+			end
 			if
 				panel.Visible
 				and (
@@ -227,6 +263,11 @@ function Odds.Create(gui, remotes, onPurchase)
 			if not current then
 				return
 			end
+			local remaining = inviteLeft(current)
+			if (current.InviteLuck or 1) > 1 and remaining == 0 then
+				panel.Visible, current = false, nil
+				return
+			end
 			breakdown.Text = string.format(
 				"Current luck x%s / %s x%s\n%s\n%s",
 				Format.Luck(current.BaseLuck or 1, true),
@@ -235,6 +276,8 @@ function Odds.Create(gui, remotes, onPurchase)
 				if current.VIPLuck then "VIP +25% luck" else "VIP luck: inactive",
 				if current.DoubleLuck then "2x Luck pass" else "2x Luck pass: inactive"
 			)
+			breakdownBase = breakdown.Text
+			breakdown.Text ..= "\n" .. SocialUI.InviteText(remaining)
 			explanation.Text = (
 				if current.Offer
 					then Config.Gamepasses[current.Offer].Description
@@ -271,6 +314,7 @@ function Odds.Create(gui, remotes, onPurchase)
 			updateButton(lucky)
 			scroll.CanvasPosition = Vector2.new()
 			panel.Visible = true
+			startInviteTimer()
 			resize()
 		end,
 	}

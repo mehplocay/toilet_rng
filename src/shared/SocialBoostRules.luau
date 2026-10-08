@@ -60,17 +60,16 @@ function Rules.Base(profile, offline)
 	local count = if integer(runtime.FriendCount, Config.MaxFriends) then runtime.FriendCount else 0
 	return (if runtime.GroupMember == true then 1 + Config.GroupBonus else 1) * (1 + count * Config.FriendBonus)
 end
-function Rules.Multiplier(profile, now)
+function Rules.Multiplier(profile)
+	return Rules.Base(profile)
+end
+-- Free luck reads the sanitized, cached absolute expiry; never query the platform here.
+function Rules.Luck(profile, now)
 	local expires = profile and profile.Social and profile.Social.InviteExpires or 0
 	if expires <= 0 then
-		return Rules.Base(profile)
+		return 1
 	end
-	return Rules.Base(profile) * (if expires > (now or os.time()) then 1 + Config.InviteBonus else 1)
-end
-function Rules.Average(profile, startAt, endAt, offline)
-	local expires = profile.Social and profile.Social.InviteExpires or 0
-	local active = math.clamp(expires - startAt, 0, math.max(0, endAt - startAt))
-	return Rules.Base(profile, offline) * (1 + Config.InviteBonus * active / math.max(1, endAt - startAt))
+	return if expires > (now or os.time()) then 1 + Config.InviteBonus else 1
 end
 function Rules.Referrer(joinData, inviteeId)
 	local id = if type(joinData) == "table" then joinData.ReferredByPlayerId else nil
@@ -127,6 +126,7 @@ function Rules.Snapshot(profile, now)
 		RewardedCount = #social.Rewarded,
 		HistoryFull = social.HistoryFull,
 		Multiplier = Rules.Multiplier(profile, now),
+		InviteLuck = Rules.Luck(profile, now),
 	}
 end
 return Rules

@@ -91,7 +91,7 @@ function HUD.Create(root, remotes, open, prompts, shopNavigation)
 	serverText.Name = "TotalLuck"
 	local luckDialog = Odds.Create(root, remotes)
 	luckDialog.Panel.Name = "Luck details"
-	local luckState, luckDeadline = nil, 0
+	local luckState, luckDeadline, luckAt = nil, 0, os.clock()
 	local breakdown = C.BodyText(gui, "", UDim2.fromOffset(290, 140))
 	breakdown.Name, breakdown.Visible, breakdown.BackgroundTransparency = "LuckBreakdown", false, 0
 	breakdown.BackgroundColor3, breakdown.ZIndex = C.Navy, 30
@@ -477,6 +477,12 @@ function HUD.Create(root, remotes, open, prompts, shopNavigation)
 				else (luckState and luckState.FreeLuck)
 					or (state and state.UpgradeStats and state.UpgradeStats.LuckMultiplier)
 					or 1
+			local inviteLeft = math.max(0, ((luckState or {}).InviteRemaining or 0) - (os.clock() - luckAt))
+			if luckState and (luckState.InviteLuck or 1) > 1 and inviteLeft == 0 then
+				-- Use uncharged luck: expiry changes the server review token too.
+				total = (if odds then odds.BaseLuck else luckState.FreeLuck) / luckState.InviteLuck
+				luckDialog.Close()
+			end
 			local friends = socialState.FriendCount or 0
 			mobileStatus.Text = string.format(
 				"Luck x%s\nFriends +%d%%",
@@ -508,6 +514,7 @@ function HUD.Create(root, remotes, open, prompts, shopNavigation)
 					then (if odds and odds.DoubleLuck then "2x Luck pass" else "2x Luck pass: inactive")
 					else "2x Luck unavailable in your region"
 			)
+			breakdown.Text ..= "\n" .. SocialUI.InviteText(inviteLeft)
 			if serverLeft > 0 then
 				breakdown.Text ..= "\nServer x2: " .. timer(serverLeft)
 			end
@@ -609,6 +616,7 @@ function HUD.Create(root, remotes, open, prompts, shopNavigation)
 			autoProgress.Set(state.LifetimeFlushes / Monetization.AutoFlushUnlock)
 			serverExpiry, personalExpiry = state.ServerLuckExpires or 0, state.RewardLuckExpires or 0
 			luckState = state.Commerce and state.Commerce.Lucky
+			luckAt = os.clock()
 			luckDeadline = os.clock() + ((luckState or {}).PolicyRemaining or 0)
 			luckDialog.Invalidate(luckState)
 		end,

@@ -1,0 +1,2 @@
+Current production sources + scripts/ui-harness.luau + scripts/ui-invite-luck.luau, run with luau (exit 0).
+Invite luck UI: exact roll odds, disclosure across 12 viewports, free/restricted HUD and local expiry passed
