@@ -6,6 +6,7 @@ do
 	end
 	function social:PromptGameInvite() end
 	H.Services.SocialService = social
+	local previousPlayer = H.Services.Players.LocalPlayer
 	H.Services.Players.LocalPlayer = { UserId = 101 }
 	for _, size in ipairs(H.Viewports) do
 		local root, remotes = H.Root(size[1], size[2]), H.Remotes()
@@ -15,9 +16,16 @@ do
 		H.StartTasks()
 		H.Layout(root)
 		assert(not passes.Panel:FindFirstChild("SocialBoosts", true), "Verbose social panel remains in Passes")
-		local scroll = passes.Panel:FindFirstChild("ContentScroll")
+		local scroll = passes.Panel.ContentScroll.Body:FindFirstChildWhichIsA("ScrollingFrame")
 		local offers = scroll:FindFirstChild("OfferGrid", true)
-		assert(math.abs(offers.AbsolutePosition.Y - scroll.AbsolutePosition.Y) < 2, "Passes content has a top gap")
+		assert(
+			math.abs(offers.AbsolutePosition.Y - scroll.AbsolutePosition.Y) < 2,
+			string.format(
+				"Passes content has a top gap: offers=%d scroll=%d",
+				offers.AbsolutePosition.Y,
+				scroll.AbsolutePosition.Y
+			)
+		)
 		local invite = passes.Panel:FindFirstChild("InviteFriends", true)
 		assert(invite.Visible and invite.Text == "Invite friends for extra coins")
 		assert(invite.AbsoluteSize.Y == 44 and invite.AbsoluteSize.X > 0 and invite.AbsoluteSize.X <= size[1])
@@ -32,6 +40,7 @@ do
 		passes.Panel:Destroy()
 		root:Destroy()
 	end
+	H.Services.Players.LocalPlayer = previousPlayer
 	print("Social UI: compact invite row, no social text panel and 12 viewports passed")
 end
 
@@ -58,6 +67,7 @@ do
 		local root, remotes = H.Root(390, 722), H.Remotes()
 		local ui = H.Load("src/client/UI/Passes").Create(root, remotes)
 		H.StartTasks()
+		local checksBefore = social.Checks
 		local button = ui.Panel:FindFirstChild("InviteFriends", true)
 		assert(
 			button.Visible == (mode ~= "restricted" and mode ~= "lookup-error"),
@@ -65,14 +75,14 @@ do
 		)
 		local before = #H.Calls
 		remotes.Result.OnClientEvent:Fire("PromptInvite", { Success = true })
-		assert(social.Checks == 0, "Unsolicited acknowledgement opened a modal")
+		assert(social.Checks == checksBefore, "Unsolicited acknowledgement opened a modal")
 		if button.Visible then
 			button.Activated:Fire()
 			button.Activated:Fire()
 			assert(#H.Calls == before + 1 and H.Calls[#H.Calls].Name == "PromptInvite")
 			remotes.Result.OnClientEvent:Fire("PromptInvite", { Success = true })
 			H.StartTasks()
-			assert(social.Checks == 2)
+			assert(social.Checks == checksBefore + 1)
 			assert(social.Prompts == (if mode == "allowed" or mode == "prompt-error" then 1 else 0))
 		else
 			button.Activated:Fire()

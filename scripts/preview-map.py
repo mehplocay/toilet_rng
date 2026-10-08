@@ -93,7 +93,11 @@ for line in (ROOT / ".world-scene.txt").read_text(encoding="utf-8-sig").splitlin
         if cls == "MeshPart":
             if name not in asset_meshes:
                 source_path = ROOT / "assets/blender/generated" / (name + ".blend")
-                if not source_path.exists(): source_path = ROOT / "assets/blender/generated/env" / (name + ".blend")
+                if not source_path.exists():
+                    candidates = list((ROOT / "assets/blender/generated").rglob(name + ".blend"))
+                    if len(candidates) != 1:
+                        raise ValueError(f"Expected one authored mesh for {name}, found {len(candidates)}")
+                    source_path = candidates[0]
                 with bpy.data.libraries.load(str(source_path), link=False) as (src, dst):
                     dst.objects = [name]
                 source = dst.objects[0]

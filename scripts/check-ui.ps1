@@ -50,6 +50,7 @@ foreach ($file in (Get-ChildItem -LiteralPath (Join-Path $workspaceRoot 'src') -
 $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-harness.luau')))
 $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'rebirth-click-ui-checks.luau')))
 $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'check-ui-runtime.luau')))
+$parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoot 'ui-visual-review.luau')))
 $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-shop-routing.luau')))
 $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'presentation-ui-checks.luau')))
 $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'reveals2-ui-checks.luau')))
@@ -80,9 +81,8 @@ $parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoo
 $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-mobile-hud.luau')))
 try {
     [IO.File]::WriteAllText($generatedPath, ($parts -join "`n"), [Text.UTF8Encoding]::new($false))
-    $output = & luau --codegen -O2 $generatedPath
-    $code = $LASTEXITCODE
-    foreach ($line in $output) {
+    & luau --codegen -O2 $generatedPath | ForEach-Object {
+        $line = $_
         if ($line.StartsWith('UI_SNAPSHOT ')) {
             if ($SnapshotDirectory) {
                 $null = New-Item -ItemType Directory -Force -Path $SnapshotDirectory
@@ -91,7 +91,7 @@ try {
             }
         } else { Write-Output $line }
     }
-    if ($code -ne 0) { throw 'UI runtime checks failed' }
+    if ($LASTEXITCODE -ne 0) { throw 'UI runtime checks failed' }
     & luau (Join-Path $PSScriptRoot 'check-mobile-hud.luau')
     if ($LASTEXITCODE -ne 0) { throw 'Mobile layout checks failed' }
     & luau (Join-Path $PSScriptRoot 'check-ui-layout.luau')

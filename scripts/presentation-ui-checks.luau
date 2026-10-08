@@ -53,6 +53,12 @@ assert(
 	"Visual Off must retain SFX feedback"
 )
 controller:SetIntensity("Full")
+controller:Show(item("Poop"))
+assert(
+	presentationHUD.Frame.FlushReveal.RevealContent.Odds.Text == "Fallback drop",
+	"Poop must not advertise an unused 1-in-2 roll"
+)
+controller:Skip()
 controller:Show(item("Mystery"), { FlushId = 5 })
 assert(not controller.Queue.Active, "Duplicate authoritative result replayed")
 controller:Show(item("GoldenPoop"), { FlushId = 6 })

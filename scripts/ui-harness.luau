@@ -804,7 +804,7 @@ local function json(value)
 	return "{" .. table.concat(parts, ",") .. "}"
 end
 function H.Snapshot(root, name)
-	if captureSnapshots == false then
+	if not captureSnapshots then
 		return
 	end
 	-- Offline previews use supplied local PNGs, never evidence of Roblox permission/loading.
@@ -858,12 +858,19 @@ function H.Snapshot(root, name)
 			color = object.BackgroundColor3,
 			alpha = 1 - object.BackgroundTransparency,
 			rotation = object.Rotation,
-			text = object.Text,
+			text = if object.ClassName == "TextBox" and object.Text == "" then object.PlaceholderText else object.Text,
 			image = previewImage,
 			textAlpha = 1 - object.TextTransparency,
-			textColor = object.TextColor3,
+			textColor = if object.ClassName == "TextBox" and object.Text == ""
+				then object.PlaceholderColor3
+				else object.TextColor3,
 			font = object.Font,
 			maxFont = if constraint then constraint.MaxTextSize else object.TextSize,
+			minFont = if constraint then constraint.MinTextSize else 1,
+			textSize = object.TextSize,
+			textScaled = object.TextScaled,
+			textWrapped = object.TextWrapped,
+			top = object.TextYAlignment == Enum.TextYAlignment.Top,
 			left = object.TextXAlignment == Enum.TextXAlignment.Left,
 			stroke = if stroke
 				then {

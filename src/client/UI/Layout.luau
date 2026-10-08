@@ -93,7 +93,7 @@ function Layout.Compute(w, h, touch)
 		end
 		result.Coins = rect(12, 66, math.max(100, start - 24), 46)
 		local boostW = math.min(140, start - 24)
-		result.Boosts = rect(w - boostW - 12, 68, boostW, 42)
+		result.Boosts = rect(w - boostW - 12, 68, boostW, 44)
 		local hintW = math.min(330, w - 280)
 		result.Hint = rect((w - hintW) / 2, 126, hintW, math.min(60, h - 242))
 		result.Action = rect((w - 304) / 2, h - 74, 304, 62)
@@ -103,7 +103,7 @@ function Layout.Compute(w, h, touch)
 			result.Nav[i] = rect(10, 66 + (i - 1) * 44, 44, 44)
 		end
 		result.Coins = rect(76, 74, w - 90, 38)
-		result.Boosts = rect(76, 120, w - 90, 34)
+		result.Boosts = rect(76, 114, w - 90, 44)
 		result.Action = rect((w - 290) / 2, h - 184, 290, 58)
 		result.Hint = rect(76, 196, w - 90, 80)
 		result.Board = rect(0, 0, 0, 0)
@@ -125,10 +125,14 @@ function Layout.Compute(w, h, touch)
 		result.Board = rect((w - 340) / 2, 90, 340, 72)
 	end
 	result.PendingIncome = if portrait
-		then rect(76, 162, math.min(200, w - 90), 26)
+		then rect(76, 162, math.min(140, w - 90), 26)
 		elseif short then rect(w - 132, 112, 120, 24)
 		else rect(result.Coins.X, result.Coins.Y - 20, math.min(200, result.Coins.W), 18)
 	result.Offers = rect(w - 190, math.max(190, h * 0.29), 168, 292)
+	result.Celebration = if portrait
+		then rect(w - 124, 162, 112, 44)
+		elseif short then rect(12, 120, 112, 44)
+		else rect(w - 136, result.Offers.Y - 56, 112, 44)
 	result.SocialBoosts = if portrait
 		then rect(76, 284, w - 90, 44)
 		elseif short then rect(

@@ -6,6 +6,7 @@ function Tutorial.Create(_player, remotes, hud, prompts, hooks)
 	local Layout = require(script.Parent.Layout)
 	hooks = hooks or {}
 	local root = hud.Frame.Parent
+	local oddsPanel = root:FindFirstChild("Luck details")
 	local snapshot, destroyed, dismissed, replayPending = nil, false, false, false
 	local lastStep, farewellUntil, requestAt = nil, 0, -math.huge
 	local dismissAt = -math.huge
@@ -50,6 +51,9 @@ function Tutorial.Create(_player, remotes, hud, prompts, hooks)
 		return false
 	end
 	local function target(step)
+		if oddsPanel and oddsPanel.Visible then
+			return nil
+		end
 		if step == 1 then
 			return if hud.Frame.Visible then hud.Navigation.Home else nil
 		end
@@ -97,7 +101,9 @@ function Tutorial.Create(_player, remotes, hud, prompts, hooks)
 		}
 		local details = {
 			"Tap Home to return to your toilet.",
-			"Tap FLUSH or press E. Every flush gives an item and coins.",
+			if game:GetService("UserInputService").TouchEnabled
+				then "Tap FLUSH. Every flush gives an item and coins."
+				else "Tap FLUSH or press E. Every flush gives an item and coins.",
 			"Open Index. Display a copy to earn coins, or sell a spare. First copies stay yours.",
 			"Open Upgrades for Coin Upgrades, or Shop for Toilets in the Toilet Shop. Buy one. Luck stacks without a cap!",
 			"Rebirth spends coins in one click; toilets and upgrades stay. Passes are optional. Replay in Settings.",
@@ -116,16 +122,21 @@ function Tutorial.Create(_player, remotes, hud, prompts, hooks)
 		end
 		hud.SetTutorialActive(true)
 		local w, h = root.AbsoluteSize.X, root.AbsoluteSize.Y
-		local bounds = if hud.Frame.Visible
+		local hudVisible = hud.Frame.Visible and not (oddsPanel and oddsPanel.Visible)
+		local bounds = if hudVisible
 			then Layout.Compute(w, h, game:GetService("UserInputService").TouchEnabled).Hint
 			else { X = 12, Y = 6, W = w - 24, H = 78 }
 		local phone = Layout.IsPhone(w, h, game:GetService("UserInputService").TouchEnabled)
-		bounds.H = if phone and hud.Frame.Visible then bounds.H elseif hud.Frame.Visible then 96 else 78
+		bounds.H = if phone and hudVisible then bounds.H elseif hudVisible then 96 else 78
 		title.UITextSizeConstraint.MinTextSize = if phone then 14 else 10
 		title.UITextSizeConstraint.MaxTextSize = if phone then 14 else 22
 		detail.UITextSizeConstraint.MinTextSize = if phone then 12 else 10
 		detail.UITextSizeConstraint.MaxTextSize = if phone then 12 else 17
 		skip.Label.UITextSizeConstraint.MinTextSize = if phone then 14 else 10
+		if hudVisible and not phone and w < 760 and h > w then
+			-- Leave a gap between pending income and the social boosts touch target.
+			bounds.Y, bounds.H = 192, 88
+		end
 		-- Keep Skip reachable during reveals without covering the item or result toast.
 		local reveal = hud.Frame:FindFirstChild("FlushReveal")
 		local layer = root:FindFirstChild("RareReveal")
@@ -217,6 +228,15 @@ function Tutorial.Create(_player, remotes, hud, prompts, hooks)
 		end)
 	)
 	-- Results do not advance locally: the saved server checkpoint is the source of truth.
+	-- Modal transitions must not leave the overlay over a header or a result for a heartbeat interval.
+	table.insert(connections, hud.Frame:GetPropertyChangedSignal("Visible"):Connect(render))
+	if oddsPanel then
+		table.insert(connections, oddsPanel:GetPropertyChangedSignal("Visible"):Connect(render))
+	end
+	local resultToast = root:FindFirstChild("ResultToast")
+	if resultToast then
+		table.insert(connections, resultToast:GetPropertyChangedSignal("Visible"):Connect(render))
+	end
 	local elapsed = 0
 	table.insert(
 		connections,

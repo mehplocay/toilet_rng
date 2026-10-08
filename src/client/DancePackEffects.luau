@@ -38,6 +38,27 @@ function Effects.Start(root, player, remotes)
 	local function allowed()
 		return alive and owned.DancePack == true and player:GetAttribute("DancePack") ~= false and mode ~= "Off"
 	end
+	local function updateVisibility()
+		local hud = root:FindFirstChild("HUD")
+		local blocked = root:GetAttribute("TutorialActive") or (hud and not hud.Visible)
+		local hint = hud and hud:FindFirstChild("CenterHint")
+		blocked = blocked or (hint and hint.Visible)
+		local breakdown = hud and hud:FindFirstChild("LuckBreakdown")
+		blocked = blocked or (breakdown and breakdown.Visible)
+		for _, child in ipairs(root:GetChildren()) do
+			if child ~= menu and child:IsA("GuiObject") and child.Visible and child:FindFirstChild("ContentScroll") then
+				blocked = true
+			end
+		end
+		local revealLayer = root:FindFirstChild("RareReveal")
+		local toast = root:FindFirstChild("ResultToast")
+		local flushReveal = hud and hud:FindFirstChild("FlushReveal")
+		blocked = blocked
+			or (toast and toast.Visible)
+			or (flushReveal and flushReveal.Visible)
+			or (revealLayer and revealLayer:FindFirstChild("RevealContent") ~= nil)
+		toggle.Visible = owned.DancePack == true and not blocked
+	end
 	local function refresh()
 		active = false
 		local interactable = allowed() and living() == true
@@ -54,7 +75,7 @@ function Effects.Start(root, player, remotes)
 		else
 			toggle.Size, toggle.Position = UDim2.fromOffset(112, 44), UDim2.new(1, -124, 0, 152)
 		end
-		toggle.Visible = owned.DancePack == true
+		updateVisibility()
 		toggle.Interactable = interactable
 	end
 	local function stop()
@@ -121,9 +142,12 @@ function Effects.Start(root, player, remotes)
 		toggle.Label.Size = if phone then UDim2.fromScale(0.96, 0.4) else UDim2.fromScale(0.88, 0.76)
 		toggle.Label.UITextSizeConstraint.MinTextSize = if phone then 12 else 10
 		toggle.Label.UITextSizeConstraint.MaxTextSize = if phone then 12 else 16
+		local layout = Layout.Compute(root.AbsoluteSize.X, root.AbsoluteSize.Y, Input.TouchEnabled)
+		C.Place(toggle, if layout.Phone then layout.Celebrate else layout.Celebration)
 		refresh()
 	end
 	connect(root:GetPropertyChangedSignal("AbsoluteSize"), resizeToggle)
+	resizeToggle()
 	for i, name in ipairs(Config.Celebrations) do
 		local channel = { Enabled = false, Pieces = {}, Age = limits.Lifetime }
 		channels[i] = channel
@@ -250,6 +274,7 @@ function Effects.Start(root, player, remotes)
 		end
 	end
 	connect(RunService.Heartbeat, function(dt)
+		updateVisibility()
 		if player.Character ~= character then
 			bindCharacter(player.Character)
 		elseif (active or #reveal.Pieces > 0) and not living() then

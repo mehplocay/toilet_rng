@@ -23,7 +23,7 @@ function Collection.Create(gui, remotes)
 		PlaceholderColor3 = C.Muted,
 		Text = "",
 		ClearTextOnFocus = false,
-		Size = UDim2.new(1, -8, 0, 42),
+		Size = UDim2.new(1, -8, 0, 44),
 		Position = UDim2.fromOffset(4, 54),
 		BackgroundColor3 = C.Ink,
 		TextColor3 = Color3.new(1, 1, 1),
@@ -31,7 +31,7 @@ function Collection.Create(gui, remotes)
 		Font = Enum.Font.BuilderSansBold,
 	})
 	C.Round(search, Color3.fromRGB(69, 106, 148), 10, 2)
-	local grid = C.Scroll(body, UDim2.new(1, 0, 1, -196), UDim2.fromOffset(0, 196))
+	local grid = C.Scroll(body, UDim2.new(1, 0, 1, -218), UDim2.fromOffset(0, 218))
 	C.Grid(grid, 132, 366, 5)
 	local empty = C.BodyText(grid, "No discoveries match your search.", UDim2.new(1, -20, 0, 70))
 	empty.Visible = false
@@ -187,7 +187,7 @@ function Collection.Create(gui, remotes)
 						card.Signature = signature
 						card.Name.Text, card.Odds.Text =
 							name, if item.Id == "Poop" then "Fallback" else "Base 1 in " .. C.Commas(item.Chance)
-						card.Count.Text = "x" .. count .. " owned  |  " .. available .. " to sell"
+						card.Count.Text = "x" .. C.Commas(count) .. " owned  |  " .. C.Commas(available) .. " to sell"
 						card.Sell.Interactable, card.All.Interactable = available > 0, available > 0
 						card.Display.Text = if count == 0
 							then "No copies"
@@ -263,7 +263,7 @@ function Collection.Create(gui, remotes)
 			button.Text = "Slot " .. slot .. "\n" .. (if state.Displays[tostring(slot)] then "Put Back" else "Place")
 		end
 	end
-	slotsButton = C.Button(body, "Slots", UDim2.fromOffset(92, 36), UDim2.new(1, -96, 0, 156), function()
+	slotsButton = C.Button(body, "Slots", UDim2.fromOffset(92, 44), UDim2.new(1, -96, 0, 166), function()
 		selectedSlot = nil
 		help.Text = "First copies can be displayed."
 		panel.Visible, slotsPanel.Visible = false, true

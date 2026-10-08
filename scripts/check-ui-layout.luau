@@ -110,6 +110,21 @@ for caseIndex, case in ipairs(cases) do
 		end
 	end
 	assert(layout.Action.H >= 44 and layout.Settings.H >= 44)
+	assert(layout.Boosts.H >= 44 and layout.Boosts.W / 2 - 4 >= 44, "Luck touch target too small")
+	local celebration = layout.Celebration
+	assert(celebration.W >= 44 and celebration.H >= 44)
+	assert(
+		celebration.X >= 0
+			and celebration.Y >= 0
+			and celebration.X + celebration.W <= w
+			and celebration.Y + celebration.H <= h
+	)
+	for name, r in pairs(elements) do
+		-- The celebration control is hidden while the tutorial/hint is visible.
+		if name ~= "Hint" then
+			assert(not overlap(celebration, r), string.format("%dx%d celebration overlaps %s", w, h, name))
+		end
+	end
 	for _, nav in ipairs(layout.Nav) do
 		assert(nav.W >= 44 and nav.H >= 44)
 	end

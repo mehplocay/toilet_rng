@@ -56,6 +56,11 @@ function Passes.Create(gui, remotes)
 		status.Text = if action == "BuyPass" then "Checking pass ownership..." else "Preparing your purchase..."
 	end
 	local scroll = C.Scroll(body, UDim2.new(1, 0, 1, -150), UDim2.fromOffset(0, 92))
+	-- The tab strip already reserves the top 92 px; start the offer grid at the inner viewport edge.
+	local scrollPadding = scroll:FindFirstChildOfClass("UIPadding")
+	if scrollPadding then
+		scrollPadding.PaddingTop = UDim.new(0, 0)
+	end
 	local content = C.New(
 		"Frame",
 		scroll,
@@ -89,13 +94,13 @@ function Passes.Create(gui, remotes)
 	})
 	C.Grid(luckyRow, Card.MinimumWidth, Card.CellHeight + 280, 4)
 	local selectTab
-	C.Button(body, "Passes", UDim2.new(1 / 3, -5, 0, 40), UDim2.fromOffset(0, 44), function()
+	C.Button(body, "Passes", UDim2.new(1 / 3, -5, 0, 44), UDim2.fromOffset(0, 44), function()
 		selectTab(false)
 	end, C.Purple, { Name = "PassesTab" })
-	C.Button(body, "Boosts", UDim2.new(1 / 3, -5, 0, 40), UDim2.new(1 / 3, 2, 0, 44), function()
+	C.Button(body, "Boosts", UDim2.new(1 / 3, -5, 0, 44), UDim2.new(1 / 3, 2, 0, 44), function()
 		selectTab(true)
 	end, C.Blue, { Name = "BoostsTab" })
-	local luckyTab = C.Button(body, "Lucky", UDim2.new(1 / 3, -5, 0, 40), UDim2.new(2 / 3, 5, 0, 44), function()
+	local luckyTab = C.Button(body, "Lucky", UDim2.new(1 / 3, -5, 0, 44), UDim2.new(2 / 3, 5, 0, 44), function()
 		selectTab("Lucky")
 	end, C.Gold, { Name = "LuckyTab" })
 	luckyTab.Visible = false
@@ -372,7 +377,7 @@ function Passes.Create(gui, remotes)
 	local chest = C.Button(content, "VIP daily chest", UDim2.new(1, -12, 0, 44), nil, function()
 		remotes.ClaimVIP:FireServer()
 	end, C.Gold, { Name = "VIPChest" })
-	chest.LayoutOrder, chest.Interactable = 0, false
+	chest.LayoutOrder, chest.Interactable = 6, false
 	local useLucky = C.Button(content, "Review next Lucky Flush", UDim2.new(1, -12, 0, 48), nil, function()
 		oddsUI.Show(commerce.Lucky)
 	end, C.Gold, { Name = "UseLucky" })

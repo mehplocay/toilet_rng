@@ -1,0 +1,13 @@
+# Independent visual review research (2026-10-07)
+
+- [Roblox size modifiers](https://create.roblox.com/docs/ui/size-modifiers): UIScale changes actual pixel dimensions; constraints can override layout sizing. Review uses AbsoluteSize, not declared UDim2, for the task's 44 px target.
+- [GuiObject API](https://create.roblox.com/docs/reference/engine/classes/GuiObject): actual dimensions are AbsoluteSize; buttons provide Activated for cross-input activation. Existing Activated callbacks are preserved.
+- [ZIndexBehavior](https://create.roblox.com/docs/reference/engine/enums/ZIndexBehavior): the game uses Sibling ordering. The luck disclosure must be a direct HUD child to draw above the wallet/travel branches; a high ZIndex deep inside the chip does not raise its ancestor branch.
+- [TextService API](https://create.roblox.com/docs/reference/engine/classes/TextService): GetTextSize estimates bounds for a font, size and wrapping width. LuckyOdds already measures fixed 17 px text. The offline renderer must preserve TextScaled=false and top alignment instead of shrinking text to make it fit.
+- [UserInputService API](https://create.roblox.com/docs/reference/engine/classes/UserInputService): TouchEnabled indicates touch capability. Use the existing project convention to omit the E-key tutorial hint on touch devices.
+- [UIStroke release announcement and limitations](https://devforum.roblox.com/t/full-release-uistroke-improvements-scaling-offsets-and-more/3958036): contextual text strokes and border strokes have distinct behavior; custom positioning applies to borders. Keep established strokes; headless GDI approximations do not prove engine stroke rasterization.
+- [Rojo build workflow](https://rojo.space/docs/v7/getting-started/new-game/): `.rbxl` selects the binary place build. Validation uses `rojo build -o build.rbxl`.
+- [StyLua options](https://github.com/JohnnyMorganz/StyLua) and [CLI override fix history](https://github.com/JohnnyMorganz/StyLua/blob/main/CHANGELOG.md): use `--line-endings Windows`; verify modified Luau files with the installed version.
+- [Selene Roblox support](https://kampfkarren.github.io/selene/roblox.html): Roblox linting needs its standard library support. This machine's Selene 0.31.0 reports no Roblox generation/update command and cannot load the configured `roblox` standard library. Record the lint limitation instead of weakening `selene.toml`.
+
+No remote credentials, private project data or asset uploads were sent in research requests. Local images and mocked asset resolution establish composition only, not Roblox asset permissions or live loading.

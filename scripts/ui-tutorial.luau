@@ -101,11 +101,26 @@ do
 				H.Services.UserInputService.TouchEnabled = viewport[1] < 1200
 				local f = fixture(viewport[1], viewport[2])
 				f.Update(1)
+				if viewport[1] < 760 and viewport[2] > viewport[1] then
+					local guide, social = f.Guide.Frame, f.Root.HUD.SocialBoostsChip
+					if social.Visible then
+						assert(
+							guide.AbsolutePosition.Y + guide.AbsoluteSize.Y + 4 <= social.AbsolutePosition.Y,
+							"Tutorial overlaps social boosts"
+						)
+					end
+				end
+				H.Snapshot(f.Root, "review-tutorial-1-" .. viewport[1] .. "x" .. viewport[2])
 				assert(f.Guide.Frame.Visible and f.HUD.Navigation.Home:FindFirstChild("TutorialHighlight"))
 				H.Advance(10)
 				assert(f.Guide.Frame.Visible, "Tutorial expired after five seconds")
 				f.Near(true)
 				H.Advance(0.3)
+				H.Snapshot(f.Root, "review-tutorial-2-" .. viewport[1] .. "x" .. viewport[2])
+				assert(
+					not H.Services.UserInputService.TouchEnabled
+						or not f.Guide.Frame.Detail.Text:find("press E", 1, true)
+				)
 				assert(
 					f.Guide.Frame.Title.Text:find("2/5", 1, true)
 						and f.HUD.FlushButton:FindFirstChild("TutorialHighlight")
@@ -123,6 +138,7 @@ do
 				end
 				assert(f.Guide.Frame.Title.Text:find("2/5", 1, true), "Results bypassed saved checkpoint")
 				f.Update(3)
+				H.Snapshot(f.Root, "review-tutorial-3-" .. viewport[1] .. "x" .. viewport[2])
 				assert(f.HUD.Navigation.Collection:FindFirstChild("TutorialHighlight"))
 				-- The synthetic upgrade Result above also created a bounded result toast.
 				H.Advance(5)
@@ -138,10 +154,12 @@ do
 				H.Advance(0.3)
 				assert(f.Guide.Frame.Detail.Visible, "Reveal dismissal did not restore instructions")
 				f.Collection.Panel.Visible, f.HUD.Frame.Visible = true, false
+				assert(f.Guide.Frame.Position.Y.Offset == 6, "Modal transition left the tutorial over its header")
 				H.Layout(f.Root)
 				H.Advance(0.3)
 				H.Layout(f.Root)
 				local button = f.Collection.TutorialTarget()
+				H.Snapshot(f.Root, "review-tutorial-display-" .. viewport[1] .. "x" .. viewport[2])
 				assert(button.Text == "Display" and button:FindFirstChild("TutorialHighlight"))
 				reachable(button, f.Root)
 				assert(f.Guide.Frame.Visible and f.Guide.Frame.SkipTutorial.Visible)
@@ -174,6 +192,7 @@ do
 					H.Snapshot(f.Root, "tutorial-modal-" .. viewport[1] .. "x" .. viewport[2])
 				end
 				f.Update(5, true)
+				H.Snapshot(f.Root, "review-tutorial-5-" .. viewport[1] .. "x" .. viewport[2])
 				assert(f.Guide.Frame.Visible and f.Guide.Frame.Title.Text == "Tutorial complete!")
 				H.Advance(7)
 				assert(not f.Guide.Frame.Visible and not f.Root:GetAttribute("TutorialActive"))
@@ -219,6 +238,24 @@ do
 			end
 		end
 	)
+	check("tutorial UI: luck odds reserve the guide strip even while HUD remains visible", function()
+		for _, viewport in ipairs(viewports) do
+			local f = fixture(viewport[1], viewport[2])
+			f.Update(2)
+			local oddsPanel = f.Root["Luck details"]
+			oddsPanel.Visible = true
+			assert(f.HUD.Frame.Visible and f.Guide.Frame.Position.Y.Offset == 6)
+			assert(not f.HUD.FlushButton:FindFirstChild("TutorialHighlight"))
+			f.Update(5, true)
+			-- This fixture has no commerce policy, so HUD.Update closes the dialog; reopen it for the farewell.
+			oddsPanel.Visible = true
+			H.Layout(f.Root)
+			assert(f.Guide.Frame.AbsolutePosition.Y + f.Guide.Frame.AbsoluteSize.Y <= oddsPanel.AbsolutePosition.Y)
+			H.Snapshot(f.Root, "review-tutorial-odds-" .. viewport[1] .. "x" .. viewport[2])
+			oddsPanel.Visible = false
+			f.Root:Destroy()
+		end
+	end)
 	check("tutorial UI: Settings replay control is wired in the real bootstrap", function()
 		-- Existing runners boot the real client before this suite.
 		local screen = H.Services.Players.LocalPlayer.PlayerGui:FindFirstChild("ToiletUI")
