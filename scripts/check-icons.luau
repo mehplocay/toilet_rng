@@ -1,7 +1,7 @@
 local Resolver = require("../src/server/Services/IconResolver")
 local Content = require("../src/shared/IconContent")
 local assets = require("../src/shared/Config/Assets")
-assert(#Content.Ids(assets) == 81)
+assert(#Content.Ids(assets) == 102)
 assert(Content.Id("https://www.roblox.com/asset/?id=123") == "123")
 for _, value in ipairs({ 0, -1, math.huge, 0 / 0, "", "rbxassetid://0", "https://example.com/image.png" }) do
 	assert(Content.Image(value) == nil)
@@ -67,5 +67,5 @@ for id = 2, 12 do
 	assert((published[tostring(id)] ~= nil) == (id ~= 4 and id ~= 5 and id ~= 6))
 end
 print(
-	"Icon resolver checks passed: 81 uploads, override precedence, alias deduplication, four-worker limit, stalled worker, permissions, invalid Decals, cleanup"
+	"Icon resolver checks passed: 102 unique uploads, override precedence, alias deduplication, four-worker limit, stalled worker, permissions, invalid Decals, cleanup"
 )

@@ -41,6 +41,11 @@ foreach ($asset in $manifest.assets) {
         $parts.Add("table.insert(expectedIcons, { Group = '$section', Key = '$key', Id = 'rbxassetid://$id' })")
     }
 }
+foreach ($key in @('VIP', 'CoinPackMini', 'DoubleLuck')) {
+    $id = $uploads.passes.$key
+    if (!$id) { throw "Missing uploaded pass icon: $key" }
+    $parts.Add("table.insert(expectedIcons, { Group = 'Icons', Key = '$key', Id = 'rbxassetid://$id' })")
+}
 foreach ($file in (Get-ChildItem -LiteralPath (Join-Path $workspaceRoot 'src') -Recurse -Filter '*.luau')) {
     $relative = $file.FullName.Substring($workspaceRoot.Length + 1).Replace('\', '/')
     $moduleName = $relative.Substring(0, $relative.Length - 5)

@@ -3,6 +3,35 @@ test("wave1: JSON parity, rarity colors/order, pool membership and icon/template
 	local e = environment()
 	local items, toilets = e:Load("src/shared/Config/Items"), e:Load("src/shared/Config/Toilets")
 	local rarities, assets = e:Load("src/shared/Config/Rarities"), e:Load("src/shared/Config/Assets")
+	local passIconKeys = {
+		"StarTag",
+		"VIP",
+		"VIPPack",
+		"RainbowName",
+		"ConfettiReveal",
+		"GoldenName",
+		"DancePack",
+		"ToiletGlow",
+		"Companion",
+		"UltimateBundle",
+		"CoinPackMini",
+		"CoinPackSmall",
+		"CoinPackLarge",
+		"CoinPackHuge",
+		"CoinPack",
+		"LuckyFlush1",
+		"LuckyFlush5",
+		"LuckyFlush20",
+		"DoubleCash",
+		"DoubleLuck",
+		"AutoCollect",
+		"OfflinePlus",
+		"PathBoost",
+	}
+	for _, key in ipairs(passIconKeys) do
+		assert(assets.Icons[key]:match("^rbxassetid://%d+$") ~= nil, "Missing uploaded pass/product icon: " .. key)
+	end
+	assert(#passIconKeys == 23)
 	local meshes = e:Load("src/shared/Config/MeshCatalog")
 	local income = e:Load("src/shared/Config/Income")
 	local byId = {}
