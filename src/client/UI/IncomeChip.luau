@@ -11,8 +11,8 @@ function IncomeChip.Create(root)
 	local function resize()
 		local layout = Layout.Compute(root.AbsoluteSize.X, root.AbsoluteSize.Y, UserInputService.TouchEnabled)
 		C.Place(chip, layout.PendingIncome)
-		label.UITextSizeConstraint.MinTextSize = if layout.Phone then 12 else 10
-		label.UITextSizeConstraint.MaxTextSize = if layout.Phone then 12 else normalMaximum
+		label.UITextSizeConstraint.MinTextSize = if layout.Phone then 14 else 10
+		label.UITextSizeConstraint.MaxTextSize = if layout.Phone then 14 else normalMaximum
 	end
 	root:GetPropertyChangedSignal("AbsoluteSize"):Connect(resize)
 	resize()

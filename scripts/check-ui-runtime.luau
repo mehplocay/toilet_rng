@@ -413,7 +413,7 @@ for _, name in ipairs({ "Shop", "Collection", "Upgrades", "Passes", "Daily" }) d
 		"HUD icon slot not wired"
 	)
 end
-for _, name in ipairs({ "Hub", "Home", "Shop" }) do
+for _, name in ipairs({ "Hub", "Home" }) do
 	assert(
 		hud.Frame.Travel[name][name .. "Icon"].Asset.Image == Images.Get(Assets.Icons[name]),
 		"Travel icon slot not wired"

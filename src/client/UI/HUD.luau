@@ -59,9 +59,9 @@ function HUD.Create(root, remotes, open, prompts, shopNavigation)
 	rebirthBadge.Set(0)
 	dailyBadge.Set(0)
 	local travel = C.New("Frame", gui, { Name = "Travel", BackgroundTransparency = 1 })
-	for i, name in ipairs({ "Hub", "Home", "Shop" }) do
-		local button = C.Button(travel, name, UDim2.new(1 / 3, -10, 1, 0), UDim2.new((i - 1) / 3, 5, 0, 0), function()
-			open(if name == "Shop" then "TravelShop" else name)
+	for i, name in ipairs({ "Hub", "Home" }) do
+		local button = C.Button(travel, name, UDim2.new(1 / 2, -10, 1, 0), UDim2.new((i - 1) / 2, 5, 0, 0), function()
+			open(name)
 		end, ({ C.Gold, C.Blue, C.Green })[i], { Icon = name, TextSize = 30 })
 		if name == "Home" then
 			navigation.Home = button
@@ -69,8 +69,9 @@ function HUD.Create(root, remotes, open, prompts, shopNavigation)
 	end
 	local settings = C.Button(gui, "", UDim2.fromOffset(44, 44), nil, function()
 		open("Settings")
-	end, C.Navy)
+	end, C.Navy, { Name = "Settings" })
 	C.Icon(settings, "Settings", UDim2.fromScale(0.74, 0.74), UDim2.fromScale(0.13, 0.13))
+	settings.Label.UITextSizeConstraint.MinTextSize = 14
 	local wallet = C.New("Frame", gui, { Name = "Wallet", BackgroundTransparency = 1 })
 	C.Icon(wallet, "Coin", UDim2.fromScale(0.22, 0.94), UDim2.fromScale(0, 0.03))
 	local coins = C.Text(wallet, "0", UDim2.fromScale(0.76, 0.92), UDim2.fromScale(0.24, 0.04), 58)
@@ -246,16 +247,17 @@ function HUD.Create(root, remotes, open, prompts, shopNavigation)
 		for i, button in ipairs(buttons) do
 			if not shopOpen or (button ~= navigation.Shop and button ~= navigation.Upgrades) then
 				C.Place(button, layout.Nav[i])
-				button.Label.UITextSizeConstraint.MinTextSize = if layout.Phone then 12 else 10
-				button.Label.UITextSizeConstraint.MaxTextSize = if layout.Phone then 12 else 22
-				button.Label.Size = UDim2.fromScale(0.96, if layout.Phone then 0.3 else 0.25)
+				button.Label.UITextSizeConstraint.MinTextSize = if layout.Phone then 14 else 10
+				button.Label.UITextSizeConstraint.MaxTextSize = if layout.Phone then 14 else 22
+				button.Label.Size = if layout.Phone then UDim2.new(0.96, 0, 0, 18) else UDim2.fromScale(0.96, 0.25)
+				button.Label.Position = if layout.Phone then UDim2.new(0.02, 0, 1, -18) else UDim2.fromScale(0.02, 0.7)
 				if names[i] == "Upgrades" then
 					button.Text = if layout.Phone then "Upg." else "Upgrades"
 				end
 				local icon = button:FindFirstChild((if names[i] == "Rebirth" then "Crown" else names[i]) .. "Icon")
 				if icon then
-					icon.Size = UDim2.fromScale(0.6, 0.52)
-					icon.Position = UDim2.fromScale(0.2, if layout.Phone then 0.16 else 0.035)
+					icon.Size = UDim2.fromOffset(22, 22)
+					icon.Position = UDim2.new(0.5, -11, 0, 2)
 					if not layout.Phone then
 						icon.Size = UDim2.fromScale(0.67, 0.65)
 						icon.Position = UDim2.fromScale(0.165, 0.035)
@@ -284,7 +286,8 @@ function HUD.Create(root, remotes, open, prompts, shopNavigation)
 			C.Place(boost, layout.Status)
 		end
 		luckChip.Size = if layout.Phone then UDim2.new(1, -4, 1, 0) else UDim2.new(0.5, -4, 1, 0)
-		passHint.Visible, dailyHint.Visible = layout.Phone == true, layout.Phone == true
+		passHint.Visible, dailyHint.Visible =
+			layout.Phone == true and layout.Portrait, layout.Phone == true and layout.Portrait
 		passHint.Text = if layout.Phone then "STYLE" else ""
 		for badge, defaults in pairs(badgeDefaults) do
 			badge.Frame.Size = if layout.Phone then UDim2.fromOffset(22, 22) else defaults.Size
@@ -295,9 +298,11 @@ function HUD.Create(root, remotes, open, prompts, shopNavigation)
 		end
 		coins.UITextSizeConstraint.MinTextSize = if layout.Phone then 14 else 10
 		coins.UITextSizeConstraint.MaxTextSize = if layout.Phone then 24 else 58
+		hint.BackgroundColor3 = C.Navy
+		hint.BackgroundTransparency = if layout.Phone then 0.3 else 1
 		hintTitle.UITextSizeConstraint.MinTextSize = if layout.Phone then 14 else 10
 		hintTitle.UITextSizeConstraint.MaxTextSize = if layout.Phone then 22 else 38
-		hintDetail.UITextSizeConstraint.MinTextSize = if layout.Phone then 12 else 10
+		hintDetail.UITextSizeConstraint.MinTextSize = if layout.Phone then 14 else 10
 		hintDetail.UITextSizeConstraint.MaxTextSize = if layout.Phone then 16 else 17
 		skip.Label.UITextSizeConstraint.MinTextSize = if layout.Phone then 14 else 10
 		for _, button in ipairs(travel:GetChildren()) do

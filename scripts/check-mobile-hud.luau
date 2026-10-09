@@ -8,6 +8,8 @@ local cases = {
 	{ 812, 375, 44, 36, 44, 21 },
 	{ 844, 390, 44, 36, 44, 21 },
 	{ 740, 360, 44, 36, 44, 21 },
+	{ 640, 360, 0, 36, 0, 21 },
+	{ 1170, 540, 54, 36, 0, 21 },
 	{ 768, 1024, 0, 36, 0, 20 },
 }
 local function overlaps(a, b)
@@ -61,7 +63,7 @@ for _, case in ipairs(cases) do
 	for _, r in ipairs(l.Nav) do
 		assert(r.W >= 44 and r.H >= 44)
 	end
-	assert(l.Travel.W / 3 - 10 >= 44 and l.Travel.H >= 44)
+	assert(l.Travel.W / 2 - 10 >= 44 and l.Travel.H >= 44)
 	assert(l.Action.W - 80 >= 44 and l.Action.H >= 44 and l.AutoWidth >= 44)
 	for _, r in ipairs({ l.Reveal, Presentation.Compute(w, h, true).Toast, Layout.Toast(w, h, true), l.CoinPopup }) do
 		assert(not overlaps(r, l.Action))

@@ -8,6 +8,8 @@ do
 		{ 812, 375, 44, 36, 44, 21 },
 		{ 844, 390, 44, 36, 44, 21 },
 		{ 740, 360, 44, 36, 44, 21 },
+		{ 640, 360, 0, 36, 0, 21 },
+		{ 1170, 540, 54, 36, 0, 21 },
 		{ 768, 1024, 0, 36, 0, 20 },
 	}
 	local function bounds(o)
@@ -89,6 +91,7 @@ do
 				hud.Frame.PhoneStatus,
 				root.CelebrationMenu,
 				admin.Open,
+				hud.Frame.Settings,
 			}
 			for _, name in ipairs({ "Shop", "Rebirth", "Collection", "Upgrades", "Passes", "Daily" }) do
 				table.insert(elements, hud.Navigation[name])
@@ -119,18 +122,24 @@ do
 				hud.Frame.PhoneStatus,
 				hud.Frame.Travel.Hub,
 				hud.Frame.Travel.Home,
-				hud.Frame.Travel.Shop,
+				hud.Frame.Settings,
 			}
 			for _, b in pairs(hud.Navigation) do
 				table.insert(targets, b)
 			end
 			for _, b in ipairs(targets) do
 				assert(b.AbsoluteSize.X >= 44 and b.AbsoluteSize.Y >= 44, b.Name .. " target below 44px")
-				assert(b.Label.UITextSizeConstraint.MinTextSize >= 12, b.Name .. " text too small")
+				assert(b.Label.UITextSizeConstraint.MinTextSize >= 14, b.Name .. " text too small")
 			end
 			assert(flush.Label.UITextSizeConstraint.MinTextSize >= 14)
 			assert(hud.Frame.FlushActions.AutoFlushSwitch.Label.UITextSizeConstraint.MinTextSize >= 14)
 			assert(hud.Frame.Wallet:FindFirstChildWhichIsA("TextLabel").UITextSizeConstraint.MinTextSize >= 14)
+			assert(hud.Frame.PendingIncome:FindFirstChildWhichIsA("TextLabel").UITextSizeConstraint.MinTextSize >= 14)
+			assert(not hud.Frame.Travel:FindFirstChild("Shop"))
+			if not layout.Portrait then
+				assert(layout.Hint.Y == 64 and layout.Hint.H <= 76, "Landscape hint must sit below top bar")
+				assert(layout.Nav[1].H == 44 and layout.Nav[4].Y > layout.Nav[1].Y)
+			end
 			hud.Frame.PhoneStatus.Activated:Fire()
 			assert(root["Boost details"].Visible and not hud.Frame.Visible)
 			root["Boost details"].TitleBar.X.Activated:Fire()
@@ -144,6 +153,10 @@ do
 		H.Layout(root)
 		local card = root.Tutorial
 		assert(card.Visible and not overlaps(bounds(card), bounds(flush)))
+		if phone then
+			assert(card.BackgroundTransparency >= 0.25)
+			assert(card.Detail.UITextSizeConstraint.MinTextSize >= 14)
+		end
 		for _, b in pairs(hud.Navigation) do
 			assert(not overlaps(bounds(card), bounds(b)))
 		end
@@ -246,5 +259,5 @@ do
 	end
 	settingsRoot:Destroy()
 	H.Services.UserInputService.TouchEnabled = false
-	print("Mobile production UI: eight viewports, targets, text, HUD/window/tutorial previews passed")
+	print("Mobile production UI: ten viewports, targets, text, HUD/window/tutorial previews passed")
 end
