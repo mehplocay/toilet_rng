@@ -341,18 +341,33 @@ function C.Icon(parent, kind, size, position, assetId, tint)
 			ImageTransparency = 0.999,
 			ZIndex = fallback.ZIndex + 10,
 		})
+		-- IsLoaded can stay false (or never signal) for icons in hidden windows, so a
+		-- resolved image is trusted after a short grace period.
+		local settled = false
 		local function loaded()
-			image.ImageTransparency = if image.Image ~= "" and image.IsLoaded then 0 else 0.999
-			fallback.Visible = image.Image == "" or not image.IsLoaded
+			local show = image.Image ~= "" and (image.IsLoaded or settled)
+			image.ImageTransparency = if show then 0 else 0.999
+			fallback.Visible = not show
+		end
+		local function settle()
+			settled = false
+			if image.Image ~= "" then
+				task.delay(1.5, function()
+					settled = true
+					loaded()
+				end)
+			end
 		end
 		local disconnect = ResolvedIcons.Observe(source, function(resolved)
 			if image.Image ~= (resolved or "") then
 				image.Image = resolved or ""
+				settle()
 			end
 			loaded()
 		end)
 		icon.Destroying:Connect(disconnect)
 		image:GetPropertyChangedSignal("IsLoaded"):Connect(loaded)
+		settle()
 		loaded()
 	end
 	return icon
