@@ -174,6 +174,10 @@ function Controller.Create(root, hud, audio)
 		heading.Name = "ItemName"
 		heading.ZIndex = 100
 		local oddsText = if item.Id == "Poop" then "Fallback drop" else "Base check • 1 in " .. C.Commas(item.Chance)
+		if not big and root.AbsoluteSize.Y < 300 then
+			heading.Size = UDim2.fromScale(0.68, 0.47)
+			oddsText = if item.Id == "Poop" then "Fallback drop" else "1 in " .. C.Commas(item.Chance)
+		end
 		if cinematic and entry.Probability then
 			oddsText ..= string.format("\nYour outcome: %.6g%%", entry.Probability * 100)
 		end
@@ -184,7 +188,7 @@ function Controller.Create(root, hud, audio)
 			local stamp = C.Text(
 				content,
 				"NEW!",
-				if cinematic then UDim2.new(0, 88, 0.04, 0) else UDim2.fromScale(0.2, 0.23),
+				if cinematic then UDim2.fromOffset(88, 18) else UDim2.fromScale(0.2, 0.23),
 				if cinematic then UDim2.fromScale(0.5, 0.115) else UDim2.fromScale(0.04, 0.02),
 				25
 			)

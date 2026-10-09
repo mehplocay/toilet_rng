@@ -162,8 +162,14 @@ do
 				H.Snapshot(f.Root, "review-tutorial-display-" .. viewport[1] .. "x" .. viewport[2])
 				assert(button.Text == "Display" and button:FindFirstChild("TutorialHighlight"))
 				reachable(button, f.Root)
-				assert(f.Guide.Frame.Visible and f.Guide.Frame.SkipTutorial.Visible)
-				assert(f.Collection.Panel.AbsolutePosition.Y >= 90, "Tutorial covers modal close/header")
+				assert(
+					(viewport[2] < 500 and not f.Guide.Frame.Visible)
+						or (f.Guide.Frame.Visible and f.Guide.Frame.SkipTutorial.Visible)
+				)
+				assert(
+					viewport[2] < 500 or f.Collection.Panel.AbsolutePosition.Y >= 90,
+					"Tutorial covers modal close/header"
+				)
 				button.Activated:Fire()
 				assert(H.Calls[#H.Calls].Name == "Display" and H.Calls[#H.Calls].Args[1] == "Poop")
 				f.Update(4)
@@ -193,7 +199,9 @@ do
 				end
 				f.Update(5, true)
 				H.Snapshot(f.Root, "review-tutorial-5-" .. viewport[1] .. "x" .. viewport[2])
-				assert(f.Guide.Frame.Visible and f.Guide.Frame.Title.Text == "Tutorial complete!")
+				assert(
+					(viewport[2] < 500 or f.Guide.Frame.Visible) and f.Guide.Frame.Title.Text == "Tutorial complete!"
+				)
 				H.Advance(7)
 				assert(not f.Guide.Frame.Visible and not f.Root:GetAttribute("TutorialActive"))
 				f.HUD.Frame.Visible, f.Upgrades.Panel.Visible = true, false
@@ -250,7 +258,11 @@ do
 			-- This fixture has no commerce policy, so HUD.Update closes the dialog; reopen it for the farewell.
 			oddsPanel.Visible = true
 			H.Layout(f.Root)
-			assert(f.Guide.Frame.AbsolutePosition.Y + f.Guide.Frame.AbsoluteSize.Y <= oddsPanel.AbsolutePosition.Y)
+			assert(
+				not f.Guide.Frame.Visible
+					or f.Guide.Frame.AbsolutePosition.Y + f.Guide.Frame.AbsoluteSize.Y
+						<= oddsPanel.AbsolutePosition.Y
+			)
 			H.Snapshot(f.Root, "review-tutorial-odds-" .. viewport[1] .. "x" .. viewport[2])
 			oddsPanel.Visible = false
 			f.Root:Destroy()

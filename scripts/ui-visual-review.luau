@@ -155,6 +155,9 @@ do
 			local panel = clientRoot[name]
 			resetScroll(panel)
 			panel.Visible = true
+			if name == "My Collection" and panel.ContentScroll.Body.Rewards.Text == "Items" then
+				panel.ContentScroll.Body.Rewards.Activated:Fire()
+			end
 			H.StartTasks()
 			capture(name, viewport)
 			if name == "My Collection" then

@@ -7,6 +7,9 @@ do
 		{ 430, 932, 0, 88, 0, 34 },
 		{ 812, 375, 44, 36, 44, 21 },
 		{ 844, 390, 44, 36, 44, 21 },
+		{ 932, 430, 44, 36, 44, 21 },
+		{ 667, 375, 0, 36, 0, 21 },
+		{ 568, 320, 0, 36, 0, 21 },
 		{ 740, 360, 44, 36, 44, 21 },
 		{ 640, 360, 0, 36, 0, 21 },
 		{ 1170, 540, 54, 36, 0, 21 },
@@ -192,14 +195,14 @@ do
 					end
 				end
 			end
-			assert(p.ContentScroll.AbsoluteSize.Y > 0 and p.ContentScroll.AutomaticCanvasSize == Enum.AutomaticSize.Y)
+			assert(p.ContentScroll.AbsoluteSize.Y > 0)
 			if module == "Upgrades" then
 				hud.SetShopNavigation(true)
 				H.Layout(root)
 				H.Snapshot(root, prefix .. "-window")
 			end
 			if module == "Upgrades" then
-				p.ContentScroll.CanvasPosition = { X = 0, Y = 164 }
+				p.ContentScroll.Body.ToiletCards.CanvasPosition = { X = 0, Y = 164 }
 				H.Layout(root)
 				H.Snapshot(root, prefix .. "-window-scrolled")
 				local buy = p:FindFirstChild("Locked", true)
@@ -208,7 +211,7 @@ do
 					H.Layout(root)
 					components.ScrollTo(buy)
 					H.Layout(root)
-					local r, scroll = bounds(buy), bounds(p.ContentScroll)
+					local r, scroll = bounds(buy), bounds(p.ContentScroll.Body.ToiletCards)
 					assert(
 						r.Y >= scroll.Y and r.Y + r.H <= scroll.Y + scroll.H,
 						"Phone window action unreachable by scrolling"

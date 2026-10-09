@@ -91,7 +91,7 @@ local rewards = require(script.UI.Rewards).Create(root, remotes)
 local passes = require(script.UI.Passes).Create(root, remotes)
 local rebirth = require(script.UI.Rebirth).Create(root, remotes)
 local offlineIncome = require(script.UI.OfflineIncome).Create(root, remotes)
-local settings = C.Panel(root, "Settings", C.Blue)
+local settings = C.Panel(root, "Settings", C.Blue, nil, true)
 local skipAnimation, autoFlush = false, false
 local settingsList = C.Scroll(settings.ContentScroll.Body, UDim2.fromScale(1, 1))
 C.New("UIListLayout", settingsList, { Padding = UDim.new(0, 18), SortOrder = Enum.SortOrder.LayoutOrder })
@@ -126,7 +126,7 @@ local panels = {
 }
 local dev
 if RunService:IsStudio() then
-	dev = C.Panel(root, "Developer Tools", Color3.fromRGB(219, 78, 105))
+	dev = C.Panel(root, "Developer Tools", Color3.fromRGB(219, 78, 105), nil, true)
 	table.insert(panels, dev)
 	local row = C.Scroll(dev.ContentScroll.Body, UDim2.fromScale(1, 1))
 	C.New("UIListLayout", row, { Padding = UDim.new(0, 18), SortOrder = Enum.SortOrder.LayoutOrder })

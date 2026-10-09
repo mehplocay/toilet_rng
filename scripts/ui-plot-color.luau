@@ -41,16 +41,16 @@ do
 	)
 	-- Color confirmation and purchase recovery must remain independent in one window.
 	local body = ui.Panel.ContentScroll.Body
-	local purchase = body.PurchaseMessage
+	local purchase = body:FindFirstChild("PurchaseMessage", true)
 	local boost = ui.Panel:FindFirstChild("BoostGrid", true).Coins10Minutes.OfferCard.Buy
 	boost.Activated:Fire()
-	assert(body.PurchaseStatus.Text == "Preparing your purchase...")
+	assert(body:FindFirstChild("PurchaseStatus", true).Text == "Preparing your purchase...")
 	sky.Activated:Fire()
 	remotes.Result.OnClientEvent:Fire("PlotColor", { Success = true, Message = "Plot color saved." })
-	assert(body.PurchaseStatus.Text == "Preparing your purchase...")
+	assert(body:FindFirstChild("PurchaseStatus", true).Text == "Preparing your purchase...")
 	H.Advance(9)
 	ui.Update(state)
-	assert(body.PurchaseStatus.Text == "Preparing your purchase...")
+	assert(body:FindFirstChild("PurchaseStatus", true).Text == "Preparing your purchase...")
 	H.Advance(1)
 	assert(purchase.Text:find("timed out", 1, true) and feedback.Text == "Plot color saved.")
 	remotes.Result.OnClientEvent:Fire("BuyProduct", { Success = false, Message = "Purchase unavailable." })

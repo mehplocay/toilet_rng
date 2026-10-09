@@ -8,16 +8,27 @@ function Rewards.Create(body, remotes)
 		Name = "IndexRewards",
 		Visible = false,
 		BackgroundTransparency = 1,
-		Size = UDim2.new(1, 0, 1, -54),
-		Position = UDim2.fromOffset(0, 54),
+		Size = UDim2.new(1, 0, 1, -60),
+		Position = UDim2.fromOffset(0, 60),
 	})
-	C.Icon(frame, "Gem", UDim2.fromOffset(30, 30))
-	local balance = C.Text(frame, "Stamps: 0", UDim2.new(1, -36, 0, 30), UDim2.fromOffset(36, 0), 22)
+	local scroll = C.Scroll(frame, UDim2.fromScale(1, 1))
+	local content = C.New(
+		"Frame",
+		scroll,
+		{ Size = UDim2.new(1, -12, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, BackgroundTransparency = 1 }
+	)
+	C.New("UIListLayout", content, { Padding = UDim.new(0, 12), SortOrder = Enum.SortOrder.LayoutOrder })
+	local balance = C.Text(content, "Stamps: 0", UDim2.new(1, 0, 0, 36), nil, 22)
 	balance.TextColor3 = C.Gold
-	local status =
-		C.BodyText(frame, "Discover items. Claim permanent rewards.", UDim2.new(1, 0, 0, 36), UDim2.fromOffset(0, 32))
-	local list = C.Scroll(frame, UDim2.new(1, 0, 1, -76), UDim2.fromOffset(0, 76))
-	C.Grid(list, 240, 146)
+	local status = C.BodyText(content, "Discover items. Claim permanent rewards.", UDim2.new(1, 0, 0, 36))
+	status.LayoutOrder = 1
+	local list = C.New("Frame", content, {
+		Size = UDim2.new(1, 0, 0, 0),
+		AutomaticSize = Enum.AutomaticSize.Y,
+		BackgroundTransparency = 1,
+		LayoutOrder = 2,
+	})
+	C.Grid(list, 240, 160)
 	local state, pending, rows = nil, {}, {}
 	local function update()
 		if not state then
@@ -57,11 +68,11 @@ function Rewards.Create(body, remotes)
 		local row = C.Card(list, color, true)
 		row.LayoutOrder = order
 		C.Icon(row, "Gem", UDim2.fromOffset(32, 32), UDim2.fromOffset(8, 10))
-		C.Text(row, reward.Label, UDim2.new(1, -52, 0, 46), UDim2.fromOffset(44, 6), 21)
-		local marks = C.StatusIcons(row, UDim2.fromOffset(24, 24), UDim2.fromOffset(10, 65))
-		local progress = C.BodyText(row, "", UDim2.new(1, -146, 0, 38), UDim2.fromOffset(36, 60))
-		local bar = C.ProgressBar(row, UDim2.new(1, -20, 0, 10), UDim2.fromOffset(10, 119), color)
-		local button = C.Button(row, "Locked", UDim2.fromOffset(94, 44), UDim2.new(1, -104, 0, 61), function()
+		C.Text(row, reward.Label, UDim2.new(1, -88, 0, 46), UDim2.fromOffset(44, 6), 21)
+		local marks = C.StatusIcons(row, UDim2.fromOffset(24, 24), UDim2.new(1, -32, 0, 8))
+		local progress = C.BodyText(row, "", UDim2.new(1, -20, 0, 28), UDim2.fromOffset(10, 60))
+		local bar = C.ProgressBar(row, UDim2.new(1, -20, 0, 6), UDim2.fromOffset(10, 92), color)
+		local button = C.Button(row, "Locked", UDim2.new(1, -20, 0, 44), UDim2.fromOffset(10, 106), function()
 			if not state or not rows[reward.Id].Button.Interactable then
 				return
 			end

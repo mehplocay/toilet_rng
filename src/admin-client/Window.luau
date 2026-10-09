@@ -198,13 +198,13 @@ function Window.Create(gui, remote, C, reloadLabels)
 		end
 	end
 	local function presets(parent, box, values)
-		local row = C.Scroll(parent, UDim2.new(1, 0, 0, 64), nil, true)
-		ordered(parent, row)
-		C.New("UIListLayout", row, {
-			FillDirection = Enum.FillDirection.Horizontal,
-			Padding = UDim.new(0, 10),
-			SortOrder = Enum.SortOrder.LayoutOrder,
+		local row = C.New("Frame", parent, {
+			Size = UDim2.new(1, 0, 0, 0),
+			AutomaticSize = Enum.AutomaticSize.Y,
+			BackgroundTransparency = 1,
 		})
+		ordered(parent, row)
+		C.Grid(row, 68, 44)
 		for index, value in ipairs(values) do
 			local label = C.Commas(value)
 			local preset = C.Button(row, label, UDim2.fromOffset(68, 44), nil, function()

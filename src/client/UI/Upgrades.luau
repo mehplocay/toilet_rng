@@ -5,12 +5,13 @@ local Style = require(game.ReplicatedStorage.Shared.Config.World)
 local Preview = require(script.Parent.Preview)
 local Upgrades = {}
 function Upgrades.Create(gui, remotes)
-	local panel = C.Panel(gui, "Toilet Upgrades", C.Green)
+	local panel = C.Panel(gui, "Toilet Upgrades", C.Green, nil, true)
 	local body = panel.ContentScroll.Body
 	local navigation = C.New("Frame", body, {
 		Name = "ShopNavigation",
 		Size = UDim2.new(1, 0, 0, 44),
 		BackgroundTransparency = 1,
+		Visible = false,
 	})
 	local wallet =
 		C.Text(body, "Better toilets. Bigger possibilities!", UDim2.new(1, 0, 0, 32), UDim2.fromOffset(0, 54), 24)
@@ -18,10 +19,10 @@ function Upgrades.Create(gui, remotes)
 	local footer = C.BodyText(
 		body,
 		"All 47 items from every toilet. Upgrade for better odds.",
-		UDim2.new(1, 0, 0, 26),
-		UDim2.new(0, 0, 1, -26)
+		UDim2.new(1, 0, 0, 36),
+		UDim2.new(0, 0, 1, -36)
 	)
-	local row = C.Scroll(body, UDim2.new(1, 0, 1, -200), UDim2.fromOffset(0, 164))
+	local row = C.Scroll(body, UDim2.new(1, 0, 1, -60), UDim2.fromOffset(0, 60))
 	row.Name = "ToiletCards"
 	local tracks = require(script.Parent.UpgradeTracks).Create(body, remotes)
 	tracks.Frame.Size, tracks.Frame.Position = row.Size, row.Position
@@ -35,10 +36,14 @@ function Upgrades.Create(gui, remotes)
 	end
 	local tabs = C.TabBar(body, { "Toilets", "Coin Upgrades" }, applyTab)
 	local function resizeHeader()
-		-- Keep both navigation rows reachable above the scrolling cards on short screens.
-		local compact = gui.AbsoluteSize.Y < 350
-		tabs.Frame.Position = UDim2.fromOffset(0, if compact then 54 else 92)
-		wallet.Position = UDim2.fromOffset(0, if compact then 108 else 54)
+		-- One tab row replaces the duplicate Shop/Upgrades navigation row.
+		tabs.Frame.Position = UDim2.fromOffset(0, 0)
+		local compact = gui.AbsoluteSize.Y < 500
+		wallet.Visible, footer.Visible = not compact, not compact
+		wallet.Position = UDim2.fromOffset(0, 62)
+		row.Position = UDim2.fromOffset(0, if compact then 60 else 104)
+		row.Size = UDim2.new(1, 0, 1, if compact then -60 else -150)
+		tracks.Frame.Position, tracks.Frame.Size = row.Position, row.Size
 	end
 	gui:GetPropertyChangedSignal("AbsoluteSize"):Connect(resizeHeader)
 	resizeHeader()
@@ -57,10 +62,10 @@ function Upgrades.Create(gui, remotes)
 	local function openTab(name)
 		selectTab(name)
 		entryTab = name
-		panel.ContentScroll.CanvasPosition = Vector2.new()
+		row.CanvasPosition, tracks.Frame.CanvasPosition = Vector2.new(), Vector2.new()
 		panel.Visible = true
 	end
-	C.Grid(row, 144, 310)
+	C.Grid(row, 300, 172)
 	local buttons, bars, marks = {}, {}, {}
 	for tier, toilet in ipairs(Toilets) do
 		local color = Style.ToiletColors[tier]
@@ -70,18 +75,18 @@ function Upgrades.Create(gui, remotes)
 		local _, tierLabel =
 			C.Pill(card, "TIER " .. tier, color:Lerp(C.Navy, 0.5), UDim2.fromOffset(72, 23), UDim2.fromOffset(8, 8))
 		tierLabel.TextColor3 = Color3.new(1, 1, 1)
-		Preview.Create(card, UDim2.new(1, -24, 0, 106), UDim2.fromOffset(12, 33), nil, tier)
-		C.Text(card, toilet.Name, UDim2.new(1, -12, 0, 30), UDim2.fromOffset(6, 140), 22)
+		Preview.Create(card, UDim2.fromOffset(80, 72), UDim2.fromOffset(8, 34), nil, tier)
+		C.Text(card, toilet.Name, UDim2.new(1, -130, 0, 40), UDim2.fromOffset(96, 8), 22)
 		C.BodyText(
 			card,
 			string.format("%.3g", Income.TierMultipliers[tier]) .. "x display income / " .. toilet.Luck .. "x luck",
-			UDim2.new(1, -12, 0, 25),
-			UDim2.fromOffset(6, 174)
+			UDim2.new(1, -104, 0, 48),
+			UDim2.fromOffset(96, 56)
 		)
-		C.Text(card, C.Commas(toilet.Price) .. " Coins", UDim2.new(1, -12, 0, 30), UDim2.fromOffset(6, 202), 21).TextColor3 =
+		C.Text(card, C.Commas(toilet.Price) .. " Coins", UDim2.new(0.5, -16, 0, 36), UDim2.fromOffset(8, 116), 21).TextColor3 =
 			C.Gold
-		bars[tier] = C.ProgressBar(card, UDim2.new(1, -20, 0, 7), UDim2.fromOffset(10, 239), C.Green)
-		buttons[tier] = C.Button(card, "Locked", UDim2.new(1, -18, 0, 44), UDim2.fromOffset(9, 255), function()
+		bars[tier] = C.ProgressBar(card, UDim2.new(1, -20, 0, 6), UDim2.fromOffset(10, 160), C.Green)
+		buttons[tier] = C.Button(card, "Locked", UDim2.new(0.5, -12, 0, 44), UDim2.new(0.5, 4, 0, 108), function()
 			remotes.BuyToilet:FireServer(toilet.Id)
 		end, C.Green, { TextSize = 20 })
 		buttons[tier].Interactable = false

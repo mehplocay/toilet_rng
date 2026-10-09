@@ -9,7 +9,7 @@ local Format = require(Shared.NumberFormat)
 function Tracks.Create(body, remotes)
 	local row = C.Scroll(body, UDim2.new(1, 0, 1, -146), UDim2.fromOffset(0, 110))
 	row.Name, row.Visible = "PermanentUpgradeTracks", false
-	C.Grid(row, 210, 350, 3)
+	C.Grid(row, 240, 364, 3)
 	local latest, cards = nil, {}
 	local colors = { C.Gold, C.Purple, C.Green, C.Blue, C.Purple, C.Gold }
 	local descriptions = {
@@ -25,18 +25,18 @@ function Tracks.Create(body, remotes)
 		card.Name, card.LayoutOrder = track.Id, order
 		C.Icon(card, track.Icon, UDim2.fromOffset(48, 48), UDim2.fromOffset(10, 10), Assets.Icons[track.Icon])
 		C.Text(card, track.Name, UDim2.new(1, -76, 0, 46), UDim2.fromOffset(66, 10), 23)
-		local level = C.Text(card, "", UDim2.new(1, -20, 0, 28), UDim2.fromOffset(10, 63), 20)
-		local effect = C.BodyText(card, "", UDim2.new(1, -20, 0, 40), UDim2.fromOffset(10, 96))
+		local level = C.Text(card, "", UDim2.new(1, -20, 0, 28), UDim2.fromOffset(10, 152), 20)
+		local effect = C.BodyText(card, "", UDim2.new(1, -20, 0, 40), UDim2.fromOffset(10, 188))
 		level.Name, effect.Name = "Level", "Effect"
-		C.BodyText(card, descriptions[track.Id], UDim2.new(1, -20, 0, 65), UDim2.fromOffset(10, 139))
-		local progress = C.ProgressBar(card, UDim2.new(1, -20, 0, 8), UDim2.fromOffset(10, 208), colors[order])
+		C.BodyText(card, descriptions[track.Id], UDim2.new(1, -20, 0, 65), UDim2.fromOffset(10, 232))
+		local progress = C.ProgressBar(card, UDim2.new(1, -20, 0, 8), UDim2.fromOffset(10, 348), colors[order])
 		progress.Frame.Name = "Progress"
-		local milestone = C.BodyText(card, "", UDim2.new(1, -20, 0, 36), UDim2.fromOffset(10, 219))
+		local milestone = C.BodyText(card, "", UDim2.new(1, -20, 0, 36), UDim2.fromOffset(10, 304))
 		milestone.Name = "Milestone"
-		local price = C.Text(card, "", UDim2.new(1, -20, 0, 30), UDim2.fromOffset(10, 258), 22)
+		local price = C.Text(card, "", UDim2.new(1, -20, 0, 28), UDim2.fromOffset(10, 64), 22)
 		price.TextColor3 = C.Gold
 		price.Name = "Price"
-		local button = C.Button(card, "Buy", UDim2.new(1, -20, 0, 44), UDim2.fromOffset(10, 300), function()
+		local button = C.Button(card, "Buy", UDim2.new(1, -20, 0, 44), UDim2.fromOffset(10, 100), function()
 			if latest then
 				remotes.BuyUpgrade:FireServer(track.Id, rules:Level(latest, track.Id))
 			end

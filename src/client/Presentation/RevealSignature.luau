@@ -31,6 +31,14 @@ function Signature.Create(parent, config, color, mobile, cinematic)
 		local size = if cinematic
 			then math.min(parent.AbsoluteSize.X * 0.88, parent.AbsoluteSize.Y * 0.43, 420)
 			else math.min(parent.AbsoluteSize.X * 0.8, 260)
+		if cinematic and parent.AbsoluteSize.Y < 360 then
+			local bounds =
+				require(script.Parent.Layout).Compute(parent.AbsoluteSize.X, parent.AbsoluteSize.Y, mobile).Model
+			size = math.max(24, bounds.H - 12)
+			stage.Position = UDim2.fromOffset(bounds.X + bounds.W / 2, bounds.Y + bounds.H / 2)
+		elseif cinematic then
+			stage.Position = UDim2.fromScale(0.5, 0.38)
+		end
 		stage.Size = UDim2.fromOffset(size, size)
 		for _, crack in ipairs(cracks) do
 			local a, b, line = crack[1], crack[2], crack[3]

@@ -13,12 +13,25 @@ table.sort(orderedItems, function(a, b)
 	return if a.Chance == b.Chance then a.Id < b.Id else a.Chance < b.Chance
 end)
 function Collection.Create(gui, remotes)
-	local panel = C.Panel(gui, "My Collection", C.Blue)
+	local panel = C.Panel(gui, "My Collection", C.Blue, nil, true)
 	local body = panel.ContentScroll.Body
-	local counter = C.Text(body, "Discovered 0/" .. #Items, UDim2.new(1, -104, 0, 30), nil, 23)
+	local list = C.Scroll(body, UDim2.new(1, 0, 1, -60), UDim2.fromOffset(0, 60))
+	list.Name = "CollectionList"
+	local content = C.New(
+		"Frame",
+		list,
+		{ Size = UDim2.new(1, -12, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, BackgroundTransparency = 1 }
+	)
+	C.New("UIListLayout", content, { Padding = UDim.new(0, 12), SortOrder = Enum.SortOrder.LayoutOrder })
+	local controls = C.New(
+		"Frame",
+		content,
+		{ Name = "CollectionControls", Size = UDim2.new(1, 0, 0, 152), BackgroundTransparency = 1 }
+	)
+	local counter = C.Text(controls, "Discovered 0/" .. #Items, UDim2.new(1, 0, 0, 30), nil, 23)
 	counter.TextXAlignment = Enum.TextXAlignment.Left
-	local progress = C.ProgressBar(body, UDim2.new(1, -104, 0, 7), UDim2.fromOffset(0, 35), C.Blue)
-	local search = C.New("TextBox", body, {
+	local progress = C.ProgressBar(controls, UDim2.new(1, 0, 0, 7), UDim2.fromOffset(0, 35), C.Blue)
+	local search = C.New("TextBox", controls, {
 		PlaceholderText = "Search discoveries...",
 		PlaceholderColor3 = C.Muted,
 		Text = "",
@@ -31,25 +44,31 @@ function Collection.Create(gui, remotes)
 		Font = Enum.Font.BuilderSansBold,
 	})
 	C.Round(search, Color3.fromRGB(69, 106, 148), 10, 2)
-	local grid = C.Scroll(body, UDim2.new(1, 0, 1, -218), UDim2.fromOffset(0, 218))
-	C.Grid(grid, 132, 366, 5)
+	local grid = C.New("Frame", content, {
+		Name = "ItemGrid",
+		Size = UDim2.new(1, 0, 0, 0),
+		AutomaticSize = Enum.AutomaticSize.Y,
+		BackgroundTransparency = 1,
+		LayoutOrder = 1,
+	})
+	C.Grid(grid, 190, 386, 5)
 	local empty = C.BodyText(grid, "No discoveries match your search.", UDim2.new(1, -20, 0, 70))
 	empty.Visible = false
 	local help =
-		C.BodyText(body, "All items drop from every toilet.", UDim2.new(1, -100, 0, 26), UDim2.fromOffset(0, 166))
+		C.BodyText(controls, "All items drop from every toilet.", UDim2.new(1, -104, 0, 44), UDim2.fromOffset(0, 108))
 	local rewards = require(script.Parent.IndexRewards).Create(body, remotes)
 	local rewardsButton = C.Button(
 		body,
 		"Rewards",
 		UDim2.fromOffset(92, 44),
-		UDim2.new(1, -96, 0, 0),
+		UDim2.fromOffset(0, 7),
 		function() end,
 		C.Gold,
 		{ TextSize = 18, Sound = "TabSwitch" }
 	)
 	local filter, state, cards = "All", nil, {}
 	local selectedSlot, slotsButton
-	local slotsPanel = C.Panel(gui, "Choose display slot", C.Blue)
+	local slotsPanel = C.Panel(gui, "Choose display slot", C.Blue, nil, true)
 	local slotGrid = C.Scroll(slotsPanel.ContentScroll.Body, UDim2.fromScale(1, 1), UDim2.fromOffset(0, 0))
 	C.Grid(slotGrid, 150, 68, 4)
 	local slotButtons = {}
@@ -70,7 +89,7 @@ function Collection.Create(gui, remotes)
 		filter = name
 		render()
 	end, colors)
-	tabs.Frame.Position = UDim2.fromOffset(0, 102)
+	tabs.Frame.Position, tabs.Frame.Size = UDim2.fromOffset(100, 0), UDim2.new(1, -100, 0, 60)
 	local function displaySlot(itemId)
 		if not state then
 			return nil
@@ -105,30 +124,30 @@ function Collection.Create(gui, remotes)
 		local color = if item.Rarity == "Secret" then C.Purple else rarity.Color
 		local frame = C.Card(grid, color, rarity.Order >= 4)
 		frame.Name, frame.LayoutOrder = item.Id, order
-		local name = C.Text(frame, "???", UDim2.new(1, -12, 0, 28), UDim2.fromOffset(6, 104), 21)
-		local rarityText = C.Text(frame, item.Rarity, UDim2.new(1, -12, 0, 23), UDim2.fromOffset(6, 133), 16)
+		local name = C.Text(frame, "???", UDim2.new(1, -12, 0, 42), UDim2.fromOffset(6, 104), 21)
+		local rarityText = C.Text(frame, item.Rarity, UDim2.new(1, -12, 0, 23), UDim2.fromOffset(6, 147), 16)
 		rarityText.TextColor3 = if item.Rarity == "Secret"
 			then Color3.fromRGB(232, 166, 255)
 			else color:Lerp(Color3.new(1, 1, 1), 0.22)
-		local odds = C.BodyText(frame, "Undiscovered", UDim2.new(1, -12, 0, 20), UDim2.fromOffset(6, 157))
-		local count = C.Text(frame, "", UDim2.new(1, -12, 0, 25), UDim2.fromOffset(6, 180), 17)
-		local sell = C.Button(frame, "Sell 1", UDim2.new(0.5, -12, 0, 44), UDim2.fromOffset(8, 212), function()
+		local odds = C.BodyText(frame, "Undiscovered", UDim2.new(1, -12, 0, 20), UDim2.fromOffset(6, 174))
+		local count = C.Text(frame, "", UDim2.new(1, -12, 0, 28), UDim2.fromOffset(6, 198), 17)
+		local sell = C.Button(frame, "Sell 1", UDim2.new(0.5, -12, 0, 44), UDim2.fromOffset(8, 232), function()
 			if state and SafeInventory.Sellable(state, item.Id) > 0 then
 				remotes.Sell:FireServer(item.Id, 1)
 			end
 		end, C.Green, { TextSize = 16 })
-		local all = C.Button(frame, "Sell All", UDim2.new(0.5, -12, 0, 44), UDim2.new(0.5, 4, 0, 212), function()
+		local all = C.Button(frame, "Sell All", UDim2.new(0.5, -12, 0, 44), UDim2.new(0.5, 4, 0, 232), function()
 			local available = state and SafeInventory.Sellable(state, item.Id) or 0
 			if available > 0 then
 				remotes.Sell:FireServer(item.Id, available)
 			end
 		end, C.Green, { TextSize = 16 })
-		local display = C.Button(frame, "Display", UDim2.new(1, -16, 0, 44), UDim2.fromOffset(8, 266), function()
+		local display = C.Button(frame, "Display", UDim2.new(1, -16, 0, 44), UDim2.fromOffset(8, 284), function()
 			if state and SafeInventory.Displayable(state, item.Id) > 0 and freeSlot() then
 				remotes.Display:FireServer(item.Id, freeSlot())
 			end
 		end, C.Blue, { TextSize = 17, DisabledSound = "DisplayLocked" })
-		local putBack = C.Button(frame, "Put Back", UDim2.new(1, -16, 0, 44), UDim2.fromOffset(8, 314), function()
+		local putBack = C.Button(frame, "Put Back", UDim2.new(1, -16, 0, 44), UDim2.fromOffset(8, 336), function()
 			local slot = displaySlot(item.Id)
 			if slot then
 				remotes.Display:FireServer(nil, slot)
@@ -218,6 +237,7 @@ function Collection.Create(gui, remotes)
 	end
 	rewardsButton.Activated:Connect(function()
 		rewards.Frame.Visible = not rewards.Frame.Visible
+		list.Visible = not rewards.Frame.Visible
 		grid.Visible, tabs.Frame.Visible, help.Visible, search.Visible =
 			not rewards.Frame.Visible, not rewards.Frame.Visible, not rewards.Frame.Visible, not rewards.Frame.Visible
 		rewardsButton.Text = if rewards.Frame.Visible then "Items" else "Rewards"
@@ -232,12 +252,13 @@ function Collection.Create(gui, remotes)
 		end
 		selectedSlot = slot
 		rewards.Frame.Visible = false
+		list.Visible = true
 		rewardsButton.Text = "Rewards"
 		grid.Visible, tabs.Frame.Visible, help.Visible, search.Visible, slotsButton.Visible =
 			true, true, true, true, true
 		filter, search.Text = "All", ""
 		tabs.Select("All")
-		grid.CanvasPosition = Vector2.new()
+		list.CanvasPosition = Vector2.new()
 		help.Text = "Choose an item for display " .. slot
 		slotsPanel.Visible, panel.Visible = false, true
 		render()
@@ -263,7 +284,7 @@ function Collection.Create(gui, remotes)
 			button.Text = "Slot " .. slot .. "\n" .. (if state.Displays[tostring(slot)] then "Put Back" else "Place")
 		end
 	end
-	slotsButton = C.Button(body, "Slots", UDim2.fromOffset(92, 44), UDim2.new(1, -96, 0, 166), function()
+	slotsButton = C.Button(controls, "Slots", UDim2.fromOffset(92, 44), UDim2.new(1, -96, 0, 108), function()
 		selectedSlot = nil
 		help.Text = "First copies can be displayed."
 		panel.Visible, slotsPanel.Visible = false, true

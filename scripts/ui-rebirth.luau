@@ -66,7 +66,10 @@ do
 		root:GetPropertyChangedSignal("AbsoluteSize"):Fire()
 		H.Layout(root)
 		assert(button.AbsoluteSize.Y >= 44 and button.AbsoluteSize.X >= 44)
-		assert(body.RESETS.AbsolutePosition.X + body.RESETS.AbsoluteSize.X < body.KEEPS.AbsolutePosition.X)
+		assert(
+			body.RESETS.AbsolutePosition.X + body.RESETS.AbsoluteSize.X < body.KEEPS.AbsolutePosition.X
+				or body.RESETS.AbsolutePosition.Y + body.RESETS.AbsoluteSize.Y + 8 <= body.KEEPS.AbsolutePosition.Y
+		)
 		for _, disclosure in ipairs({ body.RESETS, body.KEEPS, body.NextBonus, body.TokenPerks }) do
 			assert(
 				disclosure.Visible ~= false

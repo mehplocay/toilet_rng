@@ -179,6 +179,11 @@ function Tutorial.Create(_player, remotes, hud, prompts, hooks)
 		end
 		title.Visible, detail.Visible = not busy, not busy
 		card.Visible = step < 5 or not busy
+		-- On short phones, the open window and its highlighted action need the space.
+		-- Closing it restores the guide and Skip immediately on the next update.
+		if phone and h < 500 and not hudVisible then
+			card.Visible = false
+		end
 		C.Place(card, bounds)
 		local button = target(step)
 		if button ~= highlightedButton then

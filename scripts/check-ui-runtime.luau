@@ -330,17 +330,14 @@ for _, viewport in ipairs(H.Viewports) do
 			assert(element.AbsolutePosition.Y >= lastBottom, "Offer text/actions overlap")
 			lastBottom = element.AbsolutePosition.Y + element.AbsoluteSize.Y
 		end
-		assert(offer.Description.TextWrapped == (key == "ExtraSlots"), "Unexpected offer description wrapping")
+		assert(offer.Description.TextWrapped, "Unexpected offer description wrapping")
 		if key == "ExtraSlots" then
 			assert(offer.Description.Text == "+3 slots (max 10). Also free via coin upgrades!")
 			assert(offer.Description.UITextSizeConstraint.MinTextSize == 14, "Free slot route is too small to read")
 		end
 		assert(offer.Buy.AbsoluteSize.X >= 100 and offer.Buy.AbsoluteSize.Y >= 44)
 		assert(offer.Gift.AbsoluteSize.X >= 44 and offer.Gift.AbsoluteSize.Y >= 44)
-		assert(
-			offer.Buy.AbsolutePosition.X + offer.Buy.AbsoluteSize.X < offer.Gift.AbsolutePosition.X,
-			"Buy/gift overlap"
-		)
+		assert(not offer.Gift.Visible, "Unavailable gift must not compete with Buy")
 		assert(lastBottom <= offer.AbsolutePosition.Y + offer.AbsoluteSize.Y, "Buy button clips below card")
 		assert(offer.Gift.Text == "Coming soon" and not offer.Gift.Interactable)
 		local before = #H.Calls
@@ -919,3 +916,281 @@ Assets.Music, Assets.Sounds = shippedMusic, shippedSounds
 print(
 	"Audio runtime checks passed: silent placeholders, controls, stale snapshots, voice cap, cleanup, crossfades and ducking"
 )
+
+-- Task 61: physical phones, conservative CoreUISafeInsets, all window pages.
+-- Run against production constructors and real tab callbacks, including hidden trees.
+do
+	local previousTouch = H.Services.UserInputService.TouchEnabled
+	H.Services.UserInputService.TouchEnabled = true
+	local review = table.clone(state)
+	review.TutorialDone, review.TutorialStep = true, 5
+	review.Coins, review.RunFlushes, review.LifetimeFlushes = 1e100, 1000, 1000
+	review.OwnedPasses = { DancePack = true }
+	review.OfflineIncome = { Coins = 1234, Earned = 1234, AwaySeconds = 3600, FullSeconds = 0 }
+	review.Collection, review.Inventory = {}, {}
+	for _, item in ipairs(Items) do
+		review.Collection[item.Id], review.Inventory[item.Id] = 1, 10
+	end
+	local odds = { Token = "phone-review", BaseLuck = 1, Luck = 10, Items = {}, Rarities = {} }
+	for _, item in ipairs(Items) do
+		table.insert(odds.Items, {
+			Id = item.Id,
+			Name = item.Name,
+			Rarity = item.Rarity,
+			BaseChance = item.Chance,
+			Fallback = item.Id == "Poop",
+			Normal = 1 / #Items,
+			Boosted = 1 / #Items,
+		})
+		local sum = odds.Rarities[item.Rarity] or { Normal = 0, Boosted = 0 }
+		sum.Normal += 1 / #Items
+		sum.Boosted += 1 / #Items
+		odds.Rarities[item.Rarity] = sum
+	end
+	review.Commerce = { Quotes = {}, Lucky = { Allowed = true, PolicyRemaining = 1200, Count = 1, Odds = odds } }
+	bootRemotes.State.OnClientEvent:Fire(review)
+	H.StartTasks()
+	H.ResumeTasks()
+	clientRoot.ModalBackdrop.Activated:Fire()
+	local function visible(object, stop)
+		while object and object ~= stop do
+			if object:IsA("GuiObject") and not object.Visible then
+				return false
+			end
+			object = object.Parent
+		end
+		return true
+	end
+	local function inside(object, container, message)
+		local p, s, q, t =
+			object.AbsolutePosition, object.AbsoluteSize, container.AbsolutePosition, container.AbsoluteSize
+		assert(
+			p.X >= q.X - 1 and p.Y >= q.Y - 1 and p.X + s.X <= q.X + t.X + 1 and p.Y + s.Y <= q.Y + t.Y + 1,
+			message .. ": " .. object.Name
+		)
+	end
+	local function noNested(root)
+		for _, object in ipairs(root:GetDescendants()) do
+			if object:IsA("ScrollingFrame") then
+				local ancestor = object.Parent
+				while ancestor do
+					assert(not ancestor:IsA("ScrollingFrame"), "Nested scroll after parenting: " .. object.Name)
+					ancestor = ancestor.Parent
+				end
+			end
+		end
+	end
+	local fixture = H.Root(400, 300)
+	local outer = C.Scroll(fixture, UDim2.fromScale(1, 1))
+	assert(not pcall(function()
+		C.Scroll(C.New("Frame", outer), UDim2.fromScale(1, 1))
+	end), "Runtime guard accepted nested scrolling")
+	fixture:Destroy()
+	noNested(clientRoot)
+	local cases = {
+		{ 320, 568, 0, 36, 0, 21 },
+		{ 844, 390, 44, 36, 44, 21 },
+		{ 932, 430, 44, 36, 44, 21 },
+		{ 667, 375, 0, 36, 0, 21 },
+		{ 740, 360, 44, 36, 44, 21 },
+		{ 568, 320, 0, 36, 0, 21 },
+		{ 1170, 540, 54, 36, 0, 21 },
+		{ 390, 844, 0, 88, 0, 34 },
+		{ 430, 932, 0, 88, 0, 34 },
+		{ 375, 667, 0, 36, 0, 21 },
+		{ 360, 740, 0, 88, 0, 34 },
+	}
+	local pages = {
+		{ "Toilet Upgrades", "Toilets" },
+		{ "Toilet Upgrades", "Coin Upgrades" },
+		{ "Passes & Style", "PassesTab" },
+		{ "Passes & Style", "BoostsTab" },
+		{ "Passes & Style", "LuckyTab" },
+		{ "My Collection", "Items" },
+		{ "My Collection", "Rewards" },
+		{ "Choose display slot" },
+		{ "REBIRTH" },
+		{ "Daily Rewards" },
+		{ "Settings" },
+		{ "Boost details" },
+		{ "OfflineIncome" },
+		{ "Celebration effects" },
+		{ "Luck details" },
+		{ "Lucky Flush odds" },
+	}
+	for _, case in ipairs(cases) do
+		local width, height, left, top, right, bottom = table.unpack(case)
+		local w, h = width - left - right, height - top - bottom
+		clientRoot._fixed, clientRoot._abs = { X = w, Y = h }, nil
+		clientRoot:GetPropertyChangedSignal("AbsoluteSize"):Fire()
+		for _, page in ipairs(pages) do
+			local panel = assert(clientRoot:FindFirstChild(page[1]), "Missing phone window " .. page[1])
+			bootRemotes.State.OnClientEvent:Fire(review)
+			if page[1] == "Luck details" then
+				clientRoot.HUD:FindFirstChild("LuckInfo", true).Activated:Fire()
+			elseif page[1] == "Lucky Flush odds" then
+				clientRoot["Passes & Style"]:FindFirstChild("UseLucky", true).Activated:Fire()
+			end
+			panel.Visible = true
+			if page[1] == "Choose display slot" then
+				bootRemotes.State.OnClientEvent:Fire(review)
+			end
+			assert(panel.Visible, "Phone fixture failed to open " .. page[1])
+			if page[1] == "My Collection" then
+				local button = panel.ContentScroll.Body.Rewards
+				if (page[2] == "Items") ~= (button.Text == "Rewards") then
+					button.Activated:Fire()
+				end
+			elseif page[2] then
+				panel:FindFirstChild(page[2], true).Activated:Fire()
+			end
+			for _, object in ipairs(panel:GetDescendants()) do
+				if object:IsA("ScrollingFrame") then
+					object.CanvasPosition = Vector2.new()
+				end
+			end
+			H.Layout(clientRoot)
+			local name = page[1] .. "/" .. (page[2] or "content") .. " " .. width .. "x" .. height
+			inside(panel, clientRoot, "Window outside safe root " .. name)
+			inside(panel.TitleBar.X, panel, "Close unreachable " .. name)
+			assert(
+				panel.TitleBar.X.AbsoluteSize.X >= 44 and panel.TitleBar.X.AbsoluteSize.Y >= 44,
+				name .. " close too small"
+			)
+			local scrolls, last, targets = {}, nil, {}
+			for _, object in ipairs(panel:GetDescendants()) do
+				if not visible(object, panel) then
+					continue
+				end
+				if object:IsA("ScrollingFrame") and object.ScrollingDirection ~= Enum.ScrollingDirection.X then
+					table.insert(scrolls, object)
+					assert(object.AbsoluteSize.Y >= 64, name .. " list viewport is too short")
+					inside(object, panel, "List outside window " .. name)
+				elseif object:IsA("GuiButton") or object:IsA("TextBox") then
+					assert(
+						object.AbsoluteSize.X >= 44 and object.AbsoluteSize.Y >= 44,
+						name .. " small target " .. object.Name
+					)
+					table.insert(targets, object)
+					local ancestor = object.Parent
+					while ancestor and ancestor ~= panel do
+						if
+							ancestor:IsA("ScrollingFrame")
+							and ancestor.ScrollingDirection ~= Enum.ScrollingDirection.X
+						then
+							if not last or object.AbsolutePosition.Y > last.AbsolutePosition.Y then
+								last = object
+							end
+						end
+						ancestor = ancestor.Parent
+					end
+				elseif object:IsA("TextLabel") and object.Text ~= "" then
+					local ancestor, iconGlyph = object.Parent, false
+					while ancestor and ancestor ~= panel do
+						iconGlyph = iconGlyph or ancestor.Name == "Fallback"
+						ancestor = ancestor.Parent
+					end
+					if iconGlyph then
+						continue
+					end
+					local constraint = object:FindFirstChildWhichIsA("UITextSizeConstraint")
+					if constraint then
+						assert(constraint.MinTextSize >= 12, name .. " unreadable label " .. object.Text)
+						local measured = H.Services.TextService:GetTextSize(
+							object.Text,
+							constraint.MinTextSize,
+							object.Font,
+							Vector2.new(object.AbsoluteSize.X, 100000)
+						)
+						assert(
+							measured.Y <= object.AbsoluteSize.Y + 1,
+							name .. " clipped text at minimum size: " .. object.Text
+						)
+					end
+				end
+			end
+			assert(#scrolls == 1, name .. " needs exactly one visible vertical scroll, got " .. #scrolls)
+			for i, a in ipairs(targets) do
+				for j = i + 1, #targets do
+					local b = targets[j]
+					if a.Parent == b.Parent then
+						local p, s, q, t = a.AbsolutePosition, a.AbsoluteSize, b.AbsolutePosition, b.AbsoluteSize
+						assert(
+							p.X + s.X + 8 <= q.X + 0.1
+								or q.X + t.X + 8 <= p.X + 0.1
+								or p.Y + s.Y + 8 <= q.Y + 0.1
+								or q.Y + t.Y + 8 <= p.Y + 0.1,
+							name .. " control spacing " .. a.Name .. "/" .. b.Name
+						)
+					end
+				end
+			end
+			local prefix = "phone61-"
+				.. width
+				.. "x"
+				.. height
+				.. "-"
+				.. page[1]:gsub("%W", "-")
+				.. "-"
+				.. (page[2] or "content"):gsub("%W", "-")
+			H.Snapshot(clientRoot, prefix)
+			if last then
+				local headerY = panel.TitleBar.AbsolutePosition.Y
+				C.ScrollTo(last)
+				H.Layout(clientRoot)
+				inside(last, scrolls[1], "Last action cannot be reached " .. name)
+				assert(panel.TitleBar.AbsolutePosition.Y == headerY, "Header scrolled with content")
+				H.Snapshot(clientRoot, prefix .. "-last")
+			end
+			panel.TitleBar.X.Activated:Fire()
+			assert(not panel.Visible, name .. " close failed")
+		end
+		local revealRoot = H.Root(w, h)
+		local controller = H.Load("src/client/Presentation/RevealController").Create(
+			revealRoot,
+			{ Frame = revealRoot, SetHintVisible = function() end },
+			{ Play = function() end }
+		)
+		local seen = {}
+		for _, item in ipairs(Items) do
+			if seen[item.Rarity] then
+				continue
+			end
+			seen[item.Rarity] = true
+			controller:Show(item)
+			H.Layout(revealRoot)
+			local skip = revealRoot:FindFirstChild("Skip", true)
+			if skip then
+				assert(skip.AbsoluteSize.X >= 44 and skip.AbsoluteSize.Y >= 44)
+				inside(skip, revealRoot, "Reveal Skip outside safe area")
+				local content = skip.Parent
+				assert(
+					content.Odds.AbsolutePosition.Y + content.Odds.AbsoluteSize.Y + 8 <= skip.AbsolutePosition.Y + 1,
+					"Reveal odds overlap Skip"
+				)
+				assert(
+					content.ItemName.AbsolutePosition.Y + content.ItemName.AbsoluteSize.Y
+						<= content.Odds.AbsolutePosition.Y,
+					"Reveal name overlaps odds"
+				)
+			else
+				local card = revealRoot.FlushReveal
+				if card.Visible then
+					assert(card.AbsoluteSize.Y >= 60, "Reveal card collapsed on short phone")
+					inside(card, revealRoot, "Reveal outside safe area")
+				end
+			end
+			H.Snapshot(revealRoot, "phone61-" .. width .. "x" .. height .. "-reveal-" .. item.Rarity)
+			controller:Skip()
+		end
+		controller:Destroy()
+		revealRoot:Destroy()
+	end
+	clientRoot._fixed, clientRoot._abs = { X = 1280, Y = 684 }, nil
+	clientRoot:GetPropertyChangedSignal("AbsoluteSize"):Fire()
+	bootRemotes.State.OnClientEvent:Fire(state)
+	H.Services.UserInputService.TouchEnabled = previousTouch
+	print(
+		"Phone windows: 16 pages x 11 landscape/portrait sizes, safe bounds, one scroll, reachable final actions, 44px targets, 8px control gaps and 12px text"
+	)
+end

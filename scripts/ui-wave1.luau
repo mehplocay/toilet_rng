@@ -26,7 +26,11 @@ do
 		local first, last = panel:FindFirstChild(records[1].Id, true), panel:FindFirstChild(records[#records].Id, true)
 		assert(first and last and first.Parent == last.Parent)
 		local grid = first.Parent
-		assert(grid.ClassName == "ScrollingFrame" and grid.AutomaticCanvasSize == Enum.AutomaticSize.Y)
+		local viewport = grid
+		while not viewport:IsA("ScrollingFrame") do
+			viewport = assert(viewport.Parent)
+		end
+		assert(viewport.AutomaticCanvasSize == Enum.AutomaticSize.Y)
 		local bottom = 0
 		for _, record in ipairs(records) do
 			local card = assert(grid:FindFirstChild(record.Id))
@@ -40,14 +44,14 @@ do
 				end
 			end
 		end
-		assert(bottom > grid.AbsoluteSize.Y, "Expanded catalog must be scrollable")
-		grid.CanvasPosition = { X = 0, Y = math.max(0, last.AbsolutePosition.Y - grid.AbsolutePosition.Y) }
+		assert(bottom > viewport.AbsoluteSize.Y, "Expanded catalog must be scrollable")
+		viewport.CanvasPosition = { X = 0, Y = math.max(0, last.AbsolutePosition.Y - viewport.AbsolutePosition.Y) }
 		H.Layout(root)
 		assert(
-			last.AbsolutePosition.Y >= grid.AbsolutePosition.Y - 1
-				and last.AbsolutePosition.Y < grid.AbsolutePosition.Y + grid.AbsoluteSize.Y
+			last.AbsolutePosition.Y >= viewport.AbsolutePosition.Y - 1
+				and last.AbsolutePosition.Y < viewport.AbsolutePosition.Y + viewport.AbsoluteSize.Y
 		)
-		grid.CanvasPosition = { X = 0, Y = 0 }
+		viewport.CanvasPosition = { X = 0, Y = 0 }
 	end
 	for _, size in ipairs(H.Viewports) do
 		root._fixed, root._abs = { X = size[1], Y = size[2] }, nil

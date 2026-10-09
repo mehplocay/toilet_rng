@@ -15,7 +15,7 @@ do
 		assert(panel.Visible and backdrop.Visible and not hud.Visible)
 		assert(toilets.Visible == (name == "Toilets") and coins.Visible == (name == "Coin Upgrades"))
 		assert(title.Text == (if name == "Toilets" then "Toilet Shop" else "Upgrades"))
-		assert(shop.Parent == body.ShopNavigation and upgrades.Parent == body.ShopNavigation)
+		assert(shop.Parent == hud and upgrades.Parent == hud and not body.ShopNavigation.Visible)
 		local selected = if name == "Toilets" then toiletTab else coinTab
 		assert(selected.Background.UIStroke.Color == H.Load("src/client/UI/Components").Gold)
 	end
@@ -89,7 +89,7 @@ do
 				button.Activated:Fire({ UserInputType = "UserInputType.Gamepad1" })
 				checkTab(if button == shop then "Toilets" else "Coin Upgrades")
 				H.Layout(clientRoot)
-				for _, entry in ipairs({ shop, upgrades, toiletTab, coinTab }) do
+				for _, entry in ipairs({ toiletTab, coinTab }) do
 					local p, s = entry.AbsolutePosition, entry.AbsoluteSize
 					assert(visible(entry) and entry.Interactable and entry.Selectable ~= false)
 					assert(s.X >= 44 and s.Y >= 44 and p.X >= 0 and p.Y >= 0)

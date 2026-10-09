@@ -116,7 +116,17 @@ for _, luck in ipairs({ 1e3, 1e6, 1e12, 1e300, 1.79e307 }) do
 		local lines = 0
 		for line in label.Text:gmatch("[^\n]+") do
 			lines += 1
-			assert(label.AbsoluteSize.X >= #line * minimum * 0.58, "Luck label cannot fit at its text minimum")
+			assert(
+				label.AbsoluteSize.X >= #line * minimum * 0.58,
+				string.format(
+					"Luck label cannot fit: %dx%d %s width=%g min=%g",
+					size[1],
+					size[2],
+					line,
+					label.AbsoluteSize.X,
+					minimum
+				)
+			)
 		end
 		assert(label.AbsoluteSize.Y >= lines * minimum * 1.2, "Luck label lines clip vertically")
 		if not root.HUD.Boosts.Visible then
@@ -187,7 +197,7 @@ do
 		H.Layout(root)
 		for _, key in ipairs({ "LuckyFlush1", "LuckyFlush5", "LuckyFlush20" }) do
 			local card = passes.Panel:FindFirstChild("LuckyGrid", true)[key].OfferCard
-			local scroll = card.RarityOddsScroll
+			local scroll = card.RarityOddsContent
 			local label = scroll.RarityOdds
 			local bounds = H.Services.TextService:GetTextSize(
 				label.Text,
@@ -206,8 +216,8 @@ do
 	root._fixed, root._abs = { X = 390, Y = 722 }, nil
 	root:GetPropertyChangedSignal("AbsoluteSize"):Fire()
 	H.Layout(root)
-	local mainScroll = passes.Panel.ContentScroll
-	local rarityScroll = passes.Panel:FindFirstChild("LuckyGrid", true).LuckyFlush1.OfferCard.RarityOddsScroll
+	local mainScroll = passes.Panel:FindFirstChild("OfferGrid", true).Parent.Parent
+	local rarityScroll = passes.Panel:FindFirstChild("LuckyGrid", true).LuckyFlush1.OfferCard.RarityOddsContent
 	mainScroll.CanvasPosition = Vector2.new(0, rarityScroll.AbsolutePosition.Y - mainScroll.AbsolutePosition.Y)
 	H.Layout(root)
 	H.Snapshot(root, "uncapped-lucky-cards")

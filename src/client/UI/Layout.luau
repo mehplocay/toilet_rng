@@ -12,27 +12,32 @@ function Layout.Phone(w, h)
 	-- Leave extra room for top insets and chrome shadows when mapping the
 	-- conservative safe-root reservation back to the physical phone screen.
 	local side = if portrait then math.clamp(math.floor((h * 0.55 - 72) / 6) - 4, 44, 56) else 44
-	local columns = if portrait and h < 600 then 2 elseif portrait then 1 else 3
+	local columns = if portrait and h < 680 then 2 elseif portrait then 1 else 3
 	-- Wide enough for 14 px labels even when the touch target is only 44 px tall.
 	local navWidth = 60
+	local tiny = not portrait and h < 280
 	local nav = {}
 	for i = 1, 6 do
 		local col = (i - 1) % columns
 		local row = math.floor((i - 1) / columns)
-		nav[i] = rect(8 + col * (navWidth + 6), 64 + row * (side + 4), navWidth, side)
+		nav[i] = rect(8 + col * (navWidth + 8), (if tiny then 52 else 64) + row * (side + 8), navWidth, side)
 	end
-	local centerX = if portrait then columns * (navWidth + 6) + 14 else math.max(202, math.ceil(w * 0.28) + 8)
+	local centerX = if portrait then columns * (navWidth + 8) + 14 else math.max(212, math.ceil(w * 0.28) + 8)
 	local centerW = if portrait then w - centerX - 12 else math.floor(w * 0.78) - centerX - 8
 	-- Leave a little extra horizontal room for asymmetric landscape notches.
 	local actionX, actionW = math.ceil(w * 0.28) + 8, math.floor(w * 0.48) - 16
 	local action = rect(actionX, h - 88, actionW, 76)
 	local hint = rect(centerX, if portrait then 218 else 64, centerW, if portrait then 116 else 76)
 	local reveal =
-		rect(centerX, if portrait then hint.Y else 120, centerW, if portrait then 126 else math.min(88, action.Y - 176))
+		rect(centerX, if portrait then hint.Y else 100, centerW, if portrait then 126 else math.min(88, action.Y - 148))
 	local popupX = math.max(centerX, actionX)
 	local popup = rect(popupX, reveal.Y + reveal.H + 8, math.floor(w * 0.78) - 8 - popupX, 32)
 	if not portrait then
 		popup = rect(actionX, action.Y - 40, actionW, 28)
+		if h < 300 then
+			reveal = rect(centerX, 100, centerW, math.min(88, action.Y - 108))
+			popup = rect(centerX, 64, centerW, 28)
+		end
 	end
 	return {
 		Phone = true,
@@ -71,6 +76,10 @@ function Layout.Compute(w, h, touch)
 			phone.Status = rect(w - 242, 8, 182, 44)
 			phone.Travel = rect(8, 8, 168, 44)
 			phone.Celebrate = rect(w - 56, 64, 44, 44)
+			if h < 280 then
+				phone.Travel.Y, phone.Status.Y, phone.Settings.Y = 0, 0, 0
+				phone.Coins.Y, phone.PendingIncome.Y = 0, 26
+			end
 		end
 		return phone
 	end
@@ -180,7 +189,12 @@ function Layout.Toast(w, h, touch, tutorialModal)
 		end
 		local hint = Layout.Compute(w, h, touch).Hint
 		-- Result toasts still need to clear modal headers after the hint moves upwards.
-		return rect(hint.X, if h > w then hint.Y else 120, math.min(420, hint.W, w - hint.X - 24), 64)
+		return rect(
+			hint.X,
+			if h > w then hint.Y else math.min(120, action.Y - 72),
+			math.min(420, hint.W, w - hint.X - 24),
+			64
+		)
 	end
 	local modal = Layout.Modal(w, h)
 	local width = math.min(420, w - 48)
@@ -194,18 +208,18 @@ end
 -- The top of each grid cell reserves space for the overflowing sculpture.
 Layout.PassCard = {
 	MinimumWidth = 224,
-	CellHeight = 314,
+	CellHeight = 334,
 	Top = 48,
-	Height = 266,
+	Height = 286,
 	IconSize = 128,
 	IconY = -48,
 	TitleY = 88,
 	TitleHeight = 40,
 	DescriptionY = 134,
-	DescriptionHeight = 24,
-	StatusY = 164,
-	StatusHeight = 24,
-	ButtonY = 204,
+	DescriptionHeight = 40,
+	StatusY = 184,
+	StatusHeight = 28,
+	ButtonY = 224,
 	ButtonHeight = 50,
 	GiftWidth = 72,
 	Inset = 12,

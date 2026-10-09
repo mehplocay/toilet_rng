@@ -28,11 +28,11 @@ function H.CheckPurchaseUI()
 	for _, key in ipairs({ "LuckyFlush1", "LuckyFlush5", "LuckyFlush20" }) do
 		grid[key].OfferCard.Buy.Activated:Fire()
 		assert(
-			dialog.Visible and body.PurchaseStatus.Text ~= "Preparing your purchase...",
+			dialog.Visible and body:FindFirstChild("PurchaseStatus", true).Text ~= "Preparing your purchase...",
 			"Review started request timeout before confirmation"
 		)
 		confirm.Activated:Fire()
-		assert(body.PurchaseStatus.Text == "Preparing your purchase...")
+		assert(body:FindFirstChild("PurchaseStatus", true).Text == "Preparing your purchase...")
 		state.Commerce.PendingProduct, state.Commerce.CanResume = key, false
 		ui.Update(state)
 		assert(body.LuckyTab.Visible and grid.Visible and not grid[key].OfferCard.Buy.Interactable)
@@ -78,8 +78,8 @@ function H.CheckPurchaseUI()
 			{ Success = false, Message = "Purchases are temporarily unavailable. Please try again in a moment." }
 		)
 		assert(
-			body.PurchaseMessage.Text:find("temporarily unavailable", 1, true)
-				and body.PurchaseStatus.Text ~= "Preparing your purchase..."
+			body:FindFirstChild("PurchaseMessage", true).Text:find("temporarily unavailable", 1, true)
+				and body:FindFirstChild("PurchaseStatus", true).Text ~= "Preparing your purchase..."
 		)
 		state.Commerce.PendingProduct, state.Commerce.CanResume = nil, true
 		state.Commerce.Quotes[key] = 9876
@@ -96,26 +96,29 @@ function H.CheckPurchaseUI()
 		if config.DeveloperProducts[key].LuckyCharges then
 			confirm.Activated:Fire()
 		end
-		assert(body.PurchaseStatus.Text == "Preparing your purchase...")
+		assert(body:FindFirstChild("PurchaseStatus", true).Text == "Preparing your purchase...")
 		H.Advance(9)
 		ui.Update(state) -- An unrelated sync must not erase the pending deadline.
-		assert(body.PurchaseStatus.Text == "Preparing your purchase...")
+		assert(body:FindFirstChild("PurchaseStatus", true).Text == "Preparing your purchase...")
 		H.Advance(1)
 		assert(
-			body.PurchaseStatus.Text ~= "Preparing your purchase..."
-				and body.PurchaseMessage.Text:find("try again", 1, true)
+			body:FindFirstChild("PurchaseStatus", true).Text ~= "Preparing your purchase..."
+				and body:FindFirstChild("PurchaseMessage", true).Text:find("try again", 1, true)
 		)
 	end
 	boostGrid.Coins10Minutes.OfferCard.Buy.Activated:Fire()
 	remotes.Result.OnClientEvent:Fire("BuyProduct", { Message = "Purchase canceled." })
 	H.Advance(10)
-	assert(body.PurchaseMessage.Text == "Purchase canceled.", "Completed request later timed out")
+	assert(
+		body:FindFirstChild("PurchaseMessage", true).Text == "Purchase canceled.",
+		"Completed request later timed out"
+	)
 	state.OwnedPasses = {}
 	for _, key in ipairs(config.PassOrder) do
 		state.OwnedPasses[key] = true
 	end
 	ui.Update(state)
-	body["Refresh passes"].Activated:Fire()
+	body:FindFirstChild("Refresh passes", true).Activated:Fire()
 	H.StartTasks()
 	for _ = 1, 2 do
 		ui.Update(state)

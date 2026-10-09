@@ -6,10 +6,18 @@ function OfflineIncome.Create(root, remotes)
 	panel.Name = "OfflineIncome"
 	local body = panel.ContentScroll.Body
 	local function resize()
-		panel.Size = UDim2.fromOffset(math.min(560, root.AbsoluteSize.X - 24), math.min(530, root.AbsoluteSize.Y - 24))
+		local height = math.min(530, root.AbsoluteSize.Y - 24)
+		local top = (root.AbsoluteSize.Y - height) / 2
+		if root:GetAttribute("TutorialActive") and root.AbsoluteSize.Y >= 500 then
+			top = math.max(90, top)
+			height = math.min(height, root.AbsoluteSize.Y - top - 12)
+		end
+		panel.Size = UDim2.fromOffset(math.min(560, root.AbsoluteSize.X - 24), height)
+		panel.Position = UDim2.new(0.5, 0, 0, top + height / 2)
 		body.Size = UDim2.new(1, -8, 0, 420)
 	end
 	root:GetPropertyChangedSignal("AbsoluteSize"):Connect(resize)
+	root:GetAttributeChangedSignal("TutorialActive"):Connect(resize)
 	panel:GetPropertyChangedSignal("Visible"):Connect(resize)
 	resize()
 	C.Icon(body, "Coin", UDim2.fromOffset(64, 64), UDim2.new(0.5, -32, 0, 4))

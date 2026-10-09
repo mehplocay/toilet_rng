@@ -12,7 +12,7 @@ local rebirth = require(Shared.RebirthRules).new(require(Shared.Config.Rebirth))
 local Odds = require(script.Parent.LuckyOdds)
 local Format = require(Shared.NumberFormat)
 local HUD = {}
-function HUD.Create(root, remotes, open, prompts, shopNavigation)
+function HUD.Create(root, remotes, open, prompts, _shopNavigation)
 	local gui = C.New("Frame", root, { Name = "HUD", Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1 })
 	local navigation, buttons = {}, {}
 	local names = { "Shop", "Rebirth", "Collection", "Upgrades", "Passes", "Daily" }
@@ -286,6 +286,8 @@ function HUD.Create(root, remotes, open, prompts, shopNavigation)
 			C.Place(boost, layout.Status)
 		end
 		luckChip.Size = if layout.Phone then UDim2.new(1, -4, 1, 0) else UDim2.new(0.5, -4, 1, 0)
+		serverText.UITextSizeConstraint.MinTextSize = if layout.Phone then 14 else 10
+		personalText.UITextSizeConstraint.MinTextSize = if layout.Phone then 14 else 10
 		passHint.Visible, dailyHint.Visible =
 			layout.Phone == true and layout.Portrait, layout.Phone == true and layout.Portrait
 		passHint.Text = if layout.Phone then "STYLE" else ""
@@ -548,30 +550,8 @@ function HUD.Create(root, remotes, open, prompts, shopNavigation)
 		StatusPanel = statusDetails,
 		Navigation = navigation,
 		SetShopNavigation = function(active)
-			if not shopNavigation or shopOpen == active then
-				return
-			end
+			-- Window tabs own navigation; keep HUD entries in the hidden HUD.
 			shopOpen = active
-			-- Keep the actual HUD buttons reachable while the rest of the HUD is hidden.
-			for i, name in ipairs({ "Shop", "Upgrades" }) do
-				local button = navigation[name]
-				button.Parent = if active then shopNavigation else gui
-				local z = if active then shopNavigation.ZIndex + 2 else gui.ZIndex + 2
-				local delta = z - button.ZIndex
-				button.ZIndex = z
-				for _, object in ipairs(button:GetDescendants()) do
-					if object:IsA("GuiObject") then
-						object.ZIndex += delta
-					end
-				end
-				button[name .. "Icon"].Visible = not active
-				button.Label.Position = if active then UDim2.fromScale(0.06, 0.12) else UDim2.fromScale(0.02, 0.7)
-				button.Label.Size = if active then UDim2.fromScale(0.88, 0.76) else UDim2.fromScale(0.96, 0.25)
-				if active then
-					button.Size = UDim2.new(0.5, -5, 0, 44)
-					button.Position = UDim2.new((i - 1) * 0.5, (i - 1) * 5, 0, 0)
-				end
-			end
 			resize()
 		end,
 		FlushButton = flush,

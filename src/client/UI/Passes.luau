@@ -7,7 +7,7 @@ local Odds = require(script.Parent.LuckyOdds)
 local Rules = require(game.ReplicatedStorage.Shared.MonetizationRules)
 local Passes = {}
 function Passes.Create(gui, remotes)
-	local panel = C.Panel(gui, "Passes & Style", C.Purple)
+	local panel = C.Panel(gui, "Passes & Style", C.Purple, nil, true)
 	local gradient = panel.TitleBar.UIGradient
 	gradient.Rotation = 0
 	gradient.Color = ColorSequence.new({
@@ -18,8 +18,6 @@ function Passes.Create(gui, remotes)
 		ColorSequenceKeypoint.new(0.8, C.Purple),
 		ColorSequenceKeypoint.new(1, Color3.fromRGB(245, 91, 208)),
 	})
-	local close = panel.TitleBar:FindFirstChild("X")
-	close.Size, close.Position = UDim2.fromOffset(50, 50), UDim2.new(1, -54, 0, 4)
 	local blur = C.New("BlurEffect", game:GetService("Lighting"), { Name = "PassesBlur", Size = 18, Enabled = false })
 	panel.Destroying:Connect(function()
 		blur:Destroy()
@@ -50,13 +48,17 @@ function Passes.Create(gui, remotes)
 	end
 	local status = C.BodyText(body, "Permanent passes and consumable boosts.", UDim2.new(1, 0, 0, 40))
 	status.Name = "PurchaseStatus"
+	status.Visible = false
+	status:GetPropertyChangedSignal("Text"):Connect(function()
+		status.Visible = status.Text ~= "Permanent passes and consumable boosts."
+	end)
 	local pendingAction, pendingDeadline
 	beginPurchase = function(action)
 		pendingAction, pendingDeadline = action, os.clock() + 10
 		status.Text = if action == "BuyPass" then "Checking pass ownership..." else "Preparing your purchase..."
 	end
-	local scroll = C.Scroll(body, UDim2.new(1, 0, 1, -150), UDim2.fromOffset(0, 92))
-	-- The tab strip already reserves the top 92 px; start the offer grid at the inner viewport edge.
+	local scroll = C.Scroll(body, UDim2.new(1, 0, 1, -52), UDim2.fromOffset(0, 52))
+	-- Tabs stay fixed while offers and secondary actions share one list.
 	local scrollPadding = scroll:FindFirstChildOfClass("UIPadding")
 	if scrollPadding then
 		scrollPadding.PaddingTop = UDim.new(0, 0)
@@ -67,6 +69,7 @@ function Passes.Create(gui, remotes)
 		{ Size = UDim2.new(1, -10, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, BackgroundTransparency = 1 }
 	)
 	C.New("UIListLayout", content, { Padding = UDim.new(0, 18), SortOrder = Enum.SortOrder.LayoutOrder })
+	status.Parent, status.LayoutOrder = content, -2
 	local row = C.New("Frame", content, {
 		Size = UDim2.new(1, 0, 0, 0),
 		AutomaticSize = Enum.AutomaticSize.Y,
@@ -74,7 +77,7 @@ function Passes.Create(gui, remotes)
 		LayoutOrder = 1,
 	})
 	row.Name = "OfferGrid"
-	C.Grid(row, Card.MinimumWidth, Card.CellHeight + 222, 4)
+	C.Grid(row, Card.MinimumWidth, Card.CellHeight + 300, 4)
 	local boostRow = C.New("Frame", content, {
 		Name = "BoostGrid",
 		Size = UDim2.new(1, 0, 0, 0),
@@ -92,15 +95,16 @@ function Passes.Create(gui, remotes)
 		LayoutOrder = 1,
 		Visible = false,
 	})
-	C.Grid(luckyRow, Card.MinimumWidth, Card.CellHeight + 280, 4)
+	local luckyGrid = C.Grid(luckyRow, Card.MinimumWidth, Card.CellHeight + 280, 4)
+	local luckyHeights = {}
 	local selectTab
-	C.Button(body, "Passes", UDim2.new(1 / 3, -5, 0, 44), UDim2.fromOffset(0, 44), function()
+	C.Button(body, "Passes", UDim2.new(1 / 3, -6, 0, 44), UDim2.fromOffset(0, 0), function()
 		selectTab(false)
 	end, C.Purple, { Name = "PassesTab" })
-	C.Button(body, "Coins", UDim2.new(1 / 3, -5, 0, 44), UDim2.new(1 / 3, 2, 0, 44), function()
+	C.Button(body, "Coins", UDim2.new(1 / 3, -6, 0, 44), UDim2.new(1 / 3, 3, 0, 0), function()
 		selectTab(true)
 	end, C.Blue, { Name = "BoostsTab" })
-	local luckyTab = C.Button(body, "Lucky", UDim2.new(1 / 3, -5, 0, 44), UDim2.new(2 / 3, 5, 0, 44), function()
+	local luckyTab = C.Button(body, "Lucky", UDim2.new(1 / 3, -6, 0, 44), UDim2.new(2 / 3, 6, 0, 0), function()
 		selectTab("Lucky")
 	end, C.Gold, { Name = "LuckyTab" })
 	luckyTab.Visible = false
@@ -181,7 +185,7 @@ function Passes.Create(gui, remotes)
 		)
 		local title =
 			C.Text(card, pass.Name, UDim2.new(1, -24, 0, Card.TitleHeight), UDim2.fromOffset(12, Card.TitleY), 28)
-		title.Name, title.TextColor3, title.TextWrapped = "OfferTitle", color, false
+		title.Name, title.TextColor3, title.TextWrapped = "OfferTitle", color, true
 		title.UIStroke.Thickness = 3
 		local description = C.BodyText(
 			card,
@@ -189,7 +193,7 @@ function Passes.Create(gui, remotes)
 			UDim2.new(1, -24, 0, Card.DescriptionHeight),
 			UDim2.fromOffset(12, Card.DescriptionY)
 		)
-		description.Name, description.TextWrapped = "Description", false
+		description.Name, description.TextWrapped = "Description", true
 		prices[key] = C.Text(
 			card,
 			if pass.Id == 0 then "Not on sale yet" else "Checking price...",
@@ -236,8 +240,12 @@ function Passes.Create(gui, remotes)
 					mark.Position = UDim2.fromOffset(12, Card.StatusY + 220)
 				end
 			end
-			local rarityScroll = C.Scroll(card, UDim2.new(1, -16, 0, 212), UDim2.fromOffset(8, Card.StatusY))
-			rarityScroll.Name = "RarityOddsScroll"
+			local rarityScroll = C.New("Frame", card, {
+				Name = "RarityOddsContent",
+				Size = UDim2.new(1, -16, 0, 212),
+				Position = UDim2.fromOffset(8, Card.StatusY),
+				BackgroundTransparency = 1,
+			})
 			local label = C.BodyText(rarityScroll, Odds.RarityText(nil), UDim2.new(1, -20, 0, 0))
 			label.Name = "RarityOdds"
 			label.TextScaled, label.TextWrapped, label.TextSize = false, true, 17
@@ -248,11 +256,36 @@ function Passes.Create(gui, remotes)
 				local bounds = game:GetService("TextService")
 					:GetTextSize(label.Text, 17, label.Font, Vector2.new(width, 100000))
 				label.Size = UDim2.new(1, -20, 0, math.ceil(bounds.Y) + 6)
+				local height = math.ceil(bounds.Y) + 14
+				rarityScroll.Size = UDim2.new(1, -16, 0, height)
+				prices[key].Position = UDim2.fromOffset(38, Card.StatusY + height + 8)
+				buttons[key].Position = UDim2.fromOffset(Card.Inset, Card.StatusY + height + 48)
+				for _, name in ipairs({ "LockIcon", "CheckIcon" }) do
+					local mark = card:FindFirstChild(name)
+					if mark then
+						mark.Position = UDim2.fromOffset(12, Card.StatusY + height + 8)
+					end
+				end
+				local info = card:FindFirstChild("OddsInfo")
+				if info then
+					info.Position = UDim2.fromOffset(8, Card.StatusY + height + 106)
+				end
+				local gift = card:FindFirstChild("Gift")
+				if gift then
+					gift.Position = UDim2.new(1, -Card.Inset - Card.GiftWidth, 0, Card.StatusY + height + 48)
+				end
+				card.Size = UDim2.new(1, 0, 0, Card.StatusY + height + 160)
+				luckyHeights[key] = Card.Top + card.Size.Y.Offset
+				local maximum = 0
+				for _, value in pairs(luckyHeights) do
+					maximum = math.max(maximum, value)
+				end
+				luckyGrid:SetAttribute("ContentHeight", maximum)
+				luckyGrid.CellSize = UDim2.fromOffset(luckyGrid.CellSize.X.Offset, maximum)
 			end
 			label:GetPropertyChangedSignal("Text"):Connect(fitOdds)
 			rarityScroll:GetPropertyChangedSignal("AbsoluteSize"):Connect(fitOdds)
 			luckyLabels[key] = label
-			fitOdds()
 			C.Button(
 				card,
 				"Info: all item odds",
@@ -272,14 +305,14 @@ function Passes.Create(gui, remotes)
 			if key == "VIPPack" then
 				C.New("UIStroke", card, { Color = C.Gold, Thickness = 4 })
 			end
-			perkLabels[key] = C.BodyText(slot, "", UDim2.new(1, -16, 0, 162), UDim2.fromOffset(8, Card.CellHeight + 4))
+			perkLabels[key] = C.BodyText(slot, "", UDim2.new(1, -16, 0, 240), UDim2.fromOffset(8, Card.CellHeight + 4))
 			perkLabels[key].Name = "Perks"
 			descriptions[key] = description
 			infoButtons[key] = C.Button(
 				slot,
 				"Info: all item odds",
 				UDim2.new(1, -16, 0, 44),
-				UDim2.fromOffset(8, Card.CellHeight + 172),
+				UDim2.fromOffset(8, Card.CellHeight + 250),
 				function()
 					oddsUI.Show(commerce.Lucky, key, nil, not buttons[key].Interactable)
 				end,
@@ -287,7 +320,7 @@ function Passes.Create(gui, remotes)
 				{ Name = "OddsInfo" }
 			)
 		elseif Config.Gamepasses[key] then
-			C.BodyText(slot, pass.Description, UDim2.new(1, -16, 0, 162), UDim2.fromOffset(8, Card.CellHeight + 4))
+			C.BodyText(slot, pass.Description, UDim2.new(1, -16, 0, 240), UDim2.fromOffset(8, Card.CellHeight + 4))
 		end
 		local gift = C.Button(
 			card,
@@ -304,6 +337,9 @@ function Passes.Create(gui, remotes)
 		gift.Interactable = false
 		C.Icon(gift, "Gift", UDim2.fromOffset(24, 24), UDim2.new(0.5, -12, 0, 2), 0)
 		gift.Label.Position, gift.Label.Size = UDim2.new(0, 3, 0, 29), UDim2.new(1, -6, 0, 16)
+		-- The unavailable gift control must not compete with the primary purchase.
+		gift.Visible = false
+		buttons[key].Size = UDim2.new(1, -Card.Inset * 2, 0, Card.ButtonHeight)
 	end
 	local loading = false
 	local function refreshPrices()
@@ -370,7 +406,7 @@ function Passes.Create(gui, remotes)
 	C.Grid(swatches, 142, 48)
 	local details = C.BodyText(
 		content,
-		"VIP: 1.5x cash, +1 path speed step, +50% offline tank, +25% luck, gold star/trail/sign trim, daily chest and VIP hub pad. Luck stacks without a cap. Luck perks depend on regional eligibility; use Info: all item odds.\nCoin packs match the shown income duration, with a 100 Coin minimum and no design cap. Cash bonuses multiply without a cap; path speed caps at 5x.",
+		"Coin packs match the shown income duration, with a 100 Coin minimum and no design cap. Cash bonuses multiply without a cap; path speed caps at 5x.",
 		UDim2.new(1, -12, 0, 112)
 	)
 	details.LayoutOrder = 5
@@ -388,14 +424,21 @@ function Passes.Create(gui, remotes)
 		local lucky = boosts == "Lucky" and commerce.Lucky and commerce.Lucky.Allowed == true
 		row.Visible, boostRow.Visible, luckyRow.Visible = not boosts, boosts == true, lucky == true
 		useLucky.Visible = lucky == true
-		details.Visible = not lucky
+		details.Visible = boosts == true
 		colorSummary.Visible, swatches.Visible = not boosts, not boosts
 		styleFeedback.Visible = not boosts
 		chest.Visible = not boosts
+		for name, selected in pairs({ PassesTab = not boosts, BoostsTab = boosts == true, LuckyTab = lucky == true }) do
+			body[name].Background.UIStroke.Color = if selected then C.Gold else C.Ink
+		end
 		scroll.CanvasPosition = Vector2.new(0, 0)
 	end
-	local message = C.BodyText(body, "", UDim2.new(0.55, -8, 0, 48), UDim2.new(0, 0, 1, -50))
+	local message = C.BodyText(content, "", UDim2.new(1, -12, 0, 48))
 	message.Name = "PurchaseMessage"
+	message.LayoutOrder, message.Visible = -1, false
+	message:GetPropertyChangedSignal("Text"):Connect(function()
+		message.Visible = message.Text ~= ""
+	end)
 	for order, color in ipairs(Config.PlotColors) do
 		local button = C.Button(swatches, color.Name, UDim2.fromOffset(142, 48), nil, function()
 			if not colors[color.Id].Interactable then
@@ -416,12 +459,13 @@ function Passes.Create(gui, remotes)
 		C.New("UICorner", swatch, { CornerRadius = UDim.new(0, 5) })
 		C.New("UIStroke", swatch, { Name = "Selection", Color = Color3.new(1, 1, 1), Thickness = 3, Enabled = false })
 	end
-	C.Button(body, "Refresh passes", UDim2.new(0.45, -8, 0, 44), UDim2.new(0.55, 4, 1, -48), function()
+	local refresh = C.Button(content, "Refresh passes", UDim2.new(1, -12, 0, 44), nil, function()
 		message.Text = "Checking..."
 		remotes.RefreshPasses:FireServer()
 		refreshPrices()
 	end, C.Blue, { TextSize = 18 })
-	local inviteButton = C.New("TextButton", body, {
+	refresh.LayoutOrder = 8
+	local inviteButton = C.New("TextButton", content, {
 		Name = "InviteFriends",
 		Text = "Invite friends for extra luck",
 		TextColor3 = C.Muted,
@@ -431,8 +475,8 @@ function Passes.Create(gui, remotes)
 		TextXAlignment = Enum.TextXAlignment.Left,
 		BackgroundTransparency = 1,
 		AutoButtonColor = false,
-		Size = UDim2.new(0.52, -8, 0, 44),
-		Position = UDim2.new(0, 4, 1, -48),
+		Size = UDim2.new(1, -12, 0, 44),
+		LayoutOrder = 9,
 		Visible = false,
 		Interactable = false,
 	})

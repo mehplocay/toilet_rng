@@ -11,9 +11,17 @@ end
 function Rewards.Create(gui, remotes)
 	local panel = C.Panel(gui, "Daily Rewards", C.Gold)
 	local body = panel.ContentScroll.Body
-	C.BodyText(body, "A fresh reward every UTC day. Keep your streak!", UDim2.new(1, 0, 0, 32))
-	local row = C.Scroll(body, UDim2.new(1, 0, 1, -164), UDim2.fromOffset(0, 38))
-	C.Grid(row, 132, 184, 4)
+	body.AutomaticSize = Enum.AutomaticSize.Y
+	C.New("UIListLayout", body, { Padding = UDim.new(0, 12), SortOrder = Enum.SortOrder.LayoutOrder })
+	C.BodyText(body, "A fresh reward every UTC day. Keep your streak!", UDim2.new(1, -12, 0, 36))
+	local row = C.New("Frame", body, {
+		Name = "RewardGrid",
+		Size = UDim2.new(1, 0, 0, 0),
+		AutomaticSize = Enum.AutomaticSize.Y,
+		BackgroundTransparency = 1,
+		LayoutOrder = 3,
+	})
+	C.Grid(row, 160, 196, 4)
 	local cards = {}
 	for day = 1, #Config.BaseCoins do
 		local card = C.Card(row, if day == #Config.BaseCoins then C.Purple else C.Gold, day == #Config.BaseCoins)
@@ -32,6 +40,7 @@ function Rewards.Create(gui, remotes)
 		cards[day] = { Frame = card, Value = value, Status = status, Marks = marks }
 	end
 	local countdown = C.Text(body, "Loading rewards...", UDim2.new(1, 0, 0, 28), UDim2.new(0, 0, 1, -122), 19)
+	countdown.LayoutOrder = 1
 	local message = C.BodyText(
 		body,
 		"Missing a day resets your streak. Rewards grow with your tier.",
@@ -39,6 +48,7 @@ function Rewards.Create(gui, remotes)
 		UDim2.new(0, 0, 1, -40)
 	)
 	local state, pending, request = nil, false, 0
+	message.LayoutOrder = 4
 	local claim
 	local function render()
 		if not state then
@@ -86,6 +96,7 @@ function Rewards.Create(gui, remotes)
 			end
 		end)
 	end, C.Green, { Icon = "Daily" })
+	claim.LayoutOrder = 2
 	remotes.Result.OnClientEvent:Connect(function(action, payload)
 		if action == "ClaimReward" then
 			pending = false

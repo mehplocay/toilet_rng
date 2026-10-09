@@ -63,6 +63,13 @@ function C.Commas(value)
 	return NumberFormat.Compact(value)
 end
 function C.New(class, parent, props)
+	if class == "ScrollingFrame" then
+		local ancestor = parent
+		while ancestor do
+			assert(not ancestor:IsA("ScrollingFrame"), "Nested ScrollingFrame: " .. ancestor.Name)
+			ancestor = ancestor.Parent
+		end
+	end
 	local object = Instance.new(class)
 	if object:IsA("GuiObject") then
 		object.BorderSizePixel = 0
@@ -179,7 +186,7 @@ function C.Text(parent, text, size, position, maxSize)
 		TextScaled = true,
 		TextWrapped = true,
 	})
-	C.New("UITextSizeConstraint", label, { MaxTextSize = maxSize or 28, MinTextSize = 10 })
+	C.New("UITextSizeConstraint", label, { MaxTextSize = maxSize or 28, MinTextSize = 12 })
 	C.Outline(label)
 	return label
 end
@@ -468,7 +475,7 @@ function C.Grid(scroll, minimum, height, maximumColumns)
 	)
 	local function resize()
 		local _, width = Layout.Grid(math.max(1, scroll.AbsoluteSize.X - 24), minimum, 14, maximumColumns)
-		grid.CellSize = UDim2.fromOffset(width, height)
+		grid.CellSize = UDim2.fromOffset(width, grid:GetAttribute("ContentHeight") or height)
 	end
 	scroll:GetPropertyChangedSignal("AbsoluteSize"):Connect(resize)
 	resize()
@@ -505,7 +512,8 @@ function C.TabBar(parent, names, callback, colors)
 		end,
 	}
 end
-function C.Panel(parent, title, color, minimumHeight)
+-- fixedBody is for windows whose list owns scrolling; the shell never scrolls too.
+function C.Panel(parent, title, color, minimumHeight, fixedBody)
 	local phoneSizes = setmetatable({}, { __mode = "k" })
 	local phoneText = setmetatable({}, { __mode = "k" })
 	local panel = C.New(
@@ -526,27 +534,31 @@ function C.Panel(parent, title, color, minimumHeight)
 	C.Button(bar, "X", UDim2.fromOffset(44, 44), UDim2.new(1, -51, 0, 7), function()
 		panel.Visible = false
 	end, Color3.fromRGB(237, 61, 78))
-	local scroll = C.New("ScrollingFrame", panel, {
+	local scroll = C.New(if fixedBody then "Frame" else "ScrollingFrame", panel, {
 		Name = "ContentScroll",
 		Size = UDim2.new(1, -28, 1, -88),
 		Position = UDim2.fromOffset(14, 74),
 		BackgroundTransparency = 1,
-		CanvasSize = UDim2.new(),
-		AutomaticCanvasSize = Enum.AutomaticSize.Y,
-		ScrollingDirection = Enum.ScrollingDirection.Y,
-		ScrollBarThickness = 4,
-		ScrollBarImageColor3 = C.Blue,
 	})
+	if not fixedBody then
+		scroll.CanvasSize = UDim2.new()
+		scroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
+		scroll.ScrollingDirection = Enum.ScrollingDirection.Y
+		scroll.ScrollBarThickness = 4
+		scroll.ScrollBarImageColor3 = C.Blue
+	end
 	local body = C.New("Frame", scroll, { Name = "Body", BackgroundTransparency = 1 })
 	local function resize()
 		local bounds = Layout.Modal(math.max(240, parent.AbsoluteSize.X), math.max(220, parent.AbsoluteSize.Y))
-		if parent:GetAttribute("TutorialActive") then
+		if parent:GetAttribute("TutorialActive") and parent.AbsoluteSize.Y >= 500 then
 			local bottom = bounds.Y + bounds.H
 			bounds.Y = math.max(bounds.Y, 90)
 			bounds.H = bottom - bounds.Y
 		end
 		C.Place(panel, bounds)
-		body.Size = UDim2.new(1, -8, 0, math.max(minimumHeight or 540, bounds.H - 88))
+		body.Size = if fixedBody
+			then UDim2.fromScale(1, 1)
+			else UDim2.new(1, -8, 0, math.max(minimumHeight or 540, bounds.H - 88))
 		if
 			Layout.IsPhone(
 				parent.AbsoluteSize.X,
@@ -599,7 +611,7 @@ function C.Panel(parent, title, color, minimumHeight)
 	return panel
 end
 local toasts = setmetatable({}, { __mode = "k" })
--- Reveal the highlighted action through nested panel/card scrolling.
+-- Reveal the highlighted action in its content viewport.
 function C.ScrollTo(button)
 	local parent = button.Parent
 	local shift = 0

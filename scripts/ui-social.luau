@@ -32,8 +32,8 @@ do
 		assert(invite.AbsolutePosition.Y >= passes.Panel.AbsolutePosition.Y)
 		local refresh = passes.Panel:FindFirstChild("Refresh passes", true)
 		assert(
-			math.abs(invite.AbsolutePosition.Y - refresh.AbsolutePosition.Y) < 2,
-			"Invite text is not on refresh row"
+			invite.AbsolutePosition.Y >= refresh.AbsolutePosition.Y + refresh.AbsoluteSize.Y + 8,
+			"Invite overlaps refresh"
 		)
 		assert(SocialUI.ChipText({ FriendCount = 3, InviteRemaining = 1 }, 2):find("Social boosts", 1, true))
 		H.Snapshot(root, string.format("social-compact-%dx%d", size[1], size[2]))
@@ -104,7 +104,7 @@ end
 do
 	local C = H.Load("src/client/UI/Components")
 	local root = H.Root(1280, 684)
-	local panel = C.Panel(root, "Upgrade cash check", C.Blue)
+	local panel = C.Panel(root, "Upgrade cash check", C.Blue, nil, true)
 	local tracks = H.Load("src/client/UI/UpgradeTracks").Create(panel.ContentScroll.Body, H.Remotes())
 	tracks.Update({ Coins = 0, Upgrades = {}, DisplaySlots = 3, UpgradeStats = { CashMultiplier = 1.518 } })
 	assert(tracks.Frame.CashBoost.Effect.Text == H.Load("src/shared/NumberFormat").Compact(1.518, 2) .. "x coins")

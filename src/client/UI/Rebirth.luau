@@ -59,6 +59,31 @@ function Rebirth.Create(root, remotes)
 	end, C.Purple, { TextSize = 23 })
 	confirm.Name = "Confirm"
 	confirm.Interactable = false
+	local function resizeContent()
+		local narrow = panel.Size.X.Offset < 560
+		local reset, keep = body.RESETS, body.KEEPS
+		reset.Size = UDim2.new(if narrow then 1 else 0.5, -8, 0, 264)
+		keep.Size = reset.Size
+		keep.Position = if narrow then UDim2.fromOffset(4, 508) else UDim2.new(0.5, 4, 0, 232)
+		local offset = if narrow then 276 else 0
+		local y = 508 + offset
+		for _, label in ipairs({ preview, perks, cashStacking, warning }) do
+			local measured = game:GetService("TextService"):GetTextSize(
+				label.Text,
+				14,
+				label.Font,
+				Vector2.new(math.max(100, panel.Size.X.Offset - 48), 100000)
+			)
+			local height = math.max(48, math.ceil(measured.Y) + 12)
+			label.Position, label.Size = UDim2.fromOffset(4, y), UDim2.new(1, -8, 0, height)
+			y += height + 12
+		end
+		confirm.Position = UDim2.fromOffset(4, y)
+		body.Size = UDim2.new(1, -8, 0, y + 70)
+	end
+	root:GetPropertyChangedSignal("AbsoluteSize"):Connect(resizeContent)
+	panel:GetPropertyChangedSignal("Visible"):Connect(resizeContent)
+	resizeContent()
 	update = function()
 		if not state then
 			return
@@ -120,6 +145,7 @@ function Rebirth.Create(root, remotes)
 			elseif not eligible then "REQUIREMENTS NOT MET"
 			elseif os.clock() < retryAt then "PLEASE WAIT"
 			else "REBIRTH!"
+		resizeContent()
 	end
 	local connections = {}
 	table.insert(
@@ -159,7 +185,14 @@ function Rebirth.Create(root, remotes)
 			if payload.Success then
 				panel.Visible = false
 				toast("REBIRTH " .. payload.Level .. " - " .. Config.Levels[payload.Level].Title, C.Gold)
-				if not state or not state.Settings or state.Settings.RevealIntensity ~= "Off" then
+				-- Phones already show the same result in the compact toast.
+				if
+					not C.Layout.IsPhone(
+						root.AbsoluteSize.X,
+						root.AbsoluteSize.Y,
+						game:GetService("UserInputService").TouchEnabled
+					) and (not state or not state.Settings or state.Settings.RevealIntensity ~= "Off")
+				then
 					celebration.Size = UDim2.fromOffset(math.min(440, root.AbsoluteSize.X - 48), 154)
 					celebrationText.Text = "REBIRTH " .. payload.Level .. "\n" .. Config.Levels[payload.Level].Title
 					celebration.Visible = true
