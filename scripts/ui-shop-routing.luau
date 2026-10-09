@@ -63,16 +63,7 @@ do
 	checkTab("Toilets")
 	backdrop.Activated:Fire()
 	station:Destroy()
-	local travelShop = hud.Travel.Shop
-	local character = H.Services.Players.LocalPlayer.Character
-	local pivot = character.LastPivot
-	travelShop.Activated:Fire()
-	checkTab("Toilets")
-	assert(character.LastPivot ~= pivot, "Travel Shop failed to travel")
-	coinTab.Activated:Fire()
-	travelShop.Activated:Fire() -- Forced travel route always opens Toilets.
-	checkTab("Toilets")
-	backdrop.Activated:Fire()
+	assert(not hud.Travel:FindFirstChild("Shop"), "Duplicate Shop in travel bar")
 	hud.Index.Activated:Fire()
 	shop.Activated:Fire()
 	assert(not clientRoot["My Collection"].Visible, "Shop left another modal open")

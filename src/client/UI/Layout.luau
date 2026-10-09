@@ -5,26 +5,30 @@ local function rect(x, y, w, h)
 end
 -- Dimensions are the CoreUISafeInsets root, never the raw screen.
 function Layout.IsPhone(w, h, touch)
-	return w < 600 or h < 400 or (touch and w < 1000 and h < 500)
+	return w < 600 or h < 400 or (touch and w < 1200 and h < 500)
 end
 function Layout.Phone(w, h)
 	local portrait = h > w
 	-- Leave extra room for top insets and chrome shadows when mapping the
 	-- conservative safe-root reservation back to the physical phone screen.
-	local side = if portrait then math.clamp(math.floor((h * 0.55 - 72) / 6) - 4, 44, 56) else 52
+	local side = if portrait then math.clamp(math.floor((h * 0.55 - 72) / 6) - 4, 44, 56) else 44
 	local columns = if portrait and h < 600 then 2 elseif portrait then 1 else 3
+	-- Wide enough for 14 px labels even when the touch target is only 44 px tall.
+	local navWidth = 60
 	local nav = {}
 	for i = 1, 6 do
 		local col = (i - 1) % columns
 		local row = math.floor((i - 1) / columns)
-		nav[i] = rect(8 + col * (side + 6), 64 + row * (side + 4), side, side)
+		nav[i] = rect(8 + col * (navWidth + 6), 64 + row * (side + 4), navWidth, side)
 	end
-	local centerX = if portrait then columns * (side + 6) + 14 else math.max(202, math.ceil(w * 0.28) + 8)
+	local centerX = if portrait then columns * (navWidth + 6) + 14 else math.max(202, math.ceil(w * 0.28) + 8)
 	local centerW = if portrait then w - centerX - 12 else math.floor(w * 0.78) - centerX - 8
-	local actionX, actionW = math.ceil(w * 0.28) + 8, math.floor(w * 0.5) - 16
+	-- Leave a little extra horizontal room for asymmetric landscape notches.
+	local actionX, actionW = math.ceil(w * 0.28) + 8, math.floor(w * 0.48) - 16
 	local action = rect(actionX, h - 88, actionW, 76)
-	local hint = rect(centerX, if portrait then 218 else 120, centerW, if portrait then 116 else 88)
-	local reveal = rect(centerX, hint.Y, centerW, if portrait then 126 else math.min(88, action.Y - 176))
+	local hint = rect(centerX, if portrait then 218 else 64, centerW, if portrait then 116 else 76)
+	local reveal =
+		rect(centerX, if portrait then hint.Y else 120, centerW, if portrait then 126 else math.min(88, action.Y - 176))
 	local popupX = math.max(centerX, actionX)
 	local popup = rect(popupX, reveal.Y + reveal.H + 8, math.floor(w * 0.78) - 8 - popupX, 32)
 	if not portrait then
@@ -62,10 +66,10 @@ function Layout.Compute(w, h, touch)
 	if Layout.IsPhone(w, h, touch) then
 		local phone = Layout.Phone(w, h)
 		if not phone.Portrait then
-			phone.Coins = rect(202, 64, math.max(100, w - 322), 26)
-			phone.PendingIncome = rect(202, 94, math.max(100, w - 322), 18)
+			phone.Coins = rect(182, 8, w - 432, 24)
+			phone.PendingIncome = rect(182, 34, w - 432, 20)
 			phone.Status = rect(w - 242, 8, 182, 44)
-			phone.Travel = rect(8, 8, w - 258, 44)
+			phone.Travel = rect(8, 8, 168, 44)
 			phone.Celebrate = rect(w - 56, 64, 44, 44)
 		end
 		return phone
@@ -175,7 +179,8 @@ function Layout.Toast(w, h, touch, tutorialModal)
 			return rect(24, 12, math.min(420, w - 124), 64)
 		end
 		local hint = Layout.Compute(w, h, touch).Hint
-		return rect(hint.X, hint.Y, math.min(420, hint.W, w - hint.X - 24), 64)
+		-- Result toasts still need to clear modal headers after the hint moves upwards.
+		return rect(hint.X, if h > w then hint.Y else 120, math.min(420, hint.W, w - hint.X - 24), 64)
 	end
 	local modal = Layout.Modal(w, h)
 	local width = math.min(420, w - 48)

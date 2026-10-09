@@ -127,11 +127,29 @@ function Tutorial.Create(_player, remotes, hud, prompts, hooks)
 			then Layout.Compute(w, h, game:GetService("UserInputService").TouchEnabled).Hint
 			else { X = 12, Y = 6, W = w - 24, H = 78 }
 		local phone = Layout.IsPhone(w, h, game:GetService("UserInputService").TouchEnabled)
+		card.BackgroundTransparency = if phone and hudVisible then 0.3 else 0
+		if phone then
+			local shortTitles = { "1/5 Find toilet", "2/5 FLUSH!", "3/5 Index", "4/5 Upgrade", "Tutorial complete!" }
+			title.Text = shortTitles[step]
+		end
+		if phone and hudVisible then
+			local shortDetails = {
+				"Tap Home to return to your toilet.",
+				"Tap FLUSH for an item and coins.",
+				if hasCopies() then "Open Index to display or sell a spare." else "Close Index and FLUSH for a copy.",
+				"Buy Coin Upgrades in Upgrades, or Toilets in Shop.",
+				"Replay in Settings. Passes are optional.",
+			}
+			detail.Text = shortDetails[step]
+		end
+		title.Size = UDim2.new(1, if step == 5 then -20 else -76, 0, if phone then 20 else 26)
+		detail.Position = UDim2.fromOffset(10, if phone then 26 else 32)
+		detail.Size = UDim2.new(1, -76, 1, if phone then -32 else -38)
 		bounds.H = if phone and hudVisible then bounds.H elseif hudVisible then 96 else 78
 		title.UITextSizeConstraint.MinTextSize = if phone then 14 else 10
 		title.UITextSizeConstraint.MaxTextSize = if phone then 14 else 22
-		detail.UITextSizeConstraint.MinTextSize = if phone then 12 else 10
-		detail.UITextSizeConstraint.MaxTextSize = if phone then 12 else 17
+		detail.UITextSizeConstraint.MinTextSize = if phone then 14 else 10
+		detail.UITextSizeConstraint.MaxTextSize = if phone then 14 else 17
 		skip.Label.UITextSizeConstraint.MinTextSize = if phone then 14 else 10
 		if hudVisible and not phone and w < 760 and h > w then
 			-- Leave a gap between pending income and the social boosts touch target.
