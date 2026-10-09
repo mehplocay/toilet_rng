@@ -10,4 +10,8 @@ For each window on typical phone sizes (e.g. 844x390, 932x430, 667x375, 740x360,
 - One consistent style (same close button, header height, padding).
 - Never cover the Flush button or the character longer than necessary.
 
+## Owner-reported problem (highest priority)
+- Nested scrolling: e.g. in Toilet Shop > Upgrades / Coin Upgrades the window has TWO scroll areas (an outer one and an inner list). Every window must have exactly ONE vertical scroll area for its content (header, tabs and close button stay fixed). Search all windows for nested ScrollingFrames and remove the extra one. Add a runtime check that fails if a ScrollingFrame is nested inside another.
+- Make every window clear and tidy: one clear header, tabs, a single list/grid, obvious primary buttons, no clutter, no duplicated information.
+
 Rules: no gameplay/economy/luck/audio changes, no new caps, keep the real icon pipeline (Assets.IconImages). Extend scripts/check-ui-runtime.luau with phone cases for every window so regressions fail. Follow AGENTS.md; branch feature/mobile-windows, commit, do not push. Run check-audit, check-ui, check-visuals, check-world and rojo build -o build.rbxl. Report per window what was wrong and what you changed.
