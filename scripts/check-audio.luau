@@ -65,7 +65,7 @@ near(Mix.Volume(0.6, false, 0.6), 0.36)
 assert(Audio.Defaults.MusicVolume == 0.6 and Audio.DuckGain == 0.6 and Audio.DuckRelease == 1.5)
 assert(#Audio.MusicTrackGains == #Assets.Music)
 for _, gain in ipairs(Audio.MusicTrackGains) do
-	assert(gain > 0 and gain <= 1)
+	assert(gain > 0 and gain <= 10) -- Roblox Sound.Volume maximum
 end
 near(Mix.Volume(0.7, true), 0)
 local start, fade = Mix.Crossfade(120, 3)

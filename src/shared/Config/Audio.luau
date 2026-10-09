@@ -1,9 +1,9 @@
 -- Length is the source's maximum seconds, including its tail; also bounds stale voices.
 local Audio = {
 	Defaults = { MusicVolume = 0.6, SFXVolume = 0.7, MusicMuted = false, SFXMuted = false },
-	-- Trim the decoded tracks to about -30 LUFS at the default bus level.
+	-- Track trim, raised 5x: the source tracks are about -30 LUFS and were inaudible at default volume.
 	-- Ordered exactly like Assets.Music; unknown tracks retain unity gain.
-	MusicTrackGains = { 0.62, 0.49, 0.43, 0.51, 0.55 },
+	MusicTrackGains = { 3.1, 2.45, 2.15, 2.55, 2.75 },
 	Crossfade = 3,
 	FadeIn = 2.5,
 	StopFade = 0.02,
