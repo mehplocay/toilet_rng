@@ -6,6 +6,8 @@ Change on PHONES only (Layout.Phone), keep desktop/tablet behavior unchanged:
 - Shrink the Pending display into a small compact chip (e.g. ~110x28 px, text >= 12 px, keep the existing label text format and the existing click/collect behavior if it has one).
 - Move it to the bottom-left corner of the screen, inside the safe area (above the home indicator), not overlapping the Go To Toilet / Flush button, the AUTO chip, the jump button or the left menu block, and with touch target >= 44 px if it is tappable (otherwise it may be smaller but must not block touches).
 - Make sure nothing else collides: Collect All hint, tutorial hint, reveal toasts.
+- Also move the Luck/Friends chip ("Luck x1 / Friends +0%") from the top right to the BOTTOM RIGHT on phones, compact, without covering the Roblox jump button (bottom-right corner), the AUTO chip or the Flush button. Place it above or left of the jump button inside the safe area.
+- The top bar then keeps only Hub, Home and the Settings icon.
 - Where the wide bar was, nothing remains; the coin counter keeps its position.
 
 Source files: src/client/UI/IncomeChip.luau, src/client/UI/HUD.luau, src/client/UI/Layout.luau. No gameplay/economy changes. Update tests in scripts/ (check-mobile-hud, ui-mobile-hud, check-ui-runtime) so the new placement is covered on all phone sizes. Follow AGENTS.md; work on branch feature/pending-chip, do not push (Git may be sandbox-blocked; leave uncommitted and say so). Run check-audit, check-ui, check-visuals, check-world and rojo build -o build.rbxl.
