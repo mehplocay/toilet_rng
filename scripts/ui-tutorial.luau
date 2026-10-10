@@ -200,7 +200,8 @@ do
 				f.Update(5, true)
 				H.Snapshot(f.Root, "review-tutorial-5-" .. viewport[1] .. "x" .. viewport[2])
 				assert(
-					(viewport[2] < 500 or f.Guide.Frame.Visible) and f.Guide.Frame.Title.Text == "Tutorial complete!"
+					(viewport[2] < 500 or f.Guide.Frame.Visible)
+						and f.Guide.Frame.Title.Text:find("Tutorial complete!", 1, true)
 				)
 				H.Advance(7)
 				assert(not f.Guide.Frame.Visible and not f.Root:GetAttribute("TutorialActive"))

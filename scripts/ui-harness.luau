@@ -263,6 +263,9 @@ function methods:WaitForChild(name)
 end
 function methods:PivotTo(cf)
 	self.LastPivot = cf
+	if self._onPivot then
+		self._onPivot(cf)
+	end
 end
 function methods:Play()
 	self.IsPlaying = true
@@ -529,6 +532,17 @@ local task = {
 	end,
 }
 local globals = {
+	typeof = function(value)
+		if type(value) == "table" then
+			if getmetatable(value) == frameMT then
+				return "CFrame"
+			end
+			if getmetatable(value) == vector3MT then
+				return "Vector3"
+			end
+		end
+		return typeof(value)
+	end,
 	warn = function(message)
 		table.insert(H.Warnings, message)
 	end,
@@ -932,21 +946,25 @@ function H.ResumeTasks()
 		end
 	end
 end
-function H.BootClient(remotes)
+function H.BootClient(remotes, realPrompts)
 	node("src/client").Destroying = signal()
 	-- World animation/guidance and spatial input are outside this UI-only double.
 	for _, name in ipairs({ "VisualIdle", "PlotGuidance", "VIPChat" }) do
 		cache["src/client/" .. name] = { Start = function() end }
 	end
-	cache["src/client/UI/FlushPrompt"] = {
-		Start = function()
-			return {
-				Near = function()
-					return not H.FarFromPlot
-				end,
-			}
-		end,
-	}
+	if realPrompts then
+		H.Reload("src/client/UI/FlushPrompt")
+	else
+		cache["src/client/UI/FlushPrompt"] = {
+			Start = function()
+				return {
+					Near = function()
+						return not H.FarFromPlot
+					end,
+				}
+			end,
+		}
+	end
 	cache["src/shared/Visuals/Primitives"] = {
 		Particles = function()
 			return { Emit = function() end }
@@ -984,3 +1002,4 @@ function H.BootClient(remotes)
 	return root
 end
 H.Workspace = workspace
+H.Vector2, H.Vector3, H.CFrame = Vector2, Vector3, CFrame
