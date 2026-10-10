@@ -256,6 +256,18 @@ assert(boards.Flushes[1].Name.Text == "1.  First" and boards.Coins[1].Value.Text
 boardPlayers = {}
 World:RefreshLeaderboards()
 assert(boards.Coins[1].Name.Text == "Waiting for players" and boards.Coins[2].Name.Text == "")
+World.GlobalLeaderboards = {
+	Rows = function(_, entries, key)
+		assert(#entries == 0 and (key == "Coins" or key == "Rarest" or key == "Flushes"))
+		return { { UserId = 100, Name = "Offline player", Value = 1000 } }, true
+	end,
+}
+World:RefreshLeaderboards()
+assert(boards.Coins[1].Name.Text == "1.  Offline player" and boards.Coins[1].Value.Text == "1K")
+assert(boards.Rarest[1].Value.Text == "1 in 1K" and boards.Coins.Scope.Text == "GLOBAL  /  LIVE SERVER PROGRESS")
+World.GlobalLeaderboards = nil
+World:RefreshLeaderboards()
+assert(boards.Coins.Scope.Text == "THIS SERVER  /  GLOBAL UNAVAILABLE")
 local maxPlot, maxToilet, maxPlotMeshes, maxPlotTriangles = 0, 0, 0, 0
 local hubInstances, maxPlotInstances = #root:GetDescendants(), 0
 local maxPlotHighlights = 0
