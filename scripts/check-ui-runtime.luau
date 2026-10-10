@@ -1023,6 +1023,19 @@ do
 		local w, h = width - left - right, height - top - bottom
 		clientRoot._fixed, clientRoot._abs = { X = w, Y = h }, nil
 		clientRoot:GetPropertyChangedSignal("AbsoluteSize"):Fire()
+		H.Layout(clientRoot)
+		local phoneLayout = H.Load("src/client/UI/Layout").Compute(w, h, true)
+		local pending, statusChip = clientRoot.HUD.PendingIncome, clientRoot.HUD.PhoneStatus
+		assert(
+			pending.AbsoluteSize.X == 110 and pending.AbsoluteSize.Y == 28,
+			"Phone pending must stay compact after resize"
+		)
+		assert(pending.AbsolutePosition.X == 8 and pending.AbsolutePosition.Y == phoneLayout.PendingIncome.Y)
+		assert(not pending.Active and not pending.Selectable, "Pending must pass touches through")
+		assert(pending:FindFirstChildWhichIsA("TextLabel").UITextSizeConstraint.MinTextSize >= 12)
+		assert(statusChip.AbsolutePosition.Y == phoneLayout.Status.Y and statusChip.AbsoluteSize.Y >= 44)
+		inside(pending, clientRoot, "Pending outside safe area")
+		inside(statusChip, clientRoot, "Status outside safe area")
 		for _, page in ipairs(pages) do
 			local panel = assert(clientRoot:FindFirstChild(page[1]), "Missing phone window " .. page[1])
 			bootRemotes.State.OnClientEvent:Fire(review)

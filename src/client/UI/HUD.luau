@@ -321,6 +321,7 @@ function HUD.Create(root, remotes, open, prompts, _shopNavigation)
 		end
 		if layout.Phone then
 			C.Place(mobileStatus, layout.Status)
+			mobileStatus.Label.UITextSizeConstraint.MaxTextSize = 14
 			flush.Size, idle.Size = UDim2.new(1, -80, 1, 0), UDim2.new(1, -80, 1, 0)
 			auto.Size, auto.Position = UDim2.new(0, 74, 1, 0), UDim2.new(1, -74, 0, 0)
 		else

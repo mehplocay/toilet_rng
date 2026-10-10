@@ -1,6 +1,7 @@
 -- Executes production constructors. PNGs use the existing offline tree renderer.
 do
 	local cases = {
+		{ 375, 667, 0, 36, 0, 21 },
 		{ 375, 812, 0, 88, 0, 34 },
 		{ 390, 844, 0, 88, 0, 34 },
 		{ 360, 740, 0, 88, 0, 34 },
@@ -108,7 +109,12 @@ do
 				local r = bounds(object)
 				assert(r.X >= 0 and r.Y >= 0 and r.X + r.W <= w and r.Y + r.H <= h, object.Name .. " outside safe area")
 				for _, zone in ipairs(zones) do
-					assert(not overlaps(r, zone), object.Name .. " in thumb zone")
+					assert(
+						object.Name == "PendingIncome"
+							or (object.Name == "PhoneStatus" and layout.Portrait)
+							or not overlaps(r, zone),
+						object.Name .. " in thumb zone"
+					)
 				end
 				for j, other in ipairs(elements) do
 					if i < j then
@@ -137,7 +143,18 @@ do
 			assert(flush.Label.UITextSizeConstraint.MinTextSize >= 14)
 			assert(hud.Frame.FlushActions.AutoFlushSwitch.Label.UITextSizeConstraint.MinTextSize >= 14)
 			assert(hud.Frame.Wallet:FindFirstChildWhichIsA("TextLabel").UITextSizeConstraint.MinTextSize >= 14)
-			assert(hud.Frame.PendingIncome:FindFirstChildWhichIsA("TextLabel").UITextSizeConstraint.MinTextSize >= 14)
+			local pending = hud.Frame.PendingIncome
+			assert(pending.AbsoluteSize.X == 110 and pending.AbsoluteSize.Y == 28)
+			assert(not pending.Active and not pending.Selectable and not pending:IsA("GuiButton"))
+			assert(pending:FindFirstChildWhichIsA("TextLabel").UITextSizeConstraint.MinTextSize >= 12)
+			local jump = {
+				X = w * 0.78,
+				Y = if layout.Portrait then h - 96 else h * 0.65,
+				W = w * 0.22,
+				H = if layout.Portrait then 96 else h * 0.35,
+			}
+			assert(not overlaps(bounds(hud.Frame.PhoneStatus), jump))
+			assert(hud.Frame.PhoneStatus.AbsoluteSize.X <= 136)
 			assert(not hud.Frame.Travel:FindFirstChild("Shop"))
 			if not layout.Portrait then
 				assert(layout.Hint.Y == 64 and layout.Hint.H <= 76, "Landscape hint must sit below top bar")
@@ -159,6 +176,9 @@ do
 		if phone then
 			assert(card.BackgroundTransparency >= 0.25)
 			assert(card.Detail.UITextSizeConstraint.MinTextSize >= 14)
+			for _, chip in ipairs({ hud.Frame.PendingIncome, hud.Frame.PhoneStatus }) do
+				assert(not overlaps(bounds(card), bounds(chip)), "Tutorial overlaps lower chip")
+			end
 		end
 		for _, b in pairs(hud.Navigation) do
 			assert(not overlaps(bounds(card), bounds(b)))
@@ -169,6 +189,9 @@ do
 			H.Advance(0.3)
 			H.Layout(root)
 			assert(not overlaps(bounds(root.ResultToast), bounds(card)), "Toast overlaps tutorial Skip")
+			for _, chip in ipairs({ hud.Frame.PendingIncome, hud.Frame.PhoneStatus }) do
+				assert(not overlaps(bounds(root.ResultToast), bounds(chip)), "Result toast overlaps lower chip")
+			end
 			root.ResultToast.Visible = false
 		end
 		card.SkipTutorial.Activated:Fire()
@@ -262,5 +285,9 @@ do
 	end
 	settingsRoot:Destroy()
 	H.Services.UserInputService.TouchEnabled = false
-	print("Mobile production UI: ten viewports, targets, text, HUD/window/tutorial previews passed")
+	print(
+		"Mobile production UI: "
+			.. #cases
+			.. " viewports, lower chips, targets, text, HUD/window/tutorial previews passed"
+	)
 end

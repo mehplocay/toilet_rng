@@ -1,6 +1,7 @@
 local Layout = require("../src/client/UI/Layout")
 local Presentation = require("../src/client/Presentation/Layout")
 local cases = {
+	{ 375, 667, 0, 36, 0, 21 },
 	{ 375, 812, 0, 88, 0, 34 },
 	{ 390, 844, 0, 88, 0, 34 },
 	{ 360, 740, 0, 88, 0, 34 },
@@ -48,14 +49,20 @@ for _, case in ipairs(cases) do
 	for name, r in pairs(elements) do
 		assert(r.X >= 0 and r.Y >= 0 and r.X + r.W <= w and r.Y + r.H <= h, name .. " outside safe area")
 		for _, zone in ipairs(zones) do
-			assert(not overlaps(r, zone), name .. " in thumb zone")
+			assert(
+				name == "Pending" or (name == "Status" and l.Portrait) or not overlaps(r, zone),
+				name .. " in thumb zone"
+			)
 		end
 		local physical = { X = r.X + left - 2, Y = r.Y + top - 2, W = r.W + 4, H = r.H + 9 }
 		for _, zone in ipairs({
 			{ X = 0, Y = height * 0.6, W = width * 0.28, H = height * 0.4 },
 			{ X = width * 0.78, Y = height * 0.65, W = width * 0.22, H = height * 0.35 },
 		}) do
-			assert(not overlaps(physical, zone), name .. " chrome in physical thumb zone")
+			assert(
+				name == "Pending" or (name == "Status" and l.Portrait) or not overlaps(physical, zone),
+				name .. " chrome in physical thumb zone"
+			)
 		end
 		for other, b in pairs(elements) do
 			if name < other then
@@ -78,6 +85,28 @@ for _, case in ipairs(cases) do
 		end
 	end
 	assert(not overlaps(l.Reveal, l.CoinPopup))
+	assert(l.PendingIncome.W == 110 and l.PendingIncome.H == 28 and l.PendingIncome.X == 8)
+	assert(l.PendingIncome.Y >= h - 124 and l.PendingIncome.Y + l.PendingIncome.H <= h - 12)
+	assert(l.Status.W <= 136 and l.Status.H >= 44 and l.Status.X > w / 2)
+	local jump = {
+		X = w * 0.78,
+		Y = if l.Portrait then h - 96 else h * 0.65,
+		W = w * 0.22,
+		H = if l.Portrait then 96 else h * 0.35,
+	}
+	assert(not overlaps(l.Status, jump) and not overlaps(l.PendingIncome, jump))
+	for _, overlay in ipairs({
+		l.Hint,
+		l.Reveal,
+		l.CoinPopup,
+		Presentation.Compute(w, h, true).Toast,
+		Layout.Toast(w, h, true),
+	}) do
+		assert(
+			not overlaps(overlay, l.PendingIncome) and not overlaps(overlay, l.Status),
+			"Overlay collides with lower chips"
+		)
+	end
 	print(string.format("PASS phone %dx%d safe %dx%d", width, height, w, h))
 end
 print("Dedicated phone geometry and unchanged small-tablet regression passed")

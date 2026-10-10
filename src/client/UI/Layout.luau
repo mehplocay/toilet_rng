@@ -23,7 +23,7 @@ function Layout.Phone(w, h)
 		nav[i] = rect(8 + col * (navWidth + 8), (if tiny then 52 else 64) + row * (side + 8), navWidth, side)
 	end
 	local centerX = if portrait then columns * (navWidth + 8) + 14 else math.max(212, math.ceil(w * 0.28) + 8)
-	local centerW = if portrait then w - centerX - 12 else math.floor(w * 0.78) - centerX - 8
+	local centerW = if portrait then w - centerX - 12 else math.min(math.floor(w * 0.78) - 8, w - 156) - centerX
 	-- Leave a little extra horizontal room for asymmetric landscape notches.
 	local actionX, actionW = math.ceil(w * 0.28) + 8, math.floor(w * 0.48) - 16
 	local action = rect(actionX, h - 88, actionW, 76)
@@ -48,10 +48,12 @@ function Layout.Phone(w, h)
 		Travel = rect(8, 8, w - 68, 44),
 		Settings = rect(w - 52, 8, 44, 44),
 		Coins = rect(centerX, 64, centerW - 52, 28),
-		PendingIncome = rect(centerX, 94, centerW - 52, 18),
+		-- Passive chip can sit in the left thumb region without consuming input.
+		PendingIncome = rect(8, if portrait then action.Y - 36 else h - 40, 110, 28),
 		Celebrate = rect(w - 56, 64, 44, 44),
 		Admin = rect(w - 56, 114, 44, 44),
-		Status = rect(centerX, if portrait then 166 else 64, centerW, 44),
+		-- Leave room for button chrome above the conservative jump reservation.
+		Status = rect(w - 148, if portrait then h - 152 else math.floor(h * 0.65) - 56, 136, 44),
 		Boosts = rect(0, 0, 0, 0),
 		SocialBoosts = rect(0, 0, 0, 0),
 		Action = action,
@@ -72,13 +74,13 @@ function Layout.Compute(w, h, touch)
 		local phone = Layout.Phone(w, h)
 		if not phone.Portrait then
 			phone.Coins = rect(182, 8, w - 432, 24)
-			phone.PendingIncome = rect(182, 34, w - 432, 20)
-			phone.Status = rect(w - 242, 8, 182, 44)
+			-- Clear the lower status chip with the optional admin entry in the utility row.
+			phone.Admin = rect(w - 106, 64, 44, 44)
 			phone.Travel = rect(8, 8, 168, 44)
 			phone.Celebrate = rect(w - 56, 64, 44, 44)
 			if h < 280 then
-				phone.Travel.Y, phone.Status.Y, phone.Settings.Y = 0, 0, 0
-				phone.Coins.Y, phone.PendingIncome.Y = 0, 26
+				phone.Travel.Y, phone.Settings.Y = 0, 0
+				phone.Coins.Y = 0
 			end
 		end
 		return phone
