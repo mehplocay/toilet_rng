@@ -174,23 +174,49 @@ local function show(panel)
 	closeAll()
 	panel.Visible = not wasOpen
 end
-local function travelHome()
+local homePendingUntil, homeTravelling = 0, false
+local function tryTravelHome()
 	local cf = player:GetAttribute("PlotCFrame")
-	if typeof(cf) == "CFrame" then
-		pcall(function()
-			player:RequestStreamAroundAsync(cf.Position, 3)
+	local character = player.Character
+	local humanoid = character and character:FindFirstChildWhichIsA("Humanoid")
+	if
+		typeof(cf) == "CFrame"
+		and character
+		and character:FindFirstChild("HumanoidRootPart")
+		and humanoid
+		and humanoid.Health > 0
+		and not homeTravelling
+	then
+		homeTravelling = true
+		homePendingUntil = 0
+		task.spawn(function()
+			pcall(function()
+				player:RequestStreamAroundAsync(cf.Position, 3)
+			end)
+			if player.Character == character and humanoid.Health > 0 then
+				character:PivotTo(cf)
+				audio:Play("Teleport")
+			end
+			homeTravelling = false
 		end)
-		if player.Character then
-			player.Character:PivotTo(cf)
-			audio:Play("Teleport")
-		end
 	end
 end
+local function travelHome()
+	-- Retain an early tap while plot attributes or the respawn character load.
+	homePendingUntil = os.clock() + 10
+	tryTravelHome()
+end
+RunService.Heartbeat:Connect(function()
+	if homePendingUntil > os.clock() then
+		tryTravelHome()
+	end
+end)
 local function open(name)
 	if name == "Home" then
 		closeAll()
 		travelHome()
 	elseif name == "Hub" or name == "TravelShop" then
+		homePendingUntil = 0
 		closeAll()
 		require(script.WorldNavigation).Travel(name)
 		if name == "TravelShop" then

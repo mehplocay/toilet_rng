@@ -17,6 +17,12 @@ function Tutorial.Create(_player, remotes, hud, prompts, hooks)
 	title.Name, title.TextXAlignment = "Title", Enum.TextXAlignment.Left
 	local detail = C.BodyText(card, "", UDim2.new(1, -76, 1, -38), UDim2.fromOffset(10, 32))
 	detail.Name, detail.TextXAlignment = "Detail", Enum.TextXAlignment.Left
+	local progressBar = C.New("Frame", card, {
+		Name = "StepProgress",
+		BackgroundColor3 = C.Muted,
+		Visible = false,
+	})
+	local progressFill = C.New("Frame", progressBar, { Name = "Fill", BackgroundColor3 = C.Gold })
 	local function clearHighlight()
 		if highlight then
 			highlight:Destroy()
@@ -129,20 +135,27 @@ function Tutorial.Create(_player, remotes, hud, prompts, hooks)
 		local phone = Layout.IsPhone(w, h, game:GetService("UserInputService").TouchEnabled)
 		card.BackgroundTransparency = if phone and hudVisible then 0.3 else 0
 		if phone then
-			local shortTitles = { "1/5 Find toilet", "2/5 FLUSH!", "3/5 Index", "4/5 Upgrade", "Tutorial complete!" }
+			local shortTitles = {
+				"1/5 Find your toilet",
+				"2/5 Let's FLUSH!",
+				"3/5 Use your collection",
+				"4/5 Grow your income",
+				"5/5 Tutorial complete!",
+			}
 			title.Text = shortTitles[step]
 		end
-		if phone and hudVisible then
+		if phone then
 			local shortDetails = {
-				"Tap Home to return to your toilet.",
-				"Tap FLUSH for an item and coins.",
-				if hasCopies() then "Open Index to display or sell a spare." else "Close Index and FLUSH for a copy.",
-				"Buy Coin Upgrades in Upgrades, or Toilets in Shop.",
-				"Replay in Settings. Passes are optional.",
+				"Tap Home to teleport.",
+				"Tap FLUSH for an item.",
+				if hasCopies() then "Open Index to use an item." else "FLUSH for a copy first.",
+				"Buy an upgrade in Upgrades.",
+				"Replay in Settings.",
 			}
 			detail.Text = shortDetails[step]
 		end
 		title.Size = UDim2.new(1, if step == 5 then -20 else -76, 0, if phone then 20 else 26)
+		title.Position = UDim2.fromOffset(10, 6)
 		detail.Position = UDim2.fromOffset(10, if phone then 26 else 32)
 		detail.Size = UDim2.new(1, -76, 1, if phone then -32 else -38)
 		bounds.H = if phone and hudVisible then bounds.H elseif hudVisible then 96 else 78
@@ -151,6 +164,40 @@ function Tutorial.Create(_player, remotes, hud, prompts, hooks)
 		detail.UITextSizeConstraint.MinTextSize = if phone then 14 else 10
 		detail.UITextSizeConstraint.MaxTextSize = if phone then 14 else 17
 		skip.Label.UITextSizeConstraint.MinTextSize = if phone then 14 else 10
+		progressBar.Visible = phone
+		progressFill.Size = UDim2.fromScale(step / 5, 1)
+		title.TextScaled, detail.TextScaled = not phone, not phone
+		if phone then
+			-- The title owns the entire top row; Skip cannot squeeze away n/5.
+			title.TextSize, detail.TextSize = 14, 14
+			title.Size = UDim2.new(1, -20, 0, 36)
+			detail.Position, detail.Size = UDim2.fromOffset(10, 44), UDim2.new(1, -76, 0, 54)
+			skip.Position = UDim2.new(1, -62, 0, 44)
+			progressBar.Position, progressBar.Size = UDim2.fromOffset(10, 104), UDim2.new(1, -20, 0, 3)
+			if hudVisible then
+				bounds.Y, bounds.H = if h < 280 then 52 else 64, 112
+				if w > h then
+					-- Use the top strip beside Home, leaving the avatar and action row clear.
+					bounds = { X = 184, Y = if h < 280 then 0 else 4, W = w - 244, H = 56 }
+					title.Position, title.Size = UDim2.fromOffset(10, 4), UDim2.new(1, -76, 0, 20)
+					detail.Position, detail.Size = UDim2.fromOffset(10, 24), UDim2.new(1, -76, 0, 22)
+					skip.Position = UDim2.new(1, -62, 0, 4)
+					progressBar.Position = UDim2.fromOffset(10, 50)
+					if h < 280 then
+						bounds.X, bounds.W, bounds.H = 212, w - 272, 48
+						title.Position, detail.Position = UDim2.fromOffset(10, 2), UDim2.fromOffset(10, 22)
+						skip.Position, progressBar.Position = UDim2.new(1, -62, 0, 2), UDim2.fromOffset(10, 44)
+					end
+				end
+			else
+				title.Size = UDim2.new(1, -76, 0, 20)
+				detail.Position, detail.Size = UDim2.fromOffset(10, 26), UDim2.new(1, -76, 0, 44)
+				skip.Position = UDim2.new(1, -62, 0.5, -22)
+				progressBar.Position = UDim2.fromOffset(10, 72)
+			end
+		else
+			skip.Position = UDim2.new(1, -62, 0.5, -22)
+		end
 		if hudVisible and not phone and w < 760 and h > w then
 			-- Leave a gap between pending income and the social boosts touch target.
 			bounds.Y, bounds.H = 192, 88
@@ -176,8 +223,12 @@ function Tutorial.Create(_player, remotes, hud, prompts, hooks)
 			bounds = if phone
 				then { X = bounds.X + bounds.W - 62, Y = bounds.Y, W = 62, H = 56 }
 				else { X = w - 100, Y = 6, W = 88, H = 56 }
+			if phone then
+				skip.Position = UDim2.fromOffset(4, 6)
+			end
 		end
 		title.Visible, detail.Visible = not busy, not busy
+		progressBar.Visible = phone and not busy
 		card.Visible = step < 5 or not busy
 		-- On short phones, the open window and its highlighted action need the space.
 		-- Closing it restores the guide and Skip immediately on the next update.
@@ -186,6 +237,18 @@ function Tutorial.Create(_player, remotes, hud, prompts, hooks)
 		end
 		C.Place(card, bounds)
 		local button = target(step)
+		-- Never highlight an invisible or unlaid-out action.
+		local ancestor = button
+		while ancestor and ancestor ~= root do
+			if ancestor:IsA("GuiObject") and not ancestor.Visible then
+				button = nil
+				break
+			end
+			ancestor = ancestor.Parent
+		end
+		if button and (button.AbsoluteSize.X <= 0 or button.AbsoluteSize.Y <= 0) then
+			button = nil
+		end
 		if button ~= highlightedButton then
 			clearHighlight()
 			if button then
@@ -197,6 +260,7 @@ function Tutorial.Create(_player, remotes, hud, prompts, hooks)
 					Active = false,
 				})
 				C.Round(highlight, C.Gold, 12, 4)
+				C.Icon(highlight, "Pointer", UDim2.fromOffset(18, 18), UDim2.new(1, -20, 0, 2))
 				C.ScrollTo(button)
 				task.delay(0.05, function()
 					if not destroyed and highlightedButton == button then

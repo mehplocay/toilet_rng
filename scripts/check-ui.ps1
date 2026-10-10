@@ -102,6 +102,8 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Mobile layout checks failed' }
     & luau (Join-Path $PSScriptRoot 'check-ui-layout.luau')
     if ($LASTEXITCODE -ne 0) { throw 'UI layout checks failed' }
+    # Bootstrap touch onboarding in a fresh harness, without earlier UI fixture state.
+    & (Join-Path $PSScriptRoot 'check-tutorial-mobile.ps1')
 } finally {
     if (Test-Path -LiteralPath $generatedPath) { Remove-Item -LiteralPath $generatedPath }
 }
