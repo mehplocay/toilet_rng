@@ -1027,13 +1027,17 @@ do
 		local phoneLayout = H.Load("src/client/UI/Layout").Compute(w, h, true)
 		local pending, statusChip = clientRoot.HUD.PendingIncome, clientRoot.HUD.PhoneStatus
 		assert(
-			pending.AbsoluteSize.X == 110 and pending.AbsoluteSize.Y == 28,
-			"Phone pending must stay compact after resize"
+			not pending.Visible and pending.AbsoluteSize.X == 0 and pending.AbsoluteSize.Y == 0,
+			"Phone pending must stay hidden without reserved space after resize"
 		)
-		assert(pending.AbsolutePosition.X == 8 and pending.AbsolutePosition.Y == phoneLayout.PendingIncome.Y)
+		assert(statusChip.AbsolutePosition.X == 8 and clientRoot.HUD.Wallet.AbsolutePosition.X == 8)
 		assert(not pending.Active and not pending.Selectable, "Pending must pass touches through")
 		assert(pending:FindFirstChildWhichIsA("TextLabel").UITextSizeConstraint.MinTextSize >= 12)
 		assert(statusChip.AbsolutePosition.Y == phoneLayout.Status.Y and statusChip.AbsoluteSize.Y >= 44)
+		local wallet = clientRoot.HUD.Wallet
+		assert(wallet.AbsolutePosition.Y == statusChip.AbsolutePosition.Y + statusChip.AbsoluteSize.Y + 8)
+		assert(wallet:FindFirstChildWhichIsA("TextLabel").UITextSizeConstraint.MinTextSize >= 16)
+		noNested(clientRoot)
 		inside(pending, clientRoot, "Pending outside safe area")
 		inside(statusChip, clientRoot, "Status outside safe area")
 		for _, page in ipairs(pages) do

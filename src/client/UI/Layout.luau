@@ -27,9 +27,14 @@ function Layout.Phone(w, h)
 	-- Leave a little extra horizontal room for asymmetric landscape notches.
 	local actionX, actionW = math.ceil(w * 0.28) + 8, math.floor(w * 0.48) - 16
 	local action = rect(actionX, h - 88, actionW, 76)
-	local hint = rect(centerX, if portrait then 218 else 64, centerW, if portrait then 116 else 76)
-	local reveal =
-		rect(centerX, if portrait then hint.Y else 100, centerW, if portrait then 126 else math.min(88, action.Y - 148))
+	local hint =
+		rect(centerX, if portrait then 218 else 64, centerW, if portrait then math.min(116, h * 0.6 - 218) else 76)
+	local reveal = rect(
+		centerX,
+		if portrait then hint.Y else 100,
+		centerW,
+		if portrait then math.min(126, h * 0.6 - hint.Y) else math.min(88, action.Y - 148)
+	)
 	local popupX = math.max(centerX, actionX)
 	local popup = rect(popupX, reveal.Y + reveal.H + 8, math.floor(w * 0.78) - 8 - popupX, 32)
 	if not portrait then
@@ -39,6 +44,8 @@ function Layout.Phone(w, h)
 			popup = rect(centerX, 64, centerW, 28)
 		end
 	end
+	-- Stack luck above coins; portrait clears the action row, landscape sits beside it.
+	local groupY = if portrait then action.Y - 84 else h - 92
 	return {
 		Phone = true,
 		Compact = true,
@@ -47,13 +54,12 @@ function Layout.Phone(w, h)
 		Nav = nav,
 		Travel = rect(8, 8, w - 68, 44),
 		Settings = rect(w - 52, 8, 44, 44),
-		Coins = rect(centerX, 64, centerW - 52, 28),
-		-- Passive chip can sit in the left thumb region without consuming input.
-		PendingIncome = rect(8, if portrait then action.Y - 36 else h - 40, 110, 28),
+		Coins = rect(8, groupY + 52, 136, 28),
+		-- Hidden on phones, with no layout reservation.
+		PendingIncome = rect(0, 0, 0, 0),
 		Celebrate = rect(w - 56, 64, 44, 44),
 		Admin = rect(w - 56, 114, 44, 44),
-		-- Leave room for button chrome above the conservative jump reservation.
-		Status = rect(w - 148, if portrait then h - 152 else math.floor(h * 0.65) - 56, 136, 44),
+		Status = rect(8, groupY, 136, 44),
 		Boosts = rect(0, 0, 0, 0),
 		SocialBoosts = rect(0, 0, 0, 0),
 		Action = action,
@@ -73,14 +79,12 @@ function Layout.Compute(w, h, touch)
 	if Layout.IsPhone(w, h, touch) then
 		local phone = Layout.Phone(w, h)
 		if not phone.Portrait then
-			phone.Coins = rect(182, 8, w - 432, 24)
-			-- Clear the lower status chip with the optional admin entry in the utility row.
+			-- Keep optional utility controls together below the travel row.
 			phone.Admin = rect(w - 106, 64, 44, 44)
 			phone.Travel = rect(8, 8, 168, 44)
 			phone.Celebrate = rect(w - 56, 64, 44, 44)
 			if h < 280 then
 				phone.Travel.Y, phone.Settings.Y = 0, 0
-				phone.Coins.Y = 0
 			end
 		end
 		return phone
@@ -190,6 +194,10 @@ function Layout.Toast(w, h, touch, tutorialModal)
 			return rect(24, 12, math.min(420, w - 124), 64)
 		end
 		local hint = Layout.Compute(w, h, touch).Hint
+		-- The narrowest portrait cannot fit a result beside tutorial Skip.
+		if h > w and hint.W < 170 then
+			return rect(hint.X, hint.Y - 72, math.min(hint.W, w - hint.X - 68), 64)
+		end
 		-- Result toasts still need to clear modal headers after the hint moves upwards.
 		return rect(
 			hint.X,

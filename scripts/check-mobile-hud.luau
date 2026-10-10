@@ -1,6 +1,7 @@
 local Layout = require("../src/client/UI/Layout")
 local Presentation = require("../src/client/Presentation/Layout")
 local cases = {
+	{ 320, 568, 0, 36, 0, 21 },
 	{ 375, 667, 0, 36, 0, 21 },
 	{ 375, 812, 0, 88, 0, 34 },
 	{ 390, 844, 0, 88, 0, 34 },
@@ -32,7 +33,6 @@ for _, case in ipairs(cases) do
 		Travel = l.Travel,
 		Settings = l.Settings,
 		Coins = l.Coins,
-		Pending = l.PendingIncome,
 		Status = l.Status,
 		Action = l.Action,
 		Hint = l.Hint,
@@ -50,7 +50,7 @@ for _, case in ipairs(cases) do
 		assert(r.X >= 0 and r.Y >= 0 and r.X + r.W <= w and r.Y + r.H <= h, name .. " outside safe area")
 		for _, zone in ipairs(zones) do
 			assert(
-				name == "Pending" or (name == "Status" and l.Portrait) or not overlaps(r, zone),
+				(zone.X == 0 and (name == "Coins" or name == "Status")) or not overlaps(r, zone),
 				name .. " in thumb zone"
 			)
 		end
@@ -60,7 +60,7 @@ for _, case in ipairs(cases) do
 			{ X = width * 0.78, Y = height * 0.65, W = width * 0.22, H = height * 0.35 },
 		}) do
 			assert(
-				name == "Pending" or (name == "Status" and l.Portrait) or not overlaps(physical, zone),
+				(zone.X == 0 and (name == "Coins" or name == "Status")) or not overlaps(physical, zone),
 				name .. " chrome in physical thumb zone"
 			)
 		end
@@ -85,16 +85,16 @@ for _, case in ipairs(cases) do
 		end
 	end
 	assert(not overlaps(l.Reveal, l.CoinPopup))
-	assert(l.PendingIncome.W == 110 and l.PendingIncome.H == 28 and l.PendingIncome.X == 8)
-	assert(l.PendingIncome.Y >= h - 124 and l.PendingIncome.Y + l.PendingIncome.H <= h - 12)
-	assert(l.Status.W <= 136 and l.Status.H >= 44 and l.Status.X > w / 2)
+	assert(l.PendingIncome.W == 0 and l.PendingIncome.H == 0)
+	assert(l.Coins.X == 8 and l.Status.X == l.Coins.X and l.Status.H >= 44)
+	assert(l.Status.Y + l.Status.H + 8 == l.Coins.Y and l.Coins.Y + l.Coins.H <= h - 12)
 	local jump = {
 		X = w * 0.78,
 		Y = if l.Portrait then h - 96 else h * 0.65,
 		W = w * 0.22,
 		H = if l.Portrait then 96 else h * 0.35,
 	}
-	assert(not overlaps(l.Status, jump) and not overlaps(l.PendingIncome, jump))
+	assert(not overlaps(l.Status, jump) and not overlaps(l.Coins, jump))
 	for _, overlay in ipairs({
 		l.Hint,
 		l.Reveal,
@@ -102,10 +102,7 @@ for _, case in ipairs(cases) do
 		Presentation.Compute(w, h, true).Toast,
 		Layout.Toast(w, h, true),
 	}) do
-		assert(
-			not overlaps(overlay, l.PendingIncome) and not overlaps(overlay, l.Status),
-			"Overlay collides with lower chips"
-		)
+		assert(not overlaps(overlay, l.Coins) and not overlaps(overlay, l.Status), "Overlay collides with lower chips")
 	end
 	print(string.format("PASS phone %dx%d safe %dx%d", width, height, w, h))
 end
