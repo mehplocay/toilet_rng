@@ -158,7 +158,17 @@ function World:RefreshLeaderboards()
 		end
 	end
 	for key, board in pairs(self.Boards) do
-		local ranked = rankings:Rank(entries, key)
+		local ranked, global
+		if self.GlobalLeaderboards then
+			ranked, global = self.GlobalLeaderboards:Rows(entries, key)
+		else
+			ranked = rankings:Rank(entries, key)
+		end
+		if board.Scope then
+			board.Scope.Text = if global
+				then "GLOBAL  /  LIVE SERVER PROGRESS"
+				else "THIS SERVER  /  GLOBAL UNAVAILABLE"
+		end
 		for rank, row in ipairs(board) do
 			local entry = ranked[rank]
 			row.Name.Text = if entry then rank .. ".  " .. entry.Name elseif rank == 1 then "Waiting for players" else ""
@@ -376,6 +386,8 @@ function World:Start(data)
 	require(script.Parent.Builders.Island).Build(workspace.Terrain)
 	require(script.Parent.Builders.Lighting).Build()
 	self.Boards, self.BestBoard = Hub.Build(root)
+	self.GlobalLeaderboards =
+		require(script.Parent.Parent.Services.GlobalLeaderboardService).Start(data, self.Boards, rankings)
 	self.BestChance = 0
 	workspace:SetAttribute("BestFlushChance", 0)
 	workspace:SetAttribute("BestFlushRarity", "")

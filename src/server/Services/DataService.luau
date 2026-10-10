@@ -351,6 +351,12 @@ function DataService:Close(player)
 	if self.Loading[player] then
 		return
 	end
+	if profile and self.BeforeClose then
+		local ok, err = pcall(self.BeforeClose, player, profile)
+		if not ok then
+			warn("Leaderboard close snapshot failed:", err)
+		end
+	end
 	self:Save(player, true)
 	self.Profiles[player] = nil
 	self.NoPersistence[player] = nil

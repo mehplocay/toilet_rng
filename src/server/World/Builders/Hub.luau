@@ -36,12 +36,12 @@ local function board(parent, entry)
 		false,
 		150
 	)
-	Kit.Label(
+	local scope = Kit.Label(
 		model,
 		"Scope",
 		cf * CFrame.new(0, 2.8, -2),
 		Vector3.new(32, 1.5, 0.1),
-		"THIS SERVER  /  UPDATES EVERY 10s",
+		"THIS SERVER  /  GLOBAL CONNECTING",
 		cyan,
 		false,
 		120
@@ -69,6 +69,7 @@ local function board(parent, entry)
 		end
 		rows[rank] = { Name = name, Value = value }
 	end
+	rows.Scope = scope
 	return rows
 end
 function Hub.Build(root)
