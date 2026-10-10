@@ -1211,3 +1211,94 @@ do
 		"Phone windows: 16 pages x 11 landscape/portrait sizes, safe bounds, one scroll, reachable final actions, 44px targets, 8px control gaps and 12px text"
 	)
 end
+
+-- Task 66: the leave dialog has no scrolling and never leaves on dismissal.
+do
+	local dialog = clientRoot.Leave
+	local trigger = clientRoot.Settings:FindFirstChild("LeaveGame", true)
+	assert(trigger and trigger.LayoutOrder == 1000, "Leave action must be last in Settings")
+	local function inside(object, container)
+		local a, b, s, t =
+			object.AbsolutePosition, container.AbsolutePosition, object.AbsoluteSize, container.AbsoluteSize
+		assert(
+			a.X >= b.X - 1 and a.Y >= b.Y - 1 and a.X + s.X <= b.X + t.X + 1 and a.Y + s.Y <= b.Y + t.Y + 1,
+			"Leave bounds: " .. object.Name
+		)
+	end
+	local function requests()
+		local count = 0
+		for _, call in ipairs(H.Calls) do
+			if call.Name == "LeaveRequest" then
+				assert(call.Count == 0, "Leave sent a payload")
+				count += 1
+			end
+		end
+		return count
+	end
+	for _, size in ipairs({
+		{ 844, 390, 88, 57 },
+		{ 667, 375, 0, 57 },
+		{ 568, 320, 0, 57 },
+		{ 390, 844, 0, 122 },
+		{ 320, 568, 0, 57 },
+		{ 1920, 1080, 0, 36 },
+	}) do
+		clientRoot._fixed, clientRoot._abs = { X = size[1] - size[3], Y = size[2] - size[4] }, nil
+		clientRoot:GetPropertyChangedSignal("AbsoluteSize"):Fire()
+		clientRoot.HUD.Settings.Activated:Fire()
+		trigger.Activated:Fire()
+		H.Layout(clientRoot)
+		assert(dialog.Visible and not settings.Visible and clientRoot.ModalBackdrop.Visible)
+		assert(H.Services.GuiService.SelectedObject == dialog:FindFirstChild("Stay", true), "Stay is not default focus")
+		inside(dialog, clientRoot)
+		for _, object in ipairs(dialog:GetDescendants()) do
+			assert(not object:IsA("ScrollingFrame"), "Leave should not scroll")
+			if object:IsA("GuiButton") then
+				assert(object.AbsoluteSize.X >= 44 and object.AbsoluteSize.Y >= 44)
+				inside(object, dialog)
+			end
+			if object:IsA("TextLabel") then
+				assert(object.UITextSizeConstraint.MinTextSize >= 14)
+				inside(object, dialog)
+			end
+		end
+		local body = dialog.ContentScroll.Body
+		assert(
+			body.AwayMessage.AbsolutePosition.Y + body.AwayMessage.AbsoluteSize.Y <= body.DailyReady.AbsolutePosition.Y
+		)
+		assert(body.DailyReady.AbsolutePosition.Y + body.DailyReady.AbsoluteSize.Y + 8 <= body.Stay.AbsolutePosition.Y)
+		H.Snapshot(clientRoot, "leave-" .. size[1] .. "x" .. size[2])
+		local before = requests()
+		for _, close in ipairs({ body.Stay, dialog.TitleBar.X, clientRoot.ModalBackdrop }) do
+			trigger.Activated:Fire()
+			if not dialog.Visible then
+				trigger.Activated:Fire()
+			end
+			close.Activated:Fire()
+			assert(not dialog.Visible and requests() == before)
+		end
+		trigger.Activated:Fire()
+		H.Actions.CloseToiletPanel.Callback(nil, Enum.UserInputState.Begin)
+		assert(not dialog.Visible and requests() == before, "Back/Escape must stay")
+		trigger.Activated:Fire()
+		H.Services.GuiService.MenuOpened:Fire()
+		assert(not dialog.Visible and requests() == before, "CoreGui Escape must stay")
+		trigger.Activated:Fire()
+		body.Leave.Activated:Fire()
+		assert(not dialog.Visible and requests() == before + 1)
+	end
+	local review = table.clone(state)
+	review.LastClaimDay, review.Streak = -1, 0
+	bootRemotes.State.OnClientEvent:Fire(review)
+	trigger.Activated:Fire()
+	assert(dialog.ContentScroll.Body.DailyReady.Text == "Daily reward ready!")
+	clientRoot.ModalBackdrop.Activated:Fire()
+	review.LastClaimDay = math.floor(H.Services.Workspace:GetServerTimeNow() / 86400)
+	bootRemotes.State.OnClientEvent:Fire(review)
+	assert(dialog.ContentScroll.Body.DailyReady.Text == "", "Claimed reward advertised ready")
+	assert(table.find(H.Actions.CloseToiletPanel.Keys, Enum.KeyCode.Escape))
+	clientRoot._fixed, clientRoot._abs = { X = 1280, Y = 684 }, nil
+	clientRoot:GetPropertyChangedSignal("AbsoluteSize"):Fire()
+	bootRemotes.State.OnClientEvent:Fire(state)
+	print("Leave: safe phone matrix, no scroll, 44px controls, 14px text, focus, daily truth and dismissal routing")
+end

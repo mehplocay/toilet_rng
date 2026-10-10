@@ -29,6 +29,7 @@ for _, key in ipairs({
 	"AutoFlush",
 	"PlayerActivity",
 	"CollectOffline",
+	"LeaveRequest",
 	"AnimationSkip",
 	"PlotColor",
 	"BuyPass",
@@ -194,4 +195,5 @@ data.Loaded = function(player)
 	end)
 end
 data:Start()
+require(script.Services.LeaveService).Start(limiter, remotes)
 folder.Parent = ReplicatedStorage

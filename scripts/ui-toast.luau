@@ -11,7 +11,7 @@ do
 			object.Visible = false
 		end
 	end
-	assert(#panels == 14, "Missing a window in the toast regression")
+	assert(#panels == 15, "Missing a window in the toast regression")
 	local function overlap(a, b)
 		local ap, as, bp, bs = a.AbsolutePosition, a.AbsoluteSize, b.AbsolutePosition, b.AbsoluteSize
 		return ap.X < bp.X + bs.X and bp.X < ap.X + as.X and ap.Y < bp.Y + bs.Y and bp.Y < ap.Y + as.Y
@@ -79,6 +79,6 @@ do
 	assert(lifetimeRoot.ResultToast == nil, "Destroyed toast accepts late results")
 	admin.Panel.Parent:Destroy()
 	print(
-		"Result toast passed: all 13 windows at 12 viewports, mouse/touch, compact safe bounds, headers/Close/Admin/actions, fade, replacement and cleanup"
+		"Result toast passed: all 15 windows at 12 viewports, mouse/touch, compact safe bounds, headers/Close/Admin/actions, fade, replacement and cleanup"
 	)
 end

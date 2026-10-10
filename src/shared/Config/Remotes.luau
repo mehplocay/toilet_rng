@@ -21,6 +21,7 @@ return {
 	AutoFlush = "AutoFlush",
 	PlayerActivity = "PlayerActivity",
 	CollectOffline = "CollectOffline",
+	LeaveRequest = "LeaveRequest",
 	AnimationSkip = "AnimationSkip",
 	PlotColor = "PlotColor",
 	BuyPass = "BuyPass",
@@ -34,6 +35,7 @@ return {
 	ClaimReward = "ClaimReward",
 	ClaimIndexReward = "ClaimIndexReward",
 	Limits = {
+		LeaveRequest = { Capacity = 1, Refill = 0.2 },
 		CheckGroup = { Capacity = 1, Refill = 1 / Social.GroupCheckSeconds },
 		PromptInvite = { Capacity = 1, Refill = 1 / Social.InvitePromptSeconds },
 		AutoCollect = { Capacity = 1, Refill = 0.2 }, -- Internal five-second cadence, no client remote.

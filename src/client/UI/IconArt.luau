@@ -67,7 +67,13 @@ function Art.Draw(C, parent, kind, tint)
 		label.TextColor3 = color or white
 		return label
 	end
-	if kind == "Coins" or kind == "Coin" then
+	if kind == "Door" then
+		shape(0.16, 0.06, 0.68, 0.86, C.Gold, 0.08)
+		shape(0.25, 0.13, 0.50, 0.72, C.Blue, 0.06)
+		shape(0.30, 0.19, 0.28, 0.60, white, 0.04, -8)
+		shape(0.53, 0.49, 0.08, 0.08, C.Gold, 1)
+		shape(0.10, 0.87, 0.80, 0.08, white, 0.1)
+	elseif kind == "Coins" or kind == "Coin" then
 		shape(0.09, 0.13, 0.82, 0.82, Color3.fromRGB(205, 132, 20), 1)
 		shape(0.06, 0.04, 0.82, 0.82, C.Gold, 1)
 		shape(0.19, 0.17, 0.56, 0.56, Color3.fromRGB(255, 219, 82), 1)

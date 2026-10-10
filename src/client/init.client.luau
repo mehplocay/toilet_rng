@@ -27,6 +27,7 @@ for _, name in ipairs({
 	"AutoFlush",
 	"PlayerActivity",
 	"CollectOffline",
+	"LeaveRequest",
 	"AnimationSkip",
 	"PlotColor",
 	"BuyPass",
@@ -91,6 +92,7 @@ local rewards = require(script.UI.Rewards).Create(root, remotes)
 local passes = require(script.UI.Passes).Create(root, remotes)
 local rebirth = require(script.UI.Rebirth).Create(root, remotes)
 local offlineIncome = require(script.UI.OfflineIncome).Create(root, remotes)
+local leave = require(script.UI.Leave).Create(root, remotes)
 local settings = C.Panel(root, "Settings", C.Blue, nil, true)
 local skipAnimation, autoFlush = false, false
 local settingsList = C.Scroll(settings.ContentScroll.Body, UDim2.fromScale(1, 1))
@@ -122,6 +124,7 @@ local panels = {
 	passes.Panel,
 	rebirth.Panel,
 	settings,
+	leave.Panel,
 	offlineIncome.Panel,
 }
 local dev
@@ -240,10 +243,16 @@ local function open(name)
 	elseif name == "Social" then
 		closeAll()
 		passes.OpenSocial()
+	elseif name == "Leave" then
+		show(leave.Panel)
 	elseif name == "Settings" then
 		show(settings)
 	end
 end
+local leaveButton = C.Button(settingsList, "Leave game", UDim2.new(1, -18, 0, 52), nil, function()
+	open("Leave")
+end, Color3.fromRGB(237, 61, 78), { Name = "LeaveGame", TextSize = 22 })
+leaveButton.LayoutOrder = 1000
 hud = require(script.UI.HUD).Create(root, remotes, open, prompts, upgrades.Navigation)
 require(script.WorldLabels).Start(hud.Frame)
 require(script.WorldNavigation).Start(open, toast)
@@ -268,7 +277,7 @@ ContextActionService:BindAction("CloseToiletPanel", function(_, state)
 		return Enum.ContextActionResult.Sink
 	end
 	return Enum.ContextActionResult.Pass
-end, false, Enum.KeyCode.ButtonB)
+end, false, Enum.KeyCode.ButtonB, Enum.KeyCode.Escape)
 local tutorial = require(script.UI.Tutorial).Create(player, remotes, hud, prompts, {
 	Collection = collection,
 	Upgrades = upgrades,
@@ -389,6 +398,7 @@ remotes.State.OnClientEvent:Connect(function(state)
 	collection.Update(state)
 	upgrades.Update(state)
 	rewards.Update(state)
+	leave.Update(state)
 	passes.Update(state)
 	rebirth.Update(state)
 end)
