@@ -9,4 +9,7 @@ Flow to verify end to end (src/client/UI/Tutorial.luau, Progress, FlushPrompt.lu
 4. Check late join/spawn edge cases: respawn, plot assignment delay, hud hidden at start, replay from Settings, tutorial restarting wrongly after rebirth.
 5. Check any stuck state: step 1 never advancing, highlight on a hidden button, pointer pointing at (0,0), Skip not working.
 
+## Owner follow-up (must fix)
+On phones the tutorial card looks odd: the step counter ("1/5", "2/5", ... "4/5") is not visible. Always show a clear step indicator on phones: title with the "n/5" prefix (e.g. "1/5 Find your toilet") plus small step dots or a thin progress bar, fully visible (no truncation or clipping on any phone size, text >= 14 px). The card should look polished and consistent: icon/pointer, title, one short sentence, Skip button. Keep it compact and not covering the character, Home button or Flush button. Add a test that fails if the "n/5" text is missing or truncated on any phone viewport.
+
 Fix what you find with minimal changes; no gameplay/economy changes. Add runtime tests in scripts/ that simulate the touch flow (TouchEnabled true) for steps 1->2->3 on several phone sizes. Document findings (what was wrong) in docs/research/tutorial-start-mobile.md. Follow AGENTS.md; branch feature/tutorial-mobile, do not push (Git may be sandbox-blocked; leave uncommitted and say so). Run check-audit, check-ui, check-visuals, check-world and rojo build -o build.rbxl.
