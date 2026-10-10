@@ -73,7 +73,7 @@ function HUD.Create(root, remotes, open, prompts, _shopNavigation)
 	C.Icon(settings, "Settings", UDim2.fromScale(0.74, 0.74), UDim2.fromScale(0.13, 0.13))
 	settings.Label.UITextSizeConstraint.MinTextSize = 14
 	local wallet = C.New("Frame", gui, { Name = "Wallet", BackgroundTransparency = 1 })
-	C.Icon(wallet, "Coin", UDim2.fromScale(0.22, 0.94), UDim2.fromScale(0, 0.03))
+	local coinIcon = C.Icon(wallet, "Coin", UDim2.fromScale(0.22, 0.94), UDim2.fromScale(0, 0.03))
 	local coins = C.Text(wallet, "0", UDim2.fromScale(0.76, 0.92), UDim2.fromScale(0.24, 0.04), 58)
 	coins.TextXAlignment, coins.TextColor3 = Enum.TextXAlignment.Left, Color3.fromRGB(193, 255, 76)
 	coins.UIStroke.Thickness = 3
@@ -298,8 +298,13 @@ function HUD.Create(root, remotes, open, prompts, _shopNavigation)
 			defaults.Label.Position = if layout.Phone then UDim2.fromOffset(2, 1) else defaults.LabelPosition
 			defaults.Label.UITextSizeConstraint.MinTextSize = if layout.Phone then 12 else defaults.Minimum
 		end
-		coins.UITextSizeConstraint.MinTextSize = if layout.Phone then 14 else 10
+		coins.UITextSizeConstraint.MinTextSize = if layout.Phone then 16 else 10
 		coins.UITextSizeConstraint.MaxTextSize = if layout.Phone then 24 else 58
+		coins.TextWrapped = not layout.Phone
+		coinIcon.Size = if layout.Phone then UDim2.fromOffset(24, 24) else UDim2.fromScale(0.22, 0.94)
+		coinIcon.Position = if layout.Phone then UDim2.fromOffset(0, 2) else UDim2.fromScale(0, 0.03)
+		coins.Size = if layout.Phone then UDim2.new(1, -30, 1, 0) else UDim2.fromScale(0.76, 0.92)
+		coins.Position = if layout.Phone then UDim2.fromOffset(30, 0) else UDim2.fromScale(0.24, 0.04)
 		hint.BackgroundColor3 = C.Navy
 		hint.BackgroundTransparency = if layout.Phone then 0.3 else 1
 		hintTitle.UITextSizeConstraint.MinTextSize = if layout.Phone then 14 else 10
@@ -321,6 +326,7 @@ function HUD.Create(root, remotes, open, prompts, _shopNavigation)
 		end
 		if layout.Phone then
 			C.Place(mobileStatus, layout.Status)
+			mobileStatus.Visible = true
 			mobileStatus.Label.UITextSizeConstraint.MaxTextSize = 14
 			flush.Size, idle.Size = UDim2.new(1, -80, 1, 0), UDim2.new(1, -80, 1, 0)
 			auto.Size, auto.Position = UDim2.new(0, 74, 1, 0), UDim2.new(1, -74, 0, 0)
@@ -498,14 +504,6 @@ function HUD.Create(root, remotes, open, prompts, _shopNavigation)
 				math.round(friends * SocialConfig.FriendBonus * 100)
 			)
 			mobileStatus.Visible = layout.Phone == true
-				and (
-					total ~= 1
-					or friends > 0
-					or socialState.GroupMember == true
-					or personalLeft > 0
-					or serverLeft > 0
-					or (socialState.InviteRemaining or 0) > 0
-				)
 			statusText.Text = mobileStatus.Text
 				.. "\n"
 				.. SocialUI.ChipText(socialState, os.clock() - socialAt)

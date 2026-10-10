@@ -13,6 +13,7 @@ function IncomeChip.Create(root)
 	label.Size, label.Position = UDim2.new(1, -8, 1, -2), UDim2.fromOffset(4, 1)
 	local function resize()
 		local layout = Layout.Compute(root.AbsoluteSize.X, root.AbsoluteSize.Y, UserInputService.TouchEnabled)
+		chip.Visible = not layout.Phone
 		C.Place(chip, layout.PendingIncome)
 		label.UITextSizeConstraint.MinTextSize = if layout.Phone then 12 else 10
 		label.UITextSizeConstraint.MaxTextSize = if layout.Phone then 14 else normalMaximum

@@ -1,6 +1,7 @@
 -- Executes production constructors. PNGs use the existing offline tree renderer.
 do
 	local cases = {
+		{ 320, 568, 0, 36, 0, 21 },
 		{ 375, 667, 0, 36, 0, 21 },
 		{ 375, 812, 0, 88, 0, 34 },
 		{ 390, 844, 0, 88, 0, 34 },
@@ -76,7 +77,7 @@ do
 			hud.Update(state)
 			H.Advance(1.1)
 			H.ResumeTasks()
-			assert(not hud.Frame.PhoneStatus.Visible, "Neutral phone status must be hidden")
+			assert(hud.Frame.PhoneStatus.Visible, "Neutral phone status must expose details")
 			state.Social.GroupMember = true
 			hud.Update(state)
 			H.Advance(1.1)
@@ -91,7 +92,6 @@ do
 			local elements = {
 				hud.Frame.Travel,
 				hud.Frame.Wallet,
-				hud.Frame.PendingIncome,
 				hud.Frame.PhoneStatus,
 				root.CelebrationMenu,
 				admin.Open,
@@ -110,8 +110,7 @@ do
 				assert(r.X >= 0 and r.Y >= 0 and r.X + r.W <= w and r.Y + r.H <= h, object.Name .. " outside safe area")
 				for _, zone in ipairs(zones) do
 					assert(
-						object.Name == "PendingIncome"
-							or (object.Name == "PhoneStatus" and layout.Portrait)
+						(zone.X == 0 and (object.Name == "Wallet" or object.Name == "PhoneStatus"))
 							or not overlaps(r, zone),
 						object.Name .. " in thumb zone"
 					)
@@ -142,9 +141,40 @@ do
 			end
 			assert(flush.Label.UITextSizeConstraint.MinTextSize >= 14)
 			assert(hud.Frame.FlushActions.AutoFlushSwitch.Label.UITextSizeConstraint.MinTextSize >= 14)
-			assert(hud.Frame.Wallet:FindFirstChildWhichIsA("TextLabel").UITextSizeConstraint.MinTextSize >= 14)
+			assert(hud.Frame.Wallet:FindFirstChildWhichIsA("TextLabel").UITextSizeConstraint.MinTextSize >= 16)
+			local wallet, status = bounds(hud.Frame.Wallet), bounds(hud.Frame.PhoneStatus)
+			assert(wallet.X == 8 and status.X == wallet.X and status.Y + status.H + 8 == wallet.Y)
+			assert(wallet.Y + wallet.H <= h - 12, "Wallet must clear the home indicator safe edge")
+			local coinText = hud.Frame.Wallet:FindFirstChildWhichIsA("TextLabel")
+			for _, amount in ipairs({ 0, 999, 1234567, 1e18, 1.23e45, 1.23e100, 1.23e290, 1e300 }) do
+				hud.Frame.Wallet.NumberValue.Changed:Fire(amount)
+				local measured = H.Services.TextService:GetTextSize(
+					coinText.Text,
+					16,
+					coinText.Font,
+					Vector2.new(coinText.AbsoluteSize.X, 100000)
+				)
+				assert(
+					not coinText.TextWrapped
+						and #coinText.Text * 16 * 0.58 <= coinText.AbsoluteSize.X
+						and measured.Y <= coinText.AbsoluteSize.Y,
+					"Phone coin amount clips at 16px"
+				)
+			end
+			hud.Frame.Wallet.NumberValue.Changed:Fire(state.Coins)
+			for _, overlay in ipairs({
+				layout.Hint,
+				layout.Reveal,
+				layout.CoinPopup,
+				H.Load("src/client/Presentation/Layout").Compute(w, h, true).Toast,
+			}) do
+				assert(
+					not overlaps(overlay, wallet) and not overlaps(overlay, status),
+					"Hint/reveal/collect overlay overlaps phone wallet group"
+				)
+			end
 			local pending = hud.Frame.PendingIncome
-			assert(pending.AbsoluteSize.X == 110 and pending.AbsoluteSize.Y == 28)
+			assert(not pending.Visible and pending.AbsoluteSize.X == 0 and pending.AbsoluteSize.Y == 0)
 			assert(not pending.Active and not pending.Selectable and not pending:IsA("GuiButton"))
 			assert(pending:FindFirstChildWhichIsA("TextLabel").UITextSizeConstraint.MinTextSize >= 12)
 			local jump = {
@@ -164,6 +194,8 @@ do
 			assert(root["Boost details"].Visible and not hud.Frame.Visible)
 			root["Boost details"].TitleBar.X.Activated:Fire()
 			assert(hud.Frame.Visible)
+		else
+			assert(hud.Frame.PendingIncome.Visible, "Tablet pending display must remain visible")
 		end
 		local prefix = string.format("mobile-%dx%d", width, height)
 		H.Snapshot(root, prefix .. "-hud")
@@ -176,7 +208,7 @@ do
 		if phone then
 			assert(card.BackgroundTransparency >= 0.25)
 			assert(card.Detail.UITextSizeConstraint.MinTextSize >= 14)
-			for _, chip in ipairs({ hud.Frame.PendingIncome, hud.Frame.PhoneStatus }) do
+			for _, chip in ipairs({ hud.Frame.Wallet, hud.Frame.PhoneStatus }) do
 				assert(not overlaps(bounds(card), bounds(chip)), "Tutorial overlaps lower chip")
 			end
 		end
@@ -189,7 +221,7 @@ do
 			H.Advance(0.3)
 			H.Layout(root)
 			assert(not overlaps(bounds(root.ResultToast), bounds(card)), "Toast overlaps tutorial Skip")
-			for _, chip in ipairs({ hud.Frame.PendingIncome, hud.Frame.PhoneStatus }) do
+			for _, chip in ipairs({ hud.Frame.Wallet, hud.Frame.PhoneStatus }) do
 				assert(not overlaps(bounds(root.ResultToast), bounds(chip)), "Result toast overlaps lower chip")
 			end
 			root.ResultToast.Visible = false
