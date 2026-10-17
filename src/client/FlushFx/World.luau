@@ -90,7 +90,7 @@ function World.new(config)
 				Orientation = Enum.ParticleOrientation.VelocityPerpendicular,
 				EmissionDirection = Enum.NormalId.Top,
 				Speed = NumberRange.new(0.05),
-				Lifetime = NumberRange.new(0.45, 0.55),
+				Lifetime = NumberRange.new(0.35, 0.7),
 				LightEmission = 1,
 				Transparency = sequence(0, 1),
 			}),
@@ -248,7 +248,7 @@ function World.new(config)
 		emitters.Core.Size = sequence(scale * 0.4, scale * 1.6)
 		emit(ledger, now, emitters.Core, plan.Core, 0.3)
 		emitters.Shockwave.Size = sequence(scale * 0.5, scale * 3.4)
-		emit(ledger, now, emitters.Shockwave, plan.Shockwaves, 0.55)
+		emit(ledger, now, emitters.Shockwave, plan.Shockwaves, 0.7)
 		emitters.Splash.Size = sequence(scale * 0.3, scale * 0.1)
 		emitters.Splash.Speed = NumberRange.new(state.Height * 1.1, state.Height * 1.7)
 		emitters.Splash.Acceleration = Vector3.new(0, -state.Height * 3.4, 0)
@@ -271,8 +271,7 @@ function World.new(config)
 	function self:Play(plan, color, target, ledger, now)
 		local camera = workspace.CurrentCamera
 		if
-			not target
-			or (camera and (camera.CFrame.Position - target.Bowl.Position).Magnitude > config.MaxDistance)
+			not target or (camera and (camera.CFrame.Position - target.Bowl.Position).Magnitude > config.MaxDistance)
 		then
 			return false
 		end

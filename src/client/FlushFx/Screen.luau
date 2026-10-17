@@ -59,7 +59,7 @@ function Screen.new(root, hud, config)
 			local ray = frame(wheel, "LightRay", {
 				AnchorPoint = Vector2.new(0.5, 0.5),
 				Position = UDim2.fromScale(0.5, 0.5),
-				Size = UDim2.fromScale(1, 0.045),
+				Size = UDim2.fromScale(1, if i % 2 == 0 then 0.014 else 0.024),
 				Rotation = i * 180 / config.Caps.Rays,
 				BackgroundColor3 = white,
 			})
