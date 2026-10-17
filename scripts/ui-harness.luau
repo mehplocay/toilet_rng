@@ -101,6 +101,23 @@ end
 function frameMT.__mul(a, b)
 	return CFrame.lookAt(a.Position + b.Position)
 end
+-- Translation-only helpers used by the flush toilet clone (rotations are identity here).
+function frameMT.__index(cf, key)
+	if key == "X" or key == "Y" or key == "Z" then
+		return cf.Position[key]
+	elseif key == "Rotation" then
+		return CFrame.new()
+	elseif key == "Inverse" then
+		return function(a)
+			return CFrame.new(-a.Position.X, -a.Position.Y, -a.Position.Z)
+		end
+	elseif key == "ToObjectSpace" then
+		return function(a, b)
+			return CFrame.new(b.Position - a.Position)
+		end
+	end
+	return nil
+end
 local UDim = {
 	new = function(s, o)
 		return { Scale = s or 0, Offset = o or 0 }
