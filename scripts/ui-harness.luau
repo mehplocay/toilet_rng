@@ -267,6 +267,14 @@ function methods:PivotTo(cf)
 		self._onPivot(cf)
 	end
 end
+-- ParticleEmitter/Trail one-shot doubles: record emitted totals, no simulation.
+function methods:Emit(count)
+	self.Emitted = (self.Emitted or 0) + (count or 16)
+	H.Emitted = (H.Emitted or 0) + (count or 16)
+end
+function methods:Clear()
+	self.Cleared = (self.Cleared or 0) + 1
+end
 function methods:Play()
 	self.IsPlaying = true
 	self.Plays = (self.Plays or 0) + 1

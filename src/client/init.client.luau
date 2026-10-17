@@ -288,6 +288,11 @@ local replayTutorial =
 replayTutorial.Name, replayTutorial.Text = "ReplayTutorial", "Replay tutorial"
 local effects = require(script.Effects).Create(hud.Frame, audio.SFX, hud)
 local presentation = require(script.Presentation.Controller).Start(root, hud, remotes, audio, settingsList, dropChat)
+local flushFx = require(script.FlushFx.Controller).Start(root, hud, prompts)
+local FlushFxRules = require(game.ReplicatedStorage.Shared.FlushFxRules)
+script.Destroying:Connect(function()
+	flushFx:Destroy()
+end)
 local showServiceCoins = require(script.UI.CoinPopup).Create(hud.Frame)
 local showCollectedCoins = require(script.UI.CoinPopup).Create(root)
 local incomeChip = require(script.UI.IncomeChip).Create(hud.Frame)
@@ -392,6 +397,7 @@ remotes.State.OnClientEvent:Connect(function(state)
 	effects.SetSkip(
 		skipAnimation or state.Settings.RevealIntensity == "Reduced" or state.Settings.RevealIntensity == "Off"
 	)
+	flushFx:SetIntensity(FlushFxRules.Intensity(state.Settings.RevealIntensity, skipAnimation))
 	hud.Update(state)
 	incomeChip.Update(state.PendingCoins or 0)
 	offlineIncome.Update(state)

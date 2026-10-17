@@ -59,6 +59,7 @@ $parts.Add((Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $PSScriptRoo
 $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-shop-routing.luau')))
 $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'presentation-ui-checks.luau')))
 $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'reveals2-ui-checks.luau')))
+$parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-flush-fx.luau')))
 $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-upgrades.luau')))
 $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-rebirth.luau')))
 $parts.Add([IO.File]::ReadAllText((Join-Path $PSScriptRoot 'ui-economy-v2.luau')))
