@@ -240,7 +240,10 @@ function Screen.new(root, hud, config)
 			-- Lean left or right, above the toilet, clamped on screen.
 			state.ComicTilt = (seed - 0.5) * 24
 			local x = math.clamp(origin[1] + (seed - 0.5) * size.X * 0.2, size.X * 0.3, size.X * 0.7)
-			local y = math.clamp(origin[2] - size.Y * S.ComicRise, size.Y * 0.18, size.Y * 0.7)
+			-- Stay below the rarity stinger when one shows, and fit narrow phone screens.
+			local top = if plan.RarityText then S.TextY + 0.16 else 0.18
+			local y = math.clamp(origin[2] - size.Y * S.ComicRise, size.Y * top, size.Y * 0.7)
+			state.ComicFit = math.min(1, size.X * 0.9 / (S.ComicSize * 4 * (plan.ComicScale or 1) * 1.2))
 			comic.Position = UDim2.fromOffset(x, y)
 			comic.Visible = false
 		end
@@ -383,7 +386,7 @@ function Screen.new(root, hud, config)
 				else
 					scale = 1 + 0.5 * (u - 0.8) / 0.2
 				end
-				comicScale.Scale = scale * (plan.ComicScale or 1)
+				comicScale.Scale = scale * (plan.ComicScale or 1) * (state.ComicFit or 1)
 				comic.Rotation = state.ComicTilt + math.sin(u * 18) * 4 * (1 - u)
 				local alpha = math.clamp((u - 0.82) / 0.18, 0, 1)
 				comicText.TextTransparency = alpha
