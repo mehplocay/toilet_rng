@@ -52,7 +52,125 @@ check("escalation is monotonic by rarity and big tiers are full-screen", functio
 		previous = plan
 	end
 	local common = Rules.Plan(Config, "Common", { Intensity = "Full" })
-	assert(common.Flash == 0 and common.Rays == 0 and common.Duration <= 0.8 and not common.RarityText)
+	assert(common.Rays == 0 and common.Duration <= 1.5 and not common.RarityText and not common.Big)
+end)
+
+check("Common is action-packed: geyser, bubbles, foam, stars, comic burst, camera punch", function()
+	for _, rarity in ipairs({ "Common", "Uncommon" }) do
+		for _, style in ipairs(Config.StyleOrder) do
+			for _, mobile in ipairs({ false, true }) do
+				local plan = Rules.Plan(Config, rarity, { Intensity = "Full", Style = style, Mobile = mobile })
+				assert(plan and plan.Style == style and plan.Comet and plan.Motion, rarity .. " " .. style)
+				for _, key in ipairs({ "Geyser", "Splash", "Bubbles", "Foam", "Stars", "Pieces", "Sparks", "Coins" }) do
+					assert(plan[key] > 0, rarity .. " " .. style .. " lacks " .. key)
+				end
+				assert(plan.Comic and plan.EmojiPops > 0 and plan.Fov >= 5 and plan.Shake > 0 and plan.Flash > 0)
+				assert(plan.GeyserHeight >= 1.5 and plan.BounceTime > 0 and plan.ScreenRings > 0)
+				if Config.Styles[style].Special then
+					assert(plan.Special == Config.Styles[style].Special)
+				end
+			end
+		end
+	end
+end)
+
+check("at least 8 styles, each with motion, words, emojis, palette and engine textures", function()
+	assert(#Config.StyleOrder >= 8)
+	local motions, seen = {}, {}
+	for _, name in ipairs(Config.StyleOrder) do
+		local style = assert(Config.Styles[name], name)
+		assert(not seen[name], "duplicate style " .. name)
+		seen[name] = true
+		assert(#style.Words >= 2 and #style.Emojis >= 2 and #style.Palette >= 1, name)
+		for _, word in ipairs(style.Words) do
+			assert(word == string.upper(word), name .. " comic words are upper case English")
+		end
+		assert(Assets.Textures[style.Pieces.Texture], name .. " unknown texture")
+		motions[style.Motion] = true
+		local pose = Rules.ToiletPose(style.Motion, 0.3, 1)
+		assert(pose.SquashY ~= 1 or pose.Lift > 0 or pose.Spin ~= 0 or pose.TiltZ ~= 0, name .. " motion is static")
+	end
+	for name in pairs(Config.Styles) do
+		assert(seen[name], name .. " missing from StyleOrder")
+	end
+	local count = 0
+	for _ in pairs(motions) do
+		count += 1
+	end
+	assert(count >= 6, "toilet motions need variety")
+	assert(Config.Styles[Config.DefaultStyle])
+end)
+
+check("style picker: weighted, never repeats, poop party only for poop items", function()
+	local last
+	local counts = {}
+	local seed = 12345
+	local function roll()
+		seed = (seed * 1103515245 + 12345) % 2147483648
+		return seed / 2147483648
+	end
+	for _ = 1, 20000 do
+		local name = Rules.PickStyle(Config, last, "Rat", roll())
+		assert(Config.Styles[name] and name ~= last, "style repeated: " .. name)
+		assert(name ~= "PoopParty", "poop party for a non-poop item")
+		counts[name] = (counts[name] or 0) + 1
+		last = name
+	end
+	for _, name in ipairs(Config.StyleOrder) do
+		if name ~= "PoopParty" then
+			assert((counts[name] or 0) > 500, name .. " never shows up")
+		end
+	end
+	-- Heavier weight shows up more often than a lighter one.
+	assert(counts.Geyser > counts.LightningZap)
+	local poop, last2 = 0, nil
+	for _ = 1, 4000 do
+		local name = Rules.PickStyle(Config, last2, "Poop", roll())
+		assert(name ~= last2)
+		if name == "PoopParty" then
+			poop += 1
+		end
+		last2 = name
+	end
+	assert(poop > 800, "poop party should be likely for Poop: " .. poop)
+	-- Bounds and odd inputs.
+	assert(Config.Styles[Rules.PickStyle(Config, nil, nil, 0)])
+	assert(Config.Styles[Rules.PickStyle(Config, nil, nil, 1)])
+	assert(Config.Styles[Rules.PickStyle(Config, "Geyser", nil, 0 / 0)])
+	assert(Rules.PickStyle(Config, "Geyser", nil, 0.999999) ~= "Geyser")
+	assert(Rules.StyleWeight(Config.Styles.PoopParty, "Rat") == 0)
+	assert(Rules.StyleWeight(Config.Styles.PoopParty, "Poop") > Config.Styles.Geyser.Weight)
+	assert(Rules.StyleWeight(Config.Styles.DuckParade, "Duck") > Config.Styles.DuckParade.Weight)
+	-- Unknown styles in a plan fall back to the default.
+	assert(Rules.Plan(Config, "Common", { Style = "Nope" }).Style == Config.DefaultStyle)
+end)
+
+check("toilet poses and item bounce stay bounded and settle at the end", function()
+	local names = { "Unknown" }
+	for _, name in ipairs(Config.StyleOrder) do
+		table.insert(names, Config.Styles[name].Motion)
+	end
+	for _, motion in ipairs(names) do
+		for _, power in ipairs({ 0, 1, 1.6, 2, 5, 0 / 0 }) do
+			for i = -5, 105 do
+				local pose = Rules.ToiletPose(motion, i / 100, power)
+				assert(pose.Lift >= 0 and pose.Lift <= 0.9, motion)
+				assert(pose.SquashY >= 0.45 and pose.SquashY <= 1.7, motion)
+				assert(math.abs(pose.TiltX) <= 0.35 and math.abs(pose.TiltZ) <= 0.35, motion)
+				assert(pose.Lid >= 0 and pose.Lid <= 2.2)
+			end
+			local final = Rules.ToiletPose(motion, 1, power)
+			assert(final.Lift == 0 and final.SquashY == 1 and final.TiltX == 0 and final.TiltZ == 0 and final.Lid == 0)
+			assert(math.abs(math.sin(final.Spin)) < 1e-9 and math.abs(math.cos(final.Spin) - 1) < 1e-9)
+		end
+	end
+	for i = -5, 105 do
+		local h, squash = Rules.Bounce(i / 100)
+		assert(h >= 0 and h <= 1 and squash >= 0.5 and squash <= 1.35)
+	end
+	local h0 = Rules.Bounce(0)
+	local h1 = Rules.Bounce(1)
+	assert(h0 == 0 and math.abs(h1) < 1e-9)
 end)
 
 check("settings: Off and compact show nothing, Reduced keeps calm one-shots", function()
@@ -65,6 +183,8 @@ check("settings: Off and compact show nothing, Reduced keeps calm one-shots", fu
 			assert(plan[key] == 0, rarity .. " reduced kept " .. key)
 		end
 		assert(not plan.RarityText and not plan.Pillar and plan.FanBeams == 0 and plan.WindUp == 0)
+		assert(not plan.Comic and plan.EmojiPops == 0 and not plan.Motion and not plan.Special)
+		assert(plan.Props == 0 and plan.BounceTime == 0)
 	end
 	assert(Rules.Plan(Config, "Forged", { Intensity = "Full" }) == nil)
 	assert(Rules.Intensity("Off", true) == "Off" and Rules.Intensity("Full", true) == "Reduced")
@@ -150,6 +270,30 @@ check("live particle ledger never exceeds its budget under auto-flush spam", fun
 	assert(ledger:Live(now) == 0)
 end)
 
+check("every rarity x style plans, fits auto cadence and stays inside desktop/phone budgets", function()
+	assert(Config.ParticleBudget == 400 and Config.MobileParticleBudget == 150)
+	for _, mobile in ipairs({ false, true }) do
+		local ledger = Rules.Ledger(if mobile then Config.MobileParticleBudget else Config.ParticleBudget)
+		local now = 0
+		for _, rarity in ipairs(order) do
+			for _, style in ipairs(Config.StyleOrder) do
+				local plan = Rules.Plan(Config, rarity, { Intensity = "Full", Style = style, Mobile = mobile })
+				assert(plan and plan.Style == style and plan.Duration > 0, rarity .. " " .. style)
+				assert(plan.Land + plan.BounceTime <= plan.Duration + 1e-9)
+				local auto =
+					Rules.Plan(Config, rarity, { Intensity = "Full", Style = style, Cooldown = 0.4, Mobile = mobile })
+				if not auto.Big then
+					assert(auto.Duration <= 0.4 + 1e-9, rarity .. " " .. style .. " overruns auto cadence")
+				end
+				for _, key in ipairs(Config.ParticleKeys) do
+					ledger:Grant(now, plan[key], 2.6)
+					assert(ledger:Live(now) <= ledger.Cap)
+				end
+				now += 0.05
+			end
+		end
+	end
+end)
 check("envelopes, slow-motion remap and FOV punch are bounded", function()
 	for i = -10, 200 do
 		local t = i / 100
