@@ -19,7 +19,16 @@ function Controller.Start(root, hud, prompts)
 	local mobile = Input.TouchEnabled
 	local world, screen, camera = World.new(Config), Screen.new(root, hud, Config), Camera.new(Config)
 	local ledger = Rules.Ledger(if mobile then Config.MobileParticleBudget else Config.ParticleBudget)
-	local active, lastStart, heartbeat = nil, -math.huge, nil
+	local active, lastStart, heartbeat, lastStyle = nil, -math.huge, nil, nil
+	-- Presentation randomness only (never affects drops); math.random outside the engine.
+	local random = if typeof(Random) == "table" or typeof(Random) == "userdata"
+		then Random.new()
+		else {
+			NextNumber = function()
+				return math.random()
+			end,
+		}
+	self.Styles = Config.StyleOrder
 	local connections = {}
 	self.Ledger, self.Screen = ledger, screen
 	local function colorFor(item)
@@ -53,7 +62,8 @@ function Controller.Start(root, hud, prompts)
 		end
 		return { x, y }
 	end
-	function self:Flush(item, payload)
+	-- options (Studio preview only): Style forces a style by name.
+	function self:Flush(item, payload, options)
 		if self.Destroyed or type(item) ~= "table" or type(payload) ~= "table" then
 			return nil
 		end
@@ -61,19 +71,30 @@ function Controller.Start(root, hud, prompts)
 			return nil
 		end
 		local now = os.clock()
+		local forced = type(options) == "table" and Config.Styles[options.Style] and options.Style
+		local style = forced or Rules.PickStyle(Config, lastStyle, item.Id, random:NextNumber())
 		local plan = Rules.Plan(Config, item.Rarity, {
 			Intensity = self.Intensity,
 			Compact = payload.Compact == true,
-			Cooldown = if payload.Automatic then payload.AutoInterval else payload.Cooldown,
+			-- Manual flushes collapse on the observed gap only, so a single flush always
+			-- plays in full; automatic flushes also know their fixed cadence up front.
+			Cooldown = if payload.Automatic then payload.AutoInterval else nil,
 			Gap = now - lastStart,
 			Mobile = mobile,
 			ActiveRank = if active then active.Plan.Rank else 0,
 			ActiveRemaining = if active then active.Start + active.Plan.Duration - now else 0,
+			Style = style,
 		})
 		if not plan then
 			return nil
 		end
 		lastStart = now
+		if not plan.Underlay then
+			lastStyle = plan.Style
+		end
+		local words = Config.Styles[plan.Style].Words
+		plan.Seed = random:NextNumber()
+		plan.Word = words[math.clamp(math.floor(plan.Seed * #words) + 1, 1, #words)]
 		local color = colorFor(item)
 		local target = world:Locate(prompts)
 		world:Play(plan, color, target, ledger, now)

@@ -12,7 +12,8 @@ function Screen.new(root, hud, config)
 	local S = config.Screen
 	local self = {}
 	local back, front, flash, grade, wheel, text, textScale, textStroke, wallet, walletScale
-	local edges, rays, rings, confetti, coins = {}, {}, {}, {}, {}
+	local edges, rays, rings, confetti, coins, emojis = {}, {}, {}, {}, {}, {}
+	local comic, comicScale, comicText, comicStroke, comicStars
 	local job, lastStep = nil, -math.huge
 	local function frame(parent, name, props)
 		local object = C.New("Frame", parent, { Name = name, BackgroundTransparency = 1, BorderSizePixel = 0 })
@@ -105,6 +106,53 @@ function Screen.new(root, hud, config)
 			coin.Name, coin.AnchorPoint, coin.Visible = "FlyingCoin", Vector2.new(0.5, 0.5), false
 			coins[i] = { Frame = coin, Bend = ((i * GOLDEN) % 1 - 0.5) * 2 }
 		end
+		-- Comic burst: a two-square starburst behind a huge outlined word ("SPLASH!").
+		comic = frame(front, "ComicBurst", {
+			AnchorPoint = Vector2.new(0.5, 0.5),
+			Size = UDim2.fromOffset(S.ComicSize * 4, S.ComicSize * 1.6),
+			Visible = false,
+		})
+		comicScale = C.New("UIScale", comic, { Scale = 1 })
+		comicStars = {}
+		for i = 1, 2 do
+			local star = frame(comic, "ComicStar", {
+				AnchorPoint = Vector2.new(0.5, 0.5),
+				Position = UDim2.fromScale(0.5, 0.5),
+				Size = UDim2.fromOffset(S.ComicSize * 1.5, S.ComicSize * 1.5),
+				Rotation = (i - 1) * 45,
+				BackgroundTransparency = 0,
+			})
+			C.New("UIStroke", star, { Color = C.Ink, Thickness = 5 })
+			comicStars[i] = star
+		end
+		comicText = C.Text(comic, "", UDim2.fromScale(1, 1), UDim2.new(), S.ComicSize)
+		comicText.Name = "ComicWord"
+		comicText.UITextSizeConstraint.MinTextSize = 24
+		comicText.Rotation = 0
+		comicStroke = comicText:FindFirstChildOfClass("UIStroke")
+		if comicStroke then
+			comicStroke.Thickness = 5
+		end
+		for i = 1, config.Caps.EmojiPops do
+			local label = C.New("TextLabel", front, {
+				Name = "EmojiPop",
+				AnchorPoint = Vector2.new(0.5, 0.5),
+				Size = UDim2.fromOffset(S.EmojiSize, S.EmojiSize),
+				BackgroundTransparency = 1,
+				TextScaled = true,
+				Font = C.Font,
+				Text = "",
+				Visible = false,
+			})
+			emojis[i] = {
+				Label = label,
+				-- Deterministic fountain spread: angle, speed and spin per slot.
+				Angle = -math.pi / 2 + ((i * GOLDEN) % 1 - 0.5) * 2.2,
+				Speed = 0.55 + ((i * 0.61) % 1) * 0.45,
+				Spin = (if i % 2 == 0 then 1 else -1) * (90 + (i * 53) % 200),
+				Delay = ((i * 0.43) % 1) * 0.18,
+			}
+		end
 	end
 	local function hideAll()
 		if not back then
@@ -123,6 +171,10 @@ function Screen.new(root, hud, config)
 		end
 		for _, coin in ipairs(coins) do
 			coin.Frame.Visible = false
+		end
+		comic.Visible = false
+		for _, pop in ipairs(emojis) do
+			pop.Label.Visible = false
 		end
 		if grade then
 			grade.Enabled = false
@@ -167,8 +219,34 @@ function Screen.new(root, hud, config)
 			or plan.RarityText
 			or state.Coins > 0
 			or plan.Grade > 0
+			or plan.Comic
+			or (plan.EmojiPops or 0) > 0
 		if not any then
 			return false
+		end
+		local style = config.Styles[plan.Style] or config.Styles[config.DefaultStyle]
+		local seed = plan.Seed or 0.5
+		if plan.Comic then
+			local first = style.Palette[1]
+			local last = style.Palette[#style.Palette]
+			comicText.Text = plan.Word or style.Words[1]
+			comicText.TextColor3 = Color3.fromRGB(255, 255, 255)
+			comicText.UITextSizeConstraint.MaxTextSize = math.floor(S.ComicSize * (plan.ComicScale or 1))
+			comicStars[1].BackgroundColor3 = Color3.fromRGB(first[1], first[2], first[3])
+			comicStars[2].BackgroundColor3 = Color3.fromRGB(last[1], last[2], last[3])
+			if comicStroke then
+				comicStroke.Color = C.Ink
+			end
+			-- Lean left or right, above the toilet, clamped on screen.
+			state.ComicTilt = (seed - 0.5) * 24
+			local x = math.clamp(origin[1] + (seed - 0.5) * size.X * 0.2, size.X * 0.3, size.X * 0.7)
+			local y = math.clamp(origin[2] - size.Y * S.ComicRise, size.Y * 0.18, size.Y * 0.7)
+			comic.Position = UDim2.fromOffset(x, y)
+			comic.Visible = false
+		end
+		for i, pop in ipairs(emojis) do
+			pop.Label.Visible = false
+			pop.Label.Text = style.Emojis[(i - 1) % #style.Emojis + 1]
 		end
 		flash.BackgroundColor3 = white:Lerp(color, 0.45)
 		flash.BackgroundTransparency, flash.Visible = 1, plan.Flash > 0
@@ -222,6 +300,13 @@ function Screen.new(root, hud, config)
 		local life = math.max(plan.Duration, S.CoinTime + S.CoinStagger * state.Coins + plan.Land)
 		if plan.ScreenConfetti > 0 then
 			life = math.max(life, plan.Burst + S.ConfettiTime)
+		end
+		local pace = math.max(plan.TimeScale or 1, 0.6)
+		if plan.Comic then
+			life = math.max(life, plan.Burst + S.ComicTime * pace)
+		end
+		if (plan.EmojiPops or 0) > 0 then
+			life = math.max(life, plan.Burst + S.EmojiTime * pace + 0.2)
 		end
 		if t >= life then
 			job = nil
@@ -282,6 +367,50 @@ function Screen.new(root, hud, config)
 				if textStroke then
 					textStroke.Transparency = alpha
 				end
+			end
+		end
+		if plan.Comic then
+			local u = after / (S.ComicTime * pace)
+			comic.Visible = u >= 0 and u < 1
+			if comic.Visible then
+				-- Slam in big with overshoot, wobble, then pop out.
+				local scale
+				if u < 0.14 then
+					local x = u / 0.14
+					scale = 0.2 + 1.3 * x - 0.3 * x * x
+				elseif u < 0.8 then
+					scale = 1.2 - 0.2 * math.min(1, (u - 0.14) / 0.1) + 0.05 * math.sin(u * 40)
+				else
+					scale = 1 + 0.5 * (u - 0.8) / 0.2
+				end
+				comicScale.Scale = scale * (plan.ComicScale or 1)
+				comic.Rotation = state.ComicTilt + math.sin(u * 18) * 4 * (1 - u)
+				local alpha = math.clamp((u - 0.82) / 0.18, 0, 1)
+				comicText.TextTransparency = alpha
+				if comicStroke then
+					comicStroke.Transparency = alpha
+				end
+				for i, star in ipairs(comicStars) do
+					star.BackgroundTransparency = alpha
+					star.Rotation = (i - 1) * 45 + u * 90
+					star.UIStroke.Transparency = alpha
+				end
+			end
+		end
+		for i = 1, plan.EmojiPops or 0 do
+			local pop = emojis[i]
+			local u = (after - pop.Delay) / (S.EmojiTime * pace)
+			pop.Label.Visible = u >= 0 and u < 1
+			if pop.Label.Visible then
+				-- Fountain arc out of the toilet under screen "gravity".
+				local reach = math.max(size.X, size.Y) * 0.32 * pop.Speed
+				local x = state.Origin[1] + math.cos(pop.Angle) * reach * u
+				local y = state.Origin[2] + math.sin(pop.Angle) * reach * u * 1.6 + size.Y * 0.55 * u * u
+				pop.Label.Position = UDim2.fromOffset(x, y)
+				pop.Label.Rotation = pop.Spin * u
+				local grow = if u < 0.15 then u / 0.15 else 1
+				pop.Label.Size = UDim2.fromOffset(S.EmojiSize * (0.4 + 0.8 * grow), S.EmojiSize * (0.4 + 0.8 * grow))
+				pop.Label.TextTransparency = math.clamp((u - 0.75) / 0.25, 0, 1)
 			end
 		end
 		for i = 1, plan.ScreenConfetti do
