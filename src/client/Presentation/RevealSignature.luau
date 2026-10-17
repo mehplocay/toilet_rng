@@ -1,5 +1,6 @@
 local C = require(script.Parent.Parent.UI.Components)
 local Budget = require(game.ReplicatedStorage.Shared.Config.Reveals)
+local FlushFx = require(game.ReplicatedStorage.Shared.Config.FlushFx).Reveal
 local Signature = {}
 local white = Color3.new(1, 1, 1)
 
@@ -27,6 +28,45 @@ function Signature.Create(parent, config, color, mobile, cinematic)
 	})
 	-- Square stage keeps halos circular and constellations undistorted on phones.
 	local cracks = {}
+	-- Cinematic god rays: a full-screen wheel behind the model, centred on the stage.
+	local godRays
+	if cinematic then
+		-- Clipped to the overlay so the oversized wheel never extends past the screen.
+		local clip = C.New("Frame", parent, {
+			Name = "GodRayClip",
+			Size = UDim2.fromScale(1, 1),
+			BackgroundTransparency = 1,
+			ClipsDescendants = true,
+			ZIndex = stage.ZIndex - 1,
+		})
+		godRays = C.New("Frame", clip, {
+			Name = "GodRays",
+			AnchorPoint = Vector2.new(0.5, 0.5),
+			BackgroundTransparency = 1,
+			ZIndex = stage.ZIndex - 1,
+		})
+		local count = if mobile then FlushFx.MobileGodRays else FlushFx.GodRays
+		for i = 1, count do
+			local ray = C.New("Frame", godRays, {
+				Name = "GodRay",
+				AnchorPoint = Vector2.new(0.5, 0.5),
+				Position = UDim2.fromScale(0.5, 0.5),
+				Size = UDim2.fromScale(1, if i % 2 == 0 then 0.03 else 0.05),
+				Rotation = i * 180 / count,
+				BackgroundColor3 = if i % 2 == 0 then white else color,
+				BackgroundTransparency = 0.45,
+			})
+			C.New("UIGradient", ray, {
+				Transparency = NumberSequence.new({
+					NumberSequenceKeypoint.new(0, 1),
+					NumberSequenceKeypoint.new(0.45, 0.35),
+					NumberSequenceKeypoint.new(0.5, 0.75),
+					NumberSequenceKeypoint.new(0.55, 0.35),
+					NumberSequenceKeypoint.new(1, 1),
+				}),
+			})
+		end
+	end
 	local function resize()
 		local size = if cinematic
 			then math.min(parent.AbsoluteSize.X * 0.88, parent.AbsoluteSize.Y * 0.43, 420)
@@ -40,6 +80,10 @@ function Signature.Create(parent, config, color, mobile, cinematic)
 			stage.Position = UDim2.fromScale(0.5, 0.38)
 		end
 		stage.Size = UDim2.fromOffset(size, size)
+		if godRays then
+			local span = math.max(parent.AbsoluteSize.X, parent.AbsoluteSize.Y) * 1.5
+			godRays.Position, godRays.Size = stage.Position, UDim2.fromOffset(span, span)
+		end
 		for _, crack in ipairs(cracks) do
 			local a, b, line = crack[1], crack[2], crack[3]
 			local dx, dy = (b[1] - a[1]) * parent.AbsoluteSize.X, (b[2] - a[2]) * parent.AbsoluteSize.Y
@@ -164,7 +208,26 @@ function Signature.Create(parent, config, color, mobile, cinematic)
 		end
 		table.insert(particles, particle)
 	end
+	-- Cinematic shockwave rings radiating from the model at the reveal's start.
+	local shocks = {}
+	if cinematic then
+		for i = 1, FlushFx.Rings do
+			local shock = ring(stage, "ShockRing", 0.2, if i % 2 == 0 then white else color, 5)
+			table.insert(shocks, shock)
+		end
+	end
 	return function(t)
+		if godRays then
+			-- Slow drift reads as slow motion against the fast ring/particle burst.
+			godRays.Rotation = t * 7
+		end
+		for i, shock in ipairs(shocks) do
+			local u = math.clamp((t - (i - 1) * 0.16) / 0.85, 0, 1)
+			local eased = 1 - (1 - u) ^ 3
+			shock.Size = UDim2.fromScale(0.2 + eased * 2.6, 0.2 + eased * 2.6)
+			shock.UIStroke.Transparency = 0.1 + 0.9 * u
+			shock.Visible = u < 1
+		end
 		if crystalScale then
 			if t >= 1.1 and phase < 2 then
 				phase = 2

@@ -12,6 +12,7 @@ local HUDLayout = require(script.Parent.Parent.UI.Layout)
 local Layout = require(script.Parent.Layout)
 local Effects = require(script.Parent.RevealEffects)
 local Signature = require(script.Parent.RevealSignature)
+local Drama = require(Shared.Config.FlushFx).Reveal
 local Controller = {}
 function Controller.Create(root, hud, audio)
 	local self = { Intensity = "Full", Queue = Rules.RevealQueue(Config.BigQueueCap), Connections = {}, LastId = 0 }
@@ -208,6 +209,10 @@ function Controller.Create(root, hud, audio)
 			)
 			rarity.Name, rarity.TextColor3 = "Rarity", color
 			rarity.ZIndex = 100
+			if self.Intensity == "Full" then
+				local punch = C.New("UIScale", rarity, { Name = "Stinger", Scale = Drama.Stinger * 1.25 })
+				C.Tween(punch, Drama.StingerTime * 1.4, { Scale = 1 }, Enum.EasingStyle.Back)
+			end
 			if item.Rarity == "Mythic" then
 				rarity.BackgroundColor3, rarity.BackgroundTransparency = color, 0.78
 				rarity.Size, rarity.Position = UDim2.new(1, -24, 0.09, 0), UDim2.new(0, 12, 0.02, 0)
@@ -245,6 +250,15 @@ function Controller.Create(root, hud, audio)
 			end
 			if big then
 				cleanup = Effects.Start(color, signature, Input.TouchEnabled)
+				-- Name stinger: the item name slams in from oversize with an elastic settle.
+				local stinger = C.New("UIScale", heading, { Name = "Stinger", Scale = Drama.Stinger })
+				C.Tween(stinger, Drama.StingerTime, { Scale = 1 }, Enum.EasingStyle.Back)
+			end
+			if cinematic then
+				-- Let the world burst read first, then darken into the cinematic overlay.
+				local backdrop = content.BackgroundTransparency
+				content.BackgroundTransparency = 1
+				C.Tween(content, Drama.BackdropFade, { BackgroundTransparency = backdrop })
 			end
 		end
 		local shimmer, red, blue
