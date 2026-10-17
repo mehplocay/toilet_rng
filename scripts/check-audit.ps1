@@ -5,6 +5,8 @@ $workspaceRoot = Split-Path $PSScriptRoot -Parent
 if (!$Baseline -and !$Audit2Baseline -and !$DisplayCollectBaseline) {
     & luau (Join-Path $PSScriptRoot 'check-monetization-ids.luau')
     if ($LASTEXITCODE -ne 0) { throw 'Production monetization ID checks failed' }
+    & luau (Join-Path $PSScriptRoot 'check-flush-fx.luau')
+    if ($LASTEXITCODE -ne 0) { throw 'Flush FX rule checks failed' }
 }
 if (!$Baseline -and !$Audit2Baseline -and !$DisplayCollectBaseline) {
     $chatConfig = (Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $workspaceRoot 'default.project.json') | ConvertFrom-Json).tree.TextChatService

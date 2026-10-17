@@ -224,7 +224,15 @@ local Assets = {
 		RocksCrystals = { MeshId = "", TextureId = "" },
 		ForegroundFoliage = { MeshId = "", TextureId = "" },
 	},
-	Textures = { Sparkle = "rbxasset://textures/particles/sparkles_main.dds" }, -- Engine-bundled texture; no external ID.
+	-- Engine-bundled textures shipped with every client (content/textures/particles); no external IDs.
+	Textures = {
+		Sparkle = "rbxasset://textures/particles/sparkles_main.dds",
+		Glow = "rbxasset://textures/particles/explosion01_implosion_main.dds",
+		Shockwave = "rbxasset://textures/particles/explosion01_shockwave_main.dds",
+		Vortex = "rbxasset://textures/particles/forcefield_vortex_main.dds",
+		Smoke = "rbxasset://textures/particles/smoke_main.dds",
+		Square = "rbxasset://textures/particles/SquareParticle.png",
+	},
 	Music = {
 		"rbxassetid://137922863128587",
 		"rbxassetid://75779310529841",
