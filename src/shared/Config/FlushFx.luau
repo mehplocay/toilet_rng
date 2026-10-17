@@ -260,5 +260,13 @@ return {
 	Camera = { PunchRelease = 0.45, ShakeTime = 0.3, GulpFraction = 0.35 },
 	Press = { Squash = 0.86, Release = 0.32, RippleTime = 0.35 },
 	-- Cinematic reveal additions (inside the reveal overlay, below the item name).
-	Reveal = { BackdropFade = 0.35, Stinger = 1.6, StingerTime = 0.3, GodRays = 12, MobileGodRays = 8, Rings = 2 },
+	Reveal = {
+		BackdropDelay = 0.45,
+		BackdropFade = 0.4,
+		Stinger = 1.6,
+		StingerTime = 0.3,
+		GodRays = 12,
+		MobileGodRays = 8,
+		Rings = 2,
+	},
 }

@@ -51,10 +51,10 @@ function Signature.Create(parent, config, color, mobile, cinematic)
 				Name = "GodRay",
 				AnchorPoint = Vector2.new(0.5, 0.5),
 				Position = UDim2.fromScale(0.5, 0.5),
-				Size = UDim2.fromScale(1, if i % 2 == 0 then 0.03 else 0.05),
+				Size = UDim2.fromScale(1, if i % 2 == 0 then 0.012 else 0.022),
 				Rotation = i * 180 / count,
 				BackgroundColor3 = if i % 2 == 0 then white else color,
-				BackgroundTransparency = 0.45,
+				BackgroundTransparency = 0.55,
 			})
 			C.New("UIGradient", ray, {
 				Transparency = NumberSequence.new({

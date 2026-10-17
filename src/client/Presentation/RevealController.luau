@@ -198,7 +198,7 @@ function Controller.Create(root, hud, audio)
 				stamp.AnchorPoint = Vector2.new(0.5, 0)
 			end
 		end
-		local model, pivot
+		local model, pivot, backdrop
 		if cinematic then
 			local rarity = C.Text(
 				content,
@@ -256,9 +256,8 @@ function Controller.Create(root, hud, audio)
 			end
 			if cinematic then
 				-- Let the world burst read first, then darken into the cinematic overlay.
-				local backdrop = content.BackgroundTransparency
+				backdrop = content.BackgroundTransparency
 				content.BackgroundTransparency = 1
-				C.Tween(content, Drama.BackdropFade, { BackgroundTransparency = backdrop })
 			end
 		end
 		local shimmer, red, blue
@@ -285,6 +284,10 @@ function Controller.Create(root, hud, audio)
 		tick = function(t)
 			if animate then
 				animate(t)
+			end
+			if backdrop then
+				local u = math.clamp((t - Drama.BackdropDelay) / Drama.BackdropFade, 0, 1)
+				content.BackgroundTransparency = 1 - (1 - backdrop) * u
 			end
 			if model then
 				local rotation = if item.Rarity == "Mythic" and t < 1.1

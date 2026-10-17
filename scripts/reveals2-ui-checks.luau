@@ -37,6 +37,11 @@ do
 			controller:Show(item)
 			local content = root.RareReveal.RevealContent
 			assert(content:FindFirstChild(config.Tiers[rarity].Signature), rarity .. " signature missing")
+			assert(content.ItemName:FindFirstChild("Stinger"), rarity .. " name stinger missing")
+			if rarity ~= "Legendary" then
+				-- The world burst reads first; the cinematic backdrop darkens afterwards.
+				assert(content.BackgroundTransparency == 1 and content:FindFirstChild("GodRayClip"), rarity)
+			end
 			assert((content:FindFirstChild("NewDiscovery") ~= nil) == (rarity ~= "Legendary"))
 			assert(cues[#cues][1] == config.Tiers[rarity].Sound)
 			local particles = 0
@@ -66,6 +71,10 @@ do
 			end
 			H.Advance(0.25)
 			H.Snapshot(root, "reveal2-" .. string.lower(rarity) .. "-" .. viewport[1] .. "x" .. viewport[2])
+			if rarity ~= "Legendary" then
+				H.Advance(1)
+				assert(content.BackgroundTransparency < 1, rarity .. " backdrop never darkened")
+			end
 			controller:Skip()
 			assert(lighting.ClockTime == 14 and sky.StarCount == 321)
 			assert(not lighting:FindFirstChild("FlushCinematicTint") and not lighting:FindFirstChild("RevealFocus"))
