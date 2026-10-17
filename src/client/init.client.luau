@@ -127,11 +127,12 @@ local panels = {
 	leave.Panel,
 	offlineIncome.Panel,
 }
-local dev
+local dev, devList
 if RunService:IsStudio() then
 	dev = C.Panel(root, "Developer Tools", Color3.fromRGB(219, 78, 105), nil, true)
 	table.insert(panels, dev)
 	local row = C.Scroll(dev.ContentScroll.Body, UDim2.fromScale(1, 1))
+	devList = row
 	C.New("UIListLayout", row, { Padding = UDim.new(0, 18), SortOrder = Enum.SortOrder.LayoutOrder })
 	local note = C.BodyText(row, "Studio test grants • server validated", UDim2.new(1, -18, 0, 50))
 	note.LayoutOrder = 1
@@ -293,6 +294,10 @@ local FlushFxRules = require(game.ReplicatedStorage.Shared.FlushFxRules)
 script.Destroying:Connect(function()
 	flushFx:Destroy()
 end)
+if devList and RunService:IsStudio() then
+	-- Studio-only FX previews: local presentation calls, no remotes, no economy change.
+	require(script.FlushFx.Preview).Attach(devList, flushFx, Items, closeAll)
+end
 local showServiceCoins = require(script.UI.CoinPopup).Create(hud.Frame)
 local showCollectedCoins = require(script.UI.CoinPopup).Create(root)
 local incomeChip = require(script.UI.IncomeChip).Create(hud.Frame)
@@ -370,6 +375,8 @@ remotes.Result.OnClientEvent:Connect(function(action, payload)
 		if not payload.Compact then
 			showServiceCoins(payload.ServiceCoins)
 		end
+		-- The flush moment itself (world VFX, toilet motion, comic burst, camera punch).
+		flushFx:Flush(item, payload)
 		presentation.Reveal(item, payload)
 	elseif action == "CollectIncome" then
 		offlineIncome.Result(payload)
