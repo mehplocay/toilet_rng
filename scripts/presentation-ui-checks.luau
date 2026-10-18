@@ -55,7 +55,8 @@ assert(
 controller:SetIntensity("Full")
 controller:Show(item("Poop"))
 assert(
-	presentationHUD.Frame.FlushReveal.RevealContent.Odds.Text == "Fallback drop",
+	presentationHUD.Frame.FlushReveal.RevealContent.Odds.Text:find("Fallback drop", 1, true)
+		and not presentationHUD.Frame.FlushReveal.RevealContent.Odds.Text:find("1 in", 1, true),
 	"Poop must not advertise an unused 1-in-2 roll"
 )
 do
@@ -70,8 +71,9 @@ do
 	local result = revealCard.RevealContent
 	assert(result.BackgroundTransparency == 1, "Common result has a background fill")
 	assert(result.ItemName:FindFirstChild("RarityTint") and result.ItemName.UIStroke.Thickness >= 3)
-	assert(result.RarityTag.Text == "COMMON" and not result:FindFirstChild("Shine"))
-	for _, label in ipairs({ result.ItemName, result.RarityTag, result.Odds }) do
+	assert(result.Odds.Text:find("COMMON", 1, true) and not result:FindFirstChild("Shine"))
+	assert(not result:FindFirstChild("RarityTag") and result.ItemName.TextSize >= 18)
+	for _, label in ipairs({ result.ItemName, result.Odds }) do
 		assert(label.UITextSizeConstraint.MinTextSize >= 14, label.Name .. " below 14 px")
 		assert(label.BackgroundTransparency == 1)
 	end
@@ -149,6 +151,71 @@ for _, viewport in ipairs(H.Viewports) do
 	assert(not fast.Queue.Active)
 	fast:Destroy()
 	fastRoot:Destroy()
+end
+
+-- Boxless result block: one centred group in the upper-middle hint band, clear of the Flush
+-- button, pointer, coin popup and lower half; one rarity word only (Rare+ use the stinger).
+do
+	local HUDLayout = H.Load("src/client/UI/Layout")
+	local function overlaps(a, b)
+		return a.X < b.X + b.W and b.X < a.X + a.W and a.Y < b.Y + b.H and b.Y < a.Y + a.H
+	end
+	local checked = 0
+	for _, touch in ipairs({ false, true }) do
+		H.Services.UserInputService.TouchEnabled = touch
+		for _, viewport in ipairs(H.Viewports) do
+			local w, h = viewport[1], viewport[2]
+			local blockRoot = H.Root(w, h)
+			local blockHUD = { Frame = blockRoot, SetHintVisible = function() end }
+			local reveals = H.Load("src/client/Presentation/RevealController").Create(blockRoot, blockHUD, {
+				Play = function() end,
+				Duck = function() end,
+			})
+			local layout = HUDLayout.Compute(w, h, touch)
+			for index, name in ipairs({ "Poop", "Rat", "Duck" }) do
+				reveals:Show(item(name), { FlushId = index, Cooldown = 1.5 })
+				local card = blockRoot.FlushReveal
+				assert(card.Visible, name .. " result hidden")
+				local r = {
+					X = card.Position.X.Offset,
+					Y = card.Position.Y.Offset,
+					W = card.Size.X.Offset,
+					H = card.Size.Y.Offset,
+				}
+				local band = layout.Hint
+				assert(r.X == band.X and r.Y == band.Y and r.W == band.W and r.H == band.H, "Result left the hint band")
+				for _, key in ipairs({ "Action", "Pointer", "CoinPopup" }) do
+					assert(not layout[key] or not overlaps(r, layout[key]), name .. " result overlaps " .. key)
+				end
+				assert(r.Y + r.H <= h * 0.6, string.format("Result too low at %dx%d", w, h))
+				local content = card.RevealContent
+				local oddsText = content.Odds.Text
+				local rarity = string.upper(item(name).Rarity)
+				if name == "Poop" then
+					assert(oddsText:find(rarity, 1, true), "Common result needs its small rarity tag")
+				else
+					assert(not oddsText:find(rarity, 1, true), name .. " repeats the rarity next to the stinger")
+				end
+				assert(not content:FindFirstChild("RarityTag"))
+				local minimum = if layout.Phone then 18 else 22
+				assert(content.ItemName.TextSize >= minimum, name .. " name too small")
+				assert(content.Odds.TextSize >= 14, name .. " odds below 14 px")
+				-- Icon, name and odds form one centred group inside the band.
+				local icon, label = content.Preview, content.ItemName
+				local left = icon.Position.X.Offset
+				local right = label.Position.X.Offset + label.Size.X.Offset
+				assert(left >= 0 and right <= r.W + 1, name .. " group leaves the band")
+				assert(math.abs(left - (r.W - right)) <= 2, name .. " group is not centred")
+				assert(label.Position.X.Offset >= left + icon.Size.X.Offset, "Name overlaps its icon")
+				reveals:Skip()
+				checked += 1
+			end
+			reveals:Destroy()
+			blockRoot:Destroy()
+		end
+	end
+	H.Services.UserInputService.TouchEnabled = false
+	print("Boxless result block: " .. checked .. " placements clear of Flush button and prompt band")
 end
 
 local chatService = H.Services.TextChatService

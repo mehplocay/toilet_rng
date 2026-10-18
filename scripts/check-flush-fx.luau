@@ -384,6 +384,14 @@ check("comic words never name the style and never repeat; emoji glyphs are tile-
 	assert(Rules.PickWord({}, nil, 0.5) == "FLUSH!" and Rules.PickWord({ "YES!" }, "YES!", 0.2) == "YES!")
 	assert(Rules.PickWord({ "A!", "B!" }, "A!", 0 / 0) == "B!")
 end)
+check("decluttered: soft water glow, smaller side comic word, one rarity word", function()
+	local glow = Config.Glow
+	assert(glow.GeyserEmission <= 0.2 and glow.GeyserBrightness <= 1 and glow.GeyserTransparency >= 0.2)
+	assert(glow.PillarTransparency >= 0.5 and glow.LightScale <= 0.6 and glow.CoreBrightness <= 1.5)
+	assert(Config.Screen.ComicSize <= 70 and Config.Screen.ComicSide >= 0.2)
+	assert(Config.Card.TagTiers.Pop and not Config.Card.TagTiers.Burst and not Config.Card.TagTiers.Sparkle)
+	assert(Config.Card.NameText >= 22 and Config.Card.PhoneNameText >= 18 and Config.Card.SmallMinText >= 14)
+end)
 check("engine textures are bundled paths, never uploaded IDs", function()
 	for name, path in pairs(Assets.Textures) do
 		assert(type(path) == "string" and path:match("^rbxasset://textures/particles/"), name)
