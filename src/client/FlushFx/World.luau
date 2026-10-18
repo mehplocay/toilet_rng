@@ -299,7 +299,7 @@ function World.new(config)
 			a0.CFrame, a1.CFrame = CFrame.Angles(0, 0, math.pi / 2), CFrame.Angles(0, 0, math.pi / 2)
 			local band = beam(anchor, "RainbowBand", a0, a1)
 			band.FaceCamera, band.Segments = false, 24
-			band.Transparency = NumberSequence.new(0.05)
+			band.Transparency = NumberSequence.new(special.RainbowTransparency)
 			rainbow[i] = { Beam = band, A0 = a0, A1 = a1 }
 		end
 		-- Lightning: a jagged chain of beams from the sky into the bowl.
@@ -639,7 +639,7 @@ function World.new(config)
 		end
 		if plan.Special == "Rainbow" then
 			local styleData = config.Styles[plan.Style]
-			local span, w = target.Height * special.RainbowSpan, scale * 0.45
+			local span, w = target.Height * special.RainbowSpan, scale * special.RainbowWidth
 			for i, band in ipairs(rig.Rainbow) do
 				local offset = (i - 1) * w
 				band.A0.Position = Vector3.new(-offset * 0.5, 0.3, 0)
@@ -789,7 +789,7 @@ function World.new(config)
 		end
 		if plan.Special == "Rainbow" then
 			local u = math.clamp(after / (special.RainbowTime * math.max(plan.TimeScale, 0.5)), 0, 1)
-			local width = state.Scale * 0.5 * Rules.Pulse(u, 0.2, 0.8) ^ 0.5
+			local width = state.Scale * special.RainbowWidth * Rules.Pulse(u, 0.2, 0.8) ^ 0.5
 			for _, band in ipairs(rig.Rainbow) do
 				band.Beam.Width0, band.Beam.Width1 = width, width
 			end

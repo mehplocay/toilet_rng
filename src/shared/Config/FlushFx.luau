@@ -1,6 +1,40 @@
 -- Presentation-only tuning for the flush moment (world VFX, toilet motion, screen overlays,
 -- camera). Nothing here affects rolls, coins, luck or remotes. Counts are per-flush requests
 -- before the style multipliers, mobile scale, cadence collapse and live-particle budget.
+-- Comic words are generic flush hype and never name the visual style. Rarer drops use
+-- RarityWords instead (Rare to Legendary already show the rarity stinger, so they use hype).
+local HYPE = { "FLUSH!", "SPLASH!", "WHOOSH!", "GLUG!", "POP!", "YES!", "NICE!" }
+local rarityWords = {
+	Rare = { "WOW!", "NICE PULL!", "YES!" },
+	Epic = { "AMAZING!", "WOW!", "HUGE!" },
+	Legendary = { "INSANE!", "UNREAL!", "WOW!" },
+	Mythic = { "MYTHIC!", "INSANE!" },
+	Godly = { "GODLY!", "UNREAL!" },
+	Celestial = { "CELESTIAL!", "UNREAL!" },
+	Secret = { "SECRET!", "IMPOSSIBLE!" },
+}
+-- Emoji pops use only glyphs that render without a filled background tile (no night-sky
+-- firework tiles) and that exist in older emoji fonts.
+local safeEmojis = {
+	"\u{1F4A6}",
+	"\u{1F4A7}",
+	"\u{2728}",
+	"\u{1F300}",
+	"\u{1F4A8}",
+	"\u{1F986}",
+	"\u{2B50}",
+	"\u{1F4AB}",
+	"\u{1F308}",
+	"\u{1F389}",
+	"\u{1F38A}",
+	"\u{26A1}",
+	"\u{1F4A5}",
+	"\u{1F37F}",
+	"\u{1F680}",
+	"\u{1F31F}",
+	"\u{1F4B0}",
+	"\u{1F4A9}",
+}
 local levels = {
 	-- Common/Uncommon: loud and juicy, yet short enough for rapid manual flushing.
 	Clean = {
@@ -225,8 +259,8 @@ local styles = {
 		Motion = "Hop",
 		Emit = { Geyser = 1.6, Foam = 1.3 },
 		GeyserMul = 1.5,
-		Words = { "SPLASH!", "WHOOSH!", "GUSH!", "KA-SPLOOSH!" },
-		Emojis = { "\u{1F4A6}", "\u{1F30A}", "\u{1F4A7}" },
+		Words = HYPE,
+		Emojis = { "\u{1F4A6}", "\u{1F4A7}", "\u{2728}" },
 		Palette = { { 90, 200, 255 }, { 200, 245, 255 }, { 40, 140, 255 } },
 		Pieces = { Texture = "Glow", Size = 0.45, Speed = 1.4, Spread = 30, Gravity = 2.6, Lifetime = 1, Spin = 0 },
 	},
@@ -235,8 +269,8 @@ local styles = {
 		Motion = "Spin",
 		Special = "Tornado",
 		Emit = { Mist = 1.5, Pieces = 1.2 },
-		Words = { "WHIRL!", "SPIN!", "TWISTER!" },
-		Emojis = { "\u{1F300}", "\u{1F32A}\u{FE0F}", "\u{1F4A8}" },
+		Words = HYPE,
+		Emojis = { "\u{1F300}", "\u{1F4A8}", "\u{2728}" },
 		Palette = { { 80, 230, 210 }, { 255, 255, 255 }, { 160, 120, 255 } },
 		Pieces = { Texture = "Sparkle", Size = 0.5, Speed = 1, Spread = 70, Gravity = 0.4, Lifetime = 1.2, Spin = 540 },
 	},
@@ -246,8 +280,8 @@ local styles = {
 		Special = "Ducks",
 		Items = { Duck = 60 },
 		Emit = { Bubbles = 1.4 },
-		Words = { "QUACK!", "QUACK QUACK!", "DUCK PARADE!" },
-		Emojis = { "\u{1F986}", "\u{1F424}", "\u{1F6C1}" },
+		Words = HYPE,
+		Emojis = { "\u{1F986}", "\u{2B50}", "\u{2728}" },
 		Palette = { { 255, 220, 60 }, { 255, 150, 40 }, { 255, 250, 200 } },
 		Pieces = { Texture = "Glow", Size = 0.4, Speed = 1, Spread = 50, Gravity = 2, Lifetime = 0.9, Spin = 0 },
 	},
@@ -255,8 +289,8 @@ local styles = {
 		Weight = 9,
 		Motion = "Squash",
 		Emit = { Bubbles = 3, Foam = 1.5, Geyser = 0.5 },
-		Words = { "BLUB!", "POP POP!", "BUBBLES!" },
-		Emojis = { "\u{1FAE7}", "\u{1F9FC}", "\u{2728}" },
+		Words = HYPE,
+		Emojis = { "\u{1F4A6}", "\u{2728}", "\u{1F4AB}" },
 		Palette = { { 150, 240, 255 }, { 255, 170, 230 }, { 255, 255, 255 } },
 		Pieces = {
 			Texture = "Shockwave",
@@ -269,11 +303,12 @@ local styles = {
 		},
 	},
 	RainbowSplash = {
-		Weight = 9,
+		-- Rare and short: a small arc reads better than a full rainbow on every flush.
+		Weight = 3,
 		Motion = "Hop",
 		Special = "Rainbow",
-		Words = { "WOW!", "RAINBOW!", "SPLASH!" },
-		Emojis = { "\u{1F308}", "\u{2728}", "\u{1F984}" },
+		Words = HYPE,
+		Emojis = { "\u{1F308}", "\u{2728}", "\u{2B50}" },
 		Palette = {
 			{ 255, 70, 70 },
 			{ 255, 160, 40 },
@@ -297,8 +332,8 @@ local styles = {
 		Motion = "Recoil",
 		Special = "Cannons",
 		Emit = { Pieces = 1.6 },
-		Words = { "BOOM!", "PARTY!", "TA-DA!" },
-		Emojis = { "\u{1F389}", "\u{1F38A}", "\u{1F973}" },
+		Words = HYPE,
+		Emojis = { "\u{1F389}", "\u{1F38A}", "\u{2728}" },
 		Palette = { { 255, 80, 160 }, { 80, 200, 255 }, { 255, 220, 60 }, { 120, 255, 120 } },
 		Pieces = { Texture = "Sparkle", Size = 0.3, Speed = 2, Spread = 16, Gravity = 1, Lifetime = 2, Spin = 420 },
 	},
@@ -307,8 +342,8 @@ local styles = {
 		Motion = "Shake",
 		Special = "Lightning",
 		FlashAdd = 0.15,
-		Words = { "ZAP!", "KZZT!", "BZZZT!" },
-		Emojis = { "\u{26A1}", "\u{1F329}\u{FE0F}", "\u{1F4A5}" },
+		Words = HYPE,
+		Emojis = { "\u{26A1}", "\u{1F4A5}", "\u{2728}" },
 		Palette = { { 120, 200, 255 }, { 255, 255, 140 }, { 255, 255, 255 } },
 		Pieces = {
 			Texture = "Sparkle",
@@ -324,8 +359,8 @@ local styles = {
 		Weight = 8,
 		Motion = "Jelly",
 		Emit = { Pieces = 1.3, Geyser = 0.8 },
-		Words = { "SPLORCH!", "GLOOP!", "SPLAT!" },
-		Emojis = { "\u{1F7E2}", "\u{1F9EA}", "\u{1FAE0}" },
+		Words = HYPE,
+		Emojis = { "\u{1F4A6}", "\u{1F4A5}", "\u{2B50}" },
 		Palette = { { 120, 255, 60 }, { 40, 200, 80 }, { 200, 255, 120 } },
 		Pieces = { Texture = "Glow", Size = 0.9, Speed = 1.1, Spread = 40, Gravity = 3.4, Lifetime = 1.1, Spin = 0 },
 	},
@@ -333,7 +368,7 @@ local styles = {
 		Weight = 8,
 		Motion = "Popcorn",
 		Emit = { Pieces = 1.4 },
-		Words = { "POP!", "POP POP POP!", "KERNEL!" },
+		Words = HYPE,
 		Emojis = { "\u{1F37F}", "\u{1F4A5}", "\u{2B50}" },
 		Palette = { { 255, 255, 240 }, { 255, 225, 110 }, { 255, 255, 255 } },
 		Pieces = { Texture = "Smoke", Size = 0.55, Speed = 1.6, Spread = 60, Gravity = 2.8, Lifetime = 1.1, Spin = 200 },
@@ -344,8 +379,8 @@ local styles = {
 		Special = "Rocket",
 		CometApex = 3.2,
 		Emit = { Stars = 1.4 },
-		Words = { "FWOOSH!", "KABOOM!", "BOOM!" },
-		Emojis = { "\u{1F386}", "\u{1F680}", "\u{1F387}" },
+		Words = HYPE,
+		Emojis = { "\u{1F680}", "\u{1F4A5}", "\u{1F31F}" },
 		Palette = { { 255, 70, 90 }, { 255, 215, 80 }, { 90, 170, 255 } },
 		Pieces = {
 			Texture = "Sparkle",
@@ -362,8 +397,8 @@ local styles = {
 		Motion = "Hop",
 		CoinMul = 2,
 		Emit = { Pieces = 1.3 },
-		Words = { "KA-CHING!", "CHA-CHING!", "$$$!" },
-		Emojis = { "\u{1F4B0}", "\u{1FA99}", "\u{1F911}" },
+		Words = HYPE,
+		Emojis = { "\u{1F4B0}", "\u{1F31F}", "\u{2728}" },
 		Palette = { { 255, 210, 60 }, { 255, 240, 150 }, { 230, 160, 30 } },
 		Pieces = {
 			Texture = "Sparkle",
@@ -382,8 +417,8 @@ local styles = {
 		Items = { Poop = 30, GoldenPoop = 30, KingPoop = 30 },
 		Motion = "Jelly",
 		Emit = { Pieces = 1.4, Confetti = 1.5 },
-		Words = { "PLOP!", "POOP PARTY!", "SPLOOT!" },
-		Emojis = { "\u{1F4A9}", "\u{1F389}", "\u{1F9FB}" },
+		Words = HYPE,
+		Emojis = { "\u{1F4A9}", "\u{1F389}", "\u{2728}" },
 		Palette = { { 140, 85, 40 }, { 255, 200, 70 }, { 190, 120, 60 } },
 		Pieces = { Texture = "Glow", Size = 0.7, Speed = 1.4, Spread = 55, Gravity = 2.6, Lifetime = 1.1, Spin = 0 },
 	},
@@ -394,6 +429,8 @@ return {
 	ScreenHz = 30,
 	Levels = levels,
 	Styles = styles,
+	RarityWords = rarityWords,
+	SafeEmojis = safeEmojis,
 	-- Stable order for previews, the picker and tests.
 	StyleOrder = {
 		"Geyser",
@@ -524,9 +561,11 @@ return {
 		DuckParade = 0.75, -- fraction of the moment the ducks stay out
 		DuckLaunch = 0.35, -- seconds for a duck to arc out of the bowl
 		RainbowBands = 6,
-		RainbowSpan = 2.2, -- multiples of toilet height
-		RainbowHeight = 2.4,
-		RainbowTime = 1.2,
+		RainbowWidth = 0.22, -- multiples of bowl radius per band
+		RainbowTransparency = 0.35,
+		RainbowSpan = 1.3, -- multiples of toilet height
+		RainbowHeight = 1.1,
+		RainbowTime = 0.7,
 		LightningPoints = 7,
 		LightningHeight = 4, -- multiples of toilet height
 		LightningTime = 0.5,
@@ -576,21 +615,21 @@ return {
 	},
 	Camera = { PunchRelease = 0.45, ShakeTime = 0.35, GulpFraction = 0.35 },
 	Press = { Squash = 0.86, Release = 0.32, RippleTime = 0.35 },
-	-- Juicy result card for small reveals (Common/Uncommon "Pop" tier).
+	-- Boxless result for small reveals (Common to Epic card tiers): no panel, fill or border;
+	-- the icon pops with a bounce and wobble beside bold outlined, rarity-tinted text.
 	Card = {
-		Tiers = { Pop = true },
-		PopFrom = 0.55, -- UIScale the card content pops from
-		PopTime = 0.42,
-		Shade = 0.45, -- how far the lower gradient stop leans toward navy
-		Light = 0.2, -- how far the upper gradient stop leans toward white
-		GlowTransparency = 0.2,
-		GlowPulse = 0.3,
-		GlowHz = 3,
-		GlowThickness = 8,
-		RimSpin = 160, -- degrees per second of the rim colour sweep
-		IconBounce = 0.2,
+		Tiers = { Pop = true, Burst = true, Sparkle = true },
+		PopFrom = 0.5, -- UIScale the content pops from (Back easing overshoots past 1)
+		PopTime = 0.45,
+		IconBounce = 0.22,
 		IconBounceHz = 9,
 		IconDecay = 2.5,
+		Wobble = 10, -- degrees of icon wobble at the start
+		WobbleHz = 7,
+		Fade = 0.25, -- seconds of fade-out at the end of the reveal
+		NameMinText = 18,
+		SmallMinText = 14,
+		NameStroke = 3,
 	},
 	-- Cinematic reveal additions (inside the reveal overlay, below the item name).
 	Reveal = {

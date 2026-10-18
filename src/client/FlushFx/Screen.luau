@@ -172,6 +172,8 @@ function Screen.new(root, hud, config)
 				Text = "",
 				Visible = false,
 			})
+			-- Background-less glyph with a soft outline (no filled tile behind it).
+			C.New("UIStroke", label, { Color = C.Ink, Thickness = 1.5, Transparency = 0.35 })
 			emojis[i] = {
 				Label = label,
 				-- Deterministic fountain spread: angle, speed and spin per slot.
@@ -260,8 +262,12 @@ function Screen.new(root, hud, config)
 			local first = style.Palette[1]
 			local last = style.Palette[#style.Palette]
 			comicText.Text = plan.Word or style.Words[1]
-			-- Light, style-tinted letters with a thick dark outline stay readable on any sky.
-			comicText.TextColor3 = Color3.fromRGB(first[1], first[2], first[3]):Lerp(white, 0.55)
+			-- Gold for small drops, the rarity colour for rarer ones; a thick dark outline keeps
+			-- the word readable on any sky.
+			local gold = config.Colors.Gold
+			comicText.TextColor3 = if plan.Rank >= 2
+				then color:Lerp(white, 0.35)
+				else Color3.fromRGB(gold[1], gold[2], gold[3]):Lerp(white, 0.25)
 			comicText.UITextSizeConstraint.MaxTextSize = math.floor(S.ComicSize * (plan.ComicScale or 1))
 			for i, halo in ipairs(comicStars) do
 				local tone = if i % 2 == 1 then first else last
@@ -282,7 +288,9 @@ function Screen.new(root, hud, config)
 		end
 		for i, pop in ipairs(emojis) do
 			pop.Label.Visible = false
-			pop.Label.Text = style.Emojis[(i - 1) % #style.Emojis + 1]
+			local glyph = style.Emojis[(i - 1) % #style.Emojis + 1]
+			-- Only glyphs known to render without a square picture tile.
+			pop.Label.Text = if table.find(config.SafeEmojis, glyph) then glyph else config.SafeEmojis[3]
 		end
 		flash.BackgroundColor3 = white:Lerp(color, 0.45)
 		flash.BackgroundTransparency, flash.Visible = 1, plan.Flash > 0

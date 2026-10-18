@@ -19,7 +19,7 @@ function Controller.Start(root, hud, prompts)
 	local mobile = Input.TouchEnabled
 	local world, screen, camera = World.new(Config), Screen.new(root, hud, Config), Camera.new(Config)
 	local ledger = Rules.Ledger(if mobile then Config.MobileParticleBudget else Config.ParticleBudget)
-	local active, lastStart, heartbeat, lastStyle = nil, -math.huge, nil, nil
+	local active, lastStart, heartbeat, lastStyle, lastWord = nil, -math.huge, nil, nil, nil
 	-- Presentation randomness only (never affects drops); math.random outside the engine.
 	local random = if typeof(Random) == "table" or typeof(Random) == "userdata"
 		then Random.new()
@@ -92,9 +92,10 @@ function Controller.Start(root, hud, prompts)
 		if not plan.Underlay then
 			lastStyle = plan.Style
 		end
-		local words = Config.Styles[plan.Style].Words
+		local words = Config.RarityWords[plan.Rarity] or Config.Styles[plan.Style].Words
 		plan.Seed = random:NextNumber()
-		plan.Word = words[math.clamp(math.floor(plan.Seed * #words) + 1, 1, #words)]
+		plan.Word = Rules.PickWord(words, lastWord, random:NextNumber())
+		lastWord = plan.Word
 		local color = colorFor(item)
 		local target = world:Locate(prompts)
 		world:Play(plan, color, target, ledger, now)

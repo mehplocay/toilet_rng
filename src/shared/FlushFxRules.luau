@@ -44,6 +44,24 @@ function Rules.PickStyle(config, last, itemId, roll)
 	return eligible[#eligible].Name
 end
 
+-- Picks a comic word from a list, never the previous word when another one exists.
+function Rules.PickWord(words, last, roll)
+	if type(words) ~= "table" or #words == 0 then
+		return "FLUSH!"
+	end
+	local pool = {}
+	for _, word in ipairs(words) do
+		if word ~= last then
+			table.insert(pool, word)
+		end
+	end
+	if #pool == 0 then
+		return words[1]
+	end
+	roll = if type(roll) == "number" and roll == roll then math.clamp(roll, 0, 1) else 0
+	return pool[math.clamp(math.floor(roll * #pool) + 1, 1, #pool)]
+end
+
 -- Returns a fresh plan table or nil when nothing should play.
 -- options: Intensity ("Full"/"Reduced"/"Off"), Compact, Cooldown, Gap, Mobile,
 -- ActiveRank and ActiveRemaining (the running effect, if any), Style (a Styles key).
