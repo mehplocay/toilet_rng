@@ -205,6 +205,9 @@ function Signature.Create(parent, config, color, mobile, cinematic)
 		})
 		if crystal then
 			C.New("UIGradient", particle, { Color = ColorSequence.new(white, color), Rotation = 65 })
+		else
+			-- Rounded dots and streamers, never rotated square tiles.
+			C.New("UICorner", particle, { CornerRadius = UDim.new(1, 0) })
 		end
 		table.insert(particles, particle)
 	end

@@ -19,12 +19,13 @@ function Controller.Create(root, hud, audio)
 	local self = { Intensity = "Full", Queue = Rules.RevealQueue(Config.BigQueueCap), Connections = {}, LastId = 0 }
 	local card = C.Card(hud.Frame, C.Gold, true)
 	card.Name, card.Visible, card.ZIndex = "FlushReveal", false, 22
-	-- Pooled card juice (built once): rim colour sweep plus the original look to restore.
-	local cardGradient = card.Background:FindFirstChildOfClass("UIGradient")
-	local baseGradient = cardGradient and cardGradient.Color
-	local glowStroke = card.Glow.UIStroke
-	local baseGlow, baseGlowThickness = glowStroke.Transparency, glowStroke.Thickness
-	local rim = C.New("UIGradient", card.Background.UIStroke, { Name = "RimSweep", Enabled = false })
+	-- Card chrome (shadow, panel, glow ring) is hidden for boxless small reveals.
+	local chrome = {}
+	for _, child in ipairs(card:GetChildren()) do
+		if child:IsA("GuiObject") then
+			table.insert(chrome, child)
+		end
+	end
 	local layer = C.New(
 		"Frame",
 		root,
@@ -181,7 +182,11 @@ function Controller.Create(root, hud, audio)
 			C.Text(content, item.Name, UDim2.fromScale(0.68, 0.42), UDim2.fromScale(0.3, 0.06), if big then 38 else 28)
 		heading.Name = "ItemName"
 		heading.ZIndex = 100
-		local oddsText = if item.Id == "Poop" then "Fallback drop" else "Base check • 1 in " .. C.Commas(item.Chance)
+		local boxless = not big and CardFx.Tiers[tier] == true
+		local oddsText = if item.Id == "Poop"
+			then "Fallback drop"
+			elseif boxless then "1 in " .. C.Commas(item.Chance)
+			else "Base check • 1 in " .. C.Commas(item.Chance)
 		if not big and root.AbsoluteSize.Y < 300 then
 			heading.Size = UDim2.fromScale(0.68, 0.47)
 			oddsText = if item.Id == "Poop" then "Fallback drop" else "1 in " .. C.Commas(item.Chance)
@@ -192,6 +197,29 @@ function Controller.Create(root, hud, audio)
 		local odds = C.Text(content, oddsText, UDim2.fromScale(0.68, 0.3), UDim2.fromScale(0.3, 0.57), 18)
 		odds.Name = "Odds"
 		odds.ZIndex = 100
+		local tag
+		if boxless then
+			-- Name: bold, outlined, rarity gradient; tag and odds as small outlined text.
+			heading.Size, heading.Position = UDim2.fromScale(0.68, 0.5), UDim2.fromScale(0.3, 0.02)
+			heading.UITextSizeConstraint.MinTextSize = CardFx.NameMinText
+			heading.UITextSizeConstraint.MaxTextSize = 34
+			heading.UIStroke.Thickness = CardFx.NameStroke
+			C.New("UIGradient", heading, {
+				Name = "RarityTint",
+				Rotation = 90,
+				Color = ColorSequence.new(Color3.new(1, 1, 1), color:Lerp(Color3.new(1, 1, 1), 0.25)),
+			})
+			tag = C.Text(content, string.upper(item.Rarity), UDim2.fromScale(0.3, 0.26), UDim2.fromScale(0.3, 0.56), 20)
+			tag.Name, tag.TextColor3, tag.ZIndex = "RarityTag", color:Lerp(Color3.new(1, 1, 1), 0.2), 100
+			tag.TextXAlignment = Enum.TextXAlignment.Left
+			tag.UITextSizeConstraint.MinTextSize = CardFx.SmallMinText
+			odds.Size, odds.Position = UDim2.fromScale(0.36, 0.26), UDim2.fromScale(0.62, 0.56)
+			odds.TextXAlignment = Enum.TextXAlignment.Left
+			odds.UITextSizeConstraint.MinTextSize = CardFx.SmallMinText
+		end
+		for _, part in ipairs(chrome) do
+			part.Visible = not boxless
+		end
 		if entry.New then
 			local stamp = C.Text(
 				content,
@@ -250,32 +278,15 @@ function Controller.Create(root, hud, audio)
 		else
 			preview = Preview.Create(content, UDim2.fromScale(0.25, 0.84), UDim2.fromScale(0.025, 0.08), item)
 		end
-		-- Small reveals get a rarity-coloured card, pulsing glow, rim sweep, shine and icon bounce.
-		local juicy = self.Intensity == "Full" and CardFx.Tiers[tier] == true and not big
-		if cardGradient then
-			cardGradient.Color = if juicy
-				then ColorSequence.new(color:Lerp(Color3.new(1, 1, 1), CardFx.Light), color:Lerp(C.Navy, CardFx.Shade))
-				else baseGradient
-		end
-		glowStroke.Transparency = if juicy then CardFx.GlowTransparency else baseGlow
-		glowStroke.Thickness = if juicy then CardFx.GlowThickness else baseGlowThickness
-		rim.Enabled = juicy
-		rim.Rotation = 0
-		rim.Color = ColorSequence.new({
-			ColorSequenceKeypoint.new(0, color),
-			ColorSequenceKeypoint.new(0.5, Color3.new(1, 1, 1)),
-			ColorSequenceKeypoint.new(1, color),
-		})
-		local bounce = if juicy and preview then C.New("UIScale", preview, { Name = "Bounce", Scale = 1 }) else nil
+		local bounce = if boxless and preview then C.New("UIScale", preview, { Name = "Bounce", Scale = 1 }) else nil
 		if self.Intensity == "Full" then
 			C.Pop(content)
-			if juicy then
+			if boxless then
 				local scale = content:FindFirstChild("PopScale")
 				if scale then
 					scale.Scale = CardFx.PopFrom
 					C.Tween(scale, CardFx.PopTime, { Scale = 1 }, Enum.EasingStyle.Back)
 				end
-				C.Shine(content)
 			end
 			if tier == "Banner" then
 				C.Shine(content)
@@ -317,15 +328,17 @@ function Controller.Create(root, hud, audio)
 			if animate then
 				animate(t)
 			end
-			if juicy then
-				glowStroke.Transparency = CardFx.GlowTransparency
-					+ CardFx.GlowPulse * (0.5 + 0.5 * math.sin(t * CardFx.GlowHz * 2 * math.pi))
-				rim.Rotation = (t * CardFx.RimSpin) % 360
+			if boxless then
+				local decay = math.exp(-CardFx.IconDecay * t)
 				if bounce then
-					bounce.Scale = 1
-						+ CardFx.IconBounce
-							* math.abs(math.sin(t * CardFx.IconBounceHz))
-							* math.exp(-CardFx.IconDecay * t)
+					bounce.Scale = 1 + CardFx.IconBounce * math.abs(math.sin(t * CardFx.IconBounceHz)) * decay
+					preview.Rotation = CardFx.Wobble * math.sin(t * CardFx.WobbleHz) * decay
+				end
+				-- Auto-fade the text over the last moments of the reveal.
+				local alpha = math.clamp((t - (entry.Duration - CardFx.Fade)) / CardFx.Fade, 0, 1)
+				for _, label in ipairs({ heading, odds, tag }) do
+					label.TextTransparency = alpha
+					label.UIStroke.Transparency = alpha
 				end
 			end
 			if backdrop then
