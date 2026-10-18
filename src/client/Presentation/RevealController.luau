@@ -13,11 +13,18 @@ local Layout = require(script.Parent.Layout)
 local Effects = require(script.Parent.RevealEffects)
 local Signature = require(script.Parent.RevealSignature)
 local Drama = require(Shared.Config.FlushFx).Reveal
+local CardFx = require(Shared.Config.FlushFx).Card
 local Controller = {}
 function Controller.Create(root, hud, audio)
 	local self = { Intensity = "Full", Queue = Rules.RevealQueue(Config.BigQueueCap), Connections = {}, LastId = 0 }
 	local card = C.Card(hud.Frame, C.Gold, true)
 	card.Name, card.Visible, card.ZIndex = "FlushReveal", false, 22
+	-- Pooled card juice (built once): rim colour sweep plus the original look to restore.
+	local cardGradient = card.Background:FindFirstChildOfClass("UIGradient")
+	local baseGradient = cardGradient and cardGradient.Color
+	local glowStroke = card.Glow.UIStroke
+	local baseGlow, baseGlowThickness = glowStroke.Transparency, glowStroke.Thickness
+	local rim = C.New("UIGradient", card.Background.UIStroke, { Name = "RimSweep", Enabled = false })
 	local layer = C.New(
 		"Frame",
 		root,
@@ -198,7 +205,7 @@ function Controller.Create(root, hud, audio)
 				stamp.AnchorPoint = Vector2.new(0.5, 0)
 			end
 		end
-		local model, pivot, backdrop
+		local model, pivot, backdrop, preview
 		if cinematic then
 			local rarity = C.Text(
 				content,
@@ -241,10 +248,35 @@ function Controller.Create(root, hud, audio)
 			skip.Name = "Skip"
 			skip.ZIndex = 103
 		else
-			Preview.Create(content, UDim2.fromScale(0.25, 0.84), UDim2.fromScale(0.025, 0.08), item)
+			preview = Preview.Create(content, UDim2.fromScale(0.25, 0.84), UDim2.fromScale(0.025, 0.08), item)
 		end
+		-- Small reveals get a rarity-coloured card, pulsing glow, rim sweep, shine and icon bounce.
+		local juicy = self.Intensity == "Full" and CardFx.Tiers[tier] == true and not big
+		if cardGradient then
+			cardGradient.Color = if juicy
+				then ColorSequence.new(color:Lerp(Color3.new(1, 1, 1), CardFx.Light), color:Lerp(C.Navy, CardFx.Shade))
+				else baseGradient
+		end
+		glowStroke.Transparency = if juicy then CardFx.GlowTransparency else baseGlow
+		glowStroke.Thickness = if juicy then CardFx.GlowThickness else baseGlowThickness
+		rim.Enabled = juicy
+		rim.Rotation = 0
+		rim.Color = ColorSequence.new({
+			ColorSequenceKeypoint.new(0, color),
+			ColorSequenceKeypoint.new(0.5, Color3.new(1, 1, 1)),
+			ColorSequenceKeypoint.new(1, color),
+		})
+		local bounce = if juicy and preview then C.New("UIScale", preview, { Name = "Bounce", Scale = 1 }) else nil
 		if self.Intensity == "Full" then
 			C.Pop(content)
+			if juicy then
+				local scale = content:FindFirstChild("PopScale")
+				if scale then
+					scale.Scale = CardFx.PopFrom
+					C.Tween(scale, CardFx.PopTime, { Scale = 1 }, Enum.EasingStyle.Back)
+				end
+				C.Shine(content)
+			end
 			if tier == "Banner" then
 				C.Shine(content)
 			end
@@ -284,6 +316,17 @@ function Controller.Create(root, hud, audio)
 		tick = function(t)
 			if animate then
 				animate(t)
+			end
+			if juicy then
+				glowStroke.Transparency = CardFx.GlowTransparency
+					+ CardFx.GlowPulse * (0.5 + 0.5 * math.sin(t * CardFx.GlowHz * 2 * math.pi))
+				rim.Rotation = (t * CardFx.RimSpin) % 360
+				if bounce then
+					bounce.Scale = 1
+						+ CardFx.IconBounce
+							* math.abs(math.sin(t * CardFx.IconBounceHz))
+							* math.exp(-CardFx.IconDecay * t)
+				end
 			end
 			if backdrop then
 				local u = math.clamp((t - Drama.BackdropDelay) / Drama.BackdropFade, 0, 1)
