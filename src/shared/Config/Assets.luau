@@ -231,7 +231,6 @@ local Assets = {
 		Shockwave = "rbxasset://textures/particles/explosion01_shockwave_main.dds",
 		Vortex = "rbxasset://textures/particles/forcefield_vortex_main.dds",
 		Smoke = "rbxasset://textures/particles/smoke_main.dds",
-		Square = "rbxasset://textures/particles/SquareParticle.png",
 	},
 	Music = {
 		"rbxassetid://137922863128587",

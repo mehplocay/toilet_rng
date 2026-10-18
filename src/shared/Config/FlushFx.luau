@@ -162,7 +162,7 @@ local levels = {
 		Vignette = 0.6,
 		Rays = 12,
 		ScreenRings = 3,
-		ScreenConfetti = 32,
+		ScreenConfetti = 24,
 		EmojiPops = 12,
 		RarityText = true,
 		Comic = true,
@@ -205,7 +205,7 @@ local levels = {
 		Vignette = 0.7,
 		Rays = 0,
 		ScreenRings = 0,
-		ScreenConfetti = 40,
+		ScreenConfetti = 30,
 		EmojiPops = 14,
 		RarityText = false,
 		Comic = true,
@@ -282,7 +282,15 @@ local styles = {
 			{ 60, 150, 255 },
 			{ 170, 90, 255 },
 		},
-		Pieces = { Texture = "Square", Size = 0.3, Speed = 1.5, Spread = 45, Gravity = 1.2, Lifetime = 1.6, Spin = 360 },
+		Pieces = {
+			Texture = "Sparkle",
+			Size = 0.3,
+			Speed = 1.5,
+			Spread = 45,
+			Gravity = 1.2,
+			Lifetime = 1.6,
+			Spin = 360,
+		},
 	},
 	ConfettiCannon = {
 		Weight = 9,
@@ -292,7 +300,7 @@ local styles = {
 		Words = { "BOOM!", "PARTY!", "TA-DA!" },
 		Emojis = { "\u{1F389}", "\u{1F38A}", "\u{1F973}" },
 		Palette = { { 255, 80, 160 }, { 80, 200, 255 }, { 255, 220, 60 }, { 120, 255, 120 } },
-		Pieces = { Texture = "Square", Size = 0.3, Speed = 2, Spread = 16, Gravity = 1, Lifetime = 2, Spin = 420 },
+		Pieces = { Texture = "Sparkle", Size = 0.3, Speed = 2, Spread = 16, Gravity = 1, Lifetime = 2, Spin = 420 },
 	},
 	LightningZap = {
 		Weight = 7,
@@ -358,7 +366,7 @@ local styles = {
 		Emojis = { "\u{1F4B0}", "\u{1FA99}", "\u{1F911}" },
 		Palette = { { 255, 210, 60 }, { 255, 240, 150 }, { 230, 160, 30 } },
 		Pieces = {
-			Texture = "Square",
+			Texture = "Sparkle",
 			Size = 0.45,
 			Speed = 1.7,
 			Spread = 25,
@@ -512,7 +520,8 @@ return {
 	-- Style specials (pooled world props).
 	Special = {
 		DuckSize = 0.11, -- multiples of toilet height
-		DuckRadius = 1.1, -- multiples of bowl width
+		DuckRadius = 1.6, -- multiples of bowl width (wide enough to keep plot labels clear)
+		DuckParade = 0.75, -- fraction of the moment the ducks stay out
 		DuckLaunch = 0.35, -- seconds for a duck to arc out of the bowl
 		RainbowBands = 6,
 		RainbowSpan = 2.2, -- multiples of toilet height
@@ -544,7 +553,9 @@ return {
 		TextY = 0.2,
 		CoinTime = 0.6,
 		CoinStagger = 0.035,
-		ConfettiTime = 2.6,
+		ConfettiTime = 1.6,
+		ConfettiAlpha = 0.15, -- minimum transparency of screen confetti
+		ConfettiClear = 0.16, -- half-width of the mostly clear centre band (fraction of width)
 		RayTime = 1.8,
 		EdgeFraction = 0.16,
 		BackZIndex = 79,
@@ -552,11 +563,35 @@ return {
 		ComicTime = 1,
 		ComicSize = 110, -- max text size in pixels at ComicScale 1
 		ComicRise = 0.16, -- fraction of screen height above the toilet
-		EmojiTime = 1.1,
+		ComicZOffset = 12, -- above coins, emoji pops and confetti
+		-- Soft round halos behind the word; Transparency is the most opaque they get.
+		ComicHalos = {
+			{ Width = 0.95, Height = 1.05, Transparency = 0.62 },
+			{ Width = 0.7, Height = 0.8, Transparency = 0.72 },
+		},
+		EmojiTime = 0.85,
+		EmojiClear = 0.45, -- radians kept clear either side of straight up
+		EmojiFan = 0.75, -- radians of fan beyond the clear cone
 		EmojiSize = 46,
 	},
 	Camera = { PunchRelease = 0.45, ShakeTime = 0.35, GulpFraction = 0.35 },
 	Press = { Squash = 0.86, Release = 0.32, RippleTime = 0.35 },
+	-- Juicy result card for small reveals (Common/Uncommon "Pop" tier).
+	Card = {
+		Tiers = { Pop = true },
+		PopFrom = 0.55, -- UIScale the card content pops from
+		PopTime = 0.42,
+		Shade = 0.45, -- how far the lower gradient stop leans toward navy
+		Light = 0.2, -- how far the upper gradient stop leans toward white
+		GlowTransparency = 0.2,
+		GlowPulse = 0.3,
+		GlowHz = 3,
+		GlowThickness = 8,
+		RimSpin = 160, -- degrees per second of the rim colour sweep
+		IconBounce = 0.2,
+		IconBounceHz = 9,
+		IconDecay = 2.5,
+	},
 	-- Cinematic reveal additions (inside the reveal overlay, below the item name).
 	Reveal = {
 		BackdropDelay = 0.45,

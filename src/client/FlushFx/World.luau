@@ -88,6 +88,7 @@ function World.new(config)
 		head.Shape, head.Material, head.Color = Enum.PartType.Ball, Enum.Material.SmoothPlastic, rgb({ 255, 225, 70 })
 		local beak = part(body, "Beak", Vector3.new(0.6, 0.25, 0.5))
 		beak.Material, beak.Color = Enum.Material.SmoothPlastic, rgb({ 255, 130, 30 })
+		ellipsoid(beak)
 		return { Body = body, Head = head, Beak = beak, Index = index }
 	end
 	local function build()
@@ -199,7 +200,7 @@ function World.new(config)
 				Brightness = 2,
 			}),
 			-- Style-shaped pieces (texture, size, motion set per flush from the style).
-			Pieces = emitter(center, "Pieces", textures.Square, {
+			Pieces = emitter(center, "Pieces", textures.Sparkle, {
 				EmissionDirection = Enum.NormalId.Top,
 				Rotation = NumberRange.new(0, 360),
 				Transparency = NumberSequence.new({
@@ -227,10 +228,10 @@ function World.new(config)
 				Transparency = sequence(0.4, 1),
 				RotSpeed = NumberRange.new(-60, 60),
 			}),
-			Confetti = emitter(center, "Confetti", textures.Square, {
+			Confetti = emitter(center, "Confetti", textures.Sparkle, {
 				EmissionDirection = Enum.NormalId.Top,
 				SpreadAngle = Vector2.new(38, 38),
-				Lifetime = NumberRange.new(1.8, 2.6),
+				Lifetime = NumberRange.new(1, 1.4),
 				Drag = 1.4,
 				Rotation = NumberRange.new(0, 360),
 				RotSpeed = NumberRange.new(-320, 320),
@@ -260,7 +261,7 @@ function World.new(config)
 			cannons[i] = {
 				Side = side,
 				Mount = mount,
-				Emitter = emitter(mount, "CannonPieces", textures.Square, {
+				Emitter = emitter(mount, "CannonPieces", textures.Sparkle, {
 					EmissionDirection = Enum.NormalId.Top,
 					Rotation = NumberRange.new(0, 360),
 					Transparency = NumberSequence.new({
@@ -536,7 +537,7 @@ function World.new(config)
 			emitters.Confetti.Speed = NumberRange.new(height * 1.3, height * 2.1)
 			emitters.Confetti.Acceleration = Vector3.new(0, -height * 1.2, 0)
 			emitters.Confetti.Size = NumberSequence.new(scale * 0.2)
-			emit(ledger, now, emitters.Confetti, plan.Confetti, 2.6)
+			emit(ledger, now, emitters.Confetti, plan.Confetti, 1.4)
 		end
 		if plan.Special == "Tornado" and plan.Props > 0 then
 			local twister = emitters.Twister
@@ -672,7 +673,7 @@ function World.new(config)
 		local s = target.Height * special.DuckSize
 		local radius = target.Width * special.DuckRadius
 		local launch = special.DuckLaunch * math.max(plan.TimeScale, 0.5)
-		local stop = plan.Duration - plan.Burst
+		local stop = (plan.Duration - plan.Burst) * special.DuckParade
 		local bowl = target.Bowl.Position
 		for i = 1, count do
 			local d = rig.Ducks[i]

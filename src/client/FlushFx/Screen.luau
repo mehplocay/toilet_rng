@@ -44,6 +44,15 @@ function Screen.new(root, hud, config)
 			Active = false,
 		})
 		flash = frame(front, "Flash", { Size = UDim2.fromScale(1, 1), BackgroundColor3 = white, Visible = false })
+		-- Soft flash: strongest across the middle band, never a hard full-screen tile.
+		C.New("UIGradient", flash, {
+			Rotation = 90,
+			Transparency = NumberSequence.new({
+				NumberSequenceKeypoint.new(0, 0.45),
+				NumberSequenceKeypoint.new(0.5, 0),
+				NumberSequenceKeypoint.new(1, 0.45),
+			}),
+		})
 		-- Edge glow: four gradients fading toward the centre (top, bottom, left, right).
 		for i, spec in ipairs({
 			{ UDim2.new(1, 0, S.EdgeFraction, 0), UDim2.fromScale(0, 0), 90 },
@@ -88,12 +97,21 @@ function Screen.new(root, hud, config)
 			-- Deterministic spread; no per-frame or per-flush allocation.
 			local piece = frame(front, "ConfettiPiece", {
 				AnchorPoint = Vector2.new(0.5, 0.5),
-				Size = UDim2.fromOffset(if i % 3 == 0 then 7 else 10, if i % 2 == 0 then 16 else 11),
+				Size = UDim2.fromOffset(if i % 3 == 0 then 9 else 12, if i % 2 == 0 then 16 else 12),
 				Visible = false,
 			})
+			-- Rounded streamers, never square tiles.
+			C.New("UICorner", piece, { CornerRadius = UDim.new(1, 0) })
+			-- Keep the centre band (item card, comic word, world labels) mostly clear.
+			local x = (i * GOLDEN) % 1
+			local band = S.ConfettiClear
+			if math.abs(x - 0.5) < band then
+				x = if x < 0.5 then x - band else x + band
+				x = math.clamp(x, 0.02, 0.98)
+			end
 			confetti[i] = {
 				Frame = piece,
-				X = (i * GOLDEN) % 1,
+				X = x,
 				Delay = ((i * 0.37) % 1) * 0.6,
 				Speed = 0.38 + ((i * 0.53) % 1) * 0.35,
 				Sway = 0.015 + ((i * 0.29) % 1) * 0.03,
@@ -106,26 +124,36 @@ function Screen.new(root, hud, config)
 			coin.Name, coin.AnchorPoint, coin.Visible = "FlyingCoin", Vector2.new(0.5, 0.5), false
 			coins[i] = { Frame = coin, Bend = ((i * GOLDEN) % 1 - 0.5) * 2 }
 		end
-		-- Comic burst: a two-square starburst behind a huge outlined word ("SPLASH!").
+		-- Comic burst: soft translucent round halos behind a huge outlined word ("SPLASH!").
+		-- Drawn above every other overlay so emoji pops and coins never cover the word.
 		comic = frame(front, "ComicBurst", {
 			AnchorPoint = Vector2.new(0.5, 0.5),
 			Size = UDim2.fromOffset(S.ComicSize * 4, S.ComicSize * 1.6),
+			ZIndex = front.ZIndex + S.ComicZOffset,
 			Visible = false,
 		})
 		comicScale = C.New("UIScale", comic, { Scale = 1 })
 		comicStars = {}
-		for i = 1, 2 do
-			local star = frame(comic, "ComicStar", {
+		for i, halo in ipairs(S.ComicHalos) do
+			local star = frame(comic, "ComicHalo", {
 				AnchorPoint = Vector2.new(0.5, 0.5),
 				Position = UDim2.fromScale(0.5, 0.5),
-				Size = UDim2.fromOffset(S.ComicSize * 1.5, S.ComicSize * 1.5),
-				Rotation = (i - 1) * 45,
-				BackgroundTransparency = 0,
+				Size = UDim2.fromOffset(S.ComicSize * 4 * halo.Width, S.ComicSize * 1.6 * halo.Height),
+				BackgroundTransparency = halo.Transparency,
 			})
-			C.New("UIStroke", star, { Color = C.Ink, Thickness = 5 })
-			comicStars[i] = star
+			C.New("UICorner", star, { CornerRadius = UDim.new(1, 0) })
+			-- Fades toward the rim, so the halo reads as a glow rather than a tile.
+			C.New("UIGradient", star, {
+				Transparency = NumberSequence.new({
+					NumberSequenceKeypoint.new(0, 1),
+					NumberSequenceKeypoint.new(0.5, 0),
+					NumberSequenceKeypoint.new(1, 1),
+				}),
+			})
+			comicStars[i] = { Frame = star, Base = halo.Transparency }
 		end
 		comicText = C.Text(comic, "", UDim2.fromScale(1, 1), UDim2.new(), S.ComicSize)
+		comicText.ZIndex = comic.ZIndex + 4
 		comicText.Name = "ComicWord"
 		comicText.UITextSizeConstraint.MinTextSize = 24
 		comicText.Rotation = 0
@@ -147,7 +175,9 @@ function Screen.new(root, hud, config)
 			emojis[i] = {
 				Label = label,
 				-- Deterministic fountain spread: angle, speed and spin per slot.
-				Angle = -math.pi / 2 + ((i * GOLDEN) % 1 - 0.5) * 2.2,
+				-- Fan out to both sides, never straight up over the card and comic word.
+				Angle = -math.pi / 2
+					+ (if i % 2 == 0 then 1 else -1) * (S.EmojiClear + ((i * GOLDEN) % 1) * S.EmojiFan),
 				Speed = 0.55 + ((i * 0.61) % 1) * 0.45,
 				Spin = (if i % 2 == 0 then 1 else -1) * (90 + (i * 53) % 200),
 				Delay = ((i * 0.43) % 1) * 0.18,
@@ -230,10 +260,13 @@ function Screen.new(root, hud, config)
 			local first = style.Palette[1]
 			local last = style.Palette[#style.Palette]
 			comicText.Text = plan.Word or style.Words[1]
-			comicText.TextColor3 = Color3.fromRGB(255, 255, 255)
+			-- Light, style-tinted letters with a thick dark outline stay readable on any sky.
+			comicText.TextColor3 = Color3.fromRGB(first[1], first[2], first[3]):Lerp(white, 0.55)
 			comicText.UITextSizeConstraint.MaxTextSize = math.floor(S.ComicSize * (plan.ComicScale or 1))
-			comicStars[1].BackgroundColor3 = Color3.fromRGB(first[1], first[2], first[3])
-			comicStars[2].BackgroundColor3 = Color3.fromRGB(last[1], last[2], last[3])
+			for i, halo in ipairs(comicStars) do
+				local tone = if i % 2 == 1 then first else last
+				halo.Frame.BackgroundColor3 = Color3.fromRGB(tone[1], tone[2], tone[3])
+			end
 			if comicStroke then
 				comicStroke.Color = C.Ink
 			end
@@ -393,10 +426,10 @@ function Screen.new(root, hud, config)
 				if comicStroke then
 					comicStroke.Transparency = alpha
 				end
-				for i, star in ipairs(comicStars) do
-					star.BackgroundTransparency = alpha
-					star.Rotation = (i - 1) * 45 + u * 90
-					star.UIStroke.Transparency = alpha
+				for i, halo in ipairs(comicStars) do
+					-- Halos stay translucent (never below their configured transparency).
+					halo.Frame.BackgroundTransparency = halo.Base + (1 - halo.Base) * alpha
+					halo.Frame.Rotation = (if i % 2 == 0 then -1 else 1) * u * 30
 				end
 			end
 		end
@@ -420,11 +453,12 @@ function Screen.new(root, hud, config)
 			local piece = confetti[i]
 			local u = after - piece.Delay
 			local y = -0.05 + u * piece.Speed
-			piece.Frame.Visible = u >= 0 and y < 1.05
+			piece.Frame.Visible = u >= 0 and y < 1.05 and u < S.ConfettiTime
 			if piece.Frame.Visible then
 				piece.Frame.Position = UDim2.fromScale(piece.X + math.sin(u * 3 + piece.Phase) * piece.Sway, y)
 				piece.Frame.Rotation = piece.Spin * u
-				piece.Frame.BackgroundTransparency = math.clamp((u - S.ConfettiTime + 0.6) / 0.6, 0, 1)
+				piece.Frame.BackgroundTransparency =
+					math.max(S.ConfettiAlpha, math.clamp((u - S.ConfettiTime + 0.5) / 0.5, 0, 1))
 			end
 		end
 		if state.Coins > 0 then
