@@ -35,6 +35,8 @@ function Controller.Create(root, hud, audio)
 	toast.Name, toast.Visible, toast.ZIndex = "CompactDrop", false, 110
 	toast.RichText = true
 	local content, cleanup, tick, elapsed, toastUntil = nil, nil, nil, 0, 0
+	local boxActive, boxArrange = false, nil
+	local TextService = game:GetService("TextService")
 	local lastCompact, compactCount = -math.huge, 0
 	local pendingCompact
 	local discovered, discoveryReady = {}, false
@@ -70,7 +72,12 @@ function Controller.Create(root, hud, audio)
 		else
 			toast.UITextSizeConstraint.MinTextSize = 10
 		end
-		C.Place(card, hudLayout.Reveal)
+		-- Boxless small results use the upper-middle hint band (hidden while a reveal shows),
+		-- clear of the Flush button, the toilet prompt, the wallet and the top bar.
+		C.Place(card, if boxActive then hudLayout.Hint else hudLayout.Reveal)
+		if boxActive and boxArrange then
+			boxArrange(hudLayout.Phone)
+		end
 		C.Place(toast, layout.Toast)
 		if self.Queue.Active and Rules.Big(self.Queue.Active.Tier) then
 			-- Keep overflow readable above the large moment, outside its model/name.
@@ -115,6 +122,7 @@ function Controller.Create(root, hud, audio)
 			content = nil
 		end
 		card.Visible, tick = false, nil
+		boxActive, boxArrange = false, nil
 		hud.SetHintVisible(not toast.Visible)
 	end
 	local play
@@ -183,11 +191,14 @@ function Controller.Create(root, hud, audio)
 		heading.Name = "ItemName"
 		heading.ZIndex = 100
 		local boxless = not big and CardFx.Tiers[tier] == true
-		local oddsText = if item.Id == "Poop"
-			then "Fallback drop"
-			elseif boxless then "1 in " .. C.Commas(item.Chance)
-			else "Base check • 1 in " .. C.Commas(item.Chance)
-		if not big and root.AbsoluteSize.Y < 300 then
+		local oddsText = if item.Id == "Poop" then "Fallback drop" else "Base check • 1 in " .. C.Commas(item.Chance)
+		if boxless then
+			-- One rarity word on screen: Rare and up already get the big stinger, so only
+			-- Common/Uncommon carry a small rarity tag in the odds line.
+			local odds = if item.Id == "Poop" then "Fallback drop" else "1 in " .. C.Commas(item.Chance)
+			oddsText = if CardFx.TagTiers[tier] then string.upper(item.Rarity) .. " • " .. odds else odds
+		end
+		if not big and not boxless and root.AbsoluteSize.Y < 300 then
 			heading.Size = UDim2.fromScale(0.68, 0.47)
 			oddsText = if item.Id == "Poop" then "Fallback drop" else "1 in " .. C.Commas(item.Chance)
 		end
@@ -197,24 +208,18 @@ function Controller.Create(root, hud, audio)
 		local odds = C.Text(content, oddsText, UDim2.fromScale(0.68, 0.3), UDim2.fromScale(0.3, 0.57), 18)
 		odds.Name = "Odds"
 		odds.ZIndex = 100
-		local tag
 		if boxless then
-			-- Name: bold, outlined, rarity gradient; tag and odds as small outlined text.
-			heading.Size, heading.Position = UDim2.fromScale(0.68, 0.5), UDim2.fromScale(0.3, 0.02)
+			-- Name: bold, outlined, rarity gradient at a fixed readable size; odds small below.
 			heading.UITextSizeConstraint.MinTextSize = CardFx.NameMinText
-			heading.UITextSizeConstraint.MaxTextSize = 34
 			heading.UIStroke.Thickness = CardFx.NameStroke
+			heading.TextXAlignment, odds.TextXAlignment = Enum.TextXAlignment.Left, Enum.TextXAlignment.Left
+			heading.TextScaled, odds.TextScaled = false, false
 			C.New("UIGradient", heading, {
 				Name = "RarityTint",
 				Rotation = 90,
 				Color = ColorSequence.new(Color3.new(1, 1, 1), color:Lerp(Color3.new(1, 1, 1), 0.25)),
 			})
-			tag = C.Text(content, string.upper(item.Rarity), UDim2.fromScale(0.3, 0.26), UDim2.fromScale(0.3, 0.56), 20)
-			tag.Name, tag.TextColor3, tag.ZIndex = "RarityTag", color:Lerp(Color3.new(1, 1, 1), 0.2), 100
-			tag.TextXAlignment = Enum.TextXAlignment.Left
-			tag.UITextSizeConstraint.MinTextSize = CardFx.SmallMinText
-			odds.Size, odds.Position = UDim2.fromScale(0.36, 0.26), UDim2.fromScale(0.62, 0.56)
-			odds.TextXAlignment = Enum.TextXAlignment.Left
+			odds.TextColor3 = color:Lerp(Color3.new(1, 1, 1), 0.45)
 			odds.UITextSizeConstraint.MinTextSize = CardFx.SmallMinText
 		end
 		for _, part in ipairs(chrome) do
@@ -279,6 +284,39 @@ function Controller.Create(root, hud, audio)
 			preview = Preview.Create(content, UDim2.fromScale(0.25, 0.84), UDim2.fromScale(0.025, 0.08), item)
 		end
 		local bounce = if boxless and preview then C.New("UIScale", preview, { Name = "Bounce", Scale = 1 }) else nil
+		boxActive = boxless
+		boxArrange = if boxless
+			then function(phone)
+				-- Icon left of the name and odds, the whole group centred in the band.
+				local size = card.AbsoluteSize
+				local w, h = size.X, size.Y
+				local nameSize = if phone then CardFx.PhoneNameText else CardFx.NameText
+				local smallSize = math.max(CardFx.SmallMinText, math.floor(nameSize * 0.62))
+				local icon = math.min(h, w * 0.3)
+				local gap = math.floor(icon * 0.12)
+				local room = math.max(40, w - icon - gap)
+				local bounds = Vector2.new(room, h)
+				local nameW = TextService:GetTextSize(heading.Text, nameSize, heading.Font, bounds).X
+				local oddsW = TextService:GetTextSize(odds.Text, smallSize, odds.Font, bounds).X
+				local textW = math.min(room, math.max(nameW, oddsW) + 8)
+				local x0 = math.floor((w - (icon + gap + textW)) / 2)
+				heading.TextSize, odds.TextSize = nameSize, smallSize
+				heading.UITextSizeConstraint.MaxTextSize = nameSize
+				odds.UITextSizeConstraint.MaxTextSize = smallSize
+				local nameH = math.floor(h * 0.58)
+				heading.Size, heading.Position = UDim2.fromOffset(textW, nameH), UDim2.fromOffset(x0 + icon + gap, 0)
+				odds.Size = UDim2.fromOffset(textW, h - nameH)
+				odds.Position = UDim2.fromOffset(x0 + icon + gap, nameH)
+				if preview then
+					preview.Size, preview.Position = UDim2.fromOffset(icon, icon), UDim2.fromOffset(x0, (h - icon) / 2)
+				end
+				local stamp = content:FindFirstChild("NewDiscovery")
+				if stamp then
+					stamp.Size = UDim2.fromOffset(math.max(48, icon * 0.7), math.max(18, h * 0.28))
+					stamp.Position = UDim2.fromOffset(x0 - 6, -4)
+				end
+			end
+			else nil
 		if self.Intensity == "Full" then
 			C.Pop(content)
 			if boxless then
@@ -336,7 +374,7 @@ function Controller.Create(root, hud, audio)
 				end
 				-- Auto-fade the text over the last moments of the reveal.
 				local alpha = math.clamp((t - (entry.Duration - CardFx.Fade)) / CardFx.Fade, 0, 1)
-				for _, label in ipairs({ heading, odds, tag }) do
+				for _, label in ipairs({ heading, odds }) do
 					label.TextTransparency = alpha
 					label.UIStroke.Transparency = alpha
 				end

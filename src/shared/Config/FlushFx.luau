@@ -554,6 +554,24 @@ return {
 		MaxParts = 300, -- above this, the clone moves rigidly (no per-part squash)
 		LidNames = { "OpenLid", "Lid", "ToiletLid", "Seat" },
 	},
+	-- Glow and bloom of the water effects; kept soft so the toilet stays visible behind them.
+	Glow = {
+		GeyserTransparency = 0.25,
+		GeyserEmission = 0.15,
+		GeyserBrightness = 1,
+		SplashTransparency = 0.2,
+		SplashEmission = 0.15,
+		SplashBrightness = 1,
+		FoamTransparency = 0.3,
+		FoamEmission = 0.05,
+		FoamBrightness = 1,
+		CoreTransparency = 0.35,
+		CoreEmission = 0.6,
+		CoreBrightness = 1.2,
+		PillarTransparency = 0.6,
+		PillarEmission = 0.5,
+		LightScale = 0.55, -- multiplies each level's point light
+	},
 	-- Style specials (pooled world props).
 	Special = {
 		DuckSize = 0.11, -- multiples of toilet height
@@ -589,7 +607,7 @@ return {
 		RingTime = 0.6,
 		RingGap = 0.12,
 		TextTime = 1.1,
-		TextY = 0.2,
+		TextY = 0.27, -- rarity stinger, below the result block band and above the toilet
 		CoinTime = 0.6,
 		CoinStagger = 0.035,
 		ConfettiTime = 1.6,
@@ -600,8 +618,9 @@ return {
 		BackZIndex = 79,
 		FrontZIndex = 105,
 		ComicTime = 1,
-		ComicSize = 110, -- max text size in pixels at ComicScale 1
-		ComicRise = 0.16, -- fraction of screen height above the toilet
+		ComicSize = 66, -- max text size in pixels at ComicScale 1
+		ComicRise = 0.2, -- fraction of screen height above the toilet
+		ComicSide = 0.27, -- fraction of screen width the word sits beside the toilet
 		ComicZOffset = 12, -- above coins, emoji pops and confetti
 		-- Soft round halos behind the word; Transparency is the most opaque they get.
 		ComicHalos = {
@@ -627,6 +646,9 @@ return {
 		Wobble = 10, -- degrees of icon wobble at the start
 		WobbleHz = 7,
 		Fade = 0.25, -- seconds of fade-out at the end of the reveal
+		TagTiers = { Pop = true }, -- only tiers without a rarity stinger show a rarity tag
+		NameText = 26, -- px on desktop
+		PhoneNameText = 20, -- px on phones
 		NameMinText = 18,
 		SmallMinText = 14,
 		NameStroke = 3,
