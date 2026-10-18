@@ -358,10 +358,24 @@ function C.Icon(parent, kind, size, position, assetId, tint)
 		end
 		local function settle()
 			settled = false
-			if image.Image ~= "" then
-				task.delay(1.5, function()
-					settled = true
-					loaded()
+			local current = image.Image
+			if current ~= "" then
+				-- Short-lived icons (result popups) must not wait for IsLoaded: show the sprite
+				-- after a brief grace period and keep polling in case IsLoaded flips late.
+				task.spawn(function()
+					local waited = 0
+					while image.Parent and image.Image == current and waited < 6 do
+						if image.IsLoaded then
+							loaded()
+							return
+						end
+						if waited >= 0.3 and not settled then
+							settled = true
+							loaded()
+						end
+						task.wait(0.05)
+						waited += 0.05
+					end
 				end)
 			end
 		end

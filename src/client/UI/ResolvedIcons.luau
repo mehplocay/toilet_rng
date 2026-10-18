@@ -76,6 +76,9 @@ function Icons.Start()
 	if existing then
 		attach(existing)
 	end
+	-- Hardcoded Image overrides are known at startup: begin preloading them at once instead of
+	-- waiting for the server resolver (which only matters for ids without an override).
+	task.spawn(refresh)
 	task.spawn(function()
 		local deadline = os.clock() + 2
 		while (not folder or not folder:GetAttribute("Complete")) and os.clock() < deadline do
