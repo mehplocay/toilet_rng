@@ -59,12 +59,23 @@ assert(
 	"Poop must not advertise an unused 1-in-2 roll"
 )
 do
-	-- Juicy Common card: rarity gradient, strong glow, rim sweep, shine and icon bounce.
+	-- Boxless Common result: no panel, fill or border; outlined tinted name, tag, short odds.
 	local revealCard = presentationHUD.Frame.FlushReveal
-	assert(revealCard.Background.UIStroke.RimSweep.Enabled, "Common card rim sweep missing")
-	assert(revealCard.Glow.UIStroke.Transparency <= 0.6, "Common card glow too faint")
-	assert(revealCard.RevealContent:FindFirstChild("Shine"), "Common card shine missing")
-	local bounce = revealCard.RevealContent.Preview:FindFirstChild("Bounce")
+	assert(revealCard.Visible and revealCard.BackgroundTransparency == 1)
+	for _, child in ipairs(revealCard:GetChildren()) do
+		if child.Name ~= "RevealContent" and child:IsA("GuiObject") then
+			assert(not child.Visible, "Common result still draws card chrome: " .. child.Name)
+		end
+	end
+	local result = revealCard.RevealContent
+	assert(result.BackgroundTransparency == 1, "Common result has a background fill")
+	assert(result.ItemName:FindFirstChild("RarityTint") and result.ItemName.UIStroke.Thickness >= 3)
+	assert(result.RarityTag.Text == "COMMON" and not result:FindFirstChild("Shine"))
+	for _, label in ipairs({ result.ItemName, result.RarityTag, result.Odds }) do
+		assert(label.UITextSizeConstraint.MinTextSize >= 14, label.Name .. " below 14 px")
+		assert(label.BackgroundTransparency == 1)
+	end
+	local bounce = result.Preview:FindFirstChild("Bounce")
 	assert(bounce, "Common card icon bounce missing")
 	H.Advance(0.1)
 	assert(bounce.Scale >= 1, "Icon bounce must not shrink the icon")
@@ -74,7 +85,7 @@ controller:Show(item("Mystery"), { FlushId = 5 })
 assert(not controller.Queue.Active, "Duplicate authoritative result replayed")
 controller:Show(item("GoldenPoop"), { FlushId = 6 })
 assert(controller.Queue.Active.Tier == "Banner")
-assert(not presentationHUD.Frame.FlushReveal.Background.UIStroke.RimSweep.Enabled, "Big reveals restore the card")
+assert(not presentationHUD.Frame.FlushReveal.Visible, "Big reveals hide the small result")
 assert(presentationRoot.RareReveal.RevealContent.AbsoluteSize.X == 375)
 H.Snapshot(presentationRoot, "legendary-portrait")
 H.Advance(2.1)

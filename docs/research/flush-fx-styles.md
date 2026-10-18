@@ -43,3 +43,14 @@ the observed gap), so a single flush on a fast toilet still plays in full.
   ParticleEmitter texture. Screen confetti frames are rounded and translucent.
 - Screen confetti is shorter (1.6 s) and keeps the centre band clear; emoji pops fan out to the
   sides; ducks parade wider and leave earlier so plot labels stay readable.
+
+## Round 4 fixes (2026-10-18)
+
+- The remaining blue rotated tiles were the firework emoji themselves: U+1F386/U+1F387 render
+  as square night-sky pictures in common emoji fonts. Emoji pops now use a safe list of
+  background-less glyphs (`SafeEmojis`), with a thin outline; anything else falls back to sparkles.
+- Comic words are generic hype (`FLUSH!`, `SPLASH!`, ...), with rarity words for Rare and up;
+  they never name the visual style and never repeat twice in a row.
+- Small results (Common to Epic card tiers) are boxless: the card chrome is hidden and the icon
+  pops with bounce and wobble beside an outlined, rarity-tinted name, rarity tag and short odds.
+- Rainbow style is rare (weight 3) with a short, translucent arc.

@@ -112,16 +112,39 @@ do
 						inCoin = inCoin or walk.Name == "FlyingCoin"
 						walk = walk.Parent
 					end
-					if
-						not inCoin
-						and object:IsA("GuiObject")
-						and object.BackgroundTransparency < 1
-						and shown(object, screenRoot)
-					then
+					local visible = not inCoin and object:IsA("GuiObject") and shown(object, screenRoot)
+					if visible and object.BackgroundTransparency < 1 then
 						assert(
 							object:FindFirstChildOfClass("UICorner") or object:FindFirstChildOfClass("UIGradient"),
 							label .. ": opaque square tile " .. object.Name
 						)
+						-- A rotated filled frame reads as a diamond tile unless it is rounded.
+						-- (Long thin strips such as light rays are not tiles.)
+						local box = object.AbsoluteSize
+						local squareish = box
+							and math.max(box.X, box.Y) > 0
+							and math.min(box.X, box.Y) / math.max(box.X, box.Y) > 0.25
+						if (object.Rotation or 0) % 90 ~= 0 and squareish then
+							assert(
+								object:FindFirstChildOfClass("UICorner"),
+								label .. ": rotated square tile " .. object.Name
+							)
+						end
+					end
+					if visible and object.ClassName == "ImageLabel" and (object.ImageTransparency or 0) < 1 then
+						assert(
+							tostring(object.Image):match("^rbxasset://textures/particles/.+_main%.dds$"),
+							label .. ": image tile " .. object.Name
+						)
+					end
+					if visible and object.Name == "EmojiPop" then
+						assert(table.find(Config.SafeEmojis, object.Text), label .. ": tile emoji " .. object.Text)
+						assert(object.BackgroundTransparency == 1 and object:FindFirstChildOfClass("UIStroke"))
+					end
+					if visible and object.Name == "ComicWord" then
+						for _, name in ipairs(Config.StyleOrder) do
+							assert(not object.Text:upper():find(name:upper(), 1, true), label .. ": style name shown")
+						end
 					end
 				end
 			end

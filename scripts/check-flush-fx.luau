@@ -118,7 +118,7 @@ check("style picker: weighted, never repeats, poop party only for poop items", f
 	end
 	for _, name in ipairs(Config.StyleOrder) do
 		if name ~= "PoopParty" then
-			assert((counts[name] or 0) > 500, name .. " never shows up")
+			assert((counts[name] or 0) > 300, name .. " never shows up")
 		end
 	end
 	-- Heavier weight shows up more often than a lighter one.
@@ -339,7 +339,50 @@ check("no square tiles: soft sprites only, translucent comic halos, short clear 
 	end
 	assert(Config.Screen.ConfettiTime <= 2 and Config.Screen.ConfettiAlpha > 0)
 	assert(Config.Screen.ConfettiClear >= 0.1 and Config.Screen.EmojiClear >= 0.3)
-	assert(Config.Card.Tiers.Pop and Config.Card.PopFrom < 1 and Config.Card.GlowTransparency < 0.6)
+	assert(Config.Card.Tiers.Pop and Config.Card.PopFrom < 1 and Config.Card.SmallMinText >= 14)
+	assert(Config.Styles.RainbowSplash.Weight <= 4, "rainbow should be a rare style")
+end)
+
+check("comic words never name the style and never repeat; emoji glyphs are tile-free", function()
+	local banned =
+		{ "RAINBOW", "DUCK", "QUACK", "POOP", "KERNEL", "TWISTER", "BUBBLE", "$", "PARTY", "SLIME", "TORNADO" }
+	local banned2 = { "ROCKET", "FIREWORK", "CANNON", "GEYSER", "LIGHTNING", "POPCORN", "COIN", "CHING" }
+	local function clean(word)
+		for _, list in ipairs({ banned, banned2 }) do
+			for _, token in ipairs(list) do
+				assert(not word:find(token, 1, true), "comic word names a style: " .. word)
+			end
+		end
+		for _, name in ipairs(Config.StyleOrder) do
+			assert(not word:upper():find(name:upper(), 1, true), "comic word names a style: " .. word)
+		end
+		assert(word == word:upper() and #word <= 12)
+	end
+	for _, name in ipairs(Config.StyleOrder) do
+		for _, word in ipairs(Config.Styles[name].Words) do
+			clean(word)
+		end
+		for _, glyph in ipairs(Config.Styles[name].Emojis) do
+			assert(table.find(Config.SafeEmojis, glyph), name .. " uses an unsafe emoji")
+		end
+	end
+	for _, glyph in ipairs(Config.SafeEmojis) do
+		assert(glyph ~= "\u{1F386}" and glyph ~= "\u{1F387}" and glyph ~= "\u{1F30C}", "tile emoji in the safe list")
+	end
+	for _, rarity in ipairs(order) do
+		local words = Config.RarityWords[rarity] or Config.Styles[Config.DefaultStyle].Words
+		for _, word in ipairs(words) do
+			clean(word)
+		end
+		local last
+		for i = 1, 200 do
+			local word = Rules.PickWord(words, last, (i * 0.618) % 1)
+			assert(table.find(words, word) and (word ~= last or #words == 1), rarity .. " repeated a word")
+			last = word
+		end
+	end
+	assert(Rules.PickWord({}, nil, 0.5) == "FLUSH!" and Rules.PickWord({ "YES!" }, "YES!", 0.2) == "YES!")
+	assert(Rules.PickWord({ "A!", "B!" }, "A!", 0 / 0) == "B!")
 end)
 check("engine textures are bundled paths, never uploaded IDs", function()
 	for name, path in pairs(Assets.Textures) do
