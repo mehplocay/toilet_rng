@@ -328,6 +328,19 @@ check("envelopes, slow-motion remap and FOV punch are bounded", function()
 	end
 end)
 
+check("no square tiles: soft sprites only, translucent comic halos, short clear confetti", function()
+	assert(Assets.Textures.Square == nil, "square particle texture must not be offered")
+	for _, name in ipairs(Config.StyleOrder) do
+		local texture = Config.Styles[name].Pieces.Texture
+		assert(texture ~= "Square" and Assets.Textures[texture]:match("_main%.dds$"), name)
+	end
+	for _, halo in ipairs(Config.Screen.ComicHalos) do
+		assert(halo.Transparency >= 0.5, "comic halo must stay translucent")
+	end
+	assert(Config.Screen.ConfettiTime <= 2 and Config.Screen.ConfettiAlpha > 0)
+	assert(Config.Screen.ConfettiClear >= 0.1 and Config.Screen.EmojiClear >= 0.3)
+	assert(Config.Card.Tiers.Pop and Config.Card.PopFrom < 1 and Config.Card.GlowTransparency < 0.6)
+end)
 check("engine textures are bundled paths, never uploaded IDs", function()
 	for name, path in pairs(Assets.Textures) do
 		assert(type(path) == "string" and path:match("^rbxasset://textures/particles/"), name)

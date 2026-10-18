@@ -28,3 +28,18 @@ the observed gap), so a single flush on a fast toilet still plays in full.
   uploaded images). Check glyph rendering on a phone in Studio's device emulator.
 - Budgets: live-particle ledger 400 desktop / 150 phone; rate-based streams (geyser, tornado)
   reserve budget for the whole window.
+
+## Round 3 fixes (2026-10-18)
+
+- The "blue diamond with red border" behind KABOOM! was the comic starburst: two opaque
+  rotated square Frames (style palette red/blue) with a dark stroke. Replaced by translucent
+  round halos (UICorner + fading UIGradient, never below 0.62 transparency) drawn under the word;
+  the word sits above every other flush overlay.
+- Square tiles: world confetti, cannon and three style pieces used `SquareParticle.png` (a solid
+  square sprite). All emitters now use `_main.dds` sprites. Checked in the local install
+  (`content/textures/particles`): `sparkles_main`, `explosion01_implosion_main`,
+  `explosion01_shockwave_main`, `forcefield_vortex_main`, `smoke_main` are DXT5 with alpha 0 in
+  the corner blocks, i.e. soft transparent sprites. `sparkles_main.dds` is also the default
+  ParticleEmitter texture. Screen confetti frames are rounded and translucent.
+- Screen confetti is shorter (1.6 s) and keeps the centre band clear; emoji pops fan out to the
+  sides; ducks parade wider and leave earlier so plot labels stay readable.

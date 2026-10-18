@@ -90,8 +90,78 @@ do
 			return module.Start(root, hud, prompts), root, hud
 		end
 
-		local fx, root, hud = harness(false)
-		-- Press feel: deeper squash than the generic button press, plus a ripple.
+		-- No solid square tiles anywhere in the flush moment: every filled overlay frame must be
+		-- rounded or soft (UICorner / UIGradient), every emitter uses a soft engine sprite and
+		-- every visible world prop is a sphere or mesh. Coin icon art is the intended exception.
+		local function shown(object, stop)
+			while object and object ~= stop do
+				if object.Visible == false then
+					return false
+				end
+				object = object.Parent
+			end
+			return true
+		end
+		local function assertNoSquares(screenRoot, label)
+			for _, layerName in ipairs({ "FlushFxFront", "FlushFxBack" }) do
+				local layer = screenRoot:FindFirstChild(layerName)
+				for _, object in ipairs(layer and layer:GetDescendants() or {}) do
+					local inCoin = false
+					local walk = object
+					while walk and walk ~= layer do
+						inCoin = inCoin or walk.Name == "FlyingCoin"
+						walk = walk.Parent
+					end
+					if
+						not inCoin
+						and object:IsA("GuiObject")
+						and object.BackgroundTransparency < 1
+						and shown(object, screenRoot)
+					then
+						assert(
+							object:FindFirstChildOfClass("UICorner") or object:FindFirstChildOfClass("UIGradient"),
+							label .. ": opaque square tile " .. object.Name
+						)
+					end
+				end
+			end
+			local burst = screenRoot.FlushFxFront:FindFirstChild("ComicBurst")
+			if burst and burst.Visible then
+				for _, child in ipairs(burst:GetChildren()) do
+					if child.Name == "ComicHalo" then
+						assert(child.BackgroundTransparency >= 0.5, label .. ": comic halo covers the word")
+						assert(child.ZIndex < burst.ComicWord.ZIndex)
+					end
+				end
+				for _, child in ipairs(screenRoot.FlushFxFront:GetChildren()) do
+					if child ~= burst and child.Visible and child:IsA("GuiObject") then
+						assert(
+							child.ZIndex < burst.ComicWord.ZIndex,
+							label .. ": " .. child.Name .. " covers the comic word"
+						)
+					end
+				end
+			end
+			local folder = H.Workspace:FindFirstChild("FlushFx")
+			for _, object in ipairs(folder and folder:GetDescendants() or {}) do
+				if object.ClassName == "ParticleEmitter" then
+					assert(not tostring(object.Texture):find("Square"), label .. ": square sprite on " .. object.Name)
+					assert(tostring(object.Texture):match("^rbxasset://textures/particles/.+_main%.dds$"))
+				elseif object:IsA("BasePart") and (object.Transparency or 0) < 1 then
+					local inClone = false
+					local walk = object
+					while walk and walk ~= folder do
+						inClone = inClone or walk.Name == "FlushFxToilet"
+						walk = walk.Parent
+					end
+					assert(
+						inClone or object.Shape == Enum.PartType.Ball or object:FindFirstChildOfClass("SpecialMesh"),
+						label .. ": visible block prop " .. object.Name
+					)
+				end
+			end
+		end
+		local fx, root, hud = harness(false) -- Press feel: deeper squash than the generic button press, plus a ripple.
 		hud.FlushButton.Activated:Fire()
 		assert(hud.FlushButton.PressRipple.Visible, "Flush press ripple missing")
 		-- Common: geyser, toilet motion, comic burst, emoji pops, comet bounce, coins, camera punch.
@@ -162,6 +232,7 @@ do
 				plan = fx:Flush(find("Common"), { ServiceCoins = 4 }, { Style = style })
 				assert(plan.Style == style and plan.Comic)
 				advance(plan.Burst + 0.12)
+				assertNoSquares(root, style)
 				if plan.Special == "Ducks" then
 					assert(rig.FlushFxDuck.Transparency == 0, "Ducks missing")
 				elseif plan.Special == "Rainbow" then
@@ -230,6 +301,7 @@ do
 			end
 		end
 		assert(pieces > 0 and pieces <= Config.Caps.ScreenConfetti, "Confetti rain missing")
+		assertNoSquares(root, "Legendary")
 		H.Snapshot(root, "flushfx-legendary-1280x720")
 		advance(4)
 		assert(not root.FlushFxFront.Visible and not root.FlushFxBack.Visible and not grade.Enabled)

@@ -58,11 +58,23 @@ assert(
 	presentationHUD.Frame.FlushReveal.RevealContent.Odds.Text == "Fallback drop",
 	"Poop must not advertise an unused 1-in-2 roll"
 )
+do
+	-- Juicy Common card: rarity gradient, strong glow, rim sweep, shine and icon bounce.
+	local revealCard = presentationHUD.Frame.FlushReveal
+	assert(revealCard.Background.UIStroke.RimSweep.Enabled, "Common card rim sweep missing")
+	assert(revealCard.Glow.UIStroke.Transparency <= 0.6, "Common card glow too faint")
+	assert(revealCard.RevealContent:FindFirstChild("Shine"), "Common card shine missing")
+	local bounce = revealCard.RevealContent.Preview:FindFirstChild("Bounce")
+	assert(bounce, "Common card icon bounce missing")
+	H.Advance(0.1)
+	assert(bounce.Scale >= 1, "Icon bounce must not shrink the icon")
+end
 controller:Skip()
 controller:Show(item("Mystery"), { FlushId = 5 })
 assert(not controller.Queue.Active, "Duplicate authoritative result replayed")
 controller:Show(item("GoldenPoop"), { FlushId = 6 })
 assert(controller.Queue.Active.Tier == "Banner")
+assert(not presentationHUD.Frame.FlushReveal.Background.UIStroke.RimSweep.Enabled, "Big reveals restore the card")
 assert(presentationRoot.RareReveal.RevealContent.AbsoluteSize.X == 375)
 H.Snapshot(presentationRoot, "legendary-portrait")
 H.Advance(2.1)
