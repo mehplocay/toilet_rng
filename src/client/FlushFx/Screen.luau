@@ -278,11 +278,15 @@ function Screen.new(root, hud, config)
 			end
 			-- Lean left or right, above the toilet, clamped on screen.
 			state.ComicTilt = (seed - 0.5) * 24
-			local x = math.clamp(origin[1] + (seed - 0.5) * size.X * 0.2, size.X * 0.3, size.X * 0.7)
-			-- Stay below the rarity stinger when one shows, and fit narrow phone screens.
-			local top = if plan.RarityText then S.TextY + 0.16 else 0.18
-			local y = math.clamp(origin[2] - size.Y * S.ComicRise, size.Y * top, size.Y * 0.7)
 			state.ComicFit = math.min(1, size.X * 0.9 / (S.ComicSize * 4 * (plan.ComicScale or 1) * 1.2))
+			-- Beside and above the toilet, never over the Flush prompt below the bowl; below the
+			-- result block band and the rarity stinger; fully on screen.
+			local half = S.ComicSize * 2 * (plan.ComicScale or 1) * 1.2 * state.ComicFit
+			local side = if seed < 0.5 then -1 else 1
+			local x =
+				math.clamp(origin[1] + side * S.ComicSide * size.X, half + 8, math.max(half + 8, size.X - half - 8))
+			local top = if plan.RarityText then S.TextY + 0.08 else 0.2
+			local y = math.clamp(origin[2] - size.Y * S.ComicRise, size.Y * top, size.Y * 0.6)
 			comic.Position = UDim2.fromOffset(x, y)
 			comic.Visible = false
 		end

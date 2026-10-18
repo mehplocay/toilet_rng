@@ -34,6 +34,7 @@ function World.new(config)
 	local white = Color3.new(1, 1, 1)
 	local water, foam = rgb(config.Colors.Water), rgb(config.Colors.Foam)
 	local special = config.Special
+	local glow = config.Glow
 	local rig, job, toilet
 	local styleColors = {}
 	local function part(parent, name, size)
@@ -132,9 +133,9 @@ function World.new(config)
 			Core = emitter(center, "Core", textures.Glow, {
 				Speed = NumberRange.new(0),
 				Lifetime = NumberRange.new(0.25, 0.35),
-				LightEmission = 1,
-				Brightness = 3,
-				Transparency = sequence(0, 1),
+				LightEmission = glow.CoreEmission,
+				Brightness = glow.CoreBrightness,
+				Transparency = sequence(glow.CoreTransparency, 1),
 				ZOffset = 1,
 			}),
 			-- The water column: fast, narrow, stretched droplets falling back under gravity.
@@ -145,12 +146,12 @@ function World.new(config)
 				Drag = 0.2,
 				Squash = sequence(-0.6, 0.4),
 				Transparency = NumberSequence.new({
-					NumberSequenceKeypoint.new(0, 0),
-					NumberSequenceKeypoint.new(0.7, 0.15),
+					NumberSequenceKeypoint.new(0, glow.GeyserTransparency),
+					NumberSequenceKeypoint.new(0.7, math.max(glow.GeyserTransparency, 0.3)),
 					NumberSequenceKeypoint.new(1, 1),
 				}),
-				LightEmission = 0.45,
-				Brightness = 1.4,
+				LightEmission = glow.GeyserEmission,
+				Brightness = glow.GeyserBrightness,
 			}),
 			Splash = emitter(center, "Splash", textures.Glow, {
 				EmissionDirection = Enum.NormalId.Top,
@@ -158,9 +159,9 @@ function World.new(config)
 				Lifetime = NumberRange.new(0.6, 0.95),
 				Drag = 0.5,
 				Squash = sequence(0.8, 0),
-				Transparency = sequence(0, 0.5),
-				LightEmission = 0.4,
-				Brightness = 1.4,
+				Transparency = sequence(glow.SplashTransparency, 0.6),
+				LightEmission = glow.SplashEmission,
+				Brightness = glow.SplashBrightness,
 			}),
 			-- Big soft foam puffs pushed over the rim.
 			Foam = emitter(center, "Foam", textures.Smoke, {
@@ -170,9 +171,9 @@ function World.new(config)
 				Drag = 2.5,
 				RotSpeed = NumberRange.new(-90, 90),
 				Rotation = NumberRange.new(0, 360),
-				Transparency = sequence(0.05, 1),
-				LightEmission = 0.3,
-				Brightness = 1.6,
+				Transparency = sequence(glow.FoamTransparency, 1),
+				LightEmission = glow.FoamEmission,
+				Brightness = glow.FoamBrightness,
 			}),
 			-- Rising bubbles (ring texture reads as a bubble outline).
 			Bubbles = emitter(center, "Bubbles", textures.Shockwave, {
@@ -287,6 +288,13 @@ function World.new(config)
 		light.Parent = center
 		local pillarTop = attachment(anchor, "PillarTop")
 		local pillar = beam(anchor, "Pillar", center, pillarTop)
+		-- Softer pillar so the toilet stays visible through it.
+		pillar.Transparency = NumberSequence.new({
+			NumberSequenceKeypoint.new(0, glow.PillarTransparency),
+			NumberSequenceKeypoint.new(0.6, math.max(glow.PillarTransparency, 0.8)),
+			NumberSequenceKeypoint.new(1, 1),
+		})
+		pillar.LightEmission = glow.PillarEmission
 		local fan = {}
 		for i = 1, config.Caps.FanBeams do
 			local top = attachment(anchor, "FanTop")
@@ -770,8 +778,8 @@ function World.new(config)
 				then 1 + (math.floor(after * 30) % 2) * 1.5
 				else 1
 			rig.Light.Brightness = if after < 0
-				then plan.Light * 0.25 * (t / math.max(plan.Burst, 0.01))
-				else plan.Light * envelope * boost
+				then plan.Light * glow.LightScale * 0.25 * (t / math.max(plan.Burst, 0.01))
+				else plan.Light * glow.LightScale * envelope * boost
 		end
 		if plan.Pillar then
 			rig.Pillar.Width0 = state.Scale * 1.2 * envelope
